@@ -4,7 +4,7 @@ export type Range = { from: Date; to: Date };
 
 export function resolveRange(
   period: PeriodKey,
-  custom?: { from?: string; to?: string },
+  custom?: { from?: string | undefined; to?: string | undefined },
 ): Range {
   const now = new Date();
   const to = now;
