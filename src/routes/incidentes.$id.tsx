@@ -32,6 +32,13 @@ export const Route = createFileRoute("/incidentes/$id")({
   component: IncidentDetail,
 });
 
+function errMsg(e: unknown, fallback: string) {
+  if (e && typeof e === "object" && "message" in e && typeof (e as { message: unknown }).message === "string") {
+    return (e as { message: string }).message;
+  }
+  return fallback;
+}
+
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block space-y-1.5">
@@ -93,7 +100,7 @@ function IncidentDetail() {
       toast.success("Aplicação recuperada. Complete a finalização.");
       router.invalidate();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível encerrar o incidente.");
+      toast.error(errMsg(e, "Não foi possível encerrar o incidente."));
     }
   };
 
@@ -110,7 +117,7 @@ function IncidentDetail() {
       });
       toast.success("Dados atualizados.");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível salvar.");
+      toast.error(errMsg(e, "Não foi possível salvar."));
     }
   };
 
@@ -130,7 +137,7 @@ function IncidentDetail() {
       });
       toast.success("Incidente salvo.");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Não foi possível salvar.");
+      toast.error(errMsg(e, "Não foi possível salvar."));
     }
   };
 
