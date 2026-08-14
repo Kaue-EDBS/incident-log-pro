@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AplicacoesRouteImport } from './routes/aplicacoes'
+import { Route as IndicadoresRouteImport } from './routes/indicadores'
 import { Route as NovoIncidenteRouteImport } from './routes/novo-incidente'
 import { Route as IncidentesIndexRouteImport } from './routes/incidentes.index'
 import { Route as IncidentesIdRouteImport } from './routes/incidentes.$id'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const AplicacoesRoute = AplicacoesRouteImport.update({
   id: '/aplicacoes',
   path: '/aplicacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndicadoresRoute = IndicadoresRouteImport.update({
+  id: '/indicadores',
+  path: '/indicadores',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NovoIncidenteRoute = NovoIncidenteRouteImport.update({
@@ -44,6 +50,7 @@ const IncidentesIdRoute = IncidentesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aplicacoes': typeof AplicacoesRoute
+  '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/incidentes/$id': typeof IncidentesIdRoute
   '/incidentes/': typeof IncidentesIndexRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aplicacoes': typeof AplicacoesRoute
+  '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/incidentes/$id': typeof IncidentesIdRoute
   '/incidentes': typeof IncidentesIndexRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/aplicacoes': typeof AplicacoesRoute
+  '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/incidentes/$id': typeof IncidentesIdRoute
   '/incidentes/': typeof IncidentesIndexRoute
@@ -66,14 +75,25 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/aplicacoes' | '/novo-incidente' | '/incidentes/$id' | '/incidentes/'
+    | '/'
+    | '/aplicacoes'
+    | '/indicadores'
+    | '/novo-incidente'
+    | '/incidentes/$id'
+    | '/incidentes/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/aplicacoes' | '/novo-incidente' | '/incidentes/$id' | '/incidentes'
+    | '/'
+    | '/aplicacoes'
+    | '/indicadores'
+    | '/novo-incidente'
+    | '/incidentes/$id'
+    | '/incidentes'
   id:
     | '__root__'
     | '/'
     | '/aplicacoes'
+    | '/indicadores'
     | '/novo-incidente'
     | '/incidentes/$id'
     | '/incidentes/'
@@ -82,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AplicacoesRoute: typeof AplicacoesRoute
+  IndicadoresRoute: typeof IndicadoresRoute
   NovoIncidenteRoute: typeof NovoIncidenteRoute
   IncidentesIdRoute: typeof IncidentesIdRoute
   IncidentesIndexRoute: typeof IncidentesIndexRoute
@@ -101,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/aplicacoes'
       fullPath: '/aplicacoes'
       preLoaderRoute: typeof AplicacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/indicadores': {
+      id: '/indicadores'
+      path: '/indicadores'
+      fullPath: '/indicadores'
+      preLoaderRoute: typeof IndicadoresRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/novo-incidente': {
@@ -130,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AplicacoesRoute: AplicacoesRoute,
+  IndicadoresRoute: IndicadoresRoute,
   NovoIncidenteRoute: NovoIncidenteRoute,
   IncidentesIdRoute: IncidentesIdRoute,
   IncidentesIndexRoute: IncidentesIndexRoute,
