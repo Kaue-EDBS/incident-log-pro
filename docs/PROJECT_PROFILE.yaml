@@ -30,13 +30,12 @@ architecture:
 service:
   service_class:
     value: "WAITING_HUMAN_DECISION"
-    candidates:
-      - "INTERNO"
-      - "OPERACIONAL"
-    note: "Do not infer service class from scenario criticality."
+    source: "Framework EBSA"
+    note: "Technical classification of the Painel Safra application. It must not be inferred from scenario SLA or scenario criticality."
   application_criticality:
     value: "WAITING_HUMAN_DECISION"
-    note: "Application criticality is distinct from CRITICAL/HIGH/MODERATE scenario classification."
+    source: "Framework EBSA"
+    note: "Technical/operational criticality of the application itself. It is distinct from business scenario criticality."
   slo: "WAITING_HUMAN_DECISION"
   rto_minutes: "WAITING_HUMAN_DECISION"
   rpo_minutes: "WAITING_HUMAN_DECISION"
@@ -140,6 +139,18 @@ api:
 domain_rules:
   required: true
   canonical_source: "docs/REGRAS_NEGOCIO.md"
+  scenario_criticality:
+    status: "APPROVED"
+    values:
+      - "CRITICAL"
+      - "HIGH"
+      - "MODERATE"
+    source:
+      - "EDB06 - Matriz Contingencia v3.xlsx"
+      - "Painel SAFRA.docx - reunião de 22/09/2026"
+      - "EDB06 - Protocolos de contingência v2.pdf"
+    note: "Business/domain attribute of scenarios. Not equivalent to application service_class."
+  critical_scenarios_list: "WAITING_HUMAN_DECISION"
   safra_rules_registered: 17
   legacy_it_rules_registered: 4
   automated_decisioning: false
