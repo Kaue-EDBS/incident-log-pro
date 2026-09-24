@@ -29,6 +29,7 @@
 | D-14 | Histórico Git publicado não deve ser reescrito | APPROVED |
 | D-15 | Acesso `anon` ao banco interno é proibido | APPROVED |
 | D-16 | G5 C00 fecha P0; RBAC final fica no C04/C05 | APPROVED |
+| D-17 | Microsoft Entra ID corporativo via SSO será o provedor de identidade | APPROVED |
 
 ## 3. ADRs
 
@@ -47,7 +48,16 @@ REPLICA: **WAITING_HUMAN_DECISION**.
 A decisão deverá considerar apenas o impacto da indisponibilidade do próprio Painel Safra.
 
 ### ADR-004 — Identity provider
-**WAITING_HUMAN_DECISION**.
+**APPROVED — 24/09/2026**.
+
+O Painel Safra utilizará **Microsoft Entra ID corporativo via SSO** como provedor de identidade.
+
+Decisões associadas:
+
+- autenticação corporativa via Microsoft;
+- não criar login local por senha como caminho funcional do produto;
+- Auth identifica o usuário; autorização permanece responsabilidade do RBAC/RLS do Painel Safra;
+- configuração de papéis e delegações continua separada no SAFRA-C04.
 
 ### ADR-005 — Operações críticas via RPC transacional
 **PROPOSED**.
@@ -76,7 +86,6 @@ Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade úni
 - múltiplas tratativas simultâneas;
 - fechamento com passo incompleto/NA;
 - papéis e delegações;
-- identity provider;
 - service class;
 - RTO/RPO;
 - REPLICA;
@@ -109,7 +118,7 @@ Não esconder decisão em prompt, commit ou mensagem de chat.
 |---|---|
 | Service class | **WAITING_HUMAN_DECISION** — candidatos INTERNO x OPERACIONAL |
 | Criticidade da aplicação | **WAITING_HUMAN_DECISION** — não confundir com criticidade de cenário |
-| Auth | obrigatório; stack Lovable Cloud/Supabase Auth disponível; login frontend ainda não implementado; 0 usuários Auth |
+| Auth | Microsoft Entra ID corporativo via SSO aprovado; frontend ainda não implementado; 0 usuários Auth |
 | Papéis privilegiados | obrigatórios; service_role apenas server-side; papéis funcionais ainda propostos |
 | Dados pessoais | **sim** — identidade interna, nome, e-mail, papéis, autoria/auditoria e possíveis dados incidentais em texto livre |
 | Integrações | nenhuma integração externa ativa no MVP/código atual; futuras entram por ciclo governado |
