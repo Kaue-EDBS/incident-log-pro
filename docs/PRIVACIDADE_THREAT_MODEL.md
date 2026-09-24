@@ -70,6 +70,12 @@ Até decisão formal:
 
 RBAC no SAFRA-C04 por papel, área e vínculo com cenário.
 
+### Identidade corporativa
+
+O Painel Safra utilizará Microsoft Entra ID corporativo via SSO.
+
+O sistema deve armazenar somente os atributos necessários à identidade, autorização e auditoria, evitando replicar informações do diretório corporativo sem finalidade funcional.
+
 ## 7. Ameaças baseline
 
 | ID | Ameaça | Controle |
@@ -122,7 +128,7 @@ Toda nova funcionalidade deve responder:
 - base legal / enquadramento formal: **WAITING_HUMAN_DECISION**;
 - retenção: **WAITING_HUMAN_DECISION**;
 - sensibilidade formal: **WAITING_HUMAN_DECISION**;
-- identity provider: **WAITING_HUMAN_DECISION**;
+- identity provider: **Microsoft Entra ID corporativo via SSO — APPROVED**;
 - política de notificações/e-mail: **WAITING_HUMAN_DECISION**.
 
 ## 11. Atualização
