@@ -30,6 +30,7 @@
 | D-15 | Acesso `anon` ao banco interno é proibido | APPROVED |
 | D-16 | G5 C00 fecha P0; RBAC final fica no C04/C05 | APPROVED |
 | D-17 | Microsoft Entra ID corporativo via SSO será o provedor de identidade | APPROVED |
+| D-18 | Papéis funcionais Safra aprovados: safra_admin, scenario_owner, scenario_updater, manager_viewer, executive_viewer e viewer | APPROVED |
 
 ## 3. ADRs
 
@@ -85,7 +86,8 @@ Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade úni
 - origem do mínimo curva A;
 - múltiplas tratativas simultâneas;
 - fechamento com passo incompleto/NA;
-- papéis e delegações;
+- matriz exata de permissões por papel;
+- modelo exato de delegação owner -> updater;
 - service class;
 - RTO/RPO;
 - REPLICA;
@@ -136,3 +138,28 @@ Este registro descreve o estado atual e não transforma os itens pendentes em de
 - `service_class` e `application_criticality` pertencem à governança técnica do Framework EBSA;
 - SLO/RTO/RPO da aplicação não podem ser derivados dos SLAs dos protocolos;
 - a lista dos quatro cenários `CRITICAL` continua `WAITING_HUMAN_DECISION`.
+
+
+### ADR-012 — Modelo de papéis funcionais
+**APPROVED — 24/09/2026**.
+
+Papéis aprovados:
+
+- `safra_admin`;
+- `scenario_owner`;
+- `scenario_updater`;
+- `manager_viewer`;
+- `executive_viewer`;
+- `viewer`.
+
+Regras estruturais:
+
+- os papéis são independentes;
+- um usuário pode possuir múltiplos papéis;
+- não existe herança automática entre eles;
+- `safra_admin` não se torna owner de todos os cenários;
+- `scenario_owner` só possui autoridade operacional sobre cenários aos quais estiver vinculado;
+- `scenario_updater` não herda START/END/CANCEL;
+- papéis de leitura não concedem alteração operacional.
+
+A matriz fina de permissões e o mecanismo de delegação permanecem `WAITING_HUMAN_DECISION`.
