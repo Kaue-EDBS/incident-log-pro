@@ -102,5 +102,6 @@ npm run dev
 O plano de evolução do `incident-log-pro` para o **Painel Safra** está documentado em:
 
 - [docs/ROADMAP.md](docs/ROADMAP.md) — roadmap v2.0 completo, estruturado em COMEÇO → MEIO → FIM e alinhado à Matriz de Contingência v3, Protocolos de Contingência v2, decisões da reunião de 22/09/2026 e Framework EBSA v1.7.
+- [docs/STATUS.md](docs/STATUS.md) — fotografia técnica do estado atual: baseline, schema, rotas, migrations, integração/acesso Supabase e riscos P0 do SAFRA-C00.
 
 > O conteúdo acima do README registra o escopo histórico do Reliability Monitor/MTTR. Para a reformulação do produto como Painel Safra, prevalece o roadmap canônico em `docs/ROADMAP.md`.
