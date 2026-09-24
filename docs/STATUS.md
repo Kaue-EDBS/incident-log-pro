@@ -637,7 +637,7 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 | criticidade técnica da aplicação | WAITING_HUMAN_DECISION — distinta de CRITICAL/HIGH/MODERATE dos cenários |
 | criticidade dos cenários | CRITICAL/HIGH/MODERATE — regra de domínio registrada; lista dos quatro críticos ainda pendente |
 | Auth | **DECIDIDO:** Microsoft Entra ID corporativo via SSO; login frontend ainda não implementado; 0 usuários |
-| papéis privilegiados | obrigatórios; service_role server-side; RBAC funcional pendente |
+| papéis privilegiados | **DECIDIDO:** safra_admin, scenario_owner, scenario_updater, manager_viewer, executive_viewer e viewer; matriz fina de permissões ainda pendente |
 | dados pessoais | presentes; categorias registradas; minimização obrigatória |
 | integrações | nenhuma ativa no MVP; futuras governadas por contrato/DATA_RELEASE |
 | REPLICA | WAITING_HUMAN_DECISION; não provisionada |
@@ -679,3 +679,37 @@ Princípio:
 Microsoft Entra ID -> autenticação / identidade
 Painel Safra RBAC + RLS -> autorização
 ```
+
+
+### Decisão de papéis funcionais — 24/09/2026
+
+**APPROVED**
+
+Papéis:
+
+- `safra_admin`;
+- `scenario_owner`;
+- `scenario_updater`;
+- `manager_viewer`;
+- `executive_viewer`;
+- `viewer`.
+
+Modelo:
+
+```text
+papéis independentes
++ cumulativos
++ sem herança automática
+```
+
+Pontos já fixados:
+
+- admin não é owner global;
+- owner atua somente nos cenários vinculados;
+- updater não possui START/END/CANCEL por herança;
+- viewers não alteram estado operacional.
+
+Ainda aberto:
+
+- matriz exata CRUD/START/END/CANCEL/ADMIN por papel;
+- regras de delegação e expiração de vínculo.
