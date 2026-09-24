@@ -1,0 +1,123 @@
+schema_version: 1
+updated_at: "2026-09-24"
+status: IN_PROGRESS
+
+project:
+  name: "Painel Safra"
+  repository: "Kaue-EDBS/incident-log-pro"
+  lovable_project_id: "27aaa43d-ca38-4c18-96c0-eb54a37a1792"
+  project_type: "internal_operational_control"
+  exposure: "internal"
+  human_interface: true
+
+architecture:
+  backend_provider: "lovable_cloud"
+  database_role: "PRIMARY"
+  database_engine: "postgresql"
+  database_stack: "supabase"
+  public_api: false
+  primary_source_of_truth: "lovable_cloud_primary"
+  git_branch: "main"
+  migration_tooling:
+    current:
+      - "supabase/migrations"
+      - "drizzle.config.ts"
+    canonical_strategy: "WAITING_HUMAN_DECISION"
+    known_drift:
+      - "hardening state is live but version 20260924212155 is absent from supabase_migrations.schema_migrations"
+
+service:
+  service_class: "WAITING_HUMAN_DECISION"
+  criticality: "WAITING_HUMAN_DECISION"
+  slo: "WAITING_HUMAN_DECISION"
+  rto_minutes: "WAITING_HUMAN_DECISION"
+  rpo_minutes: "WAITING_HUMAN_DECISION"
+
+replication:
+  replica_enabled: "WAITING_HUMAN_DECISION"
+  replica_provider: null
+  notes: "G9 is conditional; do not provision replica without explicit decision."
+
+identity:
+  auth_required: true
+  auth_implemented_in_frontend: false
+  identity_provider: "WAITING_HUMAN_DECISION"
+  privileged_roles_required: true
+  final_rbac_implemented: false
+  temporary_authorization:
+    mechanism: "app_metadata.safra_access"
+    scope: "SAFRA-C00 containment"
+  proposed_roles:
+    - "safra_admin"
+    - "scenario_owner"
+    - "scenario_updater"
+    - "manager_viewer"
+    - "executive_viewer"
+    - "viewer"
+  roles_status: "PROPOSED_NOT_APPROVED"
+
+security:
+  anon_database_access: false
+  rls_enabled: true
+  service_role_client_exposure: false
+  env_tracked_in_git: false
+  p0_security_blocker_open: false
+
+data:
+  personal_data: true
+  personal_data_categories:
+    - "internal identity / user id"
+    - "name"
+    - "email"
+    - "actor/owner attribution"
+    - "free-text operational notes may incidentally contain personal data"
+  sensitive_personal_data: "WAITING_HUMAN_DECISION"
+  children_or_adolescents_data: false
+  storage_files_currently_enabled: false
+  storage_files_future_policy: "WAITING_HUMAN_DECISION"
+  retention_policy: "WAITING_HUMAN_DECISION"
+  data_minimization_required: true
+  audit_history_required: true
+
+business:
+  domain_rules_required: true
+  automated_decisioning: false
+  protocol_activation_mode: "MANUAL"
+  detection_modes_allowed:
+    - "MANUAL"
+    - "AUTOMATIC"
+    - "MIXED"
+  external_integrations_in_mvp: false
+  external_integrations_future: true
+  payments_or_financial_impact: false
+
+governance:
+  roadmap: "docs/ROADMAP.md"
+  status: "docs/STATUS.md"
+  architecture: "docs/ARQUITETURA.md"
+  privacy: "docs/PRIVACIDADE_THREAT_MODEL.md"
+  business_rules: "docs/REGRAS_NEGOCIO.md"
+  parity: "docs/MATRIZ_PARIDADE.md"
+  decisions: "docs/DECISOES.md"
+  project_profile: "docs/PROJECT_PROFILE.yaml"
+  destructive_git_history_rewrite_allowed: false
+
+open_human_decisions:
+  - "four CRITICAL scenarios"
+  - "scenario 2 X-hour threshold"
+  - "scenario 4 X-minute threshold"
+  - "scenario 10 lead-time/queue threshold"
+  - "scenario 11 capacity threshold"
+  - "official minimum source for scenario 9 curve A"
+  - "multiple simultaneous treatments rule"
+  - "close policy with incomplete / NOT_APPLICABLE steps"
+  - "exact roles and delegation model"
+  - "identity provider and corporate auth method"
+  - "EBSA service class"
+  - "approved RTO/RPO"
+  - "replica_enabled"
+  - "email/notification provider and channel"
+  - "formal approvers of new scenarios"
+  - "history retention"
+  - "official weekly governance window"
+  - "quantitative impact definition"
