@@ -440,6 +440,18 @@ Também medir:
 
 O protocolo continua ativo e pode possuir nível de escalonamento.
 
+### 12º card — formulário de proposta
+
+O 12º card é um ponto de entrada para proposta de novo cenário, não um protocolo genérico.
+
+Campos:
+- nome e e-mail preenchidos pelo Microsoft SSO;
+- título;
+- descrição do problema;
+- como o problema afeta a Safra.
+
+Jiane Rodrigues e Jair Silva fazem a governança da proposta. Publicação como cenário real exige aprovação.
+
 ## D-12 - Papéis funcionais aprovados
 
 O modelo foi simplificado para apenas dois papéis:
