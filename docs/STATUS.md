@@ -280,13 +280,15 @@ Esse ponto já está previsto no roadmap como risco P0 do SAFRA-C00. Nenhuma cor
 
 ## 8. Riscos P0 observados e preservados para contenção
 
-### P0-01 — `.env` versionado
+### P0-01 — exposição de arquivo de ambiente — CONTIDO
 
-- `.env` está atualmente tracked pelo Git.
-- `.gitignore` atual não contém regra para ignorar `.env`.
-- valores não foram reproduzidos neste documento.
-
-Ações 6 a 9 do SAFRA-C00 permanecem necessárias.
+- `.env` foi removido do tracking na branch `main`;
+- `.gitignore` agora protege `.env` e `.env.*`;
+- `.env.example` foi criado como template seguro sem valores reais;
+- a triagem do `.env` atual e do único commit histórico do arquivo encontrou apenas project ref, URL e chave `sb_publishable_...`;
+- não foram encontrados `sb_secret_...`, `service_role` ou JWT elevado versionados;
+- nenhuma rotação é necessária para o material versionado encontrado;
+- secrets eventualmente existentes apenas no runtime/Lovable Cloud continuam fora do escopo de validação até haver acesso ao projeto Supabase live.
 
 ### P0-02 — CRUD para `anon`
 
@@ -315,10 +317,10 @@ Sem acesso ao projeto `trqkwqkjjjeppuddwenu` pela conexão Supabase atual, não 
 | 3 | Documentar rotas atuais | ✅ Registrado |
 | 4 | Inventariar migrations | ✅ Registrado |
 | 5 | Inventariar acesso Supabase | ✅ Inventariado, com limitação live explícita |
-| 6 | Remover `.env` do tracking | ⏳ Pendente |
-| 7 | Ajustar `.gitignore` e preservar `.env.example` | ⏳ Pendente |
-| 8 | Identificar secrets possivelmente expostos | ⏳ Pendente |
-| 9 | Rotacionar secrets aplicáveis | ⏳ Pendente |
+| 6 | Remover `.env` do tracking | ✅ Concluído |
+| 7 | Ajustar `.gitignore` e preservar `.env.example` | ✅ Concluído |
+| 8 | Identificar secrets possivelmente expostos | ✅ Concluído: nenhum secret elevado encontrado no `.env` atual ou no único commit histórico do arquivo |
+| 9 | Rotacionar secrets aplicáveis | ✅ Nenhuma rotação aplicável ao material versionado; apenas publishable key/URL/project ref foram encontrados. Secrets live/runtime seguem não validados por falta de permissão ao projeto Supabase |
 | 10 | Revisar grants atuais | ⏳ Pendente |
 | 11 | Remover CRUD indiscriminado de `anon` | ⏳ Pendente |
 | 12 | Substituir policies `USING (true)` | ⏳ Pendente |
@@ -329,6 +331,6 @@ Sem acesso ao projeto `trqkwqkjjjeppuddwenu` pela conexão Supabase atual, não 
 
 ## 10. Próximo passo canônico
 
-O próximo bloco do SAFRA-C00 deve começar pela **contenção do `.env` e revisão de secrets**, seguindo a ordem já definida no `docs/ROADMAP.md`.
+O próximo bloco do SAFRA-C00 deve avançar para **revisão de grants, remoção de CRUD indiscriminado de `anon`, substituição das policies abertas e teste negativo de acesso direto**, seguindo a ordem já definida no `docs/ROADMAP.md`.
 
 Não avançar para redesign funcional antes de fechar os bloqueadores P0 desta fase.
