@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790286335685,
+      "tag": "0000_harden_safra_c00_access",
+      "breakpoints": true
+    }
+  ]
+}
