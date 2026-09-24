@@ -140,7 +140,26 @@ Pode renderizar, coletar entrada e solicitar operações. Não pode decidir auto
 
 ### Auth
 
-Responsável por identidade. Identity provider definitivo: **WAITING_HUMAN_DECISION**.
+Responsável por identidade.
+
+Decisão aprovada:
+
+```text
+Microsoft Entra ID corporativo
+        |
+        v
+      SSO
+        |
+        v
+Lovable Cloud / Supabase Auth
+        |
+        v
+identidade autenticada
+```
+
+Não haverá login local por senha como caminho funcional do produto.
+
+Autenticação responde **quem é o usuário**. RBAC/RLS do Painel Safra responde **o que ele pode fazer**.
 
 ### Banco / RLS
 
@@ -217,8 +236,6 @@ O produto deve preservar eventos de START, passos, alterações relevantes, esca
 
 - service class da aplicação — atributo técnico do Framework EBSA, não derivado dos cenários;
 - criticidade técnica/operacional da aplicação — distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
-- identity provider;
-- método de autenticação;
 - papéis exatos;
 - replica;
 - RTO/RPO;
