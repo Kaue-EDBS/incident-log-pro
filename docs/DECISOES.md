@@ -97,3 +97,20 @@ fonte primária de negócio
 Toda decisão material deve registrar ID, data, contexto, decisão, alternativas, impacto, owner, status, documentos e gates afetados.
 
 Não esconder decisão em prompt, commit ou mensagem de chat.
+
+
+## 7. Registro de perfil — SAFRA-C01 / 24-09-2026
+
+| Tema | Estado registrado |
+|---|---|
+| Service class | **WAITING_HUMAN_DECISION** — candidatos INTERNO x OPERACIONAL |
+| Criticidade da aplicação | **WAITING_HUMAN_DECISION** — não confundir com criticidade de cenário |
+| Auth | obrigatório; stack Lovable Cloud/Supabase Auth disponível; login frontend ainda não implementado; 0 usuários Auth |
+| Papéis privilegiados | obrigatórios; service_role apenas server-side; papéis funcionais ainda propostos |
+| Dados pessoais | **sim** — identidade interna, nome, e-mail, papéis, autoria/auditoria e possíveis dados incidentais em texto livre |
+| Integrações | nenhuma integração externa ativa no MVP/código atual; futuras entram por ciclo governado |
+| REPLICA | **WAITING_HUMAN_DECISION**; nenhuma REPLICA provisionada |
+| API | nenhuma API pública; Data API interna existe e é protegida por grants + RLS |
+| Regras de domínio | obrigatórias; 17 regras Safra + 4 regras legadas TI registradas; ativação automática de treatment = false |
+
+Este registro descreve o estado atual e não transforma os itens pendentes em decisões aprovadas.
