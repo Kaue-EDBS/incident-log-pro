@@ -290,13 +290,30 @@ Esse ponto já está previsto no roadmap como risco P0 do SAFRA-C00. Nenhuma cor
 - nenhuma rotação é necessária para o material versionado encontrado;
 - secrets eventualmente existentes apenas no runtime/Lovable Cloud continuam fora do escopo de validação até haver acesso ao projeto Supabase live.
 
-### P0-02 — CRUD para `anon`
+### P0-02 — CRUD para `anon` — CORRIGIDO NA MIGRATION
 
-O papel `anon` possui CRUD nas tabelas principais.
+A migration `20260924212155_harden_safra_c00_access.sql` remove todos os privilégios de `anon` em `applications` e `incidents`.
 
-### P0-03 — Policies abertas
+Estado:
+- código/migration: **corrigido**;
+- banco live: **pendente de aplicação/validação** por falta de permissão ao projeto Supabase configurado.
 
-As policies atuais usam `USING (true) WITH CHECK (true)`.
+### P0-03 — Policies abertas — CORRIGIDO NA MIGRATION
+
+A migration de hardening remove as policies permissivas da baseline e cria policies separadas para SELECT, INSERT e UPDATE.
+
+Acesso passa a exigir:
+- papel PostgreSQL `authenticated`;
+- `auth.uid()` presente;
+- usuário não anônimo;
+- `app_metadata.safra_access = true`.
+
+Não existe policy DELETE para `authenticated`.  
+`applications` fica read-only para usuários autenticados autorizados.
+
+Estado:
+- código/migration: **corrigido**;
+- banco live: **pendente de aplicação/validação**.
 
 ### P0-04 — UI sem barreira de autenticação observada
 
@@ -321,9 +338,9 @@ Sem acesso ao projeto `trqkwqkjjjeppuddwenu` pela conexão Supabase atual, não 
 | 7 | Ajustar `.gitignore` e preservar `.env.example` | ✅ Concluído |
 | 8 | Identificar secrets possivelmente expostos | ✅ Concluído: nenhum secret elevado encontrado no `.env` atual ou no único commit histórico do arquivo |
 | 9 | Rotacionar secrets aplicáveis | ✅ Nenhuma rotação aplicável ao material versionado; apenas publishable key/URL/project ref foram encontrados. Secrets live/runtime seguem não validados por falta de permissão ao projeto Supabase |
-| 10 | Revisar grants atuais | ⏳ Pendente |
-| 11 | Remover CRUD indiscriminado de `anon` | ⏳ Pendente |
-| 12 | Substituir policies `USING (true)` | ⏳ Pendente |
+| 10 | Revisar grants atuais | ✅ Concluído no código: menor privilégio definido; aplicação live pendente |
+| 11 | Remover CRUD indiscriminado de `anon` | ✅ Migration versionada com `REVOKE ALL`; aplicação live pendente |
+| 12 | Substituir policies `USING (true)` | ✅ Migration versionada com RLS transitória real baseada em `app_metadata.safra_access`; aplicação live pendente |
 | 13 | Testar acesso direto não autorizado | ⏳ Pendente |
 | 14 | Preservar histórico Git sem force push | ✅ Regra mantida |
 
@@ -331,6 +348,74 @@ Sem acesso ao projeto `trqkwqkjjjeppuddwenu` pela conexão Supabase atual, não 
 
 ## 10. Próximo passo canônico
 
-O próximo bloco do SAFRA-C00 deve avançar para **revisão de grants, remoção de CRUD indiscriminado de `anon`, substituição das policies abertas e teste negativo de acesso direto**, seguindo a ordem já definida no `docs/ROADMAP.md`.
+O próximo bloco do SAFRA-C00 deve avançar para **aplicação/validação da migration no Supabase live e teste negativo de acesso direto como `anon`**, seguido da implementação do fluxo de identidade necessário antes de liberar o acesso autenticado. O RBAC completo continua reservado ao SAFRA-C04.
 
 Não avançar para redesign funcional antes de fechar os bloqueadores P0 desta fase.
+
+
+---
+
+## 11. Hardening de grants e RLS — 24/09/2026
+
+Migration adicionada:
+
+`supabase/migrations/20260924212155_harden_safra_c00_access.sql`
+
+### Matriz de grants proposta após aplicação
+
+| Tabela | anon | authenticated | service_role |
+|---|---|---|---|
+| `applications` | nenhum | SELECT | ALL |
+| `incidents` | nenhum | SELECT + INSERT limitado + UPDATE limitado | ALL |
+
+### Colunas de INSERT permitidas em incidents
+
+- `application_id`
+- `status`
+- `detected_at`
+- `type`
+- `category`
+
+### Colunas de UPDATE permitidas em incidents
+
+- `failure_started_at`
+- `response_started_at`
+- `recovered_at`
+- `status`
+- `type`
+- `category`
+- `responsible`
+- `cause`
+- `resolution`
+- `notes`
+
+### RLS transitória do SAFRA-C00
+
+A política desta fase não implementa ainda o RBAC completo de owner/updater/viewer do SAFRA-C04.
+
+Ela funciona como contenção real:
+
+```text
+request
+  -> authenticated role
+  -> auth.uid presente
+  -> usuário não anônimo
+  -> app_metadata.safra_access = true
+  -> operação permitida pelo grant
+  -> operação permitida pela policy específica
+```
+
+### Por que usar app_metadata
+
+`user_metadata` é alterável pelo próprio usuário e não deve controlar autorização. `app_metadata` é administrado por backend/admin e é apropriado para este gate transitório.
+
+### Dependência antes da aplicação live
+
+O frontend atual não possui fluxo de login implementado. Aplicar essa migration no ambiente live antes de disponibilizar identidade autenticada válida fará o aplicativo negar acesso aos dados por desenho.
+
+Portanto:
+
+1. a migration está **pronta e versionada**;
+2. a aplicação live permanece **não executada** neste ambiente por falta de permissão ao projeto Supabase;
+3. antes do deploy da migration, deve existir pelo menos um fluxo de autenticação e usuários autorizados com `app_metadata.safra_access = true`;
+4. o SAFRA-C04 substituirá esta regra transitória pelo RBAC definitivo por papel, área e vínculo com cenário.
