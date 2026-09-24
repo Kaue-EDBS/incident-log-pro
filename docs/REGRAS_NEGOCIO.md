@@ -65,8 +65,18 @@ SLA deriva de eventos definidos; duração derivável não vira fonte primária.
 ### RB-SAFRA-013 — Fonte sem integração
 Ausência de fonte nunca aparece como OK. Usar `NO_SOURCE`, `WAITING_INTEGRATION`, `STALE_DATA` ou `UNKNOWN`.
 
-### RB-SAFRA-014 — Novo cenário
-Proposta precisa de revisão e aprovação antes da publicação.
+### RB-SAFRA-014 — Novo cenário / 12º card
+O 12º card é um formulário de proposta, não um protocolo genérico.
+
+Qualquer usuário autenticado pode enviar proposta contendo:
+
+- nome preenchido pela identidade Microsoft;
+- e-mail preenchido pela identidade Microsoft;
+- título;
+- descrição do problema;
+- descrição de como o problema afeta a Safra.
+
+A proposta não cria cenário produtivo automaticamente. Jiane Rodrigues e Jair Silva fazem a revisão de governança antes de eventual publicação.
 
 ### RB-SAFRA-015 — Recorrência
 Recorrência é métrica; não promove automaticamente nível de crise.
@@ -76,6 +86,21 @@ Eventos não podem violar sequência temporal sem justificativa administrativa a
 
 ### RB-SAFRA-017 — Idempotência
 Duplo clique, retry ou refresh não pode duplicar abertura, passo, encerramento, cancelamento ou notificação.
+
+### RB-SAFRA-018 — Administração executiva
+Bruno Palhão possui visão executiva de analytics sobre todos os cards e métricas, sem recebimento de e-mails operacionais e sem manutenção técnica da plataforma.
+
+### RB-SAFRA-019 — Analytics por audiência
+O Frontend deverá tratar analytics por audiência, com pelo menos três perspectivas a detalhar posteriormente:
+
+- Bruno — todos os cards e métricas;
+- donos de card — métricas dos cards sob sua responsabilidade;
+- Jair — analytics de governança.
+
+O detalhamento de componentes, filtros, KPIs e visualizações fica reservado à fase de Frontend.
+
+### RB-SAFRA-020 — Identidade do proponente
+No 12º card, nome e e-mail devem vir da sessão Microsoft autenticada e não podem depender de digitação livre.
 
 ## 3. Regras legadas de TI preservadas
 
