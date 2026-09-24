@@ -576,3 +576,50 @@ Testes:
 **G5: FECHADO PARCIALMENTE no escopo P0**
 
 > **Nenhum bloqueador P0 conhecido permanece aberto no SAFRA-C00.**
+
+
+---
+
+## 15. SAFRA-C01 — documentação canônica e PROJECT_PROFILE
+
+### Estrutura consolidada
+
+| Documento | Responsabilidade canônica |
+|---|---|
+| `docs/ROADMAP.md` | sequência, gates, fases e plano de execução |
+| `docs/STATUS.md` | estado atual, evidências, bloqueios e próximo passo |
+| `docs/ARQUITETURA.md` | arquitetura real/alvo, boundaries e autoridade técnica |
+| `docs/PROJECT_PROFILE.yaml` | perfil estruturado de risco, serviço, dados, identidade e governança |
+| `docs/PRIVACIDADE_THREAT_MODEL.md` | dados pessoais, minimização, retenção e ameaças |
+| `docs/REGRAS_NEGOCIO.md` | contratos de regras e invariantes de domínio |
+| `docs/MATRIZ_PARIDADE.md` | destino das capacidades legadas durante a reformulação |
+| `docs/DECISOES.md` | registro de decisões, ADRs e WAITING_HUMAN_DECISION |
+
+### Princípio de autoridade
+
+- cada assunto deve ter **uma fonte canônica principal**;
+- README é porta de entrada, não repositório de regras;
+- ROADMAP não deve virar duplicação completa de regras/arquitetura;
+- STATUS não deve virar backlog histórico infinito;
+- decisões materiais não podem existir apenas em prompt/chat.
+
+### PROJECT_PROFILE
+
+Criado como `IN_PROGRESS`.
+
+Isso é intencional: ainda existem decisões materiais marcadas como `WAITING_HUMAN_DECISION`, especialmente:
+
+- service class;
+- criticidade;
+- identity provider;
+- papéis definitivos;
+- REPLICA;
+- RTO/RPO;
+- retenção;
+- estratégia canônica de migrations.
+
+### Estado do C01
+
+**Estrutura documental: consolidada.**  
+**PROJECT_PROFILE: criado e utilizável.**  
+**Gate G3/G3.25: ainda não fechado**, pois o próprio roadmap exige não concluir enquanto houver UNKNOWN/WAITING_HUMAN_DECISION material.
