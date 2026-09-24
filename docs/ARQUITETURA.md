@@ -161,6 +161,28 @@ Não haverá login local por senha como caminho funcional do produto.
 
 Autenticação responde **quem é o usuário**. RBAC/RLS do Painel Safra responde **o que ele pode fazer**.
 
+### Modelo RBAC aprovado
+
+Papéis funcionais:
+
+- `safra_admin`;
+- `scenario_owner`;
+- `scenario_updater`;
+- `manager_viewer`;
+- `executive_viewer`;
+- `viewer`.
+
+Modelo não hierárquico e cumulativo:
+
+```text
+user
+ + role A
+ + role B
+ + vínculos de cenário/área
+```
+
+A posse de um papel não concede automaticamente os privilégios de outro.
+
 ### Banco / RLS
 
 Barreira obrigatória para dados expostos pela Data API.
@@ -236,7 +258,8 @@ O produto deve preservar eventos de START, passos, alterações relevantes, esca
 
 - service class da aplicação — atributo técnico do Framework EBSA, não derivado dos cenários;
 - criticidade técnica/operacional da aplicação — distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
-- papéis exatos;
+- matriz fina de permissões dos papéis aprovados;
+- modelo de delegação owner -> updater;
 - replica;
 - RTO/RPO;
 - retenção;
