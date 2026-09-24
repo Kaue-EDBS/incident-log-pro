@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 updated_at: "2026-09-24"
 status: IN_PROGRESS
 
@@ -9,13 +9,14 @@ project:
   project_type: "internal_operational_control"
   exposure: "internal"
   human_interface: true
+  lovable_status: "ready"
+  published: false
 
 architecture:
   backend_provider: "lovable_cloud"
   database_role: "PRIMARY"
   database_engine: "postgresql"
   database_stack: "supabase"
-  public_api: false
   primary_source_of_truth: "lovable_cloud_primary"
   git_branch: "main"
   migration_tooling:
@@ -27,69 +28,133 @@ architecture:
       - "hardening state is live but version 20260924212155 is absent from supabase_migrations.schema_migrations"
 
 service:
-  service_class: "WAITING_HUMAN_DECISION"
-  criticality: "WAITING_HUMAN_DECISION"
+  service_class:
+    value: "WAITING_HUMAN_DECISION"
+    candidates:
+      - "INTERNO"
+      - "OPERACIONAL"
+    note: "Do not infer service class from scenario criticality."
+  application_criticality:
+    value: "WAITING_HUMAN_DECISION"
+    note: "Application criticality is distinct from CRITICAL/HIGH/MODERATE scenario classification."
   slo: "WAITING_HUMAN_DECISION"
   rto_minutes: "WAITING_HUMAN_DECISION"
   rpo_minutes: "WAITING_HUMAN_DECISION"
 
-replication:
-  replica_enabled: "WAITING_HUMAN_DECISION"
-  replica_provider: null
-  notes: "G9 is conditional; do not provision replica without explicit decision."
-
-identity:
+identity_and_auth:
   auth_required: true
-  auth_implemented_in_frontend: false
-  identity_provider: "WAITING_HUMAN_DECISION"
-  privileged_roles_required: true
-  final_rbac_implemented: false
+  auth_stack_available: true
+  auth_stack: "Lovable Cloud / Supabase Auth"
+  frontend_login_implemented: false
+  corporate_identity_provider: "WAITING_HUMAN_DECISION"
+  current_auth_users: 0
+  current_users_with_safra_access: 0
+  anonymous_database_access: false
   temporary_authorization:
     mechanism: "app_metadata.safra_access"
     scope: "SAFRA-C00 containment"
-  proposed_roles:
-    - "safra_admin"
-    - "scenario_owner"
-    - "scenario_updater"
-    - "manager_viewer"
-    - "executive_viewer"
-    - "viewer"
-  roles_status: "PROPOSED_NOT_APPROVED"
+    status: "IMPLEMENTED"
+  final_rbac:
+    status: "NOT_IMPLEMENTED"
+    target_phase: "SAFRA-C04"
+
+privileged_roles:
+  required: true
+  technical_roles:
+    service_role:
+      present_in_architecture: true
+      browser_exposure_allowed: false
+      purpose: "trusted server-side administrative operations"
+  functional_roles:
+    status: "PROPOSED_NOT_APPROVED"
+    proposed:
+      - "safra_admin"
+      - "scenario_owner"
+      - "scenario_updater"
+      - "manager_viewer"
+      - "executive_viewer"
+      - "viewer"
+  exact_delegation_model: "WAITING_HUMAN_DECISION"
 
 security:
-  anon_database_access: false
   rls_enabled: true
+  anon_database_access: false
+  open_using_true_policies_present: false
   service_role_client_exposure: false
   env_tracked_in_git: false
   p0_security_blocker_open: false
 
-data:
-  personal_data: true
-  personal_data_categories:
-    - "internal identity / user id"
+personal_data:
+  present: true
+  categories:
+    - "internal user id"
     - "name"
-    - "email"
+    - "corporate email"
+    - "role and scenario/area relationship"
     - "actor/owner attribution"
+    - "audit authorship"
     - "free-text operational notes may incidentally contain personal data"
-  sensitive_personal_data: "WAITING_HUMAN_DECISION"
+  sensitive_personal_data:
+    value: "WAITING_HUMAN_DECISION"
+    expected_by_design: false
   children_or_adolescents_data: false
+  minimization_required: true
+  audit_history_required: true
+  retention_policy: "WAITING_HUMAN_DECISION"
   storage_files_currently_enabled: false
   storage_files_future_policy: "WAITING_HUMAN_DECISION"
-  retention_policy: "WAITING_HUMAN_DECISION"
-  data_minimization_required: true
-  audit_history_required: true
 
-business:
-  domain_rules_required: true
+integrations:
+  external_integrations_active: false
+  code_scan_external_integration_hits: 0
+  external_integrations_in_mvp: false
+  future_integrations_allowed: true
+  activation_rule: "one integration per governed cycle with contract and DATA_RELEASE"
+  automatic_treatment_creation_from_external_source: false
+  candidate_future_sources:
+    - "Intelipost"
+    - "Protheus"
+    - "WMS"
+    - "Cockpit"
+    - "OTRS"
+  candidate_sources_status: "NOT_IMPLEMENTED"
+
+replication:
+  replica_enabled: "WAITING_HUMAN_DECISION"
+  replica_currently_provisioned: false
+  replica_provider: null
+  gate: "G9_CONDITIONAL"
+  note: "Do not provision replica only to satisfy the framework."
+
+api:
+  public_api: false
+  public_api_planned_for_mvp: false
+  internal_data_api:
+    present: true
+    stack: "Supabase Data API under Lovable Cloud"
+    access_control: "Postgres grants + RLS"
+    anonymous_access: false
+  service_role_api_client_side: false
+  external_api_contracts: "NOT_IMPLEMENTED"
+
+domain_rules:
+  required: true
+  canonical_source: "docs/REGRAS_NEGOCIO.md"
+  safra_rules_registered: 17
+  legacy_it_rules_registered: 4
   automated_decisioning: false
   protocol_activation_mode: "MANUAL"
   detection_modes_allowed:
     - "MANUAL"
     - "AUTOMATIC"
     - "MIXED"
-  external_integrations_in_mvp: false
-  external_integrations_future: true
-  payments_or_financial_impact: false
+  source_precedence:
+    - "EDB06 - Matriz Contingencia v3.xlsx"
+    - "Painel SAFRA.docx - reunião de 22/09/2026"
+    - "EDB06 - Protocolos de contingência v2.pdf"
+    - "Plano de Ação - Metodologia do Painel Safra.md"
+    - "legacy implementation"
+  material_business_decisions_open: true
 
 governance:
   roadmap: "docs/ROADMAP.md"
@@ -103,6 +168,8 @@ governance:
   destructive_git_history_rewrite_allowed: false
 
 open_human_decisions:
+  - "application service class"
+  - "application criticality"
   - "four CRITICAL scenarios"
   - "scenario 2 X-hour threshold"
   - "scenario 4 X-minute threshold"
@@ -112,8 +179,7 @@ open_human_decisions:
   - "multiple simultaneous treatments rule"
   - "close policy with incomplete / NOT_APPLICABLE steps"
   - "exact roles and delegation model"
-  - "identity provider and corporate auth method"
-  - "EBSA service class"
+  - "corporate identity provider and auth method"
   - "approved RTO/RPO"
   - "replica_enabled"
   - "email/notification provider and channel"
