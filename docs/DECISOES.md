@@ -39,8 +39,12 @@
 PRIMARY Lovable Cloud: **APPROVED**.
 REPLICA: **WAITING_HUMAN_DECISION**.
 
-### ADR-003 — Service class
-**WAITING_HUMAN_DECISION**. Comparar INTERNO x OPERACIONAL.
+### ADR-003 — Service class da aplicação
+**WAITING_HUMAN_DECISION**.
+
+É uma classificação técnica exigida pelo Framework EBSA. Não deriva dos materiais-mãe do negócio e não deve ser inferida a partir de SLA, criticidade ou impacto de qualquer cenário Safra.
+
+A decisão deverá considerar apenas o impacto da indisponibilidade do próprio Painel Safra.
 
 ### ADR-004 — Identity provider
 **WAITING_HUMAN_DECISION**.
@@ -114,3 +118,12 @@ Não esconder decisão em prompt, commit ou mensagem de chat.
 | Regras de domínio | obrigatórias; 17 regras Safra + 4 regras legadas TI registradas; ativação automática de treatment = false |
 
 Este registro descreve o estado atual e não transforma os itens pendentes em decisões aprovadas.
+
+
+### ADR-011 — Separação entre criticidade de cenário e criticidade da aplicação
+**APPROVED — 24/09/2026**.
+
+- `CRITICAL/HIGH/MODERATE` pertence ao domínio dos cenários/protocolos e é suportado pelos materiais-mãe;
+- `service_class` e `application_criticality` pertencem à governança técnica do Framework EBSA;
+- SLO/RTO/RPO da aplicação não podem ser derivados dos SLAs dos protocolos;
+- a lista dos quatro cenários `CRITICAL` continua `WAITING_HUMAN_DECISION`.
