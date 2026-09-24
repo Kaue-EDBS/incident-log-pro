@@ -99,9 +99,15 @@ npm run dev
 
 ## Documentação canônica do Painel Safra
 
-O plano de evolução do `incident-log-pro` para o **Painel Safra** está documentado em:
+Para a reformulação do `incident-log-pro`, use esta estrutura como fonte canônica:
 
-- [docs/ROADMAP.md](docs/ROADMAP.md) — roadmap v2.0 completo, estruturado em COMEÇO → MEIO → FIM e alinhado à Matriz de Contingência v3, Protocolos de Contingência v2, decisões da reunião de 22/09/2026 e Framework EBSA v1.7.
-- [docs/STATUS.md](docs/STATUS.md) — fotografia técnica do estado atual: baseline, schema, rotas, migrations, integração/acesso Supabase e riscos P0 do SAFRA-C00.
+- [docs/ROADMAP.md](docs/ROADMAP.md) — fases, gates e ordem de execução;
+- [docs/STATUS.md](docs/STATUS.md) — estado atual, evidências e bloqueios;
+- [docs/ARQUITETURA.md](docs/ARQUITETURA.md) — arquitetura real/alvo;
+- [docs/PROJECT_PROFILE.yaml](docs/PROJECT_PROFILE.yaml) — perfil estruturado do projeto;
+- [docs/PRIVACIDADE_THREAT_MODEL.md](docs/PRIVACIDADE_THREAT_MODEL.md) — privacidade e ameaças;
+- [docs/REGRAS_NEGOCIO.md](docs/REGRAS_NEGOCIO.md) — regras e invariantes;
+- [docs/MATRIZ_PARIDADE.md](docs/MATRIZ_PARIDADE.md) — legado x produto-alvo;
+- [docs/DECISOES.md](docs/DECISOES.md) — decisões e ADRs.
 
-> O conteúdo acima do README registra o escopo histórico do Reliability Monitor/MTTR. Para a reformulação do produto como Painel Safra, prevalece o roadmap canônico em `docs/ROADMAP.md`.
+> O conteúdo inicial deste README registra o escopo histórico do Reliability Monitor/MTTR. Em caso de conflito sobre a reformulação do Painel Safra, prevalecem os documentos canônicos acima conforme a autoridade de cada tema.
