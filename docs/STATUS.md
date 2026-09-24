@@ -1,8 +1,8 @@
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 24/09/2026  
-> Fase atual: **SAFRA-C00 — Congelar baseline e conter riscos P0**  
-> Escopo desta rodada: registrar **baseline, schema, rotas, migrations e acesso Supabase atuais**, sem evolução funcional.
+> Fase atual: **SAFRA-C01 — Documentação canônica e PROJECT_PROFILE**  
+> Escopo atual: consolidar fontes canônicas, perfil estruturado do projeto, arquitetura, privacidade, regras, paridade e decisões.
 
 ---
 
