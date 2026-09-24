@@ -633,8 +633,9 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 
 | Atributo | Registro atual |
 |---|---|
-| service class | WAITING_HUMAN_DECISION; candidatos INTERNO/OPERACIONAL |
-| criticidade da aplicação | WAITING_HUMAN_DECISION |
+| service class da aplicação | WAITING_HUMAN_DECISION — requisito técnico do Framework EBSA; não deriva dos materiais-mãe |
+| criticidade técnica da aplicação | WAITING_HUMAN_DECISION — distinta de CRITICAL/HIGH/MODERATE dos cenários |
+| criticidade dos cenários | CRITICAL/HIGH/MODERATE — regra de domínio registrada; lista dos quatro críticos ainda pendente |
 | Auth | obrigatório; stack disponível; login ainda não implementado; 0 usuários |
 | papéis privilegiados | obrigatórios; service_role server-side; RBAC funcional pendente |
 | dados pessoais | presentes; categorias registradas; minimização obrigatória |
@@ -648,3 +649,14 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 O requisito de **registrar** esses atributos está cumprido.
 
 O G3/G3.25 ainda não deve ser fechado porque service class, criticidade, identity provider, RBAC final, REPLICA e outras decisões materiais continuam explicitamente abertas.
+
+
+### Correção conceitual — criticidade x service class — 24/09/2026
+
+Após revisão dos três materiais-mãe:
+
+- `CRITICAL/HIGH/MODERATE` foi confirmado como classificação de **cenário/protocolo**;
+- os materiais-mãe não definem `service_class`, SLO, RTO ou RPO do software Painel Safra;
+- `service_class` e `application_criticality` permanecem requisitos técnicos do Framework EBSA;
+- nenhum desses atributos técnicos será inferido a partir do SLA ou da criticidade dos protocolos;
+- a lista exata dos quatro cenários críticos continua `WAITING_HUMAN_DECISION`.
