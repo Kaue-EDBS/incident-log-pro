@@ -166,22 +166,20 @@ Autenticação responde **quem é o usuário**. RBAC/RLS do Painel Safra respond
 Papéis funcionais:
 
 - `safra_admin`;
-- `scenario_owner`;
-- `scenario_updater`;
-- `manager_viewer`;
-- `executive_viewer`;
-- `viewer`.
+- `scenario_owner`.
 
-Modelo não hierárquico e cumulativo:
+Não existirão papéis funcionais separados para updater, gestor, diretoria ou viewer.
+
+Modelo:
 
 ```text
 user
- + role A
- + role B
- + vínculos de cenário/área
+ -> safra_admin
+    ou
+ -> scenario_owner + vínculos explícitos de cenário
 ```
 
-A posse de um papel não concede automaticamente os privilégios de outro.
+`safra_admin` não recebe ownership de cenário automaticamente.
 
 ### Banco / RLS
 
@@ -258,8 +256,8 @@ O produto deve preservar eventos de START, passos, alterações relevantes, esca
 
 - service class da aplicação — atributo técnico do Framework EBSA, não derivado dos cenários;
 - criticidade técnica/operacional da aplicação — distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
-- matriz fina de permissões dos papéis aprovados;
-- modelo de delegação owner -> updater;
+- matriz fina de permissões entre `safra_admin` e `scenario_owner`;
+- tratamento de usuário autenticado sem papel funcional;
 - replica;
 - RTO/RPO;
 - retenção;
