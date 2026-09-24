@@ -2,7 +2,7 @@
 
 **Versão:** 2.0  
 **Data:** 23/09/2026  
-**Status:** Plano canônico proposto para validação antes da execução  
+**Status:** Roadmap canônico em execução — SAFRA-C00 concluído; SAFRA-C01 em andamento  
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Destino do produto:** Painel Safra - Torre de Governança de Contingências  
 
