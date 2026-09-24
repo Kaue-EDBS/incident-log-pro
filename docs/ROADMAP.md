@@ -979,13 +979,15 @@ Evidências canônicas: `docs/STATUS.md`, seção **Fechamento formal dos gates 
 
 ---
 
-## SAFRA-C01 - Documentação canônica e PROJECT_PROFILE
+## SAFRA-C01 - Documentação canônica e PROJECT_PROFILE — EM ANDAMENTO
 
 ### Objetivo
 
 Evitar que decisões fiquem espalhadas entre README, prompts e materiais da Pragmatis.
 
-### Criar
+### Estrutura canônica
+
+Criados/consolidados:
 
 ```text
 docs/ROADMAP.md
@@ -996,11 +998,18 @@ docs/PRIVACIDADE_THREAT_MODEL.md
 docs/REGRAS_NEGOCIO.md
 docs/MATRIZ_PARIDADE.md
 docs/DECISOES.md
+```
+
+Pastas reservadas para próximas etapas:
+
+```text
 docs/adr/
 docs/evidence/
 docs/data-contracts/
 docs/data-releases/
 ```
+
+Não criar documentação paralela quando um destes arquivos já for a autoridade adequada.
 
 ### Registrar no perfil
 
