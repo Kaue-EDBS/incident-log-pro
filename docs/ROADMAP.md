@@ -440,6 +440,27 @@ Também medir:
 
 O protocolo continua ativo e pode possuir nível de escalonamento.
 
+## D-12 - Papéis funcionais aprovados
+
+Papéis:
+
+- `safra_admin`;
+- `scenario_owner`;
+- `scenario_updater`;
+- `manager_viewer`;
+- `executive_viewer`;
+- `viewer`.
+
+Modelo:
+
+- independente;
+- cumulativo;
+- sem herança automática;
+- admin não implica ownership;
+- ownership depende de vínculo explícito com cenário.
+
+Matriz detalhada de permissões: **WAITING_HUMAN_DECISION**.
+
 ---
 
 # 7. Modelo de domínio alvo
