@@ -275,29 +275,37 @@ Se a decisão for `false`, G9 vira N/A justificado.
 
 Não criar Supabase Replica apenas para "cumprir framework".
 
-### C. Service class
+### C. Service class e criticidade técnica da aplicação
 
-Não confundir:
+Esses atributos vêm do **Framework EBSA** e não dos três materiais-mãe do Painel Safra.
 
-```text
-criticidade do cenário Safra
-```
-
-com:
+Os materiais-mãe tratam de **criticidade do cenário/protocolo**, não de classificação técnica do software:
 
 ```text
-service_class da aplicação
+Matriz v3 / Protocolos v2 / reunião 22/09
+    -> criticidade do CENÁRIO
+       CRITICAL | HIGH | MODERATE
 ```
 
-Um protocolo pode ser `CRITICO`, mas isso não significa que o Painel Safra deva ser automaticamente classificado como serviço `CRITICO` pelo framework.
+Já o Framework EBSA exige uma decisão separada sobre o próprio sistema:
 
-Avaliar explicitamente:
+```text
+Framework EBSA
+    -> service_class da APLICAÇÃO
+    -> criticidade técnica / operacional da APLICAÇÃO
+```
+
+Portanto, é proibido derivar `service_class`, SLO, RTO ou RPO do Painel Safra a partir do SLA ou da criticidade de um protocolo.
+
+Referências do Framework para service class:
 
 - `INTERNO`: SLO 99,5%, RTO 240 min, RPO 1440 min;
 - `OPERACIONAL`: SLO 99,9%, RTO 60 min, RPO 15 min;
 - `CRITICO`: SLO 99,95%, RTO 30 min, RPO 5 min.
 
-**Recomendação para decisão:** comparar `INTERNO` x `OPERACIONAL`. Não assumir `CRITICO` sem justificar impacto do próprio Painel ficar indisponível.
+**Estado:** `WAITING_HUMAN_DECISION`.
+
+A decisão deverá considerar o impacto de indisponibilidade do **próprio Painel Safra**, e não o impacto do cenário monitorado.
 
 ### D. DATA_RELEASE
 
@@ -322,11 +330,15 @@ Este é um **perfil candidato**, não uma decisão final.
 ```yaml
 project_name: Painel Safra
 project_type: internal_operational_control
-service_class: WAITING_HUMAN_DECISION   # INTERNO x OPERACIONAL
+service_class: WAITING_HUMAN_DECISION   # atributo técnico do Framework EBSA
 exposure: internal
-backend_type: supabase_postgres
+backend_type: lovable_cloud_postgres
 primary_role: primary
-criticality: WAITING_HUMAN_DECISION
+application_criticality: WAITING_HUMAN_DECISION # atributo técnico; não é criticidade de cenário
+scenario_criticality:
+  values: [CRITICAL, HIGH, MODERATE]
+  source: materiais_mae
+  status: APPROVED
 human_interface: true
 replica_enabled: WAITING_HUMAN_DECISION
 auth_required: true
