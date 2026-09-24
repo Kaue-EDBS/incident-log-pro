@@ -30,7 +30,7 @@
 | D-15 | Acesso `anon` ao banco interno é proibido | APPROVED |
 | D-16 | G5 C00 fecha P0; RBAC final fica no C04/C05 | APPROVED |
 | D-17 | Microsoft Entra ID corporativo via SSO será o provedor de identidade | APPROVED |
-| D-18 | Papéis funcionais Safra aprovados: safra_admin, scenario_owner, scenario_updater, manager_viewer, executive_viewer e viewer | APPROVED |
+| D-18 | Papéis funcionais Safra reduzidos a apenas safra_admin e scenario_owner | APPROVED |
 
 ## 3. ADRs
 
@@ -87,7 +87,6 @@ Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade úni
 - múltiplas tratativas simultâneas;
 - fechamento com passo incompleto/NA;
 - matriz exata de permissões por papel;
-- modelo exato de delegação owner -> updater;
 - service class;
 - RTO/RPO;
 - REPLICA;
@@ -121,7 +120,7 @@ Não esconder decisão em prompt, commit ou mensagem de chat.
 | Service class | **WAITING_HUMAN_DECISION** — candidatos INTERNO x OPERACIONAL |
 | Criticidade da aplicação | **WAITING_HUMAN_DECISION** — não confundir com criticidade de cenário |
 | Auth | Microsoft Entra ID corporativo via SSO aprovado; frontend ainda não implementado; 0 usuários Auth |
-| Papéis privilegiados | obrigatórios; service_role apenas server-side; papéis funcionais ainda propostos |
+| Papéis privilegiados | funcionais aprovados: apenas safra_admin e scenario_owner; service_role permanece técnico/server-side |
 | Dados pessoais | **sim** — identidade interna, nome, e-mail, papéis, autoria/auditoria e possíveis dados incidentais em texto livre |
 | Integrações | nenhuma integração externa ativa no MVP/código atual; futuras entram por ciclo governado |
 | REPLICA | **WAITING_HUMAN_DECISION**; nenhuma REPLICA provisionada |
@@ -146,20 +145,13 @@ Este registro descreve o estado atual e não transforma os itens pendentes em de
 Papéis aprovados:
 
 - `safra_admin`;
-- `scenario_owner`;
-- `scenario_updater`;
-- `manager_viewer`;
-- `executive_viewer`;
-- `viewer`.
+- `scenario_owner`.
 
 Regras estruturais:
 
-- os papéis são independentes;
-- um usuário pode possuir múltiplos papéis;
-- não existe herança automática entre eles;
+- não existirão papéis funcionais separados de updater, manager viewer, executive viewer ou viewer;
 - `safra_admin` não se torna owner de todos os cenários;
-- `scenario_owner` só possui autoridade operacional sobre cenários aos quais estiver vinculado;
-- `scenario_updater` não herda START/END/CANCEL;
-- papéis de leitura não concedem alteração operacional.
+- `scenario_owner` depende de vínculo explícito com cenário;
+- não existe herança automática entre os dois papéis.
 
-A matriz fina de permissões e o mecanismo de delegação permanecem `WAITING_HUMAN_DECISION`.
+A matriz fina de permissões entre `safra_admin` e `scenario_owner` permanece `WAITING_HUMAN_DECISION`.
