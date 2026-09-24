@@ -112,7 +112,11 @@ Atualiza passos, notas e andamento. Não encerra.
 ### Viewer / gestão / diretoria
 Leitura conforme política.
 
-Matriz final: **WAITING_HUMAN_DECISION**.
+Papéis funcionais aprovados: `safra_admin`, `scenario_owner`, `scenario_updater`, `manager_viewer`, `executive_viewer` e `viewer`.
+
+Os papéis são independentes e cumulativos, sem herança automática.
+
+A matriz fina de permissões continua **WAITING_HUMAN_DECISION**.
 
 ## 6. Decisões humanas abertas
 
