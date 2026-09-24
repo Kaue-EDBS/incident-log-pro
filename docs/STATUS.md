@@ -636,7 +636,7 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 | service class da aplicação | WAITING_HUMAN_DECISION — requisito técnico do Framework EBSA; não deriva dos materiais-mãe |
 | criticidade técnica da aplicação | WAITING_HUMAN_DECISION — distinta de CRITICAL/HIGH/MODERATE dos cenários |
 | criticidade dos cenários | CRITICAL/HIGH/MODERATE — regra de domínio registrada; lista dos quatro críticos ainda pendente |
-| Auth | obrigatório; stack disponível; login ainda não implementado; 0 usuários |
+| Auth | **DECIDIDO:** Microsoft Entra ID corporativo via SSO; login frontend ainda não implementado; 0 usuários |
 | papéis privilegiados | obrigatórios; service_role server-side; RBAC funcional pendente |
 | dados pessoais | presentes; categorias registradas; minimização obrigatória |
 | integrações | nenhuma ativa no MVP; futuras governadas por contrato/DATA_RELEASE |
@@ -648,7 +648,7 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 
 O requisito de **registrar** esses atributos está cumprido.
 
-O G3/G3.25 ainda não deve ser fechado porque service class, criticidade, identity provider, RBAC final, REPLICA e outras decisões materiais continuam explicitamente abertas.
+O G3/G3.25 ainda não deve ser fechado porque service class, criticidade técnica da aplicação, RBAC final, REPLICA e outras decisões materiais continuam explicitamente abertas. O identity provider já foi decidido.
 
 
 ### Correção conceitual — criticidade x service class — 24/09/2026
@@ -660,3 +660,22 @@ Após revisão dos três materiais-mãe:
 - `service_class` e `application_criticality` permanecem requisitos técnicos do Framework EBSA;
 - nenhum desses atributos técnicos será inferido a partir do SLA ou da criticidade dos protocolos;
 - a lista exata dos quatro cenários críticos continua `WAITING_HUMAN_DECISION`.
+
+
+### Decisão Auth — Microsoft Entra ID — 24/09/2026
+
+**APPROVED**
+
+- identity provider: Microsoft Entra ID corporativo;
+- método: SSO;
+- login local por senha: fora do desenho aprovado;
+- implementação frontend: ainda pendente;
+- usuários Auth atuais: 0;
+- RBAC/RLS: decisão e implementação separadas no SAFRA-C04.
+
+Princípio:
+
+```text
+Microsoft Entra ID -> autenticação / identidade
+Painel Safra RBAC + RLS -> autorização
+```
