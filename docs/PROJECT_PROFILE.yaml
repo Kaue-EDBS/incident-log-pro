@@ -68,14 +68,18 @@ privileged_roles:
       browser_exposure_allowed: false
       purpose: "trusted server-side administrative operations"
   functional_roles:
-    status: "PROPOSED_NOT_APPROVED"
-    proposed:
+    status: "APPROVED"
+    roles:
       - "safra_admin"
       - "scenario_owner"
       - "scenario_updater"
       - "manager_viewer"
       - "executive_viewer"
       - "viewer"
+    assignment_model: "NON_HIERARCHICAL_CUMULATIVE"
+    inheritance: false
+    note: "Roles are independent and may be combined. Administrative authority does not automatically grant operational ownership."
+  exact_permission_matrix: "WAITING_HUMAN_DECISION"
   exact_delegation_model: "WAITING_HUMAN_DECISION"
 
 security:
@@ -182,6 +186,8 @@ governance:
   destructive_git_history_rewrite_allowed: false
 
 open_human_decisions:
+  - "exact permission matrix by role"
+  - "exact delegation model between owner and updater"
   - "application service class"
   - "application criticality"
   - "four CRITICAL scenarios"
@@ -192,7 +198,6 @@ open_human_decisions:
   - "official minimum source for scenario 9 curve A"
   - "multiple simultaneous treatments rule"
   - "close policy with incomplete / NOT_APPLICABLE steps"
-  - "exact roles and delegation model"
   - "approved RTO/RPO"
   - "replica_enabled"
   - "email/notification provider and channel"
