@@ -707,3 +707,35 @@ Ainda aberto:
 
 - matriz exata de permissões entre `safra_admin` e `scenario_owner`;
 - regra de acesso para usuário Microsoft autenticado sem papel funcional.
+
+
+---
+
+## 17. Papéis administrativos, 12º card e analytics — 24/09/2026
+
+### Administração técnica
+Kaue permanece no topo técnico, com Amanda, Vinicius e João como substitutos permanentes.
+
+### Governança
+Jiane e Jair supervisionam todos os cards, decisões de governança, relatórios e propostas do 12º card. Recebem comunicações operacionais. Não fazem manutenção técnica da plataforma.
+
+### Administração executiva
+Bruno Palhão terá uma visão executiva/analytics de todos os cards e métricas. Não recebe e-mails operacionais e não realiza manutenção técnica da plataforma.
+
+### 12º card
+O 12º card é um formulário de proposta de novo cenário, com:
+
+1. nome preenchido automaticamente pelo Microsoft SSO;
+2. e-mail preenchido automaticamente pelo Microsoft SSO;
+3. título;
+4. descrição do problema;
+5. descrição de como o problema afeta a Safra.
+
+A proposta é analisada por Jiane/Jair e não vira cenário produtivo automaticamente.
+
+### Pendência proposital para Frontend
+Quando o projeto chegar à fase de Frontend, desenhar separadamente as visões de analytics para:
+
+- Bruno — todos os cards e métricas;
+- donos de card — métricas dos seus cards;
+- Jair — visão de governança.
