@@ -290,15 +290,15 @@ Esse ponto já está previsto no roadmap como risco P0 do SAFRA-C00. Nenhuma cor
 - nenhuma rotação é necessária para o material versionado encontrado;
 - secrets eventualmente existentes apenas no runtime/Lovable Cloud continuam fora do escopo de validação até haver acesso ao projeto Supabase live.
 
-### P0-02 — CRUD para `anon` — CORRIGIDO NA MIGRATION
+### P0-02 — CRUD para `anon` — CORRIGIDO NO PRIMARY
 
 A migration `20260924212155_harden_safra_c00_access.sql` remove todos os privilégios de `anon` em `applications` e `incidents`.
 
 Estado:
 - código/migration: **corrigido**;
-- banco live: **pendente de aplicação/validação** por falta de permissão ao projeto Supabase configurado.
+- Lovable Cloud PRIMARY: **corrigido e validado**.
 
-### P0-03 — Policies abertas — CORRIGIDO NA MIGRATION
+### P0-03 — Policies abertas — CORRIGIDO NO PRIMARY
 
 A migration de hardening remove as policies permissivas da baseline e cria policies separadas para SELECT, INSERT e UPDATE.
 
@@ -313,7 +313,7 @@ Não existe policy DELETE para `authenticated`.
 
 Estado:
 - código/migration: **corrigido**;
-- banco live: **pendente de aplicação/validação**.
+- Lovable Cloud PRIMARY: **corrigido e validado**.
 
 ### P0-04 — UI sem barreira de autenticação observada
 
@@ -341,7 +341,7 @@ Sem acesso ao projeto `trqkwqkjjjeppuddwenu` pela conexão Supabase atual, não 
 | 10 | Revisar grants atuais | ✅ Concluído no código: menor privilégio definido; aplicação live pendente |
 | 11 | Remover CRUD indiscriminado de `anon` | ✅ Migration versionada com `REVOKE ALL`; aplicação live pendente |
 | 12 | Substituir policies `USING (true)` | ✅ Migration versionada com RLS transitória real baseada em `app_metadata.safra_access`; aplicação live pendente |
-| 13 | Testar acesso direto não autorizado | ⏳ Pendente |
+| 13 | Testar acesso direto não autorizado | ✅ Validado no Lovable Cloud PRIMARY: `anon` negado; usuário sem `safra_access` vê 0 registros; usuário autorizado vê os dados esperados |
 | 14 | Preservar histórico Git sem force push | ✅ Regra mantida |
 
 ---
@@ -419,3 +419,69 @@ Portanto:
 2. a aplicação live permanece **não executada** neste ambiente por falta de permissão ao projeto Supabase;
 3. antes do deploy da migration, deve existir pelo menos um fluxo de autenticação e usuários autorizados com `app_metadata.safra_access = true`;
 4. o SAFRA-C04 substituirá esta regra transitória pelo RBAC definitivo por papel, área e vínculo com cenário.
+
+
+---
+
+## 13. Validação final SAFRA-C00 no Lovable Cloud PRIMARY — 24/09/2026
+
+### Arquitetura confirmada
+
+- backend provider: `Lovable Cloud`
+- database role: `PRIMARY`
+- database engine: PostgreSQL
+- database stack: Supabase
+
+### Estado real após aplicação do hardening
+
+Grants observados:
+
+- `anon`: nenhum privilégio em `applications` e `incidents`;
+- `authenticated`: SELECT em ambas as tabelas;
+- `incidents`: INSERT e UPDATE restritos por coluna;
+- `service_role`: privilégios administrativos preservados.
+
+Policies ativas:
+
+- `safra_c00_applications_select`
+- `safra_c00_incidents_select`
+- `safra_c00_incidents_insert`
+- `safra_c00_incidents_update`
+
+Policies antigas abertas não estão mais presentes.
+
+### Testes executados no PRIMARY
+
+| Caso | Resultado |
+|---|---|
+| `anon` → SELECT em `applications` | NEGADO — permission denied |
+| `anon` → SELECT em `incidents` | NEGADO — permission denied |
+| `authenticated` sem `app_metadata.safra_access` | 0 aplicações / 0 incidentes |
+| `authenticated` com `app_metadata.safra_access=true` | 3 aplicações / 14 incidentes |
+
+Conclusão de segurança:
+
+> O bloqueador P0 de acesso anônimo foi removido e validado no banco PRIMARY.
+
+### Observação administrativa de migration
+
+O estado do banco corresponde ao hardening versionado em:
+
+`supabase/migrations/20260924212155_harden_safra_c00_access.sql`
+
+Porém a versão `20260924212155` ainda não aparece em `supabase_migrations.schema_migrations`.
+
+Isso indica diferença entre **estado aplicado** e **histórico formal de migrations**.
+
+Essa divergência não reabre o bloqueador de segurança, mas deve ser regularizada na próxima etapa de governança de migrations para evitar drift entre Git e histórico do Lovable Cloud.
+
+### Gate SAFRA-C00
+
+- contenção de secrets: APROVADA;
+- grants: APROVADOS;
+- RLS: APROVADA;
+- teste negativo de `anon`: APROVADO;
+- histórico Git sem reescrita: APROVADO;
+- drift de migration history: pendência administrativa, não bloqueador de segurança.
+
+**SAFRA-C00 pode ser considerado encerrado do ponto de vista de segurança P0.**
