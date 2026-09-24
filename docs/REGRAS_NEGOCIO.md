@@ -30,8 +30,10 @@ Somente owner autorizado do cenário pode iniciar.
 ### RB-SAFRA-004 — END
 Somente owner autorizado pode resolver ou cancelar.
 
-### RB-SAFRA-005 — Atualizadores delegados
-Updater pode atualizar andamento, passos e notas, mas não herda START/END.
+### RB-SAFRA-005 — Atualização de protocolo
+Não existe papel funcional separado de `scenario_updater`.
+
+A atualização operacional deve ser atribuída pela matriz final a `scenario_owner` e/ou `safra_admin`, conforme decisão explícita.
 
 ### RB-SAFRA-006 — Cancelamento auditável
 Tratativa incorreta vira `CANCELLED`; exclusão física é proibida no fluxo normal.
@@ -106,17 +108,11 @@ Escalonamento não cria status adicional.
 ### Owner
 START, END, CANCEL e delegação.
 
-### Updater
-Atualiza passos, notas e andamento. Não encerra.
+Papéis funcionais aprovados: somente `safra_admin` e `scenario_owner`.
 
-### Viewer / gestão / diretoria
-Leitura conforme política.
+Não existirão papéis funcionais separados de updater ou viewer.
 
-Papéis funcionais aprovados: `safra_admin`, `scenario_owner`, `scenario_updater`, `manager_viewer`, `executive_viewer` e `viewer`.
-
-Os papéis são independentes e cumulativos, sem herança automática.
-
-A matriz fina de permissões continua **WAITING_HUMAN_DECISION**.
+A matriz fina de permissões entre os dois papéis continua **WAITING_HUMAN_DECISION**.
 
 ## 6. Decisões humanas abertas
 
