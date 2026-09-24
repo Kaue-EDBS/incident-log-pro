@@ -315,13 +315,17 @@ Estado:
 - código/migration: **corrigido**;
 - Lovable Cloud PRIMARY: **corrigido e validado**.
 
-### P0-04 — UI sem barreira de autenticação observada
+### P0-04 — UI sem barreira de autenticação — RECLASSIFICADO
 
-As rotas do produto não têm guard de autenticação no router.
+As rotas atuais ainda não possuem fluxo de login/guard de autenticação no frontend.
 
-### P0-05 — Drift live ainda desconhecido
+Após o hardening do PRIMARY, isso **não representa mais exposição P0**, porque `anon` não possui acesso ao banco. A ausência de login passa a ser uma dependência funcional de identidade/RBAC a ser tratada no **SAFRA-C04**, antes de liberar uso autenticado do produto.
 
-Sem acesso ao projeto `trqkwqkjjjeppuddwenu` pela conexão Supabase atual, não é possível certificar que Git e banco live estão sincronizados.
+### P0-05 — Estado live — VALIDADO
+
+O PRIMARY correto foi confirmado como **Lovable Cloud**, com PostgreSQL na stack Supabase.
+
+O estado live de grants, RLS e policies foi consultado diretamente no PRIMARY e validado. Permanece apenas uma divergência administrativa: o hardening está aplicado no banco, mas a versão `20260924212155` ainda não consta em `supabase_migrations.schema_migrations`. Essa divergência será tratada na governança de migrations e não constitui bloqueador P0.
 
 ---
 
@@ -338,19 +342,26 @@ Sem acesso ao projeto `trqkwqkjjjeppuddwenu` pela conexão Supabase atual, não 
 | 7 | Ajustar `.gitignore` e preservar `.env.example` | ✅ Concluído |
 | 8 | Identificar secrets possivelmente expostos | ✅ Concluído: nenhum secret elevado encontrado no `.env` atual ou no único commit histórico do arquivo |
 | 9 | Rotacionar secrets aplicáveis | ✅ Nenhuma rotação aplicável ao material versionado; apenas publishable key/URL/project ref foram encontrados. Secrets live/runtime seguem não validados por falta de permissão ao projeto Supabase |
-| 10 | Revisar grants atuais | ✅ Concluído no código: menor privilégio definido; aplicação live pendente |
-| 11 | Remover CRUD indiscriminado de `anon` | ✅ Migration versionada com `REVOKE ALL`; aplicação live pendente |
-| 12 | Substituir policies `USING (true)` | ✅ Migration versionada com RLS transitória real baseada em `app_metadata.safra_access`; aplicação live pendente |
+| 10 | Revisar grants atuais | ✅ Concluído e validado no Lovable Cloud PRIMARY |
+| 11 | Remover CRUD indiscriminado de `anon` | ✅ Concluído no PRIMARY; teste direto retorna permission denied |
+| 12 | Substituir policies `USING (true)` | ✅ Concluído no PRIMARY; quatro policies `safra_c00_*` ativas |
 | 13 | Testar acesso direto não autorizado | ✅ Validado no Lovable Cloud PRIMARY: `anon` negado; usuário sem `safra_access` vê 0 registros; usuário autorizado vê os dados esperados |
-| 14 | Preservar histórico Git sem force push | ✅ Regra mantida |
+| 14 | Preservar histórico Git sem force push | ✅ Verificado: baseline preservada como ancestral e `behind_by = 0` |
 
 ---
 
 ## 10. Próximo passo canônico
 
-O próximo bloco do SAFRA-C00 deve avançar para **aplicação/validação da migration no Supabase live e teste negativo de acesso direto como `anon`**, seguido da implementação do fluxo de identidade necessário antes de liberar o acesso autenticado. O RBAC completo continua reservado ao SAFRA-C04.
+O **SAFRA-C00 está encerrado**.
 
-Não avançar para redesign funcional antes de fechar os bloqueadores P0 desta fase.
+O próximo avanço deve seguir o roadmap a partir das etapas seguintes, mantendo:
+
+- identidade/RBAC definitivo no SAFRA-C04;
+- governança de schema/migrations no SAFRA-C05;
+- regularização do histórico formal da migration `20260924212155` como pendência administrativa;
+- nenhuma reabertura de acesso `anon`.
+
+Não há bloqueador P0 conhecido impedindo a continuidade da reformulação.
 
 
 ---
@@ -485,3 +496,83 @@ Essa divergência não reabre o bloqueador de segurança, mas deve ser regulariz
 - drift de migration history: pendência administrativa, não bloqueador de segurança.
 
 **SAFRA-C00 pode ser considerado encerrado do ponto de vista de segurança P0.**
+
+
+---
+
+## 14. Fechamento formal dos gates I-1 / I0 / G2 / G5 parcial — 24/09/2026
+
+### Decisão
+
+O SAFRA-C00 encerra sem bloqueador P0 conhecido.
+
+| Gate | Estado | Evidência de fechamento | Escopo remanescente |
+|---|---|---|---|
+| **I-1 / SEC-001** | **FECHADO** | `.env` removido do tracking; `.env/.env.*` protegidos; `.env.example` seguro; nenhum secret elevado versionado encontrado | revisão contínua de secrets em novas integrações |
+| **I0 / G0** | **FECHADO** | baseline, branch `main`, schema, rotas, migrations, backend e PRIMARY registrados; documentação canônica definida | reabrir somente em mudança material de ambiente/arquitetura |
+| **G2 / G3** | **FECHADO para C00** | GitHub-first preservado; `docs/ROADMAP.md` + `docs/STATUS.md` canônicos; GitHub HEAD e Lovable sincronizados em `f7e54df73de5f2585cce3102c70e2ad5d3e7bd77` | governança documental continua nas próximas safras |
+| **G5** | **FECHADO PARCIAL — P0** | `anon` sem grants; RLS real ativa; policies abertas removidas; teste negativo aprovado; menor privilégio aplicado | G5 completo continua em SAFRA-C04/C05 para identidade, RBAC definitivo, ownership, migrations e autorização por cenário |
+
+### Evidências objetivas
+
+#### I-1 / SEC-001
+
+- `.env` não está mais rastreado;
+- `.env.example` está versionado;
+- `.gitignore` protege `.env` e `.env.*`;
+- inspeção do histórico encontrou apenas project ref, URL e publishable key;
+- nenhum `sb_secret_`, `service_role` ou JWT privilegiado foi encontrado no material versionado.
+
+#### I0 / G0
+
+Baseline e ambiente registrados:
+
+- repositório: `Kaue-EDBS/incident-log-pro`;
+- branch: `main`;
+- backend provider: Lovable Cloud;
+- database role: PRIMARY;
+- engine: PostgreSQL;
+- stack do banco: Supabase;
+- schema, rotas, migrations e acesso registrados em `docs/STATUS.md`.
+
+#### G2 / G3
+
+Estado de sincronização validado no fechamento:
+
+- GitHub HEAD: `f7e54df73de5f2585cce3102c70e2ad5d3e7bd77`;
+- Lovable latest commit: `f7e54df73de5f2585cce3102c70e2ad5d3e7bd77`;
+- Lovable status: `ready`;
+- histórico Git preservado sem force push/rebase destrutivo.
+
+#### G5 — fechamento parcial do risco P0
+
+Estado live observado no Lovable Cloud PRIMARY:
+
+- `anon` sem privilégios nas tabelas internas;
+- `applications`: `authenticated` somente leitura;
+- `incidents`: leitura + INSERT/UPDATE limitados às colunas operacionais;
+- quatro policies `safra_c00_*` ativas;
+- policies permissivas antigas removidas.
+
+Testes:
+
+- `anon -> applications`: **permission denied**;
+- `anon -> incidents`: **permission denied**;
+- autenticado sem `safra_access`: **0 / 0 registros**;
+- autenticado com `safra_access=true`: **3 aplicações / 14 incidentes**.
+
+### Pendências que NÃO são bloqueadores P0
+
+1. implementar identidade/login funcional;
+2. implantar RBAC definitivo por papel, área e vínculo no SAFRA-C04;
+3. regularizar o histórico de `20260924212155` em `supabase_migrations.schema_migrations`;
+4. aprofundar governança de schema/migrations no SAFRA-C05.
+
+### Resultado do gate
+
+**I-1: FECHADO**  
+**I0: FECHADO**  
+**G2: FECHADO no escopo C00**  
+**G5: FECHADO PARCIALMENTE no escopo P0**
+
+> **Nenhum bloqueador P0 conhecido permanece aberto no SAFRA-C00.**
