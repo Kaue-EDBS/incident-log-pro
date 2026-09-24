@@ -442,24 +442,19 @@ O protocolo continua ativo e pode possuir nível de escalonamento.
 
 ## D-12 - Papéis funcionais aprovados
 
-Papéis:
+O modelo foi simplificado para apenas dois papéis:
 
 - `safra_admin`;
-- `scenario_owner`;
-- `scenario_updater`;
-- `manager_viewer`;
-- `executive_viewer`;
-- `viewer`.
+- `scenario_owner`.
 
-Modelo:
+Não existirão `scenario_updater`, `manager_viewer`, `executive_viewer` ou `viewer` como papéis funcionais.
 
-- independente;
-- cumulativo;
-- sem herança automática;
-- admin não implica ownership;
-- ownership depende de vínculo explícito com cenário.
+Regras:
 
-Matriz detalhada de permissões: **WAITING_HUMAN_DECISION**.
+- admin não implica ownership automático;
+- ownership depende de vínculo explícito com cenário;
+- matriz detalhada de permissões entre os dois papéis: **WAITING_HUMAN_DECISION**;
+- acesso de usuário Microsoft autenticado sem papel: **WAITING_HUMAN_DECISION**.
 
 ---
 
@@ -1189,7 +1184,7 @@ scenario
 ### Testes obrigatórios
 
 - owner A não abre cenário B sem vínculo;
-- updater não encerra;
+- usuário sem autoridade de owner não encerra;
 - viewer não escreve por REST direto;
 - anon não lê/escreve dados internos;
 - role alterada revoga imediatamente permissão crítica;
@@ -2031,7 +2026,7 @@ Checklist assinado/registrado por cenário.
 - anon bloqueado;
 - RLS positive/negative;
 - owner isolation;
-- updater restrictions;
+- scenario_owner restrictions;
 - admin restrictions;
 - secrets;
 - dependencies;
@@ -2131,7 +2126,7 @@ Checklist assinado/registrado por cenário.
 
 ```text
 13. Painel mostra protocolo ativo.
-14. Owner/updater atualiza passos.
+14. Owner autorizado atualiza passos.
 15. Cada alteração cria audit event.
 16. Relógios são recalculados por timestamps.
 17. Áreas impactadas acompanham.
@@ -2171,8 +2166,8 @@ Checklist assinado/registrado por cenário.
 
 ## 15.2 Passos
 
-- updater autorizado conclui;
-- viewer não conclui;
+- scenario_owner autorizado conclui;
+- usuário sem permissão não conclui;
 - concorrência não perde evento;
 - passo NA exige política;
 - alteração de definição futura não muda passo histórico.
@@ -2197,7 +2192,7 @@ Checklist assinado/registrado por cenário.
 
 ## 15.5 Encerramento
 
-- updater não encerra;
+- usuário sem autoridade de owner não encerra;
 - owner encerra;
 - close idempotente;
 - cancelamento com razão;
