@@ -342,6 +342,9 @@ scenario_criticality:
 human_interface: true
 replica_enabled: WAITING_HUMAN_DECISION
 auth_required: true
+identity_provider: MICROSOFT_ENTRA_ID
+auth_method: CORPORATE_SSO
+local_password_login: false
 privileged_roles: true
 personal_data: true   # identidade/nome/e-mail de usuários internos
 sensitive_data: false # confirmar
@@ -2479,7 +2482,15 @@ Avaliar INTERNO x OPERACIONAL.
 
 ## ADR-004 - Identity provider
 
-Status: WAITING_HUMAN_DECISION.
+Status: **APROVADO em 24/09/2026**.
+
+```text
+identity_provider = MICROSOFT_ENTRA_ID
+auth_method = CORPORATE_SSO
+local_password_login = false
+```
+
+A autenticação corporativa identifica o usuário. Papéis e permissões Safra permanecem responsabilidade do SAFRA-C04.
 
 ## ADR-005 - Tratativas críticas via RPC transacional
 
