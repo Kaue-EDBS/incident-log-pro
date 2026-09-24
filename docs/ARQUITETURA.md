@@ -215,8 +215,8 @@ O produto deve preservar eventos de START, passos, alterações relevantes, esca
 
 **WAITING_HUMAN_DECISION**:
 
-- service class;
-- criticidade da aplicação;
+- service class da aplicação — atributo técnico do Framework EBSA, não derivado dos cenários;
+- criticidade técnica/operacional da aplicação — distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
 - identity provider;
 - método de autenticação;
 - papéis exatos;
@@ -225,6 +225,19 @@ O produto deve preservar eventos de START, passos, alterações relevantes, esca
 - retenção;
 - canal de notificação;
 - estratégia canônica de migrations.
+
+## 12.1 Separação obrigatória de criticidades
+
+```text
+domínio Safra
+ -> scenario.criticality = CRITICAL | HIGH | MODERATE
+
+governança técnica
+ -> application.service_class = WAITING_HUMAN_DECISION
+ -> application.criticality = WAITING_HUMAN_DECISION
+```
+
+Os SLAs dos protocolos medem resposta operacional do cenário. Eles não definem SLO, RTO ou RPO do software.
 
 ## 12. Regra de mudança
 
