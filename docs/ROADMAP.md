@@ -927,7 +927,7 @@ O COMEÇO inclui a fundação técnica porque uma abertura incorreta ou não aut
 
 ---
 
-## SAFRA-C00 - Congelar baseline e conter riscos P0
+## SAFRA-C00 - Congelar baseline e conter riscos P0 — CONCLUÍDO EM 24/09/2026
 
 ### Objetivo
 
@@ -960,14 +960,22 @@ Criar uma linha de base segura antes de qualquer expansão funcional.
 
 ### Gate EBSA
 
-- I-1;
-- I0;
-- G2;
-- G5 parcialmente reaberto pela falha de RLS.
+Status de fechamento do SAFRA-C00:
+
+- **I-1 / SEC-001 — FECHADO**;
+- **I0 / G0 — FECHADO**;
+- **G2 / G3 — FECHADO no escopo C00**;
+- **G5 — FECHADO PARCIALMENTE no escopo P0**.
+
+O G5 completo permanece aberto para SAFRA-C04/C05, onde serão tratados identidade, RBAC definitivo, ownership, autorização por cenário e governança de migrations. Isso não constitui bloqueador P0 para continuidade da reformulação.
 
 ### Saída
 
-Nenhum bloqueador P0 conhecido para continuar a reformulação.
+**Gate atingido em 24/09/2026.**
+
+Nenhum bloqueador P0 conhecido permanece aberto para continuar a reformulação.
+
+Evidências canônicas: `docs/STATUS.md`, seção **Fechamento formal dos gates I-1 / I0 / G2 / G5 parcial**.
 
 ---
 
