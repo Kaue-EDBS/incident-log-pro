@@ -72,15 +72,10 @@ privileged_roles:
     roles:
       - "safra_admin"
       - "scenario_owner"
-      - "scenario_updater"
-      - "manager_viewer"
-      - "executive_viewer"
-      - "viewer"
-    assignment_model: "NON_HIERARCHICAL_CUMULATIVE"
+    assignment_model: "NON_HIERARCHICAL"
     inheritance: false
-    note: "Roles are independent and may be combined. Administrative authority does not automatically grant operational ownership."
+    note: "Only two functional roles exist. Administrative authority does not automatically grant scenario ownership."
   exact_permission_matrix: "WAITING_HUMAN_DECISION"
-  exact_delegation_model: "WAITING_HUMAN_DECISION"
 
 security:
   rls_enabled: true
@@ -187,7 +182,6 @@ governance:
 
 open_human_decisions:
   - "exact permission matrix by role"
-  - "exact delegation model between owner and updater"
   - "application service class"
   - "application criticality"
   - "four CRITICAL scenarios"
