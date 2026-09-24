@@ -623,3 +623,28 @@ Isso é intencional: ainda existem decisões materiais marcadas como `WAITING_HU
 **Estrutura documental: consolidada.**  
 **PROJECT_PROFILE: criado e utilizável.**  
 **Gate G3/G3.25: ainda não fechado**, pois o próprio roadmap exige não concluir enquanto houver UNKNOWN/WAITING_HUMAN_DECISION material.
+
+
+---
+
+## 16. Registro dos atributos materiais do PROJECT_PROFILE — 24/09/2026
+
+Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.yaml`.
+
+| Atributo | Registro atual |
+|---|---|
+| service class | WAITING_HUMAN_DECISION; candidatos INTERNO/OPERACIONAL |
+| criticidade da aplicação | WAITING_HUMAN_DECISION |
+| Auth | obrigatório; stack disponível; login ainda não implementado; 0 usuários |
+| papéis privilegiados | obrigatórios; service_role server-side; RBAC funcional pendente |
+| dados pessoais | presentes; categorias registradas; minimização obrigatória |
+| integrações | nenhuma ativa no MVP; futuras governadas por contrato/DATA_RELEASE |
+| REPLICA | WAITING_HUMAN_DECISION; não provisionada |
+| API | nenhuma API pública; Data API interna protegida por grants/RLS |
+| regras de domínio | obrigatórias; 17 Safra + 4 legadas registradas |
+
+### Leitura do gate
+
+O requisito de **registrar** esses atributos está cumprido.
+
+O G3/G3.25 ainda não deve ser fechado porque service class, criticidade, identity provider, RBAC final, REPLICA e outras decisões materiais continuam explicitamente abertas.
