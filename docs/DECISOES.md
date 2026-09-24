@@ -30,7 +30,9 @@
 | D-15 | Acesso `anon` ao banco interno é proibido | APPROVED |
 | D-16 | G5 C00 fecha P0; RBAC final fica no C04/C05 | APPROVED |
 | D-17 | Microsoft Entra ID corporativo via SSO será o provedor de identidade | APPROVED |
-| D-18 | Papéis funcionais Safra reduzidos a apenas safra_admin e scenario_owner | APPROVED |
+| D-18 | Família safra_admin e scenario_owner compõem o modelo de responsabilidade | APPROVED |
+| D-19 | safra_admin dividido em plataforma, governança e executivo | APPROVED |
+| D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico | APPROVED |
 
 ## 3. ADRs
 
@@ -155,3 +157,62 @@ Regras estruturais:
 - não existe herança automática entre os dois papéis.
 
 A matriz fina de permissões entre `safra_admin` e `scenario_owner` permanece `WAITING_HUMAN_DECISION`.
+
+
+### ADR-013 — Subtipos de safra_admin
+**APPROVED — 24/09/2026**.
+
+#### safra_platform_admin
+Administração técnica da plataforma.
+
+Membros permanentes:
+- kaue.pastrello@editoradobrasil.com.br
+- amanda.bueno@editoradobrasil.com.br
+- vinicius.moraes@editoradobrasil.com.br
+- joao.jurado@editoradobrasil.com.br
+
+Amanda, Vinicius e João permanecem com acesso técnico permanente como substitutos de Kaue.
+
+#### safra_governance_admin
+Governança funcional de todos os cards e do 12º card.
+
+Membros:
+- jiane.rodrigues@editoradobrasil.com.br
+- jair.silva@editoradobrasil.com.br
+
+Responsabilidades:
+- supervisionar todos os cards;
+- acessar relatórios;
+- tomar decisões de governança;
+- receber e-mails operacionais;
+- avaliar propostas do 12º card;
+- não executar manutenção técnica da plataforma.
+
+#### safra_executive_admin
+Visão executiva/analytics.
+
+Membro:
+- bruno.palhao@editoradobrasil.com.br
+
+Responsabilidades:
+- acesso a analytics de todos os cards e métricas;
+- não recebe e-mails operacionais;
+- não realiza manutenção técnica da plataforma.
+
+A composição final do analytics será decidida posteriormente em regras de negócio e Frontend.
+
+### ADR-014 — 12º card como proposta de novo cenário
+**APPROVED — 24/09/2026**.
+
+Qualquer usuário autenticado poderá abrir o formulário do 12º card.
+
+Campos:
+- nome — preenchido automaticamente pela identidade Microsoft;
+- e-mail — preenchido automaticamente pela identidade Microsoft;
+- título — texto livre;
+- descrição do problema — texto livre;
+- como o problema afeta a Safra — texto livre.
+
+Nome e e-mail não dependem de digitação manual.
+
+A submissão não cria protocolo produtivo automaticamente. Ela segue para Jiane/Jair, responsáveis pela governança e decisão sobre o possível novo cenário.
