@@ -45,7 +45,10 @@ identity_and_auth:
   auth_stack_available: true
   auth_stack: "Lovable Cloud / Supabase Auth"
   frontend_login_implemented: false
-  corporate_identity_provider: "WAITING_HUMAN_DECISION"
+  corporate_identity_provider: "MICROSOFT_ENTRA_ID"
+  auth_method: "CORPORATE_SSO"
+  local_password_login: false
+  identity_decision_status: "APPROVED"
   current_auth_users: 0
   current_users_with_safra_access: 0
   anonymous_database_access: false
@@ -190,7 +193,6 @@ open_human_decisions:
   - "multiple simultaneous treatments rule"
   - "close policy with incomplete / NOT_APPLICABLE steps"
   - "exact roles and delegation model"
-  - "corporate identity provider and auth method"
   - "approved RTO/RPO"
   - "replica_enabled"
   - "email/notification provider and channel"
