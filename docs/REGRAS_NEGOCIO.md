@@ -42,8 +42,14 @@ Ao abrir, persistir `scenario_version_id`. Histórico não é recalculado contra
 ### RB-SAFRA-008 — Área impactada real
 Cada tratativa possui conjunto próprio de áreas impactadas.
 
-### RB-SAFRA-009 — Criticidade
-`CRITICAL`, `HIGH` e `MODERATE`. Política final de notificação e lista dos críticos ainda dependem de decisão humana.
+### RB-SAFRA-009 — Criticidade do cenário
+A criticidade é atributo do **cenário/protocolo**, com os valores `CRITICAL`, `HIGH` e `MODERATE`.
+
+Fontes: Matriz v3, Protocolos v2 e decisões da reunião de 22/09.
+
+Esta regra não classifica tecnicamente a aplicação Painel Safra. `service_class`, SLO, RTO, RPO e criticidade da aplicação pertencem ao Framework EBSA e são decisões separadas.
+
+A lista exata dos quatro cenários `CRITICAL` continua `WAITING_HUMAN_DECISION`.
 
 ### RB-SAFRA-010 — Protocolo não é chamado
 Não exigir workflow de ticket técnico para cada protocolo.
