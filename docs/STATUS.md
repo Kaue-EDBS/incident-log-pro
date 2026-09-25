@@ -1153,3 +1153,26 @@ Até resolução formal:
 - nenhum dos 11 cenários será marcado como CRITICAL apenas por interpretação;
 - regras específicas de comunicação à diretoria baseadas na lista dos quatro permanecem dependentes da decisão;
 - C06 deve carregar a pendência sem preencher default.
+
+
+---
+
+## SAFRA-C03 — glossário READY_FOR_C05 — 25/09/2026
+
+`docs/GLOSSARIO_DOMINIO.md` atualizado para v1.1 e marcado `READY_FOR_C05`.
+
+Foram eliminadas ambiguidades de implementação sobre:
+- cenário x versão x tratativa;
+- estados de cenário/versão/tratativa;
+- owner atual x owner histórico;
+- área responsável atual x snapshot da tratativa;
+- áreas/sistemas potenciais versionados;
+- criticidade pendente sem default;
+- END x CANCEL em persistência;
+- impacto quantitativo;
+- recorrência;
+- pós-mortem;
+- múltiplas tratativas simultâneas;
+- proposta x cenário.
+
+C05 recebeu regra explícita de não inventar decisões ainda deferidas.
