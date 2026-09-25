@@ -1439,3 +1439,52 @@ ID-001 = BLOCKED_EVIDENCE
 ID-002 = BLOCKED_EVIDENCE
 AUDIT-001 = BLOCKED_EVIDENCE
 ```
+
+
+---
+
+## SAFRA-C04 — estratégia de fechamento via Lovable — 25/09/2026
+
+Decisão operacional: concluir os controles restantes do C04 no próprio ambiente Lovable Cloud, onde o projeto possui contexto de backend suficiente para testar RBAC e sessões sem depender dos bloqueios dos conectores externos.
+
+### Prioridade zero
+
+Antes de qualquer novo teste:
+- localizar grant ativo com `source = C04_ID001_TEMP_TEST`;
+- revogar/remover esse grant;
+- confirmar que Kaue permanece apenas com `safra_platform_admin`;
+- registrar evidência antes/depois.
+
+### Itens a concluir no Lovable
+
+- troca de papel;
+- revogação de papel;
+- validação de sessão revogada/desligamento por `session_id` contra `auth.sessions`;
+- trilha AUDIT-001 de RBAC;
+- registrar contas de serviço como `NOT_APPLICABLE_MVP` se não houver identidade funcional de serviço.
+
+### Itens externos ao Lovable
+
+- recuperação de acesso corporativo: evidência do Microsoft Entra/TI;
+- MFA privilegiado: evidência de Conditional Access/MFA no Microsoft Entra.
+
+### Limites
+
+Não criar nem antecipar:
+- scenarios;
+- scenario_versions;
+- scenario_owners;
+- treatments;
+- START/END/CANCEL;
+- seed dos 11 cenários.
+
+Toda mudança permanente deve terminar versionada no GitHub e em `supabase/migrations`.
+
+Estado dos gates permanece:
+
+```text
+G5 = PARTIAL
+ID-001 = BLOCKED_EVIDENCE
+ID-002 = BLOCKED_EVIDENCE
+AUDIT-001 = BLOCKED_EVIDENCE
+```
