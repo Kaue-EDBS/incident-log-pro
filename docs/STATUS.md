@@ -1530,10 +1530,10 @@ Autorização exclusivamente por `private.safra_principals` + `private.safra_rol
 ### Estado dos gates após o C04
 
 ```text
-G5 = PASS (controles internos ao Lovable concluídos)
-ID-001 = CLOSED (SERVICE_ACCOUNT_SCOPE = NOT_APPLICABLE_MVP; reabrir se surgir conta de integração)
-ID-002 = CLOSED_INTERNAL / ENTRA_RECOVERY e PRIVILEGED_MFA permanecem EXTERNAL_EVIDENCE_PENDING (TI/Entra)
-AUDIT-001 = CLOSED
+G5 = INTERNAL_PASS / EXTERNAL_IDENTITY_EVIDENCE_PENDING
+ID-001 = INTERNAL_CONTROLS_PASS / EXTERNAL_RECOVERY_EVIDENCE_PENDING
+ID-002 = INTERNAL_CONTROLS_PASS / PRIVILEGED_MFA_EXTERNAL_EVIDENCE_PENDING
+AUDIT-001 = PASS
 ```
 
 Observação de trilha de migrations: o ambiente Lovable aplica migrations através do
@@ -1541,3 +1541,30 @@ Drizzle (`drizzle/migrations/0001..0003`), e `supabase/migrations` é somente le
 neste ambiente. O SQL aplicado está integralmente reproduzido nesses arquivos e deve
 ser espelhado em `supabase/migrations` no repositório canônico durante a sincronização
 já pendente do histórico (ADR-027).
+
+
+### Auditoria independente pós-Lovable — 25/09/2026
+
+Verificação independente confirmou:
+- grant temporário ativo = 0;
+- Kaue possui apenas `safra_platform_admin` ativo;
+- ROLE_CHANGE = PASS;
+- ROLE_REVOCATION = PASS;
+- REVOKED_SESSION = PASS para sessão existente, inexistente/revogada e JWT expirado;
+- rollback do teste = PASS;
+- RBAC_AUDIT_TRAIL = PASS com eventos ROLE_GRANTED, ROLE_REVOKED, ROLE_GRANT_DELETED e ACCESS_DENIED;
+- policies de applications/incidents continuam usando `safra_is_corporate_user()`.
+
+Correção de governança:
+- `ID-001` não é considerado totalmente fechado enquanto a evidência do processo corporativo de recuperação de acesso no Microsoft Entra/TI estiver pendente;
+- `ID-002` não é considerado totalmente fechado enquanto MFA/Conditional Access dos privilegiados estiver sem evidência externa;
+- `AUDIT-001` pode ser considerado PASS no escopo de RBAC do C04;
+- as migrations geradas pelo Lovable em Drizzle foram espelhadas para `supabase/migrations`, que permanece a fonte canônica.
+
+Estado:
+```text
+G5 = INTERNAL_PASS / EXTERNAL_IDENTITY_EVIDENCE_PENDING
+ID-001 = INTERNAL_CONTROLS_PASS / EXTERNAL_RECOVERY_EVIDENCE_PENDING
+ID-002 = INTERNAL_CONTROLS_PASS / PRIVILEGED_MFA_EXTERNAL_EVIDENCE_PENDING
+AUDIT-001 = PASS
+```
