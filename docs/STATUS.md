@@ -1488,3 +1488,56 @@ ID-001 = BLOCKED_EVIDENCE
 ID-002 = BLOCKED_EVIDENCE
 AUDIT-001 = BLOCKED_EVIDENCE
 ```
+
+---
+
+## SAFRA-C04 — Execução de fechamento no Lovable Cloud (25/09/2026)
+
+Backend PRIMARY: Lovable Cloud (PostgreSQL/Supabase). Login exclusivamente Microsoft Entra.
+Autorização exclusivamente por `private.safra_principals` + `private.safra_role_grants`.
+`user_metadata`/`app_metadata` deixaram de participar de qualquer decisão de autorização.
+
+### Tabela de controles
+
+| Controle | Resultado | Evidência |
+| --- | --- | --- |
+| TEMP_GRANT_CLEANUP | PASS | Grant `dbd8e950-fb85-4e78-99ab-bb4d10641164` (`safra_governance_admin`, `source = C04_ID001_TEMP_TEST`) revogado em `2026-09-25 16:41:53Z`. Consulta posterior: `count(*) = 0` de grants ativos com esse source; Kaue permanece somente com `safra_platform_admin` (`PROJECT_DECISION`). |
+| ROLE_CHANGE | PASS | `private.safra_c04_test_runs`, controle `ROLE_CHANGE`: mesmo `auth.uid()`, grant governado adicionado; `get_my_safra_roles()` → `{safra_platform_admin, scenario_owner}` e `safra_has_role('scenario_owner') = true` imediatamente, sem refresh de token/metadata. |
+| ROLE_REVOCATION | PASS | Mesmo run, controle `ROLE_REVOCATION`: após `revoked_at`, `get_my_safra_roles()` → `{safra_platform_admin}` e `safra_has_role('scenario_owner') = false` na mesma sessão JWT. `authenticated` não possui privilégio algum em `private.safra_role_grants` (SELECT/INSERT = false), logo o browser não restaura o papel por payload. |
+| REVOKED_SESSION | PASS | `private.safra_session_is_live()` valida o claim `session_id` contra `auth.sessions`. Evidências: sessão existente → `true`; `session_id` inexistente/revogado → `false`; JWT expirado → `false`; sessão viva + JWT válido → `true`. A verificação é banco/server-side e integra `public.safra_is_corporate_user()`, usada pelas policies de `applications` e `incidents`. |
+| SERVICE_ACCOUNT_SCOPE | NOT_APPLICABLE_MVP | `auth.users` contém apenas identidades humanas corporativas. Nenhuma identidade funcional de serviço usa o Painel. O `service_role` é credencial técnica do backend, nunca exposta ao frontend, e não é classificada como usuário funcional. Se uma conta de integração for criada, ID-001 deve ser reaberto. |
+| RBAC_AUDIT_TRAIL | PASS | `private.safra_rbac_audit_events` (append-only) + trigger `trg_safra_audit_role_grant_change`. Run de teste gerou 4 eventos (`ROLE_GRANTED`, `ROLE_REVOKED`, `ROLE_GRANT_DELETED`, `ACCESS_DENIED`) com ator (`kaue.pastrello@editoradobrasil.com.br`), ação, recurso, horário do servidor, resultado e `correlation_id` comum. Tentativa de `UPDATE` no histórico falhou com `private.safra_rbac_audit_events is append-only`, inclusive em sessão privilegiada. Nenhum secret ou token é registrado. |
+| ENTRA_RECOVERY | EXTERNAL_EVIDENCE_PENDING | Nenhum fluxo de recuperação próprio criado no Supabase: sem `resetPasswordForEmail`, sem senha local, sem magic link. Recuperação de acesso é responsabilidade do Microsoft Entra/TI corporativo. |
+| PRIVILEGED_MFA | EXTERNAL_EVIDENCE_PENDING | MFA/Conditional Access dos usuários privilegiados (Kaue, Amanda, Vinicius, João — platform admin; Jair — governance admin; Bruno — executive admin) deve ser comprovado pelo Microsoft Entra/TI. Nenhum MFA paralelo criado no Supabase; AAL do Supabase não é usado como inferência. |
+
+### Objetos criados
+
+- `private.safra_rbac_audit_events` (append-only, RLS habilitada, sem privilégios para `anon`/`authenticated`).
+- `private.safra_rbac_audit_immutable()` + trigger impedindo UPDATE/DELETE.
+- `private.safra_correlation_id()`, `private.safra_log_rbac_event(...)`.
+- `private.safra_audit_role_grant_change()` + trigger `trg_safra_audit_role_grant_change` em `private.safra_role_grants`.
+- `public.safra_log_access_denied(text, text)` — autoria e horário resolvidos server-side.
+- `public.get_safra_rbac_audit_events(integer)` — leitura restrita a `safra_platform_admin` / `safra_governance_admin`.
+- `private.safra_session_is_live()` e `public.safra_session_is_live()` — ID-002.
+- `public.safra_is_corporate_user()` atualizada: identidade corporativa Entra + JWT não expirado + sessão viva em `auth.sessions`.
+- `private.safra_c04_test_runs` + `private.safra_c04_selftest(text)` — bateria controlada e reversível de evidência.
+
+### Frontend
+
+- Removido `src/lib/safra-access.functions.ts` (concessão de `app_metadata.safra_access`); a claim não é mais fonte de autorização.
+- `AuthProvider` deixou de escrever metadata e passou a encerrar a sessão com `scope: "global"`, removendo a linha em `auth.sessions` — o token em cache deixa de ser aceito imediatamente.
+
+### Estado dos gates após o C04
+
+```text
+G5 = PASS (controles internos ao Lovable concluídos)
+ID-001 = CLOSED (SERVICE_ACCOUNT_SCOPE = NOT_APPLICABLE_MVP; reabrir se surgir conta de integração)
+ID-002 = CLOSED_INTERNAL / ENTRA_RECOVERY e PRIVILEGED_MFA permanecem EXTERNAL_EVIDENCE_PENDING (TI/Entra)
+AUDIT-001 = CLOSED
+```
+
+Observação de trilha de migrations: o ambiente Lovable aplica migrations através do
+Drizzle (`drizzle/migrations/0001..0003`), e `supabase/migrations` é somente leitura
+neste ambiente. O SQL aplicado está integralmente reproduzido nesses arquivos e deve
+ser espelhado em `supabase/migrations` no repositório canônico durante a sincronização
+já pendente do histórico (ADR-027).
