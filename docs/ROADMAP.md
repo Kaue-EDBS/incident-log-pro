@@ -1270,6 +1270,27 @@ Estado:
 3. documentar rollback;
 4. garantir banco descartável para teste.
 
+### C05.1 — Schema v2 canônico — IMPLEMENTADO
+
+Migration:
+`supabase/migrations/20260925170000_c05_schema_v2_canonical_base.sql`
+
+Concluído:
+- entidades canônicas materializadas no PRIMARY;
+- RBAC existente reutilizado, sem tabela concorrente;
+- RLS deny-by-default;
+- invariantes de publicação/versionamento/owner/snapshot/append-only implementadas;
+- GI-SAFRA-001 preservada OPEN;
+- legado applications/incidents preservado;
+- self-tests positivos/negativos executados com rollback integral de fixtures.
+
+Não incluído:
+- seed C06;
+- RPCs START/END/CANCEL;
+- decisão de múltiplos ACTIVE;
+- criticidade inferida;
+- notificações produtivas.
+
 ### Ordem recomendada
 
 1. `operational_areas`;
@@ -1325,9 +1346,11 @@ Estado:
 ### Gate
 
 ```text
-G5
-G6 parcial
+G5 = PASS_C05_SCHEMA_BASE
+G6 = PARTIAL_SCHEMA_READY
 ```
+
+C05 continua aberto para passos seguintes de RPCs/constraints/idempotência adicionais previstos, mas a **base canônica do schema v2 está concluída**.
 
 ---
 
