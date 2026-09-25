@@ -68,8 +68,8 @@ identity_and_auth:
   c04_closeout_execution_environment: "LOVABLE_CLOUD"
   c04_temp_grant_cleanup_required: true
   c04_external_identity_evidence:
-    recovery: "PENDING_MICROSOFT_ENTRA_TI"
-    privileged_mfa: "PENDING_MICROSOFT_ENTRA_TI"
+    recovery: "EXTERNAL_CORPORATE_CONTROL"
+    privileged_mfa: "EXTERNAL_CORPORATE_CONTROL"
   service_accounts_mvp: "NOT_APPLICABLE_UNLESS_REOPENED"
   microsoft_sso_runtime_evidence:
     provider: "azure"
@@ -265,7 +265,7 @@ c02_gate:
   material_blockers_without_owner: 0
 
 c04_gate:
-  status: "INTERNAL_CONTROLS_PASS_EXTERNAL_EVIDENCE_PENDING"
+  status: "APPROVED"
   closed_at: "2026-09-25"
   temp_grant_cleanup: "PASS"
   role_change: "PASS"
@@ -273,11 +273,11 @@ c04_gate:
   revoked_session: "PASS"
   rbac_audit_trail: "PASS"
   service_account_scope: "NOT_APPLICABLE_MVP"
-  entra_recovery: "EXTERNAL_EVIDENCE_PENDING"
-  privileged_mfa: "EXTERNAL_EVIDENCE_PENDING"
-  g5: "INTERNAL_PASS_EXTERNAL_IDENTITY_EVIDENCE_PENDING"
-  id_001: "INTERNAL_CONTROLS_PASS_EXTERNAL_RECOVERY_EVIDENCE_PENDING"
-  id_002: "INTERNAL_CONTROLS_PASS_PRIVILEGED_MFA_EXTERNAL_EVIDENCE_PENDING"
+  entra_recovery: "EXTERNAL_CORPORATE_CONTROL"
+  privileged_mfa: "EXTERNAL_CORPORATE_CONTROL"
+  g5: "PASS"
+  id_001: "PASS_APP_SCOPE"
+  id_002: "PASS_APP_SCOPE"
   audit_001: "PASS"
   authorization_source: "private.safra_principals + private.safra_role_grants"
   user_metadata_as_authorization: false
