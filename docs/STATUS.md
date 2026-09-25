@@ -2037,3 +2037,54 @@ NEXT_PHASE = SAFRA-C06
 ```
 
 Próxima fase canônica: **SAFRA-C06 — Seed canônico da Matriz v3**.
+
+
+---
+
+## SAFRA-C06.1 — 11 cenários canônicos da Matriz v3 inseridos — 25/09/2026
+
+Fonte:
+- `EDB06 - Matriz Contingencia v3.xlsx`;
+- aba `Matriz de Contingência`;
+- SHA256 `b0cca8cce835dbdc65ab0c30212fd89480d2cf51e9fb62d215ad1bde0963ead6`.
+
+Migration:
+`supabase/migrations/20260925213118_c06_seed_canonical_matrix_v3.sql`
+
+Resultado no PRIMARY:
+- 11 cenários `SAFRA-01` a `SAFRA-11`;
+- 11 versões v1 PUBLISHED;
+- 11 owners ativos;
+- áreas responsáveis vinculadas;
+- áreas impactáveis vinculadas;
+- ferramentas vinculadas;
+- `current_version_id` correto nos 11;
+- criticidade permanece NULL nos 11;
+- `GI-SAFRA-001` preservado;
+- migration registrada no tracking do PRIMARY.
+
+Owners:
+- Daniel Garcia: 1, 2, 3, 7, 10, 11;
+- Jiane Rodrigues: 4, 5, 6, 8;
+- Renato de Paulo: 9.
+
+Decisão de modelagem:
+- textos de gatilho, acionamento e protocolo foram preservados literalmente;
+- SLA-alvo, acompanhamento, validação e mapeamento ficam preservados no `source_reference`;
+- `scenario_slas` não foi preenchido nesta etapa porque a Matriz v3 não define explicitamente `start_event` e `end_event`; essa estruturação permanece para C07, sem inferência.
+
+Validação:
+- dry-run transacional no PRIMARY com ROLLBACK = PASS;
+- aplicação no PRIMARY = PASS;
+- consulta pós-carga confirmou 11/11 versões correntes e owners corretos;
+- pgTAP `c06_canonical_seed.test.sql` versionado;
+- GitHub Actions do commit de C06 em execução no momento deste registro.
+
+Estado:
+
+```text
+C06_CANONICAL_11_SCENARIOS = PASS_PRIMARY
+CRITICALITY_INFERENCE = NONE
+GI-SAFRA-001 = OPEN
+C06_CI = IN_PROGRESS
+```
