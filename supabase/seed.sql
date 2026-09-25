@@ -1,0 +1,4 @@
+-- SAFRA local/disposable database seed.
+-- Intentionally contains no production data.
+-- The disposable test database is rebuilt from supabase/migrations.
+-- Synthetic fixtures belong inside pgTAP tests and are rolled back per test.
