@@ -620,7 +620,11 @@ Versões reconciliadas:
 - 20260925164500;
 - 20260925164600;
 - 20260925164700;
-- 20260925170000.
+- 20260925170000;
+- 20260925173000;
+- 20260925210500.
+
+Estado final: GitHub e PRIMARY registram as mesmas 10 migrations canônicas. As duas últimas já estavam fisicamente aplicadas no PRIMARY; o repair apenas registrou seu tracking, sem reexecutar DDL.
 
 
 ### ADR-036 — Rollback e banco descartável
@@ -641,3 +645,43 @@ Artefatos:
 - `supabase/seed.sql`;
 - `supabase/tests/database/c05_schema_v2.test.sql`;
 - `.github/workflows/database-disposable-test.yml`.
+
+
+### ADR-037 — Fechamento do SAFRA-C05
+**APPROVED / CLOSED — 25/09/2026**.
+
+Escopo encerrado:
+- schema v2 materializado;
+- 17 tabelas de domínio com RLS;
+- FKs e constraints estruturais;
+- timestamps oficiais server-side;
+- version freeze;
+- histórico append-only;
+- integridade temporal;
+- ausência de cascade destrutivo;
+- CANCEL com motivo obrigatório;
+- END/CANCEL somente a partir de ACTIVE;
+- idempotência estrutural/double submit validado;
+- rollback em banco descartável;
+- Data API direta negada;
+- migrations reconstruídas do zero;
+- lint aprovado;
+- tracking de migrations reconciliado com GitHub.
+
+Evidência principal:
+- GitHub Actions Run 27 / ID `36189333481` = SUCCESS.
+
+Decisão de fase:
+```text
+SAFRA-C05 = CONCLUIDO
+C05_TECHNICAL_VALIDATION = PASS
+MIGRATION_DRIFT = 0
+NEXT_PHASE = SAFRA-C06
+```
+
+Limites preservados:
+- testes funcionais de START permanecem em C08;
+- testes funcionais de END/CANCEL permanecem em F01/F02;
+- múltiplos treatments ACTIVE por cenário continua decisão M01;
+- notificações produtivas permanecem M05;
+- criticidade dos quatro cenários permanece em GI-SAFRA-001.
