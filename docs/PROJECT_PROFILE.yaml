@@ -281,3 +281,22 @@ c04_gate:
   audit_001: "PASS"
   authorization_source: "private.safra_principals + private.safra_role_grants"
   user_metadata_as_authorization: false
+
+
+c05_schema_v2:
+  status: "CANONICAL_BASE_IMPLEMENTED"
+  migration: "20260925170000_c05_schema_v2_canonical_base.sql"
+  primary_applied: true
+  new_domain_tables: 17
+  rls_default: "DENY_BY_DEFAULT"
+  anon_access: false
+  authenticated_direct_access: false
+  service_role_truncate_allowed: false
+  legacy_applications_incidents_preserved: true
+  rbac_source_reused: "private.safra_principals + private.safra_role_grants"
+  concurrent_safra_user_roles_table_created: false
+  gi_safra_001_status: "OPEN"
+  criticality_default: null
+  active_treatment_uniqueness_constraint: false
+  seed_11_scenarios: "NOT_STARTED_C06"
+  start_end_cancel_rpcs: "NOT_STARTED"
