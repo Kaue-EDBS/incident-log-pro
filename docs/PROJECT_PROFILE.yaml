@@ -52,11 +52,18 @@ identity_and_auth:
   local_password_login: false
   identity_decision_status: "APPROVED"
   microsoft_sso_code_status: "IMPLEMENTED"
-  microsoft_provider_runtime_status: "EXTERNAL_CONFIG_REQUIRED"
+  microsoft_provider_runtime_status: "HOMOLOGATED"
   password_login_ui_present: false
   password_login_backend_required_disabled: true
-  current_auth_users: 0
-  current_users_with_safra_access: 0
+  microsoft_sso_runtime_evidence:
+    provider: "azure"
+    authenticated_users_verified: 1
+    first_real_sign_in_verified: true
+    supabase_session_created: true
+    auth_uid_chain_status: "READY_FOR_AUTHORIZED_DB_CALLS"
+    verified_at: "2026-09-25"
+  current_auth_users: 1
+  current_users_with_safra_access: 1
   anonymous_database_access: false
   temporary_authorization:
     mechanism: "app_metadata.safra_access"
