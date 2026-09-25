@@ -227,3 +227,12 @@ c01_gate:
   g3: "PASS"
   g3_25: "PASS"
   closed_at: "2026-09-24"
+
+c02_gate:
+  status: "APPROVED"
+  closed_at: "2026-09-25"
+  g3_5: "PASS"
+  threat_001: "PASS"
+  authz_001: "PASS"
+  residual_risks_classified: true
+  material_blockers_without_owner: 0
