@@ -1967,8 +1967,31 @@ Eles permanecem nas fases próprias de implementação funcional.
 ### Estado
 
 ```text
-C05_TECHNICAL_TEST_SUITE = IMPLEMENTED
+C05_TECHNICAL_TEST_SUITE = PASS
 PRIMARY_DOUBLE_SUBMIT = PASS
-DISPOSABLE_CI_FULL_RUN = IN_PROGRESS
+DISPOSABLE_CI_FULL_RUN = PASS
+GITHUB_ACTIONS_RUN = 27
+GITHUB_ACTIONS_RUN_ID = 36189333481
 START_END_CANCEL_FUNCTIONAL_TESTS = DEFERRED_TO_OWN_PHASES
+```
+
+
+### Evidência final da Run 27
+
+A GitHub Action `Database Disposable Test`, Run 27 (ID `36189333481`), concluiu com sucesso.
+
+Passaram:
+- inicialização do banco descartável;
+- reconstrução completa pelas migrations canônicas;
+- testes SQL/pgTAP;
+- bloqueio de acesso direto pela Data API;
+- rollback da última migration;
+- reconstrução após rollback;
+- lint do banco;
+- encerramento limpo do ambiente descartável.
+
+Resultado:
+
+```text
+C05_TECHNICAL_VALIDATION = PASS
 ```
