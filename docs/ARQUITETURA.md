@@ -254,7 +254,7 @@ O produto deve preservar eventos de START, passos, alterações relevantes, esca
 
 **WAITING_HUMAN_DECISION**:
 
-- service class da aplicação — atributo técnico do Framework EBSA, não derivado dos cenários;
+- service class da aplicação — **CRITICO**, atributo técnico do Framework EBSA, não derivado dos cenários;
 - criticidade técnica/operacional da aplicação — distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
 - matriz fina de permissões entre `safra_admin` e `scenario_owner`;
 - tratamento de usuário autenticado sem papel funcional;
@@ -271,7 +271,7 @@ domínio Safra
  -> scenario.criticality = CRITICAL | HIGH | MODERATE
 
 governança técnica
- -> application.service_class = WAITING_HUMAN_DECISION
+ -> application.service_class = CRITICO
  -> application.criticality = WAITING_HUMAN_DECISION
 ```
 
