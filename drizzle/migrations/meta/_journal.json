@@ -22,6 +22,13 @@
       "when": 1790354715965,
       "tag": "0002_c04_controlled_selftest_harness",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790354746599,
+      "tag": "0003_c04_audit_clock_timestamp",
+      "breakpoints": true
     }
   ]
 }
