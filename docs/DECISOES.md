@@ -47,6 +47,7 @@
 | D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default | APPROVED |
 | D-33 | Login funcional exclusivamente via Microsoft Entra ID; Lovable Cloud Auth cria sessão Supabase; login local por senha proibido | APPROVED / HOMOLOGATED |
 | D-34 | Role mapping governado no banco e ownership específico separado de papéis administrativos | APPROVED / IMPLEMENTED |
+| D-35 | RLS e autorização server-side usam o mesmo predicado corporativo; safra_access removido | APPROVED / IMPLEMENTED |
 
 ## 3. ADRs
 
@@ -434,3 +435,32 @@ Regras:
 Implementação privilegiada permanece em schema privado; funções públicas de consulta são `SECURITY INVOKER`.
 
 RLS definitivo ainda será migrado do gate temporário `safra_access` para este modelo no próximo passo do C04.
+
+
+### ADR-026 — Predicado canônico de autorização corporativa
+**APPROVED / IMPLEMENTED — 25/09/2026**.
+
+Predicado base canônico:
+
+```text
+auth.uid() presente
+AND sessão não anônima
+AND provider = azure
+AND e-mail corporativo @editoradobrasil.com.br
+```
+
+Aplicação:
+- RLS da Data API;
+- chamadas REST diretas;
+- RPC;
+- middleware server-side;
+- UI indiretamente via Supabase/Data API.
+
+Regras:
+- `user_metadata` não é fonte de autorização;
+- `app_metadata` é usado apenas para sinal controlado pelo backend, como provider de identidade;
+- papéis permanecem em tabelas governadas privadas;
+- `safra_access` foi removido e não participa mais da autorização;
+- ownership de cenário permanece fora de metadata e fora de herança de role.
+
+A mudança live deverá ser reconciliada com migration canônica no SAFRA-C05.
