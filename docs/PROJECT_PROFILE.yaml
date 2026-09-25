@@ -57,8 +57,11 @@ identity_and_auth:
   password_login_backend_required_disabled: true
   role_mapping_status: "IMPLEMENTED"
   ownership_inheritance: false
+  canonical_authorization_predicate: "auth.uid present + non-anonymous + provider azure + corporate email domain"
+  user_metadata_authorization: false
+  safra_access_legacy_flag: "REMOVED"
   role_source_of_truth: "private.safra_principals + private.safra_role_grants"
-  role_mapping_rls_integration: "PENDING_C04"
+  role_mapping_rls_integration: "IMPLEMENTED"
   microsoft_sso_runtime_evidence:
     provider: "azure"
     authenticated_users_verified: 1
