@@ -54,6 +54,7 @@
 | D-39 | Auditoria pós-Lovable confirma controles internos; ID-001/ID-002 permanecem dependentes de evidência externa do Entra/TI | SUPERSEDED_BY_D40 |
 | D-40 | Recuperação e MFA Microsoft são controles corporativos externos à aplicação; C04 pode fechar no escopo do Painel | APPROVED |
 | D-41 | Schema v2 canônico materializado no PRIMARY e versionado em supabase/migrations | APPROVED / IMPLEMENTED |
+| D-42 | supabase/migrations é a única autoridade de migrations; Drizzle fica sem autoridade de deploy; drift C00/C04/C05 reconciliado | APPROVED / IMPLEMENTED |
 
 ## 3. ADRs
 
@@ -595,3 +596,27 @@ Decisões:
 Rollback:
 - antes de dados produtivos, schema pode ser removido por migration explícita;
 - após C06, correções são forward-only e não devem apagar histórico.
+
+
+### ADR-035 — Autoridade única de migrations e repair do tracking
+**APPROVED / IMPLEMENTED — 25/09/2026**.
+
+Decisão:
+- `supabase/migrations` é a única fonte canônica para alterações de schema;
+- Drizzle permanece somente como ORM/tooling auxiliar;
+- `drizzle/migrations` não deve ser usada como trilha de deploy;
+- mudanças futuras no PRIMARY devem partir de migration versionada, evitando edição remota ad hoc.
+
+Repair:
+- o estado live foi verificado antes da reconciliação;
+- C00, C04 e C05 já estavam aplicados no PRIMARY;
+- como `supabase migration repair` não estava disponível pelos conectores, foi realizado repair equivalente apenas em `supabase_migrations.schema_migrations`;
+- nenhuma DDL foi reaplicada ou revertida.
+
+Versões reconciliadas:
+- 20260924212155;
+- 20260925133200;
+- 20260925164500;
+- 20260925164600;
+- 20260925164700;
+- 20260925170000.
