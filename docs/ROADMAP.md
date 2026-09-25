@@ -450,7 +450,16 @@ Campos:
 - descrição do problema;
 - como o problema afeta a Safra.
 
-Jiane Rodrigues e Jair Silva fazem a governança da proposta. Publicação como cenário real exige aprovação.
+Jair Silva conduz a governança da proposta.
+
+Fluxo:
+1. Jair recebe;
+2. envia para Daniel Garcia, Renato Paulo e Jiane Rodrigues;
+3. um aceite -> esse usuário assume ownership;
+4. dois ou mais aceites -> Jair faz o check final;
+5. nenhum aceite -> Jair decide ou aciona Bruno Palhão.
+
+Jiane participa como possível owner, não como governança global.
 
 ## D-12 - Papéis funcionais aprovados
 
