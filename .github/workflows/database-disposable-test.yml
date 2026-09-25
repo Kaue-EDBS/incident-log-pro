@@ -6,6 +6,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: database-disposable-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   db-test:
     runs-on: ubuntu-latest
@@ -18,7 +22,10 @@ jobs:
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 2.118.0
+
+      - name: Show Supabase CLI version
+        run: supabase --version
 
       - name: Start disposable Supabase stack
         run: supabase start
@@ -34,10 +41,11 @@ jobs:
 
       - name: Rehearse rollback of latest migration
         run: |
+          LATEST_VERSION="$(basename "$(ls supabase/migrations/*.sql | sort | tail -1)" | cut -d_ -f1)"
           printf 'y\n' | supabase migration down --local --last 1
-          cp supabase/rollback-tests/c05_latest_rollback.test.sql supabase/tests/database/__c05_rollback.test.sql
-          supabase test db supabase/tests/database/__c05_rollback.test.sql
-          rm supabase/tests/database/__c05_rollback.test.sql
+          sed "s/__LATEST_VERSION__/${LATEST_VERSION}/g"             supabase/rollback-tests/latest_migration_rollback.test.sql             > supabase/tests/database/__latest_rollback.test.sql
+          supabase test db supabase/tests/database/__latest_rollback.test.sql
+          rm supabase/tests/database/__latest_rollback.test.sql
           supabase db reset --local
           supabase test db
 
