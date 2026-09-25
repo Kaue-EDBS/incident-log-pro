@@ -910,6 +910,14 @@ Congelar o vocabulário antes de criar schema v2.
 - proposta de cenário;
 - publicação de cenário.
 
+### C03.1 — Vocabulário canônico congelado
+
+**CONCLUÍDO em 25/09/2026.**
+
+Termos congelados: cenário, versão de cenário, gatilho, detecção, START, protocolo, tratativa, owner, área responsável, área impactada, SLA, criticidade, END, CANCEL, escalonamento, pós-mortem, recorrência, proposta de cenário e publicação de cenário.
+
+Fonte canônica: `docs/GLOSSARIO_DOMINIO.md`.
+
 ### Decisões que C03 deve deixar explícitas
 
 - `Geral` = visão agregada;
