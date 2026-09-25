@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(14);
+select plan(20);
 
 select has_table('public', 'scenarios', 'scenarios exists');
 select has_table('public', 'scenario_versions', 'scenario_versions exists');
@@ -133,6 +133,39 @@ select is(
   ),
   0::bigint,
   'service_role has no TRUNCATE privilege on SAFRA v2 domain tables'
+);
+
+
+
+select fk_ok(
+  'public', 'scenarios', 'scenarios_current_version_same_scenario_fk',
+  'public', 'scenario_versions',
+  'scenario current_version FK is enforced'
+);
+
+select has_trigger(
+  'public', 'scenario_versions', 'trg_00_scenario_versions_server_clock',
+  'scenario version lifecycle uses server-side timestamps'
+);
+
+select has_trigger(
+  'public', 'treatments', 'trg_00_treatments_server_clock',
+  'treatment lifecycle uses server-side timestamps'
+);
+
+select has_trigger(
+  'public', 'treatment_events', 'trg_treatment_events_append_only',
+  'treatment events are append-only'
+);
+
+select has_trigger(
+  'public', 'treatment_impact_measurements', 'trg_treatment_impact_measurements_append_only',
+  'impact measurements are append-only'
+);
+
+select has_trigger(
+  'public', 'scenario_slas', 'trg_scenario_slas_freeze',
+  'published scenario SLA content is version-frozen'
 );
 
 select * from finish();
