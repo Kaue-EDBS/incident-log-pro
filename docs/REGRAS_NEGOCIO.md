@@ -59,7 +59,7 @@ Fontes: Matriz v3, Protocolos v2 e decisões da reunião de 22/09.
 
 Esta regra não classifica tecnicamente a aplicação Painel Safra. `service_class`, SLO, RTO, RPO e criticidade da aplicação pertencem ao Framework EBSA e são decisões separadas.
 
-A lista exata dos quatro cenários `CRITICAL` continua `WAITING_HUMAN_DECISION`.
+A lista exata dos quatro cenários `CRITICAL` está registrada como `GI-SAFRA-001`. Não há evidência nominal suficiente para inferir os quatro; classificação permanece dependente de decisão humana formal.
 
 ### RB-SAFRA-010 — Protocolo não é chamado
 Não exigir workflow de ticket técnico para cada protocolo.
@@ -233,3 +233,13 @@ Impacto quantitativo é uma medição estruturada com métrica, valor, unidade, 
 - uma tratativa pode ter múltiplas medições;
 - não existe score agregado ou threshold automático sem regra de negócio aprovada;
 - impacto quantitativo não altera automaticamente criticidade, escalonamento, status ou SLA.
+
+
+### RB-SAFRA-026 — Criticidade sem inferência
+Os quatro cenários `CRITICAL` não podem ser definidos por inferência.
+
+- Matriz v3 sem coluna formal de criticidade;
+- reunião confirma existência de quatro temas críticos, mas não os nomeia;
+- termos como “crítico” dentro de gatilho/protocolo não equivalem a `scenario_version.criticality = CRITICAL`;
+- até resolução de `GI-SAFRA-001`, nenhuma regra produtiva deve assumir a lista dos quatro;
+- C06 deve preservar a pendência no seed/reconciliação.
