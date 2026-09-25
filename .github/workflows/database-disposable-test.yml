@@ -1,0 +1,37 @@
+name: Database Disposable Test
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  db-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start disposable Supabase stack
+        run: supabase start
+
+      - name: Rebuild database from canonical migrations
+        run: supabase db reset --local
+
+      - name: Run database tests
+        run: supabase test db
+
+      - name: Lint database
+        run: supabase db lint --local --level error
+
+      - name: Stop disposable Supabase stack
+        if: always()
+        run: supabase stop --no-backup
