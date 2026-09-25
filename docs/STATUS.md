@@ -1756,3 +1756,50 @@ Drizzle:
 - `drizzle/schema.ts` permanece vazio;
 - não existe script de deploy Drizzle no `package.json`;
 - `drizzle/migrations` não é fonte de verdade e não deve ser usada para deploy.
+
+
+---
+
+## SAFRA-C05 — rollback, banco descartável e acesso Jair — 25/09/2026
+
+### Rollback e banco descartável
+
+Artefatos adicionados:
+- `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
+- `supabase/seed.sql` sem dados produtivos;
+- `supabase/tests/database/c05_schema_v2.test.sql`;
+- `.github/workflows/database-disposable-test.yml`.
+
+Estratégia:
+- banco descartável = Supabase local via CLI/Docker;
+- rebuild obrigatório via `supabase db reset --local`;
+- testes via `supabase test db` (pgTAP);
+- lint via `supabase db lint --local --level error`;
+- destruição ao final com `supabase stop --no-backup`;
+- PRIMARY nunca é banco descartável;
+- depois de C06, rollback destrutivo deixa de ser padrão; correções passam a ser forward fixes.
+
+Cobertura inicial pgTAP:
+- 17 tabelas do schema v2;
+- RLS nas 17;
+- anon sem grants diretos;
+- authenticated sem grants diretos;
+- criticidade sem default;
+- GI-SAFRA-001 OPEN;
+- ausência de unique ACTIVE por cenário;
+- service_role sem TRUNCATE.
+
+### Jair — acesso confirmado
+
+`jair.silva@editoradobrasil.com.br` já autenticou no Painel via Microsoft Entra/Azure.
+
+Evidência runtime:
+- principal ativo;
+- `user_id` vinculado;
+- provider = `azure`;
+- role ativa = `safra_governance_admin`;
+- `last_sign_in_at = 2026-09-25 18:05:38.625392+00`.
+
+Em horário de São Paulo, isso corresponde a aproximadamente **15:05 de 25/09/2026**.
+
+Nenhum outro papel foi herdado por esse login.
