@@ -10,28 +10,6 @@ function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith('sb_publishable_') || value.startsWith('sb_secret_');
 }
 
-function assertSafraCorporateClaims(claims: Record<string, unknown>) {
-  const isAnonymous = claims["is_anonymous"] === true || claims["is_anonymous"] === "true";
-  const email = typeof claims["email"] === "string" ? claims["email"].toLowerCase() : "";
-  const appMetadata =
-    claims["app_metadata"] && typeof claims["app_metadata"] === "object"
-      ? (claims["app_metadata"] as Record<string, unknown>)
-      : {};
-  const provider = typeof appMetadata["provider"] === "string" ? appMetadata["provider"] : "";
-
-  if (isAnonymous) {
-    throw new Error("Unauthorized: Anonymous sessions are not allowed");
-  }
-
-  if (provider !== "azure") {
-    throw new Error("Unauthorized: Microsoft corporate identity required");
-  }
-
-  if (!email.endsWith("@editoradobrasil.com.br")) {
-    throw new Error("Unauthorized: Corporate email required");
-  }
-}
-
 function createSupabaseFetch(supabaseKey: string): typeof fetch {
   return (input, init) => {
     const headers = new Headers(
@@ -120,7 +98,18 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       throw new Error('Unauthorized: No user ID found in token');
     }
 
-    assertSafraCorporateClaims(data.claims as Record<string, unknown>);
+    const { data: corporateUser, error: corporateUserError } = await supabase.rpc(
+      'safra_is_corporate_user',
+    );
+
+    if (corporateUserError) {
+      console.error('[Supabase] Failed to validate SAFRA corporate authorization', corporateUserError);
+      throw new Error('Unauthorized: Corporate authorization check failed');
+    }
+
+    if (!corporateUser) {
+      throw new Error('Unauthorized: Microsoft corporate identity required');
+    }
 
     return next({
       context: {
