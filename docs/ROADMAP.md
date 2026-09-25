@@ -1118,13 +1118,49 @@ Os testes que dependem do domínio real ficam explicitamente deferidos:
 
 Não marcar esses testes como PASS antes da entidade/mutation existir.
 
+### C04.4 — Gate review G5 / ID-001 / ID-002 / AUDIT-001 — BLOCKED POR EVIDÊNCIA
+
+Framework EBSA aplicado literalmente:
+
+- **ID-001 / G5:** exige criação, recuperação, troca de papel, revogação, desligamento e contas de serviço;
+- **ID-002 / G5.25:** exige revisão de acessos privilegiados e MFA conforme risco;
+- **AUDIT-001 / G5:** exige ator, ação, recurso, data, resultado e correlação para ações sensíveis.
+
+Evidências já disponíveis:
+- Microsoft Entra ID / SSO homologado;
+- primeiro usuário corporativo criado/autenticado;
+- role mapping governado;
+- RLS positiva/negativa;
+- anon bloqueado;
+- outsider corporativo inválido bloqueado;
+- platform admin não herda ownership;
+- usuário authenticated não altera principals/role grants;
+- REST/RPC/server usam predicado corporativo equivalente.
+
+Evidências ainda faltantes:
+- teste formal de troca de papel;
+- teste formal de revogação;
+- cenário de desligamento/sessão antiga;
+- decisão/escopo para contas de serviço;
+- evidência de recuperação de acesso via Entra corporativo;
+- revisão de MFA para papéis privilegiados;
+- trilha de auditoria completa com ator + ação + recurso + data + resultado + correlation_id para ações sensíveis.
+
+Resultado:
+- `G5 = PARTIAL`;
+- `ID-001 = BLOCKED_EVIDENCE`;
+- `ID-002 = BLOCKED_EVIDENCE`;
+- `AUDIT-001 = BLOCKED_EVIDENCE`.
+
+Não fechar por inferência.
+
 ### Gate
 
 ```text
-G5
-ID-001
-ID-002
-AUDIT-001
+G5 = PARTIAL
+ID-001 = BLOCKED_EVIDENCE
+ID-002 = BLOCKED_EVIDENCE
+AUDIT-001 = BLOCKED_EVIDENCE
 ```
 
 ---
