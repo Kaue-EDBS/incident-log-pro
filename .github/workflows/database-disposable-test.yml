@@ -35,7 +35,9 @@ jobs:
       - name: Rehearse rollback of latest migration
         run: |
           supabase migration down --local --last 1
-          supabase test db supabase/rollback-tests/c05_latest_rollback.test.sql
+          cp supabase/rollback-tests/c05_latest_rollback.test.sql supabase/tests/database/__c05_rollback.test.sql
+          supabase test db supabase/tests/database/__c05_rollback.test.sql
+          rm supabase/tests/database/__c05_rollback.test.sql
           supabase db reset --local
           supabase test db
 
