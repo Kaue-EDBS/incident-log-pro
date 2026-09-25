@@ -1100,3 +1100,30 @@ Distinções obrigatórias registradas:
 - incidente TI != tratativa Safra.
 
 Commit de criação do glossário: `a5c88ba535d3bade70781d37382eb69c894f9fcd`.
+
+
+---
+
+## SAFRA-C03 — cenário, versão, tratativa e impacto formalizados — 25/09/2026
+
+Decisões congeladas:
+
+```text
+scenario = identidade estável
+scenario_version = fotografia imutável do conteúdo vigente
+treatment = ocorrência real criada por START
+```
+
+Impacto:
+
+- qualitativo = descrição contextual das consequências;
+- quantitativo = métrica + valor + unidade + fonte + referência temporal;
+- cenário/versão pode registrar impacto esperado;
+- tratativa registra impacto observado;
+- desconhecido não é zero;
+- impacto não muda criticidade, escalonamento, status ou SLA automaticamente;
+- não criar score/faixas/thresholds sem fonte de negócio.
+
+Desenho conceitual para C05/F04:
+- `treatments.impact_summary` para qualitativo;
+- coleção separada de medições quantitativas por tratativa.
