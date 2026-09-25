@@ -1892,3 +1892,38 @@ Próximo subpasso do C05:
 - concorrência START/END/CANCEL;
 - invariantes temporais adicionais;
 - testes diretos de API/RPC e pgTAP.
+
+
+---
+
+## SAFRA-C05 — FKs, constraints, timestamps server-side, version freeze, append-only e integridade temporal — 25/09/2026
+
+Migration adicionada:
+`supabase/migrations/20260925173000_c05_invariants_temporal_hardening.sql`
+
+Aplicado e conferido no Lovable Cloud PRIMARY.
+
+Controles reforçados:
+- FK forte garante que `current_version_id` pertence ao mesmo cenário;
+- publicação/retirada de versão usa horário do banco;
+- áreas/sistemas/SLAs de versão publicada ou retirada ficam congelados;
+- START/END/CANCEL recebem timestamps oficiais do banco;
+- eventos de treatment recebem timestamp oficial do banco;
+- histórico de eventos e medições permanece append-only;
+- owners, áreas impactadas e escalonamentos preservam histórico temporal e não aceitam delete físico;
+- alterações de áreas impactadas/escalonamentos só ocorrem enquanto a tratativa estiver ACTIVE;
+- medições de impacto rejeitam horário materialmente futuro;
+- notificações não podem ser enviadas/falhar antes de entrar na fila;
+- governance issue não pode ser resolvida antes de ter sido aberta;
+- propostas e respostas usam timestamps do banco.
+
+Validação no PRIMARY confirmou a presença das novas FKs/constraints e dos triggers de proteção.
+
+Testes pgTAP foram ampliados de 14 para 20 verificações para cobrir FK, timestamps server-side, version freeze e append-only.
+
+Estado:
+```text
+C05_INTEGRITY_HARDENING = APPLIED
+PRIMARY_VALIDATION = PASS
+CI_DISPOSABLE_DB = RUNNING
+```
