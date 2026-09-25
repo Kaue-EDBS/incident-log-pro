@@ -841,3 +841,52 @@ Evidências:
 - unknown_material_count = 0.
 
 Próxima fase canônica: **SAFRA-C02 — Threat model e abuso de negócio**.
+
+
+---
+
+## SAFRA-C02 — início do threat model — 24/09/2026
+
+Escopo inicial aprovado:
+
+- START;
+- END;
+- owner;
+- criticidade;
+- timestamps;
+- cancelamento;
+- edição/versionamento de cenário.
+
+Decisões-base para o modelo:
+
+- qualquer usuário Microsoft autenticado pode executar START, END e CANCEL;
+- scenario_owner responde pelo card e pelo protocolo com sua equipe, sem exclusividade sobre START/END/CANCEL;
+- timestamps oficiais devem ser server-side;
+- CANCEL exige motivo e preserva histórico;
+- cenário publicado deve ser versionado e não pode ser alterado retroativamente;
+- mudanças de owner, criticidade ou protocolo exigem governança/versionamento;
+- tratativa ativa permanece vinculada à versão do cenário vigente no START;
+- ações críticas devem ser auditáveis e idempotentes.
+
+Threat cases a detalhar/testar:
+
+1. START indevido ou duplicado;
+2. END prematuro ou repetido;
+3. alteração indevida de owner;
+4. mudança de criticidade para evitar ou provocar comunicação;
+5. adulteração de timestamps;
+6. CANCEL usado para mascarar histórico;
+7. edição de cenário publicado;
+8. nova versão afetando tratativa já ativa;
+9. proposta do 12º card tentando virar cenário operacional sem governança.
+
+Destino técnico:
+
+- C04: identidade/autorização;
+- C05: constraints/RPCs;
+- C06: versionamento/seed;
+- C07/M04: timestamps e SLA;
+- M01: state machine;
+- M05: notificações;
+- M10: governança de cenário;
+- F01/F02: END/CANCEL.
