@@ -890,3 +890,44 @@ Destino técnico:
 - M05: notificações;
 - M10: governança de cenário;
 - F01/F02: END/CANCEL.
+
+
+### C02.2 — API, enumeração, vazamento, retry e manipulação de SLA — 24/09/2026
+
+Casos formalizados:
+
+- **AB-API-01 — Bypass da UI por Data API/RPC**
+  - regra: segurança não pode depender da interface;
+  - API/RPC deve aplicar as mesmas autorizações e invariantes;
+  - teste obrigatório via chamada direta sem usar a UI.
+
+- **AB-DATA-01 — Enumeração de dados**
+  - risco: listar usuários, e-mails, cards, IDs ou histórico além da necessidade;
+  - controles: RLS/escopo mínimo, consultas server-side e auditoria de leitura anômala;
+  - testar ID direto, paginação e chamadas fora dos filtros da interface.
+
+- **AB-LEAK-01 — Vazamento de dados internos**
+  - minimizar respostas, logs, erros e payloads de notificação;
+  - não expor secrets/tokens nem dados pessoais desnecessários;
+  - testar API, console, logs, erros e notificações.
+
+- **AB-RETRY-01 — Duplicidade por retry**
+  - START/END/CANCEL/notificação precisam ser idempotentes;
+  - correlation_id/idempotency key e constraints devem impedir duplicidade;
+  - testar duplo clique, concorrência, timeout, refresh e retry.
+
+- **AB-SLA-01 — Manipulação para parar SLA**
+  - SLA deriva de eventos e timestamps válidos persistidos no backend;
+  - CANCEL não significa automaticamente SLA cumprido;
+  - END só fecha relógio cujo end_event corresponda à regra do SLA;
+  - status/timestamp não podem ser alterados diretamente para interromper relógio;
+  - correção administrativa deve ser auditável e append-only.
+
+Destino dos controles:
+
+- C04: autorização/RLS;
+- C05: RPCs, constraints, idempotência e integridade;
+- C07/M04: cálculo e lifecycle de SLA;
+- M05: idempotência de notificações;
+- F01/F02: semântica segura de END/CANCEL;
+- F08: testes diretos de API e E2E de abuso.
