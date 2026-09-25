@@ -4,6 +4,8 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -14,7 +16,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { AuthGate, AuthProvider } from "@/integrations/supabase/AuthProvider";
+import { AuthProvider, useAuth } from "@/integrations/supabase/AuthProvider";
 
 function NotFoundComponent() {
   return (
