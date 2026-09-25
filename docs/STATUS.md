@@ -1176,3 +1176,37 @@ Foram eliminadas ambiguidades de implementação sobre:
 - proposta x cenário.
 
 C05 recebeu regra explícita de não inventar decisões ainda deferidas.
+
+
+---
+
+## SAFRA-C04 — Microsoft SSO implementado no código — 25/09/2026
+
+Implementação concluída no repositório:
+
+- `AuthProvider` com Microsoft Azure/Entra via Supabase Auth;
+- `AuthGate` protege toda a aplicação;
+- único método funcional de entrada: `signInWithOAuth({ provider: "azure" })`;
+- escopo Microsoft `email`;
+- sessão Supabase restaurada e observada via `onAuthStateChange`;
+- logout disponível;
+- token da sessão continua sendo anexado às server functions;
+- middleware server-side valida JWT e usa o `sub` como identidade;
+- nenhum `signInWithPassword`, `signUp` ou recovery por senha foi implementado;
+- `.env.example` documenta `VITE_AUTH_REDIRECT_URL`.
+
+Estado de homologação:
+
+**PARTIAL / EXTERNAL_CONFIG_REQUIRED**
+
+O código está pronto, mas a configuração do provider não foi aplicada porque o projeto Lovable Cloud do Painel Safra não está disponível entre os projetos acessíveis pelo conector Supabase desta sessão.
+
+Antes de liberar usuários reais:
+1. criar/confirmar App Registration no Microsoft Entra ID;
+2. configurar callback do Supabase Auth;
+3. habilitar provider Azure;
+4. restringir ao tenant corporativo;
+5. desabilitar Email/Password no Auth backend;
+6. validar redirect allow list;
+7. realizar login real;
+8. comprovar que a sessão chega ao banco e `auth.uid()` retorna o usuário autenticado.
