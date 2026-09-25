@@ -717,7 +717,9 @@ Ainda aberto:
 Kaue permanece no topo técnico, com Amanda, Vinicius e João como substitutos permanentes.
 
 ### Governança
-Jiane e Jair supervisionam todos os cards, decisões de governança, relatórios e propostas do 12º card. Recebem comunicações operacionais. Não fazem manutenção técnica da plataforma.
+Jair supervisiona todos os cards, decisões de governança, relatórios e propostas do 12º card. Ele é o único `safra_governance_admin`.
+
+Jiane não exerce governança global. Ela permanece como owner dos cards 4, 5, 6 e 8 e recebe somente as comunicações desses cards.
 
 ### Administração executiva
 Bruno Palhão terá uma visão executiva/analytics de todos os cards e métricas. Não recebe e-mails operacionais e não realiza manutenção técnica da plataforma.
@@ -731,7 +733,15 @@ O 12º card é um formulário de proposta de novo cenário, com:
 4. descrição do problema;
 5. descrição de como o problema afeta a Safra.
 
-A proposta é analisada por Jiane/Jair e não vira cenário produtivo automaticamente.
+Fluxo aprovado:
+
+1. Jair recebe a proposta;
+2. Jair encaminha para Daniel, Renato e Jiane;
+3. exatamente 1 aceite -> esse usuário vira owner;
+4. 2 ou mais aceites -> Jair decide;
+5. nenhum aceite -> Jair decide ou aciona Bruno.
+
+A proposta não vira cenário produtivo automaticamente antes da definição do owner e da governança necessária.
 
 ### Pendência proposital para Frontend
 Quando o projeto chegar à fase de Frontend, desenhar separadamente as visões de analytics para:
