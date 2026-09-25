@@ -37,6 +37,7 @@
 | D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | APPROVED |
 | D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED |
 | D-24 | Application criticality = MEDIUM | APPROVED |
+| D-25 | replica_enabled = false; backup/restore continua obrigatório | APPROVED |
 
 ## 3. ADRs
 
@@ -45,7 +46,11 @@
 
 ### ADR-002 — PRIMARY e REPLICA
 PRIMARY Lovable Cloud: **APPROVED**.
-REPLICA: **WAITING_HUMAN_DECISION**.
+REPLICA: **APPROVED = false**.
+
+Não será mantido segundo banco sincronizado.
+
+Isto não elimina a obrigação de backup, restore e recovery testado. Para `service_class=CRITICO`, a estratégia de recuperação deverá provar RTO 30 min e RPO 5 min.
 
 ### ADR-003 — Service class da aplicação
 **APPROVED — 24/09/2026**.
@@ -100,7 +105,6 @@ Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade úni
 - múltiplas tratativas simultâneas;
 - fechamento com passo incompleto/NA;
 - matriz exata de permissões por papel;
-- REPLICA;
 - canal de notificação;
 - aprovadores de novos cenários;
 - retenção;
