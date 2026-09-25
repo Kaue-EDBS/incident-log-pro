@@ -2637,7 +2637,7 @@ DOMÍNIO CORRETO
 O próximo risco a evitar é antecipar implementação antes de concluir o C02/C03. A sequência permanece deliberada: primeiro ameaça e domínio; depois identidade/RLS; depois schema; depois dados; depois UX/operação.
 ---
 
-## SAFRA-C04 — concluído internamente (25/09/2026)
+## SAFRA-C04 — controles internos concluídos (25/09/2026)
 
 Entregue: limpeza do grant temporário, troca e revogação de papel validadas em tempo real,
 vínculo com sessão viva (`session_id` x `auth.sessions`), trilha de auditoria RBAC append-only,
@@ -2649,3 +2649,28 @@ Não iniciado neste ciclo, conforme restrição: scenarios, scenario_versions, s
 treatments, START (C08.1), END/CANCEL (F02.1) e seed dos 11 cenários (C06.1).
 
 Próximo passo: revisão humana do relatório C04 antes de avançar para SAFRA-C05.
+
+
+### C04.6 — Auditoria pós-Lovable
+
+Resultado técnico interno:
+- TEMP_GRANT_CLEANUP = PASS;
+- ROLE_CHANGE = PASS;
+- ROLE_REVOCATION = PASS;
+- REVOKED_SESSION = PASS;
+- SERVICE_ACCOUNT_SCOPE = NOT_APPLICABLE_MVP;
+- RBAC_AUDIT_TRAIL = PASS.
+
+Dependências externas:
+- ENTRA_RECOVERY = EXTERNAL_EVIDENCE_PENDING;
+- PRIVILEGED_MFA = EXTERNAL_EVIDENCE_PENDING.
+
+Gates:
+```text
+G5 = INTERNAL_PASS / EXTERNAL_IDENTITY_EVIDENCE_PENDING
+ID-001 = INTERNAL_CONTROLS_PASS / EXTERNAL_RECOVERY_EVIDENCE_PENDING
+ID-002 = INTERNAL_CONTROLS_PASS / PRIVILEGED_MFA_EXTERNAL_EVIDENCE_PENDING
+AUDIT-001 = PASS
+```
+
+Não avançar o status para C05 por decisão automática; revisão humana permanece necessária.
