@@ -55,6 +55,7 @@
 | D-40 | Recuperação e MFA Microsoft são controles corporativos externos à aplicação; C04 pode fechar no escopo do Painel | APPROVED |
 | D-41 | Schema v2 canônico materializado no PRIMARY e versionado em supabase/migrations | APPROVED / IMPLEMENTED |
 | D-42 | supabase/migrations é a única autoridade de migrations; Drizzle fica sem autoridade de deploy; drift C00/C04/C05 reconciliado | APPROVED / IMPLEMENTED |
+| D-43 | Banco descartável padrão = Supabase local via CLI/Docker; rollback pós-C06 = forward fix por padrão | APPROVED / IMPLEMENTED |
 
 ## 3. ADRs
 
@@ -620,3 +621,23 @@ Versões reconciliadas:
 - 20260925164600;
 - 20260925164700;
 - 20260925170000.
+
+
+### ADR-036 — Rollback e banco descartável
+**APPROVED / IMPLEMENTED — 25/09/2026**.
+
+Decisão:
+- PRIMARY nunca é ambiente descartável;
+- o ambiente descartável padrão é Supabase local via CLI/Docker;
+- migrations canônicas são reconstruídas com `supabase db reset --local`;
+- testes de banco usam pgTAP via `supabase test db`;
+- lint local usa `supabase db lint --local --level error`;
+- seed local não contém dados produtivos;
+- após C06 e existência de dados reais, rollback destrutivo deixa de ser padrão e correções devem preferir forward fix;
+- backup/restore/RTO/RPO permanecem no C09.
+
+Artefatos:
+- `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
+- `supabase/seed.sql`;
+- `supabase/tests/database/c05_schema_v2.test.sql`;
+- `.github/workflows/database-disposable-test.yml`.
