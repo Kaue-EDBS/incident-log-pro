@@ -482,3 +482,126 @@ Qualquer mudança material nestas definições deve:
 3. atualizar `docs/ROADMAP.md` se alterar sequência ou escopo;
 4. reavaliar migrations/API/UI/testes afetados;
 5. preservar compatibilidade histórica das tratativas já registradas.
+
+
+---
+
+## 7. Impacto — formalização do domínio
+
+### 7.1 Regra estrutural
+
+Impacto pertence à ocorrência/tratativa quando descreve o que efetivamente aconteceu. Um cenário pode registrar **impacto esperado/potencial**, mas o impacto real só existe na tratativa.
+
+```text
+CENÁRIO / VERSÃO
+  -> impacto esperado ou potencial
+
+TRATATIVA
+  -> impacto observado ou efetivo
+```
+
+### 7.2 Impacto qualitativo
+
+**Definição:** descrição textual e contextual das consequências da contingência, sem depender de uma medida numérica.
+
+Pode responder, por exemplo:
+- o que foi afetado;
+- como a operação foi afetada;
+- quais áreas foram atingidas;
+- qual consequência operacional foi percebida.
+
+**No cenário/versão:** descreve o tipo de impacto que pode ocorrer.
+
+**Na tratativa:** descreve o impacto efetivamente observado naquela ocorrência.
+
+**Regra:** impacto qualitativo não é criticidade e não promove escalonamento automaticamente.
+
+**Regra:** a descrição deve registrar fatos/contexto operacional, evitando inferências ou números sem fonte.
+
+### 7.3 Impacto quantitativo
+
+**Definição:** medida estruturada da magnitude do impacto observado, sempre composta por pelo menos:
+
+- métrica;
+- valor;
+- unidade;
+- fonte/origem;
+- instante ou período de referência.
+
+Exemplos de formato, sem definir quais métricas são obrigatórias:
+
+```text
+métrica = pedidos_afetados
+valor = 120
+unidade = pedidos
+fonte = sistema/origem declarada
+medido_em = timestamp
+```
+
+ou
+
+```text
+métrica = percentual_operacao_afetada
+valor = 18.5
+unidade = percentual
+fonte = origem declarada
+medido_em = timestamp
+```
+
+**Regra:** ausência de fonte impede tratar o valor como impacto quantitativo confirmado.
+
+**Regra:** não inventar zero quando o valor for desconhecido. Usar ausência/null/UNKNOWN conforme contrato da fase de dados.
+
+**Regra:** impacto quantitativo não altera automaticamente:
+- criticidade;
+- escalonamento;
+- estado da tratativa;
+- cumprimento de SLA.
+
+Qualquer automação futura baseada em limiar exige regra de negócio própria e versionada.
+
+### 7.4 O que não será criado no C03
+
+O C03 **não** cria:
+- score único de impacto;
+- faixas baixa/média/alta inventadas;
+- pesos;
+- fórmula financeira;
+- threshold automático;
+- conversão automática de impacto em criticidade.
+
+Esses itens só podem existir quando houver fonte de negócio e decisão explícita.
+
+### 7.5 Modelo conceitual recomendado
+
+[DERIVADO — desenho para implementação futura em C05/F04]
+
+```text
+treatments
+  impact_summary            # qualitativo
+
+treatment_impact_measurements
+  id
+  treatment_id
+  metric_code
+  metric_label
+  value_numeric
+  unit
+  source_type
+  source_reference
+  measured_at
+  recorded_by
+  created_at
+```
+
+Uma tratativa pode possuir zero, uma ou várias medições quantitativas.
+
+### 7.6 Distinções adicionais congeladas
+
+| Não confundir | Motivo |
+|---|---|
+| impacto qualitativo × impacto quantitativo | descrição contextual × medida estruturada |
+| impacto esperado × impacto observado | expectativa do cenário × efeito real da tratativa |
+| impacto × criticidade | consequência da ocorrência × classificação governada do cenário |
+| impacto × SLA | magnitude do efeito × compromisso temporal |
+| impacto quantitativo desconhecido × zero | ausência de medida × valor medido igual a zero |
