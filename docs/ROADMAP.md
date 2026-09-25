@@ -1154,6 +1154,86 @@ Resultado:
 
 Não fechar por inferência.
 
+### C04.5 — Fechamento controlado via Lovable — PLANEJADO
+
+Objetivo: usar o ambiente do próprio Lovable Cloud para concluir os controles de identidade/RBAC que ficaram bloqueados pelos conectores externos, sem antecipar C05/C06/C08/F02.
+
+#### Prioridade 0 — limpeza obrigatória
+
+Antes de qualquer novo teste:
+- localizar qualquer grant ativo com `source = C04_ID001_TEMP_TEST`;
+- revogar/remover o grant temporário de teste;
+- comprovar que Kaue permanece apenas com o papel permanente `safra_platform_admin`;
+- registrar evidência antes/depois.
+
+Nenhuma evolução deve continuar enquanto esse estado não estiver confirmado.
+
+#### Escopo Lovable
+
+1. **Troca de papel controlada**
+   - usar fixture/principal de teste ou mudança temporária reversível;
+   - provar alteração imediata de autorização com o mesmo `auth.uid()`;
+   - não remover acesso técnico permanente de produção sem rollback explícito.
+
+2. **Revogação de papel**
+   - revogar grant governado;
+   - comprovar que a RPC de role deixa de autorizar imediatamente;
+   - garantir ausência de dependência de `user_metadata` ou cache do browser.
+
+3. **Sessão antiga / desligamento**
+   - validar `session_id` contra `auth.sessions` nas operações sensíveis;
+   - token com assinatura/expiração válidas, mas sessão inexistente/revogada, deve falhar;
+   - preservar o teste já aprovado de `exp` vencido.
+
+4. **AUDIT-001 para RBAC**
+   - registrar ator, ação, recurso, data/hora, resultado e `correlation_id`;
+   - cobrir grant, troca e revogação de papel;
+   - auditoria deve ser server-side e não controlada pelo browser;
+   - histórico não pode ser apagado silenciosamente por usuário comum.
+
+5. **Contas de serviço**
+   - registrar `NOT_APPLICABLE_MVP` se não existir identidade de serviço funcional no produto;
+   - `service_role` técnico do backend não é tratado como usuário humano nem como conta funcional do Painel;
+   - qualquer futura conta de integração reabre ID-001.
+
+#### Fora do escopo Lovable
+
+Dependências do Microsoft Entra/TI:
+- evidência do processo corporativo de recuperação de acesso;
+- política de MFA/Conditional Access dos usuários privilegiados.
+
+O Lovable não deve simular nem substituir essas evidências.
+
+#### Restrições
+
+- não criar `scenarios`, `scenario_versions`, `treatments` ou mutations START/END/CANCEL nesta etapa;
+- não alterar ownership dos 11 cenários;
+- não mudar a regra de negócio de acesso base;
+- não introduzir login local por senha;
+- não usar `user_metadata` para autorização;
+- não expor service role/secret ao browser;
+- toda mudança permanente deve ser versionada em `supabase/migrations`;
+- ao final, GitHub deve refletir integralmente o estado produzido no Lovable.
+
+#### Evidências esperadas
+
+```text
+TEMP_GRANT_CLEANUP = PASS
+ROLE_CHANGE = PASS
+ROLE_REVOCATION = PASS
+REVOKED_SESSION = PASS
+SERVICE_ACCOUNT_SCOPE = N/A_MVP
+RBAC_AUDIT_TRAIL = PASS
+ENTRA_RECOVERY = EXTERNAL_EVIDENCE_PENDING|PASS
+PRIVILEGED_MFA = EXTERNAL_EVIDENCE_PENDING|PASS
+```
+
+Somente após essas evidências reavaliar:
+- `G5`;
+- `ID-001`;
+- `ID-002`;
+- `AUDIT-001`.
+
 ### Gate
 
 ```text
