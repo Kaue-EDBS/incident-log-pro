@@ -1,0 +1,13 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select plan(8);
+select is((select count(*)::bigint from public.scenarios where code ~ '^SAFRA-(0[1-9]|1[01])$'),11::bigint,'exactly 11 canonical SAFRA scenarios exist');
+select is((select count(*)::bigint from public.scenario_versions sv join public.scenarios sc on sc.id=sv.scenario_id where sc.code ~ '^SAFRA-(0[1-9]|1[01])$' and sv.status='PUBLISHED' and sv.version_no=1),11::bigint,'all 11 scenarios have published v1');
+select is((select count(*)::bigint from public.scenario_versions sv join public.scenarios sc on sc.id=sv.scenario_id where sc.code ~ '^SAFRA-(0[1-9]|1[01])$' and sv.criticality is null),11::bigint,'all 11 canonical scenarios preserve null criticality');
+select is((select count(*)::bigint from public.scenario_owners so join public.scenarios sc on sc.id=so.scenario_id where sc.code ~ '^SAFRA-(0[1-9]|1[01])$' and so.valid_to is null),11::bigint,'all 11 scenarios have one active owner');
+select is((select count(*)::bigint from public.scenario_owners so join public.scenarios sc on sc.id=so.scenario_id join private.safra_principals p on p.id=so.owner_id where sc.code in ('SAFRA-01','SAFRA-02','SAFRA-03','SAFRA-07','SAFRA-10','SAFRA-11') and p.display_name='Daniel Garcia' and so.valid_to is null),6::bigint,'Daniel owns 1,2,3,7,10,11');
+select is((select count(*)::bigint from public.scenario_owners so join public.scenarios sc on sc.id=so.scenario_id join private.safra_principals p on p.id=so.owner_id where sc.code in ('SAFRA-04','SAFRA-05','SAFRA-06','SAFRA-08') and p.display_name='Jiane Rodrigues' and so.valid_to is null),4::bigint,'Jiane owns 4,5,6,8');
+select is((select count(*)::bigint from public.scenario_owners so join public.scenarios sc on sc.id=so.scenario_id join private.safra_principals p on p.id=so.owner_id where sc.code='SAFRA-09' and p.display_name='Renato de Paulo' and so.valid_to is null),1::bigint,'Renato owns 9');
+select is((select count(*)::bigint from public.scenario_versions sv join public.scenarios sc on sc.id=sv.scenario_id where sc.code ~ '^SAFRA-(0[1-9]|1[01])$' and sv.source_reference like '%b0cca8cce835dbdc65ab0c30212fd89480d2cf51e9fb62d215ad1bde0963ead6%'),11::bigint,'all canonical versions carry source hash');
+select * from finish();
+rollback;
