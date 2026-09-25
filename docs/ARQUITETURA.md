@@ -2,7 +2,7 @@
 
 > Documento canônico de arquitetura.
 > Atualizado em: 24/09/2026
-> Estado: **SAFRA-C01 — consolidado, com decisões materiais ainda abertas**
+> Estado: **SAFRA-C01 concluído; próxima fase SAFRA-C02**
 
 ## 1. Objetivo
 
@@ -261,18 +261,17 @@ A estratégia e as evidências serão fechadas no SAFRA-C09.
 
 O produto deve preservar eventos de START, passos, alterações relevantes, escalonamento, notificações, END e CANCEL. A trilha não pode depender apenas do frontend.
 
-## 11. Pendências arquiteturais
+## 11. Pendências arquiteturais deferidas
 
-**WAITING_HUMAN_DECISION**:
+Não há UNKNOWN material de arquitetura no escopo C01.
 
-- service class da aplicação — **CRITICO**, atributo técnico do Framework EBSA, não derivado dos cenários;
-- criticidade técnica/operacional da aplicação — **MEDIUM**, distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
-- matriz fina de permissões entre `safra_admin` e `scenario_owner`;
-- tratamento de usuário autenticado sem papel funcional;
-- RTO/RPO;
-- retenção;
-- canal de notificação;
-- estratégia canônica de migrations.
+Itens com destino explícito:
+- RBAC fino e ciclo de identidade -> SAFRA-C04;
+- estratégia canônica de migrations -> SAFRA-C05;
+- domínio/criticidade dos cenários -> SAFRA-C03/C06;
+- notificações -> SAFRA-M05;
+- recovery testado -> SAFRA-C09;
+- demais regras operacionais -> fases de domínio/MEIO/FIM correspondentes.
 
 ## 12.1 Separação obrigatória de criticidades
 
