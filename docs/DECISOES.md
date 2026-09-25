@@ -40,6 +40,7 @@
 | D-25 | replica_enabled = false; backup/restore continua obrigatório | APPROVED |
 | D-26 | Política de retenção vinculada ao fim formal da Safra, com anonimização/eliminação posterior quando identidade não for necessária | APPROVED |
 | D-27 | Gates G3 e G3.25 fechados; SAFRA-C01 concluído com 0 UNKNOWN material | APPROVED |
+| D-28 | SAFRA-C02 concluído; G3.5, THREAT-001 e AUTHZ-001 = PASS | APPROVED |
 
 ## 3. ADRs
 
@@ -284,3 +285,18 @@ SAFRA-C01 = CONCLUIDO
 ```
 
 Pendências de fases posteriores não foram apagadas. Elas foram classificadas como `DEFERRED_TO_<fase>` e deverão ser retomadas nos respectivos gates.
+
+
+### ADR-018 — Fechamento do SAFRA-C02
+**APPROVED — 25/09/2026**.
+
+Resultado:
+
+```text
+SAFRA-C02 = CONCLUIDO
+G3.5 = PASS
+THREAT-001 = PASS
+AUTHZ-001 = PASS
+```
+
+O fechamento aprova o threat model, os controles requeridos, os testes derivados e a classificação de riscos residuais. Não antecipa a implementação de RLS/RBAC/RPCs/constraints, que permanece nas fases definidas pelo roadmap.
