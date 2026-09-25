@@ -633,7 +633,7 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 
 | Atributo | Registro atual |
 |---|---|
-| service class da aplicação | WAITING_HUMAN_DECISION — requisito técnico do Framework EBSA; não deriva dos materiais-mãe |
+| service class da aplicação | **DECIDIDO: CRITICO** — SLO 99,95%; RTO 30 min; RPO 5 min |
 | criticidade técnica da aplicação | WAITING_HUMAN_DECISION — distinta de CRITICAL/HIGH/MODERATE dos cenários |
 | criticidade dos cenários | CRITICAL/HIGH/MODERATE — regra de domínio registrada; lista dos quatro críticos ainda pendente |
 | Auth | **DECIDIDO:** Microsoft Entra ID corporativo via SSO; login frontend ainda não implementado; 0 usuários |
@@ -759,3 +759,17 @@ Para o fechamento do SAFRA-C01:
 - `DEFERRED_TO_SAFRA-C04/C05/...` = decisão conscientemente adiada para fase responsável, com destino explícito;
 - item deferido não deve ser tratado como desconhecido;
 - nenhum campo material pode ser silenciosamente convertido em `false` ou default.
+
+
+### Service class da aplicação — CRITICO — 24/09/2026
+
+**APPROVED**
+
+```text
+service_class = CRITICO
+SLO = 99,95%
+RTO = 30 min
+RPO = 5 min
+```
+
+A decisão classifica o próprio Painel Safra e não deve ser confundida com a criticidade CRITICAL/HIGH/MODERATE dos cenários.
