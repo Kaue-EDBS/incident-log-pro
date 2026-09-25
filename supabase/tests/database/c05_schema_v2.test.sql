@@ -137,9 +137,15 @@ select is(
 
 
 
-select fk_ok(
-  'public', 'scenarios', 'scenarios_current_version_same_scenario_fk',
-  'public', 'scenario_versions',
+select ok(
+  exists (
+    select 1
+    from pg_constraint c
+    where c.conname = 'scenarios_current_version_same_scenario_fk'
+      and c.conrelid = 'public.scenarios'::regclass
+      and c.confrelid = 'public.scenario_versions'::regclass
+      and c.contype = 'f'
+  ),
   'scenario current_version FK is enforced'
 );
 
