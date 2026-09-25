@@ -36,6 +36,7 @@
 | D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards | APPROVED |
 | D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | APPROVED |
 | D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED |
+| D-24 | Application criticality = MEDIUM | APPROVED |
 
 ## 3. ADRs
 
@@ -128,7 +129,7 @@ Não esconder decisão em prompt, commit ou mensagem de chat.
 | Tema | Estado registrado |
 |---|---|
 | Service class | **WAITING_HUMAN_DECISION** — candidatos INTERNO x OPERACIONAL |
-| Criticidade da aplicação | **WAITING_HUMAN_DECISION** — não confundir com criticidade de cenário |
+| Criticidade da aplicação | **MEDIUM — APPROVED**; independente de service_class=CRITICO e da criticidade dos cenários |
 | Auth | Microsoft Entra ID corporativo via SSO aprovado; frontend ainda não implementado; 0 usuários Auth |
 | Papéis privilegiados | funcionais aprovados: apenas safra_admin e scenario_owner; service_role permanece técnico/server-side |
 | Dados pessoais | **sim** — identidade interna, nome, e-mail, papéis, autoria/auditoria e possíveis dados incidentais em texto livre |
@@ -235,3 +236,20 @@ A submissão não cria protocolo produtivo automaticamente. O fluxo aprovado é:
    - tomar a decisão de ownership por conta própria.
 
 Jiane participa desse fluxo como candidata a owner, não como governança global.
+
+
+### ADR-015 — Application criticality
+**APPROVED — 24/09/2026**.
+
+```text
+application_criticality = MEDIUM
+```
+
+Esta classificação representa o impacto operacional/organizacional do próprio Painel Safra.
+
+Ela é independente de:
+
+- `service_class = CRITICO`;
+- `scenario.criticality = CRITICAL/HIGH/MODERATE`.
+
+A combinação `service_class=CRITICO` + `application_criticality=MEDIUM` é uma decisão explícita do projeto.
