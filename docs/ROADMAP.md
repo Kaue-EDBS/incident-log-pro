@@ -1113,6 +1113,85 @@ Dados pessoais identificáveis permanecem até o encerramento formal da Safra e 
 - operador fecha protocolo para "parar SLA";
 - edição de cenário validado sem nova versão.
 
+### Casos formalizados — C02.2
+
+#### AB-API-01 — Bypass da UI por Data API/RPC
+
+**Abuso:** usuário autenticado chama diretamente a Data API/RPC e tenta executar uma ação que a interface esconderia ou bloquearia.
+
+**Impacto:** START/END/CANCEL indevido, alteração de owner/criticidade, mudança de estado e quebra de invariantes.
+
+**Controles:**
+- autorização obrigatória no backend/banco;
+- RLS como barreira de dados;
+- funções/RPC para operações críticas;
+- constraints e state guards;
+- nunca depender de botão oculto como controle de segurança.
+
+**Teste:** repetir operações críticas diretamente contra API/RPC sem usar a UI e comprovar o mesmo bloqueio aplicado pelo produto.
+
+#### AB-DATA-01 — Enumeração de dados
+
+**Abuso:** usuário autenticado tenta listar IDs, cards, usuários, e-mails ou histórico além do necessário usando filtros, paginação, IDs previsíveis ou chamadas diretas.
+
+**Impacto:** exposição de estrutura interna, pessoas, ownership e histórico operacional.
+
+**Controles:**
+- consultas autorizadas server-side;
+- RLS/escopo mínimo;
+- evitar endpoints de diretório sem finalidade;
+- paginação e filtros sem ampliar escopo de autorização;
+- auditoria de padrões anormais de leitura.
+
+**Teste:** tentar acessar/listar registros fora do escopo permitido por ID direto, paginação e consulta sem filtros de UI.
+
+#### AB-LEAK-01 — Vazamento de dados internos
+
+**Abuso:** e-mail, nome, payload de notificação, logs ou mensagens de erro expõem dados internos além da finalidade.
+
+**Impacto:** vazamento de dados pessoais corporativos e informação operacional.
+
+**Controles:**
+- minimização de payload;
+- logs sem secrets/tokens;
+- mensagens de erro sem detalhes internos;
+- destinatários derivados de regra de negócio;
+- deduplicação de destinatários;
+- evitar exposição de e-mails em respostas públicas/client-side desnecessárias.
+
+**Teste:** inspecionar resposta API, logs, console, mensagens de erro e payloads de notificação.
+
+#### AB-RETRY-01 — Duplicidade por retry
+
+**Abuso/falha:** duplo clique, refresh, timeout ou retry repete START, END, CANCEL ou notificação.
+
+**Impacto:** múltiplas tratativas, eventos duplicados, e-mails repetidos e métricas incorretas.
+
+**Controles:**
+- idempotency key/correlation_id;
+- constraint contra duplicidade incompatível;
+- transação atômica;
+- operação repetida retorna resultado idempotente;
+- notification log com chave única por evento/destinatário.
+
+**Teste:** executar a mesma operação várias vezes, inclusive em paralelo e após timeout simulado.
+
+#### AB-SLA-01 — Manipulação para parar SLA
+
+**Abuso:** usuário tenta usar END, CANCEL, mudança de status, edição de timestamp ou request direto para interromper um SLA sem transição válida.
+
+**Impacto:** cumprimento artificial de SLA, MTTR/duração falsos e perda de accountability.
+
+**Controles:**
+- SLA deriva exclusivamente de eventos/timestamps persistidos;
+- transição de estado validada no backend;
+- CANCEL não equivale automaticamente a SLA cumprido;
+- END só fecha relógios associados ao evento de término definido na regra do SLA;
+- alteração retroativa de timestamp proibida no fluxo normal;
+- correção administrativa gera evento auditável, nunca overwrite silencioso.
+
+**Teste:** tentar parar SLA via alteração direta de status, CANCEL, edição de timestamp, request repetido e manipulação do relógio do browser.
+
 ### Controles
 
 - RLS;
@@ -1122,6 +1201,8 @@ Dados pessoais identificáveis permanecem até o encerramento formal da Safra e 
 - constraints;
 - role mapping;
 - event correlation;
+- idempotência;
+- minimização de dados;
 - revisão administrativa.
 
 ### Gate EBSA
