@@ -12,10 +12,14 @@ import {
 import { supabase } from "./client";
 import { lovable } from "@/integrations/lovable/index";
 
+type AccessState = "unknown" | "checking" | "granted" | "denied";
+
 type AuthContextValue = {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  access: AccessState;
+  accessReason: string | null;
   signInWithMicrosoft: () => Promise<void>;
   signOut: () => Promise<void>;
 };
