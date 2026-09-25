@@ -1803,3 +1803,23 @@ Evidência runtime:
 Em horário de São Paulo, isso corresponde a aproximadamente **15:05 de 25/09/2026**.
 
 Nenhum outro papel foi herdado por esse login.
+
+
+### Evidência CI — Database Disposable Test
+
+Workflow:
+`.github/workflows/database-disposable-test.yml`
+
+Run validado:
+- run_id: `36176511561`;
+- conclusão: **SUCCESS**.
+
+Etapas com PASS:
+- Setup Supabase CLI;
+- Start disposable Supabase stack;
+- Rebuild database from canonical migrations;
+- Run database tests;
+- Lint database;
+- Stop disposable Supabase stack.
+
+Isso comprova que o banco descartável consegue ser recriado do zero a partir de `supabase/migrations`, executar a bateria pgTAP, passar no lint e ser destruído ao final.
