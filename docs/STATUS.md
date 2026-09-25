@@ -1823,3 +1823,72 @@ Etapas com PASS:
 - Stop disposable Supabase stack.
 
 Isso comprova que o banco descartável consegue ser recriado do zero a partir de `supabase/migrations`, executar a bateria pgTAP, passar no lint e ser destruído ao final.
+
+
+---
+
+## SAFRA-C05 — domínio canônico consolidado por agregados — 25/09/2026
+
+A criação física do domínio já estava materializada na migration canônica
+`supabase/migrations/20260925170000_c05_schema_v2_canonical_base.sql`.
+Nesta rodada o modelo foi auditado e reconciliado com a arquitetura canônica, sem criar tabela duplicada.
+
+### Domínios e fontes de verdade
+
+| Domínio | Persistência canônica |
+|---|---|
+| Áreas | `operational_areas`, `scenario_version_impacted_areas`, `treatment_impacted_areas` |
+| Sistemas | `systems`, `scenario_version_systems` |
+| Papéis | `private.safra_principals`, `private.safra_role_grants` |
+| Cenários/versionamento | `scenarios`, `scenario_versions` |
+| Owners | `scenario_owners` |
+| SLAs | `scenario_slas` |
+| Treatments | `treatments`, `treatment_impact_measurements` |
+| Eventos | `treatment_events` |
+| Escalonamentos | `treatment_escalations` |
+| Notificações | `notifications_log` |
+| Propostas | `scenario_proposals`, `scenario_proposal_owner_responses` |
+| Governance issues | `governance_issues` |
+
+### Regras estruturais confirmadas
+
+- papéis administrativos não geram ownership;
+- não criar `safra_user_roles` concorrente;
+- cenário é identidade estável e versão é fotografia imutável;
+- relações de áreas/sistemas/SLA pertencem à versão quando afetam conteúdo histórico;
+- START congela scenario/version/owner/área responsável;
+- treatment histórico não é apagado;
+- eventos e medições históricas são append-only;
+- escalonamento permanece separado do status;
+- proposta não é cenário publicado;
+- governance issue aberta não vira default;
+- GI-SAFRA-001 permanece OPEN;
+- múltiplos ACTIVE por cenário continuam sem constraint até M01.
+
+### Segurança do domínio C05
+
+As 17 tabelas novas permanecem:
+- com RLS habilitada;
+- deny-by-default para `anon` e `authenticated`;
+- sem exposição operacional antecipada pela Data API;
+- com acesso técnico de `service_role` sem `TRUNCATE`.
+
+### Documentação reconciliada
+
+`docs/ARQUITETURA.md` foi atualizado para refletir o estado real após C04/C05, removendo referências transitórias já superadas e descrevendo os agregados físicos atuais.
+
+### Resultado
+
+```text
+C05_DOMAIN_MODEL = PASS
+duplicate_role_model = false
+schema_change_required_this_round = false
+GI-SAFRA-001 = OPEN
+```
+
+Próximo subpasso do C05:
+- RPCs/funções transacionais para mutações críticas;
+- idempotência/correlation_id;
+- concorrência START/END/CANCEL;
+- invariantes temporais adicionais;
+- testes diretos de API/RPC e pgTAP.
