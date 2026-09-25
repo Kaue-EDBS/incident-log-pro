@@ -1209,3 +1209,41 @@ Homologação confirmada:
 - cadeia de sessão Supabase pronta para uso de `auth.uid()`.
 
 A implementação atual utiliza `@lovable.dev/cloud-auth-js` como broker de autenticação Microsoft e, após retorno bem-sucedido, grava os tokens na sessão Supabase.
+
+
+---
+
+## SAFRA-C04 — role mapping implementado sem ownership automático — 25/09/2026
+
+Implementado no Lovable Cloud PRIMARY:
+
+- `private.safra_principals`;
+- `private.safra_role_grants`;
+- vínculo por e-mail corporativo -> `auth.uid()`;
+- trigger de binding após criação/atualização de usuário Auth;
+- `private.safra_has_role(...)`;
+- `private.get_my_safra_roles()`;
+- wrappers `public.safra_has_role(...)` e `public.get_my_safra_roles()` como `SECURITY INVOKER`.
+
+Role mapping ativo:
+- Kaue, Amanda, Vinicius, João -> `safra_platform_admin`;
+- Jair -> `safra_governance_admin`;
+- Bruno -> `safra_executive_admin`;
+- Daniel, Jiane, Renato -> `scenario_owner`.
+
+Validação runtime com role PostgreSQL `authenticated`:
+```text
+auth.uid() = usuário Microsoft autenticado
+roles = [safra_platform_admin]
+safra_has_role(platform_admin) = true
+safra_has_role(scenario_owner) = false
+```
+
+Regra preservada:
+- platform/governance/executive admin não recebem ownership automático;
+- `scenario_owner` não significa ownership de cenário específico;
+- vínculo cenário->owner será entidade separada em C05/C06.
+
+Pendência:
+- RLS legado C00 ainda depende de `app_metadata.safra_access`;
+- migração das policies para o role mapping definitivo é próximo subpasso do C04.
