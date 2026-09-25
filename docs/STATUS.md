@@ -1,7 +1,7 @@
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 24/09/2026  
-> Fase atual: **SAFRA-C02 — Threat model e abuso de negócio**  
+> Fase atual: **SAFRA-C03 — Glossário e modelo de domínio**  
 > Escopo atual: consolidar fontes canônicas, perfil estruturado do projeto, arquitetura, privacidade, regras, paridade e decisões.
 
 ---
@@ -1027,3 +1027,32 @@ Principais efeitos:
 - roadmap v2.1 passa a ser a fonte canônica de sequência de execução.
 
 Commit de promoção do roadmap: `f36f04d7d14c09cf5ee8a56b511c63081d6acb4f`.
+
+
+---
+
+## Fechamento formal SAFRA-C02 — 25/09/2026
+
+**Status: CONCLUÍDO**
+
+Resultado:
+- ameaças materiais modeladas;
+- controles definidos;
+- testes positivos, negativos, concorrência/retry e limite derivados;
+- critérios de evidência definidos;
+- riscos residuais classificados;
+- cada risco residual possui fase responsável;
+- nenhum bloqueador material sem destino permanece no C02.
+
+Gates:
+- **G3.5 = PASS**
+- **THREAT-001 = PASS**
+- **AUTHZ-001 = PASS**
+
+Leitura correta do fechamento:
+- o modelo de ameaça e o contrato de autorização estão aprovados;
+- RLS/RBAC finais ainda serão implementados em C04;
+- RPCs/constraints/idempotência/schema serão implementados em C05;
+- demais controles seguem para C06/C07/M04/M05/M10/F01/F02/F08 conforme roadmap.
+
+Próxima fase canônica: **SAFRA-C03 — Glossário e modelo de domínio**.
