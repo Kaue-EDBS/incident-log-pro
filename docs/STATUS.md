@@ -1,7 +1,7 @@
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 24/09/2026  
-> Fase atual: **SAFRA-C01 — Documentação canônica e PROJECT_PROFILE**  
+> Fase atual: **SAFRA-C02 — Threat model e abuso de negócio**  
 > Escopo atual: consolidar fontes canônicas, perfil estruturado do projeto, arquitetura, privacidade, regras, paridade e decisões.
 
 ---
@@ -605,24 +605,18 @@ Testes:
 
 ### PROJECT_PROFILE
 
-Criado como `IN_PROGRESS`.
+Criado, reconciliado e aprovado para o escopo C01.
 
-Isso é intencional: ainda existem decisões materiais marcadas como `WAITING_HUMAN_DECISION`, especialmente:
-
-- service class;
-- criticidade;
-- identity provider;
-- papéis definitivos;
-- REPLICA;
-- RTO/RPO;
-- retenção;
-- estratégia canônica de migrations.
+Os atributos materiais do perfil foram decididos ou formalmente direcionados para a fase responsável. Não resta `UNKNOWN` material no C01.
 
 ### Estado do C01
 
 **Estrutura documental: consolidada.**  
-**PROJECT_PROFILE: criado e utilizável.**  
-**Gate G3/G3.25: ainda não fechado**, pois o próprio roadmap exige não concluir enquanto houver UNKNOWN/WAITING_HUMAN_DECISION material.
+**PROJECT_PROFILE: aprovado para o escopo C01.**  
+**UNKNOWN material: 0.**  
+**Gate G3: PASS.**  
+**Gate G3.25: PASS.**  
+**SAFRA-C01: CONCLUÍDO.**
 
 
 ---
@@ -640,7 +634,7 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 | papéis privilegiados | **DECIDIDO:** safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner; matriz fina deferida ao SAFRA-C04 |
 | dados pessoais | presentes; categorias registradas; minimização obrigatória |
 | integrações | nenhuma ativa no MVP; futuras governadas por contrato/DATA_RELEASE |
-| REPLICA | WAITING_HUMAN_DECISION; não provisionada |
+| REPLICA | **DECIDIDO: false**; backup/restore continuam obrigatórios |
 | API | nenhuma API pública; Data API interna protegida por grants/RLS |
 | regras de domínio | obrigatórias; regras Safra e legadas registradas; refinamentos específicos seguem nas fases de domínio |
 
@@ -648,7 +642,7 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 
 O requisito de **registrar** esses atributos está cumprido.
 
-O G3/G3.25 ainda não deve ser fechado enquanto existirem decisões materiais sem resolução explícita. Itens já direcionados para fases futuras devem ser marcados como `DEFERRED_TO_...` e não contam como `UNKNOWN`. Identity provider já foi decidido; RBAC fino está deferido ao SAFRA-C04; tooling de migrations está deferido ao SAFRA-C05.
+Os gates G3 e G3.25 foram fechados porque não restam UNKNOWN materiais do C01. Decisões posteriores permanecem explicitamente `DEFERRED_TO_<fase>` e serão reabertas na fase responsável.
 
 
 ### Correção conceitual — criticidade x service class — 24/09/2026
@@ -812,3 +806,38 @@ Depois disso:
 
 - eliminar ou anonimizar identidade;
 - preservar histórico operacional e métricas para análise entre Safras quando a identificação pessoal não for necessária.
+
+
+---
+
+## Fechamento formal G3 / G3.25 — 24/09/2026
+
+### G3 — Documentação canônica
+**PASS**
+
+Evidências:
+- fontes canônicas definidas;
+- autoridade documental separada por assunto;
+- decisões materiais registradas;
+- histórico Git preservado;
+- documentação atualizada durante o processo.
+
+### G3.25 — PROJECT_PROFILE
+**PASS**
+
+Evidências:
+- service_class = CRITICO;
+- application_criticality = MEDIUM;
+- RTO = 30 min;
+- RPO = 5 min;
+- Microsoft Entra ID / SSO aprovado;
+- papéis e responsabilidades registrados;
+- dados pessoais e retenção registrados;
+- replica_enabled = false;
+- backup/recovery obrigatório;
+- API pública = false;
+- integrações MVP = false;
+- decisões futuras possuem destino explícito;
+- unknown_material_count = 0.
+
+Próxima fase canônica: **SAFRA-C02 — Threat model e abuso de negócio**.
