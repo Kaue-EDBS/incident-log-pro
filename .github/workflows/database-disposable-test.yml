@@ -29,6 +29,16 @@ jobs:
       - name: Run database tests
         run: supabase test db
 
+      - name: Test direct Data API denial
+        run: bash .github/scripts/test-safra-direct-api.sh
+
+      - name: Rehearse rollback of latest migration
+        run: |
+          supabase migration down --local --last 1
+          supabase test db supabase/rollback-tests/c05_latest_rollback.test.sql
+          supabase db reset --local
+          supabase test db
+
       - name: Lint database
         run: supabase db lint --local --level error
 
