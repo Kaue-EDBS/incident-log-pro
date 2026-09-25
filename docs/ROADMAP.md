@@ -798,7 +798,7 @@ unknown_material_count = 0
 
 ---
 
-## SAFRA-C02 — Threat model e abuso de negócio — EM ANDAMENTO
+## SAFRA-C02 — Threat model e abuso de negócio — CONCLUÍDO
 
 ### Objetivo
 
@@ -873,10 +873,12 @@ Fechar somente quando:
 ### Gate
 
 ```text
-G3.5
-THREAT-001
-AUTHZ-001
+G3.5 = PASS
+THREAT-001 = PASS
+AUTHZ-001 = PASS
 ```
+
+**Fechamento em 25/09/2026:** riscos residuais classificados, sem bloqueador material sem destino. Implementação dos controles permanece nas fases responsáveis.
 
 ---
 
@@ -2282,7 +2284,7 @@ O sistema sabe:
 Fase atual:
 
 ```text
-SAFRA-C02 — Threat model e abuso de negócio
+SAFRA-C03 — Glossário e modelo de domínio
 ```
 
 Já concluído dentro do C02:
@@ -2292,13 +2294,13 @@ Já concluído dentro do C02:
 - casos de bypass/API, enumeração, vazamento, retry e SLA manipulável formalizados;
 - testes positivos, negativos, concorrência/retry e limite derivados.
 
-Próximo movimento:
+Fechamento C02 concluído:
 
-1. revisar risco residual de cada abuse case;
-2. confirmar cobertura de `G3.5 / THREAT-001 / AUTHZ-001`;
-3. fechar C02 documentalmente;
-4. avançar para C03 — Glossário e modelo de domínio;
-5. somente depois implementar os controles em C04/C05.
+1. riscos residuais revisados;
+2. cobertura de G3.5 / THREAT-001 / AUTHZ-001 confirmada;
+3. C02 encerrado documentalmente;
+4. próximo ciclo: C03 — Glossário e modelo de domínio;
+5. controles permanecem para implementação em C04/C05 e fases dependentes.
 
 ---
 
