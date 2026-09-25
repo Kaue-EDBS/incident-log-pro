@@ -4,6 +4,8 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -14,7 +16,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { AuthGate, AuthProvider } from "@/integrations/supabase/AuthProvider";
+import { AuthProvider, useAuth } from "@/integrations/supabase/AuthProvider";
 
 function NotFoundComponent() {
   return (
@@ -124,21 +126,51 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AuthedShell() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { session, loading } = useAuth();
+  const navigate = useNavigate();
+  const isAuthRoute = pathname === "/auth";
+
+  useEffect(() => {
+    if (!loading && !session && !isAuthRoute) {
+      void navigate({ to: "/auth", replace: true });
+    }
+  }, [loading, session, isAuthRoute, navigate]);
+
+  if (isAuthRoute) {
+    return <Outlet />;
+  }
+
+  if (loading || !session) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="text-center">
+          <div className="mx-auto size-8 animate-spin rounded-full border-2 border-muted border-t-primary" />
+          <p className="mt-4 text-sm text-muted-foreground">Carregando painel...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <AppLayout>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <Outlet />
+    </AppLayout>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <AuthGate>
-          <TooltipProvider delayDuration={150}>
-            <AppLayout>
-              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-              <Outlet />
-            </AppLayout>
-            <Toaster position="top-right" />
-          </TooltipProvider>
-        </AuthGate>
+        <TooltipProvider delayDuration={150}>
+          <AuthedShell />
+          <Toaster position="top-right" />
+        </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

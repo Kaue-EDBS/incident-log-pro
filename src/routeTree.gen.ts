@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AplicacoesRouteImport } from './routes/aplicacoes'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndicadoresRouteImport } from './routes/indicadores'
 import { Route as NovoIncidenteRouteImport } from './routes/novo-incidente'
 import { Route as IncidentesIndexRouteImport } from './routes/incidentes.index'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const AplicacoesRoute = AplicacoesRouteImport.update({
   id: '/aplicacoes',
   path: '/aplicacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndicadoresRoute = IndicadoresRouteImport.update({
@@ -50,6 +56,7 @@ const IncidentesIdRoute = IncidentesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/aplicacoes': typeof AplicacoesRoute
+  '/auth': typeof AuthRoute
   '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/incidentes/$id': typeof IncidentesIdRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/aplicacoes': typeof AplicacoesRoute
+  '/auth': typeof AuthRoute
   '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/incidentes/$id': typeof IncidentesIdRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/aplicacoes': typeof AplicacoesRoute
+  '/auth': typeof AuthRoute
   '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/incidentes/$id': typeof IncidentesIdRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/aplicacoes'
+    | '/auth'
     | '/indicadores'
     | '/novo-incidente'
     | '/incidentes/$id'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/aplicacoes'
+    | '/auth'
     | '/indicadores'
     | '/novo-incidente'
     | '/incidentes/$id'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/aplicacoes'
+    | '/auth'
     | '/indicadores'
     | '/novo-incidente'
     | '/incidentes/$id'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AplicacoesRoute: typeof AplicacoesRoute
+  AuthRoute: typeof AuthRoute
   IndicadoresRoute: typeof IndicadoresRoute
   NovoIncidenteRoute: typeof NovoIncidenteRoute
   IncidentesIdRoute: typeof IncidentesIdRoute
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/aplicacoes'
       fullPath: '/aplicacoes'
       preLoaderRoute: typeof AplicacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/indicadores': {
@@ -158,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AplicacoesRoute: AplicacoesRoute,
+  AuthRoute: AuthRoute,
   IndicadoresRoute: IndicadoresRoute,
   NovoIncidenteRoute: NovoIncidenteRoute,
   IncidentesIdRoute: IncidentesIdRoute,
