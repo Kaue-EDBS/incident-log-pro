@@ -327,7 +327,7 @@ HIGH
 MODERATE
 ```
 
-A lista exata dos quatro cenários `CRITICAL` permanece decisão de domínio a fechar em C03/C06.
+A lista exata dos quatro cenários `CRITICAL` não possui evidência nominal suficiente nas fontes revisadas e está registrada como `GI-SAFRA-001` em `docs/GOVERNANCE_ISSUES.md`. Não inferir.
 
 ## D-10 — Recorrência não cria crise automaticamente
 
@@ -658,7 +658,7 @@ Nada nesta seção deve voltar a aparecer como `UNKNOWN` genérico.
 
 | Decisão | Estado | Fase responsável |
 |---|---|---|
-| quatro cenários CRITICAL | DEFERRED | C03/C06 |
+| quatro cenários CRITICAL | GOVERNANCE_ISSUE GI-SAFRA-001 | decisão humana + C06 |
 | threshold cenário 2 | DEFERRED | C06/C07 |
 | threshold cenário 4 | DEFERRED | C06/C07 |
 | threshold cenário 10 | DEFERRED | C06/C07 |
@@ -933,6 +933,21 @@ Congelado em 25/09/2026:
 - score/threshold quantitativo permanece proibido sem regra e fonte explícitas.
 
 Desenho técnico de medições quantitativas fica para C05/F04.
+
+### C03.3 — Quatro CRITICAL: evidência insuficiente — CONCLUÍDO
+
+Revisão das fontes em 25/09/2026:
+
+- a Matriz v3 não possui coluna de criticidade nem valores CRITICAL/HIGH/MODERATE;
+- a reunião confirma três níveis e menciona quatro temas “super pesados”, mas não nomeia os quatro;
+- o PDF v2 é preliminar e usa “crítica” em descrições operacionais, sem formalizar a criticidade dos cenários.
+
+Resultado:
+
+- nenhuma lista foi inferida;
+- criado `GI-SAFRA-001`;
+- classificação produtiva dos quatro CRITICAL permanece bloqueada até evidência/decisão humana formal;
+- C06 deve preservar a pendência no seed.
 
 ### Decisões que C03 deve deixar explícitas
 
