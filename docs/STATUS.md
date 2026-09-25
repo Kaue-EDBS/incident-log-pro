@@ -931,3 +931,79 @@ Destino dos controles:
 - M05: idempotência de notificações;
 - F01/F02: semântica segura de END/CANCEL;
 - F08: testes diretos de API e E2E de abuso.
+
+
+### C02.3 — Testes derivados dos abuse cases
+
+#### Positivos
+- usuário Microsoft autenticado executa START em cenário PUBLISHED e recebe sucesso;
+- START persiste ator autenticado, timestamp server-side e scenario_version_id vigente;
+- usuário autenticado executa END em tratativa ACTIVE;
+- CANCEL com justificativa válida encerra como CANCELLED e preserva histórico;
+- owner vigente recebe comunicação prevista para seu card;
+- nova scenario_version publicada só vale para novos STARTs;
+- chamada direta à API/RPC permitida produz o mesmo resultado da UI;
+- SLA encerra apenas quando ocorre o end_event definido na sua regra.
+
+#### Negativos
+- usuário não autenticado não executa START/END/CANCEL;
+- START em cenário DRAFT/PROPOSED/INACTIVE falha;
+- START com scenario_id inexistente ou version_id arbitrário falha;
+- END em RESOLVED/CANCELLED falha;
+- CANCEL sem justificativa falha;
+- tentativa de editar owner/criticidade/protocolo de versão publicada falha;
+- tentativa de alterar opened_at/closed_at/cancelled_at pelo cliente falha ou é ignorada;
+- acesso direto a dado não autorizado por ID/API falha;
+- paginação/filtro não amplia escopo autorizado;
+- resposta de erro não expõe token, secret, stack sensível ou dados pessoais desnecessários;
+- proposta do 12º card não aceita START antes de publicação governada;
+- alteração direta de status não interrompe SLA.
+
+#### Concorrência e retry
+- dois STARTs simultâneos equivalentes não criam duplicidade indevida;
+- duplo clique em START gera uma única tratativa;
+- retry após timeout de START retorna o mesmo resultado idempotente;
+- dois ENDs simultâneos geram um único encerramento;
+- END e CANCEL concorrentes resultam em uma única transição válida;
+- retry de CANCEL não duplica evento nem notificação;
+- mesma notificação reenviada com a mesma chave não gera dois e-mails;
+- concorrência de publicação de scenario_version não cria duas versões correntes;
+- correlação/idempotency key é persistida e reutilizável para reconciliação.
+
+#### Limite / borda
+- START exatamente na troca de versão usa uma única versão determinada pelo backend;
+- END exatamente no instante de breach de SLA produz resultado determinístico;
+- occurrence_started_at igual ao START é aceito;
+- occurrence_started_at no futuro é rejeitado;
+- timestamps em borda de timezone/DST não alteram duração real;
+- CANCEL imediatamente após START preserva ambos os eventos;
+- cenário com criticidade alterada após START mantém a criticidade congelada da versão usada;
+- volume alto de paginação não permite enumeração além do escopo;
+- lista vazia autorizada é distinguida de forbidden/erro;
+- 0, null e ausência de timestamp não são tratados como equivalentes;
+- retry depois de resposta perdida não cria novo evento;
+- SLA com múltiplos end_events fecha somente o relógio correspondente.
+
+### Critérios de evidência
+
+Cada teste deve registrar:
+- identidade/role do ator;
+- request/correlation_id;
+- estado anterior;
+- ação;
+- resultado HTTP/domínio;
+- estado posterior;
+- eventos de auditoria;
+- timestamps oficiais;
+- notificações geradas ou não;
+- evidência de que não houve mutação colateral.
+
+### Destino
+
+- C04: autenticação, RBAC e RLS;
+- C05: RPCs, constraints, idempotência e concorrência;
+- C06: versionamento/publicação de cenários;
+- C07/M04: relógios, SLA e bordas temporais;
+- M05: notificações e deduplicação;
+- F01/F02: END/CANCEL;
+- F08: execução E2E da matriz completa.
