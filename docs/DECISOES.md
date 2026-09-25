@@ -44,6 +44,7 @@
 | D-29 | Vocabulário canônico do domínio congelado em docs/GLOSSARIO_DOMINIO.md | APPROVED |
 | D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático | APPROVED |
 | D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | APPROVED |
+| D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default | APPROVED |
 
 ## 3. ADRs
 
@@ -341,3 +342,19 @@ Decisão:
 - registrar `GI-SAFRA-001`;
 - manter classificação produtiva pendente de decisão humana formal;
 - quando decidida, aplicar por nova `scenario_version`, sem alterar histórico.
+
+
+### ADR-022 — Handoff do domínio para C05
+**APPROVED — 25/09/2026**.
+
+O `docs/GLOSSARIO_DOMINIO.md` v1.1 é o contrato semântico de entrada do SAFRA-C05.
+
+Decisões derivadas para preservar histórico:
+- START congela `scenario_version_id`;
+- tratativa persiste `owner_id_at_start` e `responsible_area_id_at_start`;
+- áreas potencialmente impactáveis e sistemas associados são relações da versão;
+- criticidade pendente não recebe default;
+- CANCEL não usa campos de resolução;
+- múltiplas tratativas ACTIVE do mesmo cenário não serão proibidas em C05 antes da decisão M01.
+
+Alteração dessas fronteiras exige retorno ao domínio antes de migration.
