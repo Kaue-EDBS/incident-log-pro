@@ -219,7 +219,7 @@ deferred_decisions:
   email_notification_provider_and_channel: "DEFERRED_TO_SAFRA_M05"
   formal_new_scenario_approval_flow: "DEFERRED_TO_SAFRA_M10"
   weekly_governance_window: "DEFERRED_TO_SAFRA_F05"
-  quantitative_impact_definition: "DEFERRED_TO_SAFRA_C03_F04"
+  quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_C06_F04"
 
 c01_gate:
   status: "APPROVED"
