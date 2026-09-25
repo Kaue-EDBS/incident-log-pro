@@ -29,16 +29,17 @@ architecture:
 
 service:
   service_class:
-    value: "WAITING_HUMAN_DECISION"
+    value: "CRITICO"
     source: "Framework EBSA"
-    note: "Technical classification of the Painel Safra application. It must not be inferred from scenario SLA or scenario criticality."
+    decision_status: "APPROVED"
+    note: "Technical classification of the Painel Safra application. It is independent from scenario criticality."
   application_criticality:
     value: "WAITING_HUMAN_DECISION"
     source: "Framework EBSA"
     note: "Technical/operational criticality of the application itself. It is distinct from business scenario criticality."
-  slo: "WAITING_HUMAN_DECISION"
-  rto_minutes: "WAITING_HUMAN_DECISION"
-  rpo_minutes: "WAITING_HUMAN_DECISION"
+  slo: "99.95%"
+  rto_minutes: 30
+  rpo_minutes: 5
 
 identity_and_auth:
   auth_required: true
@@ -188,7 +189,6 @@ governance:
   destructive_git_history_rewrite_allowed: false
 
 open_human_decisions:
-  - "application service class"
   - "application criticality"
   - "four CRITICAL scenarios"
   - "scenario 2 X-hour threshold"
@@ -198,7 +198,6 @@ open_human_decisions:
   - "official minimum source for scenario 9 curve A"
   - "multiple simultaneous treatments rule"
   - "close policy with incomplete / NOT_APPLICABLE steps"
-  - "approved RTO/RPO"
   - "replica_enabled"
   - "email/notification provider and channel"
   - "formal approvers of new scenarios"
