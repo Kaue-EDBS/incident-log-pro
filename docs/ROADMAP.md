@@ -330,7 +330,7 @@ Este é um **perfil candidato**, não uma decisão final.
 ```yaml
 project_name: Painel Safra
 project_type: internal_operational_control
-service_class: WAITING_HUMAN_DECISION   # atributo técnico do Framework EBSA
+service_class: CRITICO                  # aprovado em 24/09/2026
 exposure: internal
 backend_type: lovable_cloud_postgres
 primary_role: primary
@@ -2513,9 +2513,13 @@ Status: WAITING_HUMAN_DECISION.
 
 ## ADR-003 - Service class
 
-Status: WAITING_HUMAN_DECISION.
+Status: **APROVADO — CRITICO**.
 
-Avaliar INTERNO x OPERACIONAL.
+```text
+SLO 99,95%
+RTO 30 min
+RPO 5 min
+```
 
 ## ADR-004 - Identity provider
 
