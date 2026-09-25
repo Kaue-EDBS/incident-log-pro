@@ -33,6 +33,8 @@
 | D-18 | Família safra_admin e scenario_owner compõem o modelo de responsabilidade | APPROVED |
 | D-19 | safra_admin dividido em plataforma, governança e executivo | APPROVED |
 | D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico | APPROVED |
+| D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards | APPROVED |
+| D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | APPROVED |
 
 ## 3. ADRs
 
@@ -176,8 +178,7 @@ Amanda, Vinicius e João permanecem com acesso técnico permanente como substitu
 #### safra_governance_admin
 Governança funcional de todos os cards e do 12º card.
 
-Membros:
-- jiane.rodrigues@editoradobrasil.com.br
+Membro:
 - jair.silva@editoradobrasil.com.br
 
 Responsabilidades:
@@ -185,8 +186,10 @@ Responsabilidades:
 - acessar relatórios;
 - tomar decisões de governança;
 - receber e-mails operacionais;
-- avaliar propostas do 12º card;
+- conduzir a triagem das propostas do 12º card;
 - não executar manutenção técnica da plataforma.
+
+Jiane Rodrigues não exerce mais governança global. Ela permanece como `scenario_owner` dos cards sob sua responsabilidade e recebe apenas as comunicações desses cards.
 
 #### safra_executive_admin
 Visão executiva/analytics.
@@ -215,4 +218,14 @@ Campos:
 
 Nome e e-mail não dependem de digitação manual.
 
-A submissão não cria protocolo produtivo automaticamente. Ela segue para Jiane/Jair, responsáveis pela governança e decisão sobre o possível novo cenário.
+A submissão não cria protocolo produtivo automaticamente. O fluxo aprovado é:
+
+1. Jair recebe a notificação da nova proposta;
+2. Jair lê a proposta e a encaminha para Daniel Garcia, Renato Paulo e Jiane Rodrigues;
+3. se exatamente um deles aceitar, o novo card passa a ser responsabilidade desse owner;
+4. se dois ou mais aceitarem, Jair faz o check final e define o owner;
+5. se ninguém aceitar, Jair é notificado e pode:
+   - acionar Bruno Palhão para escalonamento executivo; ou
+   - tomar a decisão de ownership por conta própria.
+
+Jiane participa desse fluxo como candidata a owner, não como governança global.
