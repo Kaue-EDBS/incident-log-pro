@@ -43,6 +43,7 @@
 | D-28 | SAFRA-C02 concluído; G3.5, THREAT-001 e AUTHZ-001 = PASS | APPROVED |
 | D-29 | Vocabulário canônico do domínio congelado em docs/GLOSSARIO_DOMINIO.md | APPROVED |
 | D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático | APPROVED |
+| D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | APPROVED |
 
 ## 3. ADRs
 
@@ -104,7 +105,7 @@ Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade úni
 
 ## 4. Decisões humanas abertas
 
-- quatro cenários CRITICAL;
+- quatro cenários CRITICAL — `GI-SAFRA-001`, sem evidência nominal suficiente;
 - thresholds 2/4/10/11;
 - origem do mínimo curva A;
 - múltiplas tratativas simultâneas;
@@ -155,7 +156,7 @@ Este registro descreve o estado atual e não transforma os itens pendentes em de
 - `CRITICAL/HIGH/MODERATE` pertence ao domínio dos cenários/protocolos e é suportado pelos materiais-mãe;
 - `service_class` e `application_criticality` pertencem à governança técnica do Framework EBSA;
 - SLO/RTO/RPO da aplicação não podem ser derivados dos SLAs dos protocolos;
-- a lista dos quatro cenários `CRITICAL` continua `WAITING_HUMAN_DECISION`.
+- a lista dos quatro cenários `CRITICAL` permanece aberta em `GI-SAFRA-001`; não há evidência nominal suficiente para classificá-los por inferência.
 
 
 ### ADR-012 — Modelo de papéis funcionais
@@ -324,3 +325,19 @@ As distinções cenário/versão/tratativa, gatilho/detecção, protocolo/tratat
 - cenário pode expressar impacto esperado; tratativa registra impacto observado;
 - impacto desconhecido não é zero;
 - não existe score agregado, faixas ou thresholds automáticos sem regra de negócio aprovada.
+
+
+### ADR-021 — Quatro CRITICAL somente com evidência suficiente
+**APPROVED — 25/09/2026**.
+
+A revisão das fontes não identificou nominalmente, com evidência suficiente, os quatro cenários que devem receber `CRITICAL`.
+
+- Matriz v3: não possui coluna formal de criticidade;
+- reunião 22/09: confirma quatro temas críticos/super pesados, mas não nomeia os quatro;
+- Protocolos v2: preliminar; uso textual de “crítico” não equivale à classificação formal.
+
+Decisão:
+- não inferir a lista;
+- registrar `GI-SAFRA-001`;
+- manter classificação produtiva pendente de decisão humana formal;
+- quando decidida, aplicar por nova `scenario_version`, sem alterar histórico.
