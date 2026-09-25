@@ -175,7 +175,7 @@ Os subtipos administrativos e suas responsabilidades estão registrados em `docs
 12. aprovadores de cenários;
 13. retenção;
 14. janela semanal;
-15. impacto quantitativo.
+15. métricas/thresholds quantitativos específicos por cenário, quando aplicável.
 
 ## 7. Precedência
 
@@ -209,3 +209,27 @@ O ownership de uma proposta do 12º card segue a regra de aceite:
 - 1 aceite entre Daniel/Renato/Jiane -> ownership automático para quem aceitou;
 - 2 ou mais aceites -> Jair define o owner final;
 - 0 aceites -> Jair decide diretamente ou aciona Bruno para escalonamento executivo.
+
+
+### RB-SAFRA-023 — Cenário, versão e tratativa
+- `scenario` é a identidade estável do tipo de contingência;
+- `scenario_version` é a fotografia imutável do conteúdo vigente do cenário;
+- `treatment` é a ocorrência real criada por START;
+- START congela `scenario_version_id`;
+- nova versão não altera tratativa já existente.
+
+### RB-SAFRA-024 — Impacto qualitativo
+Impacto qualitativo descreve consequências/contexto operacional.
+
+- cenário/versão pode registrar impacto esperado/potencial;
+- tratativa registra impacto efetivamente observado;
+- impacto qualitativo não redefine criticidade nem escalonamento automaticamente.
+
+### RB-SAFRA-025 — Impacto quantitativo
+Impacto quantitativo é uma medição estruturada com métrica, valor, unidade, fonte e referência temporal.
+
+- valor sem fonte não é confirmado;
+- desconhecido não vira zero;
+- uma tratativa pode ter múltiplas medições;
+- não existe score agregado ou threshold automático sem regra de negócio aprovada;
+- impacto quantitativo não altera automaticamente criticidade, escalonamento, status ou SLA.
