@@ -949,6 +949,25 @@ Resultado:
 - classificação produtiva dos quatro CRITICAL permanece bloqueada até evidência/decisão humana formal;
 - C06 deve preservar a pendência no seed.
 
+### C03.4 — Handoff sem ambiguidades para C05 — CONCLUÍDO
+
+`docs/GLOSSARIO_DOMINIO.md` v1.1 foi promovido a `READY_FOR_C05`.
+
+Contratos adicionados:
+- fonte de verdade e mutabilidade por conceito;
+- cardinalidades;
+- estados canônicos;
+- elegibilidade de START;
+- snapshots de owner/área no START;
+- áreas e sistemas potencialmente associados por versão;
+- criticidade nullable sem default enquanto GI-SAFRA-001 estiver aberto;
+- semântica física de END/CANCEL;
+- audit trail append-only;
+- estrutura mínima para impacto quantitativo;
+- recorrência como derivação;
+- múltiplos ACTIVE não bloqueados por constraint antes de M01;
+- lista explícita de decisões que C05 não pode inventar.
+
 ### Decisões que C03 deve deixar explícitas
 
 - `Geral` = visão agregada;
@@ -1052,18 +1071,19 @@ Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
 4. `scenarios`;
 5. `scenario_versions`;
 6. `scenario_owners`;
-7. `scenario_impacted_areas`;
-8. `scenario_systems`;
+7. `scenario_version_impacted_areas`;
+8. `scenario_version_systems`;
 9. `scenario_slas`;
 10. `treatments`;
 11. `treatment_impacted_areas`;
-12. `treatment_events`;
-13. `treatment_escalations`;
-14. `notifications_log`;
-15. `scenario_proposals`;
-16. `scenario_proposal_owner_responses`;
-17. `governance_issues`;
-18. mapeamentos para `incidents` quando aplicável.
+12. `treatment_impact_measurements`;
+13. `treatment_events`;
+14. `treatment_escalations`;
+15. `notifications_log`;
+16. `scenario_proposals`;
+17. `scenario_proposal_owner_responses`;
+18. `governance_issues`;
+19. mapeamentos para `incidents` quando aplicável.
 
 ### Invariantes mínimos
 
@@ -1072,6 +1092,8 @@ Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
 - timestamp oficial server-side;
 - `scenario_version` publicada não é reescrita;
 - tratamento congela `scenario_version_id`;
+- snapshot de owner e área responsável no START;
+- criticidade sem decisão aceita ausência explícita e não possui default;
 - audit events append-only;
 - sem cascade destrutivo em histórico operacional;
 - CANCEL exige razão;
@@ -1079,6 +1101,7 @@ Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
 - idempotência para mutations críticas;
 - correlation id persistido;
 - constraints de integridade temporal;
+- não criar unicidade de ACTIVE por cenário antes da decisão M01;
 - views expostas devem respeitar RLS/security invoker quando aplicável.
 
 ### Testes
