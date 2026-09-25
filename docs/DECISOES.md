@@ -42,6 +42,7 @@
 | D-27 | Gates G3 e G3.25 fechados; SAFRA-C01 concluído com 0 UNKNOWN material | APPROVED |
 | D-28 | SAFRA-C02 concluído; G3.5, THREAT-001 e AUTHZ-001 = PASS | APPROVED |
 | D-29 | Vocabulário canônico do domínio congelado em docs/GLOSSARIO_DOMINIO.md | APPROVED |
+| D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático | APPROVED |
 
 ## 3. ADRs
 
@@ -309,3 +310,17 @@ O fechamento aprova o threat model, os controles requeridos, os testes derivados
 `docs/GLOSSARIO_DOMINIO.md` passa a ser a fonte canônica para os termos funcionais do Painel Safra.
 
 As distinções cenário/versão/tratativa, gatilho/detecção, protocolo/tratativa, owner/ator da ação, área responsável/impactada, SLA/SLO-RTO-RPO, criticidade/escalonamento e END/CANCEL não podem ser redefinidas silenciosamente.
+
+
+### ADR-020 — Cenário, versão, tratativa e impacto
+**APPROVED — 25/09/2026**.
+
+- cenário identifica o tipo de contingência;
+- versão congela o conteúdo válido;
+- tratativa representa uma ocorrência real;
+- START liga a tratativa à versão vigente;
+- impacto qualitativo é descrição contextual;
+- impacto quantitativo exige métrica, valor, unidade, fonte e referência temporal;
+- cenário pode expressar impacto esperado; tratativa registra impacto observado;
+- impacto desconhecido não é zero;
+- não existe score agregado, faixas ou thresholds automáticos sem regra de negócio aprovada.
