@@ -1610,3 +1610,108 @@ SAFRA-C04 = CONCLUIDO
 ```
 
 Próxima fase canônica: **SAFRA-C05 — Schema v2, migrations e invariantes**.
+
+
+---
+
+## SAFRA-C05 — schema v2 canônico materializado — 25/09/2026
+
+Migration canônica:
+
+`supabase/migrations/20260925170000_c05_schema_v2_canonical_base.sql`
+
+Estado:
+- aplicado no Lovable Cloud PRIMARY;
+- 17 tabelas de domínio novas;
+- RLS habilitada em todas;
+- deny-by-default para `anon` e `authenticated`;
+- `service_role` mantém acesso técnico, sem `TRUNCATE`;
+- legado `applications/incidents` preservado sem alteração.
+
+### Entidades criadas
+
+- `operational_areas`
+- `systems`
+- `scenarios`
+- `scenario_versions`
+- `scenario_owners`
+- `scenario_version_impacted_areas`
+- `scenario_version_systems`
+- `scenario_slas`
+- `treatments`
+- `treatment_impacted_areas`
+- `treatment_impact_measurements`
+- `treatment_events`
+- `treatment_escalations`
+- `scenario_proposals`
+- `scenario_proposal_owner_responses`
+- `notifications_log`
+- `governance_issues`
+
+RBAC continua usando:
+- `private.safra_principals`
+- `private.safra_role_grants`
+
+Não foi criada tabela concorrente `safra_user_roles`.
+
+### Invariantes implementados
+
+- uma versão PUBLISHED corrente por cenário;
+- uma relação de owner ativa por cenário;
+- owner de cenário publicado precisa possuir role ativa `scenario_owner`;
+- cenário publicado exige área responsável;
+- `scenario.current_version_id` precisa apontar para a versão PUBLISHED;
+- versão PUBLISHED é imutável, exceto transição para RETIRED;
+- versão RETIRED é imutável;
+- criticidade aceita null e não possui default;
+- criticidade não nula limitada a CRITICAL/HIGH/MODERATE;
+- treatment congela scenario/version/owner/área responsável no START;
+- snapshot de START é imutável;
+- tratamento fechado não reabre;
+- CANCEL usa campos próprios, não `closed_at`;
+- treatment_events é append-only;
+- treatment_impact_measurements é append-only;
+- correlation/idempotency keys estruturadas;
+- sem unicidade de tratamento ACTIVE por cenário nesta fase;
+- sem cascade destrutivo no histórico operacional.
+
+### Governance issue preservado
+
+`GI-SAFRA-001` foi materializado como `OPEN`.
+
+Nenhum dos quatro cenários CRITICAL foi inferido.
+
+### Self-tests
+
+PASS:
+- criticidade inválida rejeitada;
+- publicação sem owner rejeitada;
+- owner sem role `scenario_owner` rejeitado;
+- owner elegível aceito;
+- edição de versão PUBLISHED rejeitada;
+- snapshot incorreto de treatment rejeitado;
+- event update rejeitado por append-only;
+- treatment RESOLVED não volta para ACTIVE;
+- fixtures de teste revertidas integralmente;
+- `service_role` sem TRUNCATE;
+- nenhuma unique constraint de ACTIVE-per-scenario.
+
+### Rollback
+
+Como o schema v2 ainda não possui dados produtivos nem seed C06:
+- rollback físico só é aceitável antes de qualquer dado produtivo;
+- após C06, rollback deve ocorrer por migration corretiva/forward fix, não DROP destrutivo;
+- o legado `applications/incidents` permanece disponível e não foi substituído.
+
+### Itens explicitamente não implementados neste passo
+
+- seed dos 11 cenários;
+- criticidades dos quatro CRITICAL;
+- thresholds 2/4/10/11;
+- curva A;
+- START/END/CANCEL RPCs;
+- rule de múltiplos ACTIVE;
+- provider de notificações;
+- fluxo final do 12º card;
+- pós-mortem;
+- analytics.
