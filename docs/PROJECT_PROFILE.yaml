@@ -55,6 +55,10 @@ identity_and_auth:
   microsoft_provider_runtime_status: "HOMOLOGATED"
   password_login_ui_present: false
   password_login_backend_required_disabled: true
+  role_mapping_status: "IMPLEMENTED"
+  ownership_inheritance: false
+  role_source_of_truth: "private.safra_principals + private.safra_role_grants"
+  role_mapping_rls_integration: "PENDING_C04"
   microsoft_sso_runtime_evidence:
     provider: "azure"
     authenticated_users_verified: 1
