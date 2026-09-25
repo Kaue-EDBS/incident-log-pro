@@ -14,6 +14,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthGate, AuthProvider } from "@/integrations/supabase/AuthProvider";
 
 function NotFoundComponent() {
   return (
@@ -128,13 +129,17 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider delayDuration={150}>
-        <AppLayout>
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
-        </AppLayout>
-        <Toaster position="top-right" />
-      </TooltipProvider>
+      <AuthProvider>
+        <AuthGate>
+          <TooltipProvider delayDuration={150}>
+            <AppLayout>
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </AppLayout>
+            <Toaster position="top-right" />
+          </TooltipProvider>
+        </AuthGate>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
