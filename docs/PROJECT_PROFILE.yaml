@@ -23,7 +23,10 @@ architecture:
     current:
       - "supabase/migrations"
       - "drizzle.config.ts"
-    canonical_strategy: "DEFERRED_TO_SAFRA_C05"
+    canonical_strategy: "SUPABASE_MIGRATIONS_CANONICAL"
+    c04_canonical_migration: "20260925133200_c04_role_mapping_and_corporate_rls.sql"
+    drizzle_schema_authority: false
+    migration_history_repair_status: "PENDING_SUPPORTED_REPAIR"
     known_drift:
       - "hardening state is live but version 20260924212155 is absent from supabase_migrations.schema_migrations"
 
