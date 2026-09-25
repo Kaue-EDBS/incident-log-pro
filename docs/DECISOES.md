@@ -51,7 +51,8 @@
 | D-36 | supabase/migrations é a autoridade canônica; migration C04 capturada e versionada | APPROVED |
 | D-37 | Gates C04 não fecham sem evidência explícita do Manual EBSA; G5 parcial e ID-001/ID-002/AUDIT-001 bloqueados por evidência | APPROVED |
 | D-38 | Fechamento dos gaps restantes de C04 será executado no ambiente Lovable; recuperação e MFA permanecem dependências do Entra/TI | APPROVED |
-| D-39 | Auditoria pós-Lovable confirma controles internos; ID-001/ID-002 permanecem dependentes de evidência externa do Entra/TI | APPROVED |
+| D-39 | Auditoria pós-Lovable confirma controles internos; ID-001/ID-002 permanecem dependentes de evidência externa do Entra/TI | SUPERSEDED_BY_D40 |
+| D-40 | Recuperação e MFA Microsoft são controles corporativos externos à aplicação; C04 pode fechar no escopo do Painel | APPROVED |
 
 ## 3. ADRs
 
@@ -555,3 +556,20 @@ Entretanto:
 - AUDIT-001 está aprovado no escopo de RBAC do C04.
 
 As migrations geradas pelo ambiente Lovable foram espelhadas para `supabase/migrations`; esta continua sendo a fonte canônica.
+
+
+### ADR-033 — Recuperação e MFA como controles corporativos externos
+**APPROVED — 25/09/2026**.
+
+Decisão:
+- recuperação de acesso da identidade Microsoft é tratada pela TI diretamente com a Microsoft/Entra;
+- bloqueio de conta, MFA e Conditional Access também pertencem à governança corporativa de identidade da TI/Microsoft Entra;
+- o Painel Safra não replica, substitui ou administra esses controles.
+
+Consequência:
+- `ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL`;
+- `PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL`;
+- ambos ficam fora da Definition of Done da aplicação para C04;
+- isso não constitui auditoria ou certificação do ambiente Entra; apenas define fronteira de responsabilidade.
+
+Com os controles internos aprovados, SAFRA-C04 é considerado concluído no escopo do produto.
