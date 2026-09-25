@@ -22,13 +22,20 @@ architecture:
   migration_tooling:
     current:
       - "supabase/migrations"
-      - "drizzle.config.ts"
     canonical_strategy: "SUPABASE_MIGRATIONS_CANONICAL"
     c04_canonical_migration: "20260925133200_c04_role_mapping_and_corporate_rls.sql"
     drizzle_schema_authority: false
-    migration_history_repair_status: "PENDING_SUPPORTED_REPAIR"
-    known_drift:
-      - "hardening state is live but version 20260924212155 is absent from supabase_migrations.schema_migrations"
+    drizzle_tooling_role: "AUXILIARY_ORM_ONLY_NO_DEPLOY_AUTHORITY"
+    remote_direct_schema_changes_allowed: false
+    repaired_versions:
+      - "20260924212155"
+      - "20260925133200"
+      - "20260925164500"
+      - "20260925164600"
+      - "20260925164700"
+      - "20260925170000"
+    migration_history_repair_status: "RECONCILED_2026-09-25"
+    known_drift: []
 
 service:
   service_class:
