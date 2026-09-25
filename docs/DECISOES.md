@@ -46,6 +46,7 @@
 | D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | APPROVED |
 | D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default | APPROVED |
 | D-33 | Login funcional exclusivamente via Microsoft Entra ID; Lovable Cloud Auth cria sessão Supabase; login local por senha proibido | APPROVED / HOMOLOGATED |
+| D-34 | Role mapping governado no banco e ownership específico separado de papéis administrativos | APPROVED / IMPLEMENTED |
 
 ## 3. ADRs
 
@@ -407,3 +408,29 @@ Evidências:
 - Lovable sincronizado com commits posteriores.
 
 A decisão de produto continua: não oferecer login local por senha.
+
+
+### ADR-025 — Role mapping sem herança automática de ownership
+**APPROVED / IMPLEMENTED — 25/09/2026**.
+
+Fonte de verdade:
+- `private.safra_principals`;
+- `private.safra_role_grants`.
+
+Papéis:
+- `safra_platform_admin`;
+- `safra_governance_admin`;
+- `safra_executive_admin`;
+- `scenario_owner`.
+
+Regras:
+- autorização não usa `user_metadata`;
+- grants são governados no banco;
+- usuário é ligado ao principal por e-mail corporativo e `auth.uid()`;
+- nenhum papel administrativo gera ownership de cenário;
+- `scenario_owner` apenas qualifica a pessoa para ser owner;
+- ownership real depende de vínculo explícito scenario↔user em entidade própria futura.
+
+Implementação privilegiada permanece em schema privado; funções públicas de consulta são `SECURITY INVOKER`.
+
+RLS definitivo ainda será migrado do gate temporário `safra_access` para este modelo no próximo passo do C04.
