@@ -110,7 +110,12 @@ personal_data:
   children_or_adolescents_data: false
   minimization_required: true
   audit_history_required: true
-  retention_policy: "WAITING_HUMAN_DECISION"
+  retention_policy:
+    status: "APPROVED"
+    identifiable_personal_data: "UNTIL_FORMAL_END_OF_SAFRA_AND_REQUIRED_AUDIT_POSTMORTEM"
+    after_operational_purpose: "DELETE_OR_ANONYMIZE"
+    operational_history_and_metrics: "MAY_BE_RETAINED_FOR_CROSS_SAFRA_ANALYTICS_WITHOUT_PERSONAL_IDENTIFICATION_WHEN_NOT_NEEDED"
+    note: "End of Safra is the operational retention boundary, extended only while identity is necessary for audit/post-mortem."
   storage_files_currently_enabled: false
   storage_files_future_policy: "WAITING_HUMAN_DECISION"
 
@@ -210,6 +215,5 @@ open_human_decisions:
   - "close policy with incomplete / NOT_APPLICABLE steps"
   - "email/notification provider and channel"
   - "formal approvers of new scenarios"
-  - "history retention"
   - "official weekly governance window"
   - "quantitative impact definition"
