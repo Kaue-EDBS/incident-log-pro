@@ -1056,3 +1056,47 @@ Leitura correta do fechamento:
 - demais controles seguem para C06/C07/M04/M05/M10/F01/F02/F08 conforme roadmap.
 
 Próxima fase canônica: **SAFRA-C03 — Glossário e modelo de domínio**.
+
+
+---
+
+## SAFRA-C03 — vocabulário canônico congelado — 25/09/2026
+
+Criado `docs/GLOSSARIO_DOMINIO.md` como fonte canônica do vocabulário funcional do Painel Safra.
+
+Termos congelados:
+- cenário;
+- versão de cenário;
+- gatilho;
+- detecção;
+- START;
+- protocolo;
+- tratativa;
+- owner;
+- área responsável;
+- área impactada;
+- SLA;
+- criticidade;
+- END;
+- CANCEL;
+- escalonamento;
+- pós-mortem;
+- recorrência;
+- proposta de cenário;
+- publicação de cenário.
+
+Distinções obrigatórias registradas:
+- cenário != tratativa;
+- cenário != versão;
+- gatilho != detecção;
+- START != detecção;
+- protocolo != tratativa;
+- owner != ator do START;
+- área responsável != área impactada;
+- SLA != SLO/RTO/RPO;
+- criticidade != escalonamento;
+- END != CANCEL;
+- proposta != cenário publicado;
+- incidente TI != tratativa Safra.
+
+Commit de criação do glossário: `a5c88ba535d3bade70781d37382eb69c894f9fcd`.
