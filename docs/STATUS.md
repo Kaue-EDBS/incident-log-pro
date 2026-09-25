@@ -1311,3 +1311,32 @@ Validação:
 Observação de governança:
 - a alteração live foi aplicada no PRIMARY;
 - como a autoridade canônica de migrations ainda pertence ao C05, esta mudança deverá ser reconciliada em migration formal naquela fase.
+
+
+---
+
+## Migration canônica C04 versionada — 25/09/2026
+
+Arquivo:
+
+`supabase/migrations/20260925133200_c04_role_mapping_and_corporate_rls.sql`
+
+Conteúdo capturado:
+- principals e role grants privados;
+- binding e-mail corporativo -> `auth.uid()`;
+- role mapping governado;
+- predicado `safra_is_corporate_user()`;
+- RLS de `applications` e `incidents`;
+- remoção do gate legado `safra_access`;
+- grants compatíveis com Data API;
+- wrappers públicos `SECURITY INVOKER`.
+
+Governança:
+- `supabase/migrations` passa a ser a autoridade canônica;
+- Drizzle não é fonte de verdade de migration/schema;
+- a migration representa o estado live já validado.
+
+Pendência administrativa:
+- o histórico remoto `supabase_migrations.schema_migrations` ainda não contém todas as migrations aplicadas fora do fluxo formal;
+- regularizar por migration repair quando houver CLI/acesso apropriado;
+- não editar manualmente a tabela interna como substituto do repair.
