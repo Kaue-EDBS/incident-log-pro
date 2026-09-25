@@ -1,493 +1,353 @@
-# Roadmap de Reformulação - Painel Safra / incident-log-pro
+# Roadmap de Reformulação — Painel Safra / incident-log-pro
 
-**Versão:** 2.0  
-**Data:** 23/09/2026  
-**Status:** Roadmap canônico em execução — SAFRA-C00 e SAFRA-C01 concluídos; SAFRA-C02 é o próximo ciclo  
+**Versão:** 2.1  
+**Data:** 24/09/2026  
+**Status:** roadmap consolidado em execução — C00 e C01 concluídos; C02 em andamento  
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
-**Destino do produto:** Painel Safra - Torre de Governança de Contingências  
+**Produto-alvo:** Painel Safra — Torre de Governança de Contingências  
+**Regra de execução:** GitHub-first; não reescrever histórico publicado; documentação viva ao fim de cada etapa.
 
 ---
 
-## 0. Resumo executivo
+# 0. Resumo executivo
 
-O `incident-log-pro` nasceu como um monitor de confiabilidade de aplicações de TI, centrado em `applications`, `incidents`, MTTD, MTTR, MTBF, downtime e disponibilidade. Esse núcleo funciona como prova de persistência e de cálculo temporal, mas o produto desejado é maior e conceitualmente diferente.
+O `incident-log-pro` nasceu como um monitor de confiabilidade de aplicações de TI, centrado em `applications`, `incidents`, MTTD, MTTR, MTBF, downtime e disponibilidade. Esse núcleo permanece útil como legado técnico e referência temporal, mas não representa sozinho o domínio do Painel Safra.
 
-O Painel Safra não deve ser transformado em um simples "incident manager multiárea". O produto-alvo é uma **torre corporativa de governança de contingências**, baseada em cenários pré-validados, donos definidos, protocolos padronizados, SLAs, criticidade, áreas impactadas, visibilidade executiva, trilha de auditoria e aprendizado operacional.
+O Painel Safra será uma **torre corporativa de governança de contingências**. O produto deve tornar uma contingência visível, temporizada, auditável, comunicável e analisável, sem substituir a execução operacional de cada área.
 
-A decisão de negócio consolidada é:
+A lógica canônica é:
 
 ```text
-SINAL / OCORRÊNCIA
-    -> identificação de um cenário elegível
-    -> avaliação do dono do processo
-    -> ativação humana do protocolo
-    -> acompanhamento do protocolo
-    -> escalonamento quando necessário
-    -> encerramento humano
-    -> histórico e governança
+OCORRÊNCIA / NECESSIDADE
+    -> usuário identifica cenário aplicável
+    -> START humano
+    -> owner do card conduz o protocolo com sua equipe
+    -> Painel registra tempo, estado, auditoria, comunicações e escalonamentos
+    -> END ou CANCEL humano
+    -> histórico, métricas e governança
 ```
 
-No MVP, as ferramentas de origem podem detectar problemas, mas **não devem criar automaticamente tratativas no Painel Safra**. A automação de integração fica como evolução posterior, porque a reunião de 22/09 explicitou a limitação de tempo, APIs e capacidade operacional.
+## 0.1 Mudanças centrais da versão 2.1
 
-Este roadmap reorganiza todo o projeto em três eixos de lógica de programação:
-
-1. **COMEÇO** - tudo que precisa estar correto antes e no momento de iniciar um protocolo.
-2. **MEIO** - tudo que acontece enquanto a contingência está ativa.
-3. **FIM** - tudo que acontece no encerramento, histórico, aprendizado e governança.
-
-O Framework EBSA v1.7 é útil, mas sua função é técnica: segurança, identidade, contratos, regras, testes, evidências, capacidade, recuperação e liberação. Ele **não substitui** a metodologia Safra e **não decide regras de negócio**.
+1. **START / END / CANCEL não são exclusivos do owner.** Qualquer usuário autenticado pelo Microsoft Entra ID pode executar essas ações, com auditoria, idempotência e controles server-side.
+2. **O Painel não acompanha checklist operacional passo a passo.** A execução do protocolo ocorre com o owner e sua equipe; o Painel governa o ciclo, os tempos, as comunicações, o histórico e o aprendizado.
+3. **Papéis administrativos foram separados por responsabilidade**, sem herança automática de ownership.
+4. **12º card é proposta de novo cenário**, com fluxo próprio de triagem e ownership; não é protocolo genérico.
+5. **C00 e C01 estão concluídos.** C02 é a fase atual.
+6. **C02 modela controles; não os implementa.** RLS, autorização server-side, versionamento, audit trail, constraints e role mapping são definidos como resposta às ameaças e implementados nas fases C04/C05 e seguintes.
+7. **REPLICA está desabilitada**, sem eliminar backup/restore.
+8. **Retenção, service class, application criticality e RTO/RPO estão decididos.**
 
 ---
 
 # 1. Fontes de verdade e precedência
 
-## 1.1 Fontes primárias do negócio
+## 1.1 Fontes primárias de negócio
 
-A implementação deve seguir esta precedência:
+1. `EDB06 - Matriz Contingencia v3.xlsx`
+2. `Painel SAFRA.docx` — reunião de 22/09/2026
+3. `EDB06 - Protocolos de contingência v2.pdf`
+4. decisões humanas posteriores formalizadas em `docs/DECISOES.md`
 
-1. **`EDB06 - Matriz Contingencia v3.xlsx`**  
-   Fonte principal para os 11 cenários validados, protocolos, área responsável, dono, áreas impactadas, SLA, ferramenta, acompanhamento, participantes de validação e mapeamento EDB05/EDB06.
+## 1.2 Fontes técnicas
 
-2. **`Painel SAFRA.docx` - reunião de 22/09/2026**  
-   Fonte principal para decisões posteriores sobre MVP, abertura manual, diferença entre chamado e protocolo, governança de acesso, criticidade, notificações, comitê de crise, novos cenários e limites de integração.
+- repositório `Kaue-EDBS/incident-log-pro`;
+- estado live do Lovable Cloud PRIMARY quando validado;
+- migrations e código versionados;
+- documentação canônica em `docs/`.
 
-3. **`EDB06 - Protocolos de contingência v2.pdf`**  
-   Material preliminar de desenho do conceito e protocolos. Usar como apoio quando não houver conflito com a Matriz v3 ou com decisões posteriores da reunião.
+## 1.3 Governança técnica
 
-4. **`Plano de Ação - Metodologia do Painel Safra.md`**  
-   Documento de consolidação metodológica. Útil como visão integrada, mas deve ser corrigido quando divergir das fontes primárias acima.
+O Framework EBSA v1.7 governa segurança, gates, evidências, identidade, dados, testes, capacidade, recuperação e operação. Ele **não altera regra de negócio Safra**.
 
-## 1.2 Fonte técnica atual
-
-5. **Repositório `Kaue-EDBS/incident-log-pro`**  
-   Fonte de verdade do estado implementado: banco, migrations, frontend, regras de métricas, integração Supabase e restrições reais do código.
-
-## 1.3 Fonte de governança técnica
-
-6. **Framework EBSA v1.7**  
-   Fonte de padrões de engenharia, segurança, gates, evidências, contratos, dados, testes, capacidade e operação. Não possui autoridade para alterar a metodologia Safra.
-
-## 1.4 Regra de resolução de conflito
-
-Quando duas fontes divergirem:
+## 1.4 Precedência
 
 ```text
 Matriz v3
-    > decisão posterior explícita da reunião de 22/09
-    > Protocolos v2 preliminar
+    > decisão posterior explícita registrada
+    > reunião 22/09
+    > Protocolos v2
     > consolidação metodológica
     > implementação legada
 ```
 
-O Framework EBSA pode bloquear uma implementação insegura, mas não pode inventar conteúdo de negócio.
+Quando o Framework EBSA exigir um controle técnico, ele pode bloquear uma implementação insegura, mas não pode inventar uma regra de negócio.
 
 ---
 
-# 2. O que o produto é - e o que não é
+# 2. Definição canônica do produto
 
-## 2.1 Definição canônica
+## 2.1 O Painel Safra faz
 
-O Painel Safra é uma aplicação interna para:
+- mantém catálogo dos cenários publicados;
+- apresenta gatilho, owner, protocolo, criticidade, SLA e contexto;
+- permite START manual por usuário autenticado;
+- registra ator, data e hora oficiais;
+- mantém vínculo imutável com a versão de cenário usada no START;
+- mantém status da tratativa;
+- mede tempos e SLAs a partir de eventos persistidos;
+- envia comunicações operacionais aprovadas;
+- registra escalonamentos;
+- permite END e CANCEL auditáveis;
+- preserva histórico;
+- calcula indicadores e recorrência;
+- apoia governança semanal e visão executiva;
+- recebe proposta de novo cenário pelo 12º card.
 
-- catalogar cenários de contingência;
-- expor gatilho e contexto de cada cenário;
-- permitir ao dono do processo ativar formalmente um protocolo;
-- acompanhar o protocolo por marcos padronizados;
-- controlar SLAs e tempo ativo;
-- informar áreas impactadas;
-- registrar escalonamentos e comitês de crise;
-- dar visibilidade consolidada a gestão e diretoria;
-- preservar histórico auditável;
-- medir recorrência, duração, cumprimento de SLA e padrões de repetição;
-- alimentar rituais de governança e revisão de processo.
+## 2.2 O Painel Safra não faz no MVP
 
-## 2.2 O que ele não deve virar no MVP
+- não substitui OTRS;
+- não vira sistema genérico de tickets;
+- não executa passo a passo o protocolo de cada área;
+- não exige checklist operacional para encerrar uma tratativa;
+- não cria tratativa automaticamente a partir de integrações;
+- não decide sozinho criticidade, crise ou owner;
+- não executa remediação automática;
+- não usa IA para decisão operacional automática;
+- não depende de REPLICA;
+- não depende de Power BI para o fluxo operacional.
 
-O MVP não deve ser:
-
-- ferramenta de observabilidade completa;
-- substituto do OTRS;
-- sistema de tickets;
-- motor automático de incident response;
-- sistema de monitoramento de todas as APIs da companhia;
-- ferramenta que cria protocolos sem confirmação humana;
-- orquestrador de remediações automáticas;
-- repositório de números simulados apresentados como operação real.
-
-## 2.3 Princípio central
-
-> **A ferramenta de origem detecta ou ajuda a detectar. O Painel Safra governa a contingência.**
-
-Portanto:
+## 2.3 Princípios de domínio
 
 ```text
 DETECTION_MODE != ACTIVATION_MODE
+PROPOSAL != PUBLISHED_SCENARIO
+PROTOCOL != TICKET
+SCENARIO_CRITICALITY != APPLICATION_CRITICALITY
+REPLICA != BACKUP
+AUTHENTICATION != AUTHORIZATION
 ```
-
-Um cenário pode ter:
-
-```text
-detection_mode = AUTOMATIC | MANUAL | MIXED
-protocol_activation_mode = MANUAL
-```
-
-No MVP, `protocol_activation_mode` será sempre manual.
 
 ---
 
-# 3. Diagnóstico do incident-log-pro atual
+# 3. Estado técnico consolidado
 
-## 3.1 O que já vale reaproveitar
+## 3.1 Stack
 
-- React 19 + TanStack Start/Router;
-- Supabase/PostgreSQL;
-- TanStack Query;
-- estrutura de migrations;
-- UUIDs;
-- `created_at` / `updated_at`;
-- trigger de atualização temporal;
-- persistência de timestamps;
-- cronômetro reconstruído a partir do banco;
-- conceito de `application` e `incident` para TI;
-- MTTD, MTTR, MTBF, downtime e disponibilidade;
-- componentes como `MetricCard`, `StatusBadge`, `LiveTimer` e filtros;
-- rotas e layout responsivo já existentes;
-- integração GitHub <-> Lovable já estabelecida.
+- React 19;
+- TanStack Start / Router / Query;
+- Vite;
+- TypeScript;
+- Tailwind;
+- Recharts;
+- Lovable Cloud como backend provider;
+- PostgreSQL / Supabase como stack do banco;
+- banco Lovable Cloud como `PRIMARY`;
+- Supabase Auth/Data API;
+- GitHub branch `main`.
 
-## 3.2 O que está fora do domínio-alvo
+## 3.2 Estado de segurança após C00
 
-O domínio atual é aproximadamente:
+- `.env` fora do tracking;
+- `anon` sem acesso às tabelas internas protegidas;
+- RLS habilitada;
+- policies permissivas antigas removidas;
+- `service_role` não exposto no browser;
+- contenção transitória por `app_metadata.safra_access=true`;
+- RBAC definitivo ainda será implementado em C04.
 
-```text
-Application
-   -> Incident
-       -> timestamps
-       -> MTTD / MTTR / MTBF
-       -> resolução
-```
+## 3.3 Migration drift conhecido
 
-O domínio Safra precisa ser:
-
-```text
-Área operacional
-   -> Cenário versionado
-       -> Dono
-       -> Áreas impactáveis
-       -> Ferramentas relacionadas
-       -> SLAs
-       -> Passos de protocolo
-       -> Criticidade
-       -> regras de elegibilidade
-           -> Tratativa ativada
-               -> áreas realmente impactadas
-               -> versão congelada do cenário
-               -> relógios
-               -> passos/marcos
-               -> eventos
-               -> escalonamentos
-               -> encerramento
-               -> histórico
-```
-
-## 3.3 P0 de segurança identificado
-
-Antes de ampliar o produto:
-
-- `.env` está versionado no repositório;
-- o `.gitignore` atual não bloqueia `.env`;
-- migrations atuais concedem CRUD a `anon` e `authenticated`;
-- policies atuais usam `USING (true)` e `WITH CHECK (true)`;
-- a autorização por papel ainda não representa os donos e áreas do Safra.
-
-Isso é bloqueador para expansão corporativa.
-
-## 3.4 Regra de preservação do histórico Git
-
-O repositório é conectado ao Lovable. Portanto:
-
-- não fazer force push;
-- não reescrever histórico publicado;
-- não usar rebase/amend/squash destrutivo sobre commits já sincronizados;
-- correções devem entrar em novos commits normais.
+A migration `20260924212155_harden_safra_c00_access.sql` representa o hardening aplicado, porém seu registro no histórico formal de migrations precisa ser reconciliado no C05.
 
 ---
 
-# 4. Avaliação do Framework EBSA v1.7
+# 4. PROJECT_PROFILE aprovado
 
-## 4.1 Veredito
-
-**Sim, o framework tem alta utilidade para este projeto.**
-
-Mas ele deve ser usado como **framework de engenharia**, não como método para desenhar o protocolo de contingência.
-
-## 4.2 Onde ele ajuda muito
-
-| Tema do Framework | Utilidade no Safra | Aplicação prática |
-|---|---:|---|
-| I-1 / SEC-001 | Muito alta | evitar exposição de secrets e tratar `.env` versionado |
-| I0 / G0 | Alta | congelar repo, ambiente, intenção e responsáveis |
-| G2 / G3 | Muito alta | GitHub-first e documentação canônica |
-| G3.25 PROJECT_PROFILE | Muito alta | decidir criticidade do sistema, auth, dados, integrações e replica |
-| G3.5 Threat Model | Alta | mapear abuse cases de protocolo, acesso e dados internos |
-| G4 / G4.5 | Alta | jornada crítica, TV mode, responsividade e acessibilidade |
-| G5 | Muito alta | RLS, autorização server-side, integridade e migrations |
-| G5.25 | Alta | revisão, secrets, dependências e governança do repositório |
-| G5.5 | Alta | RTO/RPO, restore, capacidade e pico da Safra |
-| G6 | Muito alta | contratos para Intelipost, Protheus, WMS, Cockpit etc. |
-| G6.5 | Muito alta | transformar cada regra em contrato versionado |
-| DATA_RELEASE | Alta | controlar entrada de cada fonte real nova |
-| G7 | Muito alta | testes de regra, RLS, fluxo e concorrência |
-| G8 | Alta | candidata restrita para validação |
-| G10 | Muito alta | homologação com donos do processo |
-| G10.5 | Muito alta | auditoria antes de abrir para todos |
-| G11 | Alta | rotina de operação, incidentes do próprio Painel, recuperação |
-| G9 | Condicional | usar somente se `replica_enabled=true` |
-
-## 4.3 Onde não aplicar mecanicamente
-
-### A. G1 - projeto novo no Lovable
-
-O projeto já existe e já possui base funcional. Não há razão para recriar scaffold.
-
-A ação correta é:
-
-```text
-G1 = REVALIDAR BASE EXISTENTE
+```yaml
+project_name: Painel Safra
+project_type: internal_operational_control
+exposure: internal
+backend_provider: lovable_cloud
+database_role: PRIMARY
+database_engine: postgresql
+database_stack: supabase
+service_class: CRITICO
+application_criticality: MEDIUM
+slo: 99.95%
+rto_minutes: 30
+rpo_minutes: 5
+replica_enabled: false
+backup_restore_required: true
+auth_required: true
+identity_provider: MICROSOFT_ENTRA_ID
+auth_method: CORPORATE_SSO
+local_password_login: false
+personal_data: true
+sensitive_personal_data_intentional: false
+children_or_adolescents_data: false
+storage_files_currently_enabled: false
+external_integrations_in_mvp: false
+public_api: false
+automated_decisioning: false
 ```
 
-Não:
+## 4.1 Retenção aprovada
 
-```text
-G1 = CRIAR OUTRO PROJETO
-```
+- dados pessoais identificáveis: até o encerramento formal da Safra e enquanto necessários para auditoria/pós-mortem;
+- depois: eliminar ou anonimizar;
+- histórico operacional e métricas podem permanecer para comparação entre Safras sem identificação pessoal quando ela não for necessária.
 
-### B. G9 - REPLICA
-
-O framework é explícito: replica é condicional.
-
-Portanto:
+## 4.2 REPLICA
 
 ```text
 replica_enabled = false
 ```
 
-Se a decisão for `false`, G9 vira N/A justificado.
-
-Não criar Supabase Replica apenas para "cumprir framework".
-
-### C. Service class e criticidade técnica da aplicação
-
-Esses atributos vêm do **Framework EBSA** e não dos três materiais-mãe do Painel Safra.
-
-Os materiais-mãe tratam de **criticidade do cenário/protocolo**, não de classificação técnica do software:
-
-```text
-Matriz v3 / Protocolos v2 / reunião 22/09
-    -> criticidade do CENÁRIO
-       CRITICAL | HIGH | MODERATE
-```
-
-Já o Framework EBSA exige uma decisão separada sobre o próprio sistema:
-
-```text
-Framework EBSA
-    -> service_class da APLICAÇÃO
-    -> criticidade técnica / operacional da APLICAÇÃO
-```
-
-Portanto, é proibido derivar `service_class`, SLO, RTO ou RPO do Painel Safra a partir do SLA ou da criticidade de um protocolo.
-
-Referências do Framework para service class:
-
-- `INTERNO`: SLO 99,5%, RTO 240 min, RPO 1440 min;
-- `OPERACIONAL`: SLO 99,9%, RTO 60 min, RPO 15 min;
-- `CRITICO`: SLO 99,95%, RTO 30 min, RPO 5 min.
-
-**Estado:** decisão técnica do perfil concluída; service_class = CRITICO e application_criticality = MEDIUM.
-
-A decisão deverá considerar o impacto de indisponibilidade do **próprio Painel Safra**, e não o impacto do cenário monitorado.
-
-### D. DATA_RELEASE
-
-O projeto já possui dados reais de incidentes de TI. O framework deve ser aplicado de forma de retrofit:
-
-- validar o fluxo existente;
-- bloquear novas fontes até contrato e autorização;
-- emitir DATA_RELEASE para cada nova integração real.
-
-### E. Não transformar gate em burocracia sem efeito
-
-Gate só deve ser considerado concluído quando existir evidência útil.
-
-Não criar documento apenas para marcar checkbox.
+Isso **não** significa ausência de backup. Recovery continua obrigatório e deve ser comprovado no C09.
 
 ---
 
-# 5. Perfil inicial recomendado - ainda não confirmado
+# 5. Modelo de pessoas e responsabilidades
 
-Este é um **perfil candidato**, não uma decisão final.
-
-```yaml
-project_name: Painel Safra
-project_type: internal_operational_control
-service_class: CRITICO                  # aprovado em 24/09/2026
-exposure: internal
-backend_type: lovable_cloud_postgres
-primary_role: primary
-application_criticality: MEDIUM                 # aprovado em 24/09/2026
-scenario_criticality:
-  values: [CRITICAL, HIGH, MODERATE]
-  source: materiais_mae
-  status: APPROVED
-human_interface: true
-replica_enabled: false
-auth_required: true
-identity_provider: MICROSOFT_ENTRA_ID
-auth_method: CORPORATE_SSO
-local_password_login: false
-privileged_roles: true
-personal_data: true   # identidade/nome/e-mail de usuários internos
-sensitive_data: false # aprovado por escopo; coleta intencional não permitida
-children_or_adolescents_data: false
-storage_files: false  # atual; política futura deferida até Storage ser habilitado
-external_integrations: false # MVP; true quando integração real entrar
-public_api: false
-payments_or_financial_impact: false # escopo atual; reavaliar se fluxo futuro mudar
-automated_decisioning: false # MVP: regra sugere, humano decide
-domain_rules_required: true
-```
-
-Campos `WAITING_HUMAN_DECISION` não podem ser convertidos silenciosamente em `false`.
-
----
-
-# 6. Decisões metodológicas já consolidadas
-
-## D-01 - Evoluir o incident-log-pro
-
-Não criar segundo aplicativo paralelo.
-
-## D-02 - Preservar applications/incidents
-
-Essas tabelas continuam atendendo o domínio de confiabilidade de TI.
-
-Elas não devem ser forçadas a representar todo o Safra.
-
-## D-03 - Geral é visão, não área operacional
-
-Modelar:
-
-- Logística;
-- TI;
-- E-commerce;
-- PCP;
-- Pós-Vendas;
-- Comercial;
-- Fiscal/DAF.
-
-`Geral` deve ser uma visão agregadora do produto.
-
-## D-04 - Detecção e ativação são conceitos separados
-
-Uma origem pode detectar automaticamente, mas a tratativa só nasce após ação humana autorizada.
-
-## D-05 - Protocolo != chamado
-
-O chamado resolve uma ocorrência operacional.
-
-O protocolo comunica e governa uma contingência relevante.
-
-## D-06 - Usuário autenticado controla START/END; owner responde pelo protocolo
+## 5.1 Usuário autenticado — capacidade base
 
 Qualquer usuário autenticado pelo Microsoft Entra ID pode:
 
-- iniciar protocolo;
-- encerrar protocolo;
-- cancelar com justificativa.
+- visualizar os cards;
+- executar START em cenário publicado;
+- executar END em tratativa ativa;
+- executar CANCEL com justificativa obrigatória;
+- enviar proposta pelo 12º card.
 
-O `scenario_owner` é o responsável formal pelo card e conduz o protocolo com sua equipe, mas não possui exclusividade sobre START/END/CANCEL.
+Todas as ações críticas precisam ser auditáveis, idempotentes e validadas no backend.
 
-## D-07 - Não apagar tratativa
+## 5.2 `scenario_owner`
 
-Uma abertura errada vira `CANCELLED` com justificativa.
+Responsável formal pelo card e pelo protocolo operacional com sua equipe.
 
-## D-08 - Novo cenário exige governança
+Não possui exclusividade sobre START/END/CANCEL.
 
-Proposta não entra diretamente como cenário produtivo.
+Owners atuais dos 11 cards:
 
-## D-09 - Criticidade tem três níveis
+- Daniel Garcia — 1, 2, 3, 7, 10, 11;
+- Jiane Rodrigues — 4, 5, 6, 8;
+- Renato de Paulo — 9.
 
-- `CRITICAL`;
-- `HIGH`;
-- `MODERATE`.
+## 5.3 `safra_platform_admin`
 
-Lista dos quatro cenários críticos: **WAITING_HUMAN_DECISION**.
+Administração técnica da plataforma.
 
-## D-10 - Recorrência não define crise sozinha
+Membros permanentes:
 
-Quantidade de ocorrências é indicador, não gatilho automático de crise.
+- Kaue Pastrello;
+- Amanda Bueno;
+- Vinicius Moraes;
+- João Jurado.
 
-Também medir:
+Admin técnico não recebe ownership de cenário por herança.
 
-- duração acumulada;
-- protocolos simultâneos;
-- SLA breach;
-- impacto;
-- tempo em contingência;
-- escalonamentos.
+## 5.4 `safra_governance_admin`
 
-## D-11 - Comitê de crise é escalonamento, não status do protocolo
+Governança funcional global.
 
-O protocolo continua ativo e pode possuir nível de escalonamento.
+Membro atual:
 
-### 12º card — formulário de proposta
+- Jair Silva.
 
-O 12º card é um ponto de entrada para proposta de novo cenário, não um protocolo genérico.
+Responsabilidades:
 
-Campos:
-- nome e e-mail preenchidos pelo Microsoft SSO;
-- título;
-- descrição do problema;
-- como o problema afeta a Safra.
+- supervisionar cards e governança;
+- acessar relatórios de governança;
+- conduzir o fluxo do 12º card;
+- receber comunicações operacionais de governança;
+- tomar decisões de ownership quando o fluxo exigir;
+- não administrar tecnicamente a plataforma.
 
-Jair Silva conduz a governança da proposta.
+## 5.5 `safra_executive_admin`
 
-Fluxo:
-1. Jair recebe;
-2. envia para Daniel Garcia, Renato Paulo e Jiane Rodrigues;
-3. um aceite -> esse usuário assume ownership;
-4. dois ou mais aceites -> Jair faz o check final;
-5. nenhum aceite -> Jair decide ou aciona Bruno Palhão.
+Visão executiva e analytics.
 
-Jiane participa como possível owner, não como governança global.
+Membro atual:
 
-## D-12 - Papéis funcionais aprovados
-
-O modelo foi simplificado para apenas dois papéis:
-
-- `safra_admin`;
-- `scenario_owner`.
-
-Não existirão `scenario_updater`, `manager_viewer`, `executive_viewer` ou `viewer` como papéis funcionais.
+- Bruno Palhão.
 
 Regras:
 
-- admin não implica ownership automático;
-- ownership depende de vínculo explícito com cenário;
-- matriz detalhada de permissões entre os dois papéis: **WAITING_HUMAN_DECISION**;
-- acesso de usuário Microsoft autenticado sem papel: **WAITING_HUMAN_DECISION**.
+- visão de todos os cards e métricas;
+- sem manutenção técnica;
+- sem e-mails operacionais normais;
+- pode ser acionado no fluxo excepcional do 12º card.
+
+## 5.6 Princípio de papéis
+
+```text
+papel administrativo != ownership automático
+ownership = vínculo explícito ao cenário
+```
 
 ---
 
-# 7. Modelo de domínio alvo
+# 6. Decisões de negócio consolidadas
 
-## 7.1 Entidades de catálogo
+## D-01 — Evoluir o projeto existente
+
+Não criar aplicação paralela.
+
+## D-02 — Preservar domínio legado de TI
+
+`applications/incidents` continuam representando confiabilidade de TI onde fizer sentido, sem serem forçados a representar todo o Safra.
+
+## D-03 — Geral é visão, não área
+
+`Geral` é agregação; não é entidade operacional.
+
+## D-04 — Detecção e ativação são separadas
+
+No MVP, integrações podem futuramente gerar sinal, mas não criam `treatment` automaticamente.
+
+## D-05 — Protocolo não é chamado
+
+O Painel governa contingência; não substitui sistemas de atendimento operacional.
+
+## D-06 — START / END / CANCEL
+
+- qualquer usuário autenticado pode START;
+- qualquer usuário autenticado pode END;
+- qualquer usuário autenticado pode CANCEL;
+- CANCEL exige motivo;
+- ator e timestamp são persistidos no backend;
+- nenhuma ação crítica depende apenas do frontend.
+
+## D-07 — Sem delete físico para “corrigir histórico”
+
+Abertura errada vira `CANCELLED`.
+
+## D-08 — Novo cenário exige governança
+
+Proposta não vira cenário produtivo automaticamente.
+
+## D-09 — Criticidade de cenário
+
+Valores:
+
+```text
+CRITICAL
+HIGH
+MODERATE
+```
+
+A lista exata dos quatro cenários `CRITICAL` permanece decisão de domínio a fechar em C03/C06.
+
+## D-10 — Recorrência não cria crise automaticamente
+
+Recorrência é indicador; crise depende de avaliação humana e contexto.
+
+## D-11 — Comitê é escalonamento
+
+Escalonamento não substitui `status` da tratativa.
+
+## D-12 — Sem checklist operacional no Painel
+
+O protocolo é executado pelo owner com sua equipe. O Painel não exige controle passo a passo da execução.
+
+---
+
+# 7. Modelo de domínio alvo — v2.1
+
+## 7.1 Catálogo
 
 ### `operational_areas`
-
-Representa as sete áreas operacionais.
-
-Campos mínimos:
 
 ```text
 id
@@ -499,21 +359,6 @@ updated_at
 ```
 
 ### `systems`
-
-Catálogo das ferramentas/sistemas associados aos cenários.
-
-Exemplos:
-
-- Protheus;
-- GoDeep;
-- Intelipost;
-- WMS;
-- Cockpit;
-- Mensageria;
-- monitoramento de TI;
-- Painel de Protocolos / BI.
-
-Campos:
 
 ```text
 id
@@ -530,10 +375,6 @@ updated_at
 
 Identidade estável do cenário.
 
-Não concentrar toda regra mutável aqui.
-
-Campos:
-
 ```text
 id
 code
@@ -547,9 +388,7 @@ updated_at
 
 ### `scenario_versions`
 
-Versiona o conteúdo operacional.
-
-Campos:
+Conteúdo mutável/versionado do cenário.
 
 ```text
 id
@@ -559,6 +398,7 @@ trigger_description
 detection_mode
 activation_mode
 criticality
+protocol_text
 monitoring_description
 mapping_code
 validation_notes
@@ -571,42 +411,26 @@ approved_at
 created_at
 ```
 
-A tratativa deve apontar para uma versão específica.
-
 ### `scenario_owners`
-
-Evita owner como texto solto.
 
 ```text
 id
 scenario_id
 user_id
-role
 valid_from
 valid_to
+created_at
 ```
 
 ### `scenario_impacted_areas`
 
-Relação N:N das áreas potencialmente impactáveis.
+Relação N:N das áreas potencialmente impactadas.
 
 ### `scenario_systems`
 
 Relação N:N entre cenário e sistemas.
 
-Campo `role`:
-
-```text
-DETECTION
-SOURCE
-OPERATIONAL_SUPPORT
-MONITORING
-COMMUNICATION
-```
-
 ### `scenario_slas`
-
-Um cenário pode possuir múltiplos compromissos temporais.
 
 ```text
 id
@@ -621,25 +445,34 @@ required
 sort_order
 ```
 
-### `protocol_step_definitions`
+## 7.2 Identidade e papéis
+
+### `safra_user_roles`
+
+[DERIVADO — desenho técnico a homologar em C04/C05]
 
 ```text
 id
-scenario_version_id
-step_number
-title
-description
-required_for_close
+user_id
+role
+valid_from
+valid_to
+created_by
 created_at
 ```
 
-`required_for_close` deve ser decidido por cenário ou política; não assumir que todo passo é bloqueante.
+Roles previstos:
 
-## 7.2 Entidades operacionais
+```text
+safra_platform_admin
+safra_governance_admin
+safra_executive_admin
+scenario_owner  # ownership também possui vínculo explícito em scenario_owners
+```
+
+## 7.3 Operação
 
 ### `treatments`
-
-Representa uma ativação real de protocolo.
 
 ```text
 id
@@ -662,7 +495,7 @@ created_at
 updated_at
 ```
 
-Estados sugeridos:
+Estados mínimos:
 
 ```text
 ACTIVE
@@ -670,53 +503,26 @@ RESOLVED
 CANCELLED
 ```
 
-Não usar estados de crise dentro do mesmo campo.
-
 ### `treatment_impacted_areas`
 
 Áreas efetivamente impactadas naquela ocorrência.
 
-### `treatment_steps`
-
-Estado do checklist/marcos daquela tratativa.
-
-```text
-id
-treatment_id
-protocol_step_definition_id
-status
-completed_by
-completed_at
-notes
-```
-
-Status sugeridos:
-
-```text
-PENDING
-IN_PROGRESS
-DONE
-NOT_APPLICABLE
-```
-
 ### `treatment_events`
 
-Trilha append-only de auditoria.
+Trilha append-only.
 
-Eventos possíveis:
+Eventos mínimos previstos:
 
 ```text
 TREATMENT_OPENED
-STEP_STARTED
-STEP_COMPLETED
-STEP_MARKED_NA
+NOTE_ADDED
 IMPACT_AREA_ADDED
 IMPACT_AREA_REMOVED
 ESCALATION_CHANGED
-NOTE_ADDED
 SLA_BREACHED
 TREATMENT_RESOLVED
 TREATMENT_CANCELLED
+ADMIN_CORRECTION_RECORDED
 ```
 
 Campos:
@@ -729,6 +535,7 @@ actor_id
 occurred_at
 payload_json
 correlation_id
+created_at
 ```
 
 ### `treatment_escalations`
@@ -756,55 +563,56 @@ EXECUTIVE
 
 ### `notifications_log`
 
-Não depender de "e-mail enviado" apenas no client.
-
 ```text
 id
 treatment_id
 notification_type
 recipient_id
 recipient_email
+correlation_id
 status
 provider_message_id
 sent_at
-error
+error_code
+created_at
 ```
 
-## 7.3 Governança
+## 7.4 Governança
 
 ### `scenario_proposals`
 
-Workflow:
+O 12º card cria proposta, não cenário produtivo.
+
+Campos do formulário aprovado:
 
 ```text
-DRAFT
-SUBMITTED
-UNDER_REVIEW
-APPROVED
-REJECTED
-PUBLISHED
+id
+submitted_by
+submitted_name_snapshot
+submitted_email_snapshot
+title
+problem_description
+safra_impact_description
+status
+created_at
+updated_at
 ```
 
-Campos mínimos:
+### `scenario_proposal_owner_responses`
+
+[DERIVADO — necessário para representar o fluxo aprovado]
 
 ```text
-name
-trigger
-proposed_area
-proposed_owner
-criticality
-sla
-impacted_areas
-steps
-justification
-submitted_by
-reviewed_by
-reviewed_at
+id
+proposal_id
+candidate_user_id
+response  # ACCEPTED | DECLINED
+responded_at
 ```
 
 ### `governance_issues`
 
-Registra lacunas reais.
+Registra decisões abertas sem transformá-las em default.
 
 ```text
 id
@@ -816,387 +624,208 @@ owner
 status
 due_date
 resolution
+created_at
+updated_at
 ```
-
-### `rule_versions`
-
-Opcional, caso regras sejam formalizadas separadamente de `scenario_versions`.
 
 ---
 
-# 8. Matriz dos 11 cenários validados - baseline do seed
+# 8. Baseline dos 11 cenários
 
-A carga inicial deve vir da Matriz v3, não ser redigitada manualmente.
+A carga canônica virá da Matriz v3, sem redigitação manual.
 
-| # | Cenário | Área responsável | Dono v3 | Áreas impactadas | SLA resumido | Ferramentas | Pendência conhecida |
-|---:|---|---|---|---|---|---|---|
-| 1 | Insucesso de entrega | Logística | Daniel Garcia | Pós-Vendas, E-commerce, Comercial | falha <=2h; tratativa <=48h | Intelipost + Painel | nenhuma estrutural |
-| 2 | Transportadora fora do ar | Logística | Daniel Garcia | TI, Comercial | plano B <=4h; clientes comunicados | Intelipost + Painel | definir `X h` |
-| 3 | Atraso (+48h) sem causa | Logística | Daniel Garcia | Pós-Vendas, Comercial | alerta 48h; retorno <=4h | Cockpit + Intelipost + Painel | regra já possui 48h |
-| 4 | Pedido pago não integrado | TI | Jiane Rodrigues | E-commerce | tempo real; tratativa <=2h | Cockpit Protheus + Painel | definir `X min` da regra de detecção |
-| 5 | Tracking falso | TI | Jiane Rodrigues | Logística, E-commerce | correção antes da comunicação; <=4h | Mensageria/Cockpit + Intelipost + Painel | modelar validação físico x sistêmico |
-| 6 | ERP indisponível/travado no pico | TI | Jiane Rodrigues | Logística, Comercial | continuidade <=30min; pós-mortem <=48h | Monitoramento TI + comunicação | integrar semanticamente ao incident-log-pro |
-| 7 | Divergência saldo físico x virtual | Logística | Daniel Garcia | TI, E-commerce | acerto <=24h; reprocesso no dia | WMS/Protheus + Cockpit + Painel | detecção é MIXED |
-| 8 | Falha de NF-e / bloqueio fiscal | TI | Jiane Rodrigues | DAF | liberar NF <=4h; manter janela | Cockpit Protheus + Painel | corrigir material antigo que apontava DAF como dono |
-| 9 | Ruptura de estoque curva A | PCP | Renato de Paulo | Logística, Comercial | reposição/realocação no dia | Protheus PCP + Painel | fonte do mínimo deve ser definida |
-| 10 | Colapso fila picking/esteira | Logística | Daniel Garcia | Comercial | reforço imediato; normalizar no turno | Cockpit/Painel | definir limite de lead time/fila |
-| 11 | Pico de volume acima da capacidade | Logística | Daniel Garcia | PCP, Comercial | plano de pico no dia | BI Protocolos + Cockpit | definir capacidade/limiar por safra |
+| # | Cenário | Área | Owner | SLA resumido | Pendência material |
+|---:|---|---|---|---|---|
+| 1 | Insucesso de entrega | Logística | Daniel Garcia | falha <=2h; tratativa <=48h | nenhuma estrutural |
+| 2 | Transportadora fora do ar | Logística | Daniel Garcia | plano B <=4h | definir `X h` |
+| 3 | Atraso (+48h) sem causa | Logística | Daniel Garcia | retorno <=4h | regra de 48h já existe |
+| 4 | Pedido pago não integrado | TI | Jiane Rodrigues | tratativa <=2h | definir `X min` |
+| 5 | Tracking falso | TI | Jiane Rodrigues | correção <=4h | validação físico x sistêmico |
+| 6 | ERP indisponível/travado | TI | Jiane Rodrigues | continuidade <=30min; pós-mortem <=48h | ponte semântica com incidents TI |
+| 7 | Divergência saldo físico x virtual | Logística | Daniel Garcia | correção <=24h | detecção MIXED |
+| 8 | Falha NF-e / bloqueio fiscal | TI | Jiane Rodrigues | liberação <=4h | preservar owner correto da Matriz v3 |
+| 9 | Ruptura estoque curva A | PCP | Renato de Paulo | realocação no dia | fonte oficial do mínimo curva A |
+| 10 | Colapso picking/esteira | Logística | Daniel Garcia | normalizar no turno | limite lead time/fila |
+| 11 | Pico de volume > capacidade | Logística | Daniel Garcia | plano de pico no dia | capacidade/limiar |
 
-## 8.1 Propostos P1-P4
+Nenhum P1-P4 deve ser publicado por inferência.
 
-A existência de quatro cenários propostos está documentada, porém o conteúdo final não aparece na Matriz v3.
+---
 
-Portanto:
+# 9. Dívida de decisão — com fase responsável
+
+Nada nesta seção deve voltar a aparecer como `UNKNOWN` genérico.
+
+| Decisão | Estado | Fase responsável |
+|---|---|---|
+| quatro cenários CRITICAL | DEFERRED | C03/C06 |
+| threshold cenário 2 | DEFERRED | C06/C07 |
+| threshold cenário 4 | DEFERRED | C06/C07 |
+| threshold cenário 10 | DEFERRED | C06/C07 |
+| threshold cenário 11 | DEFERRED | C06/C07 |
+| fonte mínima curva A cenário 9 | DEFERRED | C06/C07 |
+| regra para múltiplas tratativas simultâneas do mesmo cenário | DEFERRED | M01 |
+| provider/canal de e-mail | DEFERRED | M05 |
+| comportamento de e-mail dos platform admins | DEFERRED | M05 |
+| período exato da “Safra corrente” para métricas em e-mail | DEFERRED | M05/F04 |
+| publicação formal após ownership do 12º card | DEFERRED | M10 |
+| janela oficial de governança semanal | DEFERRED | F05 |
+| definição de impacto quantitativo | DEFERRED | C03/F04 |
+| estratégia canônica de migrations (Drizzle x supabase/migrations) | DEFERRED | C05 |
+
+---
+
+# 10. Contratos de regras de negócio — baseline
+
+## RB-SAFRA-001 — Cenário publicado
+
+Somente cenário `PUBLISHED` pode originar tratativa real.
+
+## RB-SAFRA-002 — Ativação humana
+
+Nenhum sinal externo cria `treatment` automaticamente no MVP.
+
+## RB-SAFRA-003 — START
+
+Qualquer usuário Microsoft autenticado pode iniciar cenário publicado. Ator, timestamp server-side e versão vigente devem ser persistidos.
+
+## RB-SAFRA-004 — END
+
+Qualquer usuário Microsoft autenticado pode encerrar tratativa `ACTIVE` quando a necessidade estiver concluída. Ator e timestamp server-side são obrigatórios.
+
+## RB-SAFRA-005 — Execução do protocolo
+
+Owner e equipe executam o protocolo fora do controle passo a passo do Painel. O Painel não cria papel `scenario_updater`.
+
+## RB-SAFRA-006 — CANCEL
+
+CANCEL exige justificativa; não existe delete físico para esconder uma tratativa.
+
+## RB-SAFRA-007 — Versão congelada
+
+`scenario_version_id` é congelado no START.
+
+## RB-SAFRA-008 — Áreas impactadas reais
+
+A tratativa registra suas áreas impactadas, distintas das áreas potencialmente impactáveis do cenário.
+
+## RB-SAFRA-009 — Criticidade do cenário
+
+`CRITICAL | HIGH | MODERATE`.
+
+## RB-SAFRA-010 — Protocolo != chamado
+
+Sem workflow de ticket obrigatório.
+
+## RB-SAFRA-011 — Escalonamento separado
+
+Crise/comitê é estrutura própria, não status da tratativa.
+
+## RB-SAFRA-012 — SLA múltiplo
+
+Duração é derivada de eventos/timestamps; não salvar minuto calculado como fonte primária.
+
+## RB-SAFRA-013 — Fonte ausente
+
+Ausência de integração não pode aparecer como “OK”.
+
+## RB-SAFRA-014 — 12º card
+
+Proposta não publica cenário automaticamente.
+
+## RB-SAFRA-015 — Recorrência
+
+Recorrência informa governança; não promove crise automaticamente.
+
+## RB-SAFRA-016 — Integridade temporal
+
+Sequência temporal inválida deve ser bloqueada ou corrigida por evento administrativo auditável.
+
+## RB-SAFRA-017 — Idempotência
+
+Retry, refresh e double submit não podem duplicar START/END/CANCEL/eventos/notificações.
+
+---
+
+# 11. EIXO 1 — COMEÇO
+
+## Objetivo
+
+Garantir que cenário, identidade, versão, SLA, segurança e fundação estejam corretos antes da abertura operacional.
+
+---
+
+## SAFRA-C00 — Baseline e contenção P0 — CONCLUÍDO
+
+### Entregas concluídas
+
+- baseline registrada;
+- `.env` removido do tracking;
+- anon bloqueado;
+- RLS habilitada;
+- policies abertas removidas;
+- acesso direto não autorizado testado;
+- histórico Git preservado.
+
+### Gate
 
 ```text
-P1-P4 = NÃO PUBLICAR COMO VALIDADO
+P0 security = PASS
 ```
 
-Devem entrar apenas quando houver fonte formal suficiente.
-
 ---
 
-# 9. Pendências humanas que bloqueiam regra definitiva
+## SAFRA-C01 — Documentação canônica e PROJECT_PROFILE — CONCLUÍDO
 
-Criar registros `WAITING_HUMAN_DECISION` para:
-
-1. lista dos quatro cenários `CRITICAL`;
-2. limiar `X h` do cenário 2;
-3. limiar `X min` do cenário 4;
-4. limite de lead time/fila do cenário 10;
-5. capacidade/limiar do cenário 11;
-6. origem oficial do mínimo da curva A do cenário 9;
-7. regra de múltiplas tratativas simultâneas do mesmo cenário;
-8. política de fechamento com passos incompletos ou `NOT_APPLICABLE`;
-9. papéis exatos e delegação de atualização;
-10. provedor de identidade e método de autenticação corporativa;
-11. service class do Framework EBSA;
-12. RTO e RPO aprovados;
-13. `replica_enabled`;
-14. provedor/canal de e-mail/notificação;
-15. quem participa da aprovação formal de novos cenários;
-16. retenção do histórico;
-17. janela oficial do ritual semanal;
-18. definição de impacto quantitativo quando aplicável.
-
-Nenhuma dessas decisões deve ser preenchida por suposição da LLM.
-
----
-
-# 10. Contratos de regras de negócio
-
-Cada regra deve possuir `rule_id`, versão, fonte, owner, exemplos positivos/negativos e testes.
-
-## RB-SAFRA-001 - Cenário validado
-
-Somente cenário `VALIDATED/PUBLISHED` pode originar tratativa real.
-
-## RB-SAFRA-002 - Ativação humana
-
-Nenhum sinal externo cria automaticamente `treatments` no MVP.
-
-## RB-SAFRA-003 - Autorização para START
-
-Qualquer usuário Microsoft autenticado pode iniciar cenário publicado. Ator e timestamp oficial são persistidos no backend.
-
-## RB-SAFRA-004 - Autorização para END/CANCEL
-
-Qualquer usuário Microsoft autenticado pode encerrar uma tratativa ativa. CANCEL exige justificativa e preserva histórico.
-
-## RB-SAFRA-005 - Atualizadores delegados
-
-O trabalho operacional do protocolo é conduzido pelo owner e sua equipe fora do controle passo a passo do Painel; o Painel registra governança, tempos, eventos e encerramento.
-
-## RB-SAFRA-006 - Cancelamento auditável
-
-Tratativa incorreta é `CANCELLED`; exclusão física é proibida no fluxo normal.
-
-## RB-SAFRA-007 - Versão congelada
-
-Ao abrir uma tratativa, salvar `scenario_version_id` e não recalcular histórico contra versão futura.
-
-## RB-SAFRA-008 - Área impactada real
-
-A ocorrência possui conjunto próprio de áreas impactadas.
-
-## RB-SAFRA-009 - Criticidade e notificação
-
-- `CRITICAL`: comunicar diretoria conforme política aprovada;
-- `HIGH`/`MODERATE`: comunicar gestão/áreas impactadas conforme política aprovada.
-
-## RB-SAFRA-010 - Protocolo não é chamado
-
-A ferramenta não deve exigir workflow de atendimento técnico para cada protocolo.
-
-## RB-SAFRA-011 - Escalonamento separado
-
-Comitê técnico/negócio/executivo é relação da tratativa, não substitui seu status.
-
-## RB-SAFRA-012 - SLA múltiplo
-
-Cada SLA é calculado de eventos definidos; não armazenar duração como fonte primária quando puder ser derivada.
-
-## RB-SAFRA-013 - Fonte sem integração
-
-Ausência de fonte real nunca aparece como verde/OK automático.
-
-Usar estado explícito:
+### Resultado
 
 ```text
-NO_SOURCE
-WAITING_INTEGRATION
-STALE_DATA
-UNKNOWN
+G3 = PASS
+G3.25 = PASS
+unknown_material_count = 0
 ```
 
-## RB-SAFRA-014 - Novo cenário
+### Decisões fechadas
 
-Proposta precisa de revisão e aprovação antes de publicação.
-
-## RB-SAFRA-015 - Recorrência
-
-Recorrência é métrica; não promove automaticamente o nível de crise.
-
-## RB-SAFRA-016 - Integridade temporal
-
-Eventos não podem violar sequência temporal sem justificativa administrativa auditada.
-
-## RB-SAFRA-017 - Idempotência
-
-Duplo clique, retry ou refresh não pode duplicar abertura, conclusão de passo, encerramento ou e-mail.
+- `service_class = CRITICO`;
+- `application_criticality = MEDIUM`;
+- `RTO = 30 min`;
+- `RPO = 5 min`;
+- Microsoft Entra ID / SSO;
+- `replica_enabled = false`;
+- retenção;
+- responsabilidades administrativas.
 
 ---
 
-# 11. EIXO 1 - COMEÇO
-
-## Objetivo do eixo
-
-Responder corretamente:
-
-> **"Temos condições de abrir este protocolo, quem pode fazê-lo, com qual versão, qual escopo e quais compromissos?"**
-
-O COMEÇO inclui a fundação técnica porque uma abertura incorreta ou não autorizada contamina todo o histórico.
-
----
-
-## SAFRA-C00 - Congelar baseline e conter riscos P0 — CONCLUÍDO EM 24/09/2026
+## SAFRA-C02 — Threat model e abuso de negócio — EM ANDAMENTO
 
 ### Objetivo
 
-Criar uma linha de base segura antes de qualquer expansão funcional.
+Modelar abuso antes de codificar autorização e schema.
 
-### Ações
+### Threats modelados
 
-1. registrar commit baseline;
-2. registrar schema atual;
-3. documentar rotas atuais;
-4. inventariar migrations;
-5. inventariar acesso Supabase;
-6. remover `.env` do tracking em novo commit;
-7. adicionar `.env`, `.env.*` sensíveis ao `.gitignore` preservando `.env.example`;
-8. identificar secrets possivelmente expostos;
-9. rotacionar secrets aplicáveis fora do GitHub;
-10. revisar grants atuais;
-11. remover CRUD indiscriminado de `anon`;
-12. substituir `USING (true)` por policies reais;
-13. testar acesso direto à API como usuário não autorizado;
-14. preservar histórico Git sem force push.
-
-### Evidências
-
-- commit de contenção;
-- matriz de grants antes/depois;
-- teste negativo de acesso;
-- checklist de rotação de secret;
-- `docs/STATUS.md`.
-
-### Gate EBSA
-
-Status de fechamento do SAFRA-C00:
-
-- **I-1 / SEC-001 — FECHADO**;
-- **I0 / G0 — FECHADO**;
-- **G2 / G3 — FECHADO no escopo C00**;
-- **G5 — FECHADO PARCIALMENTE no escopo P0**.
-
-O G5 completo permanece aberto para SAFRA-C04/C05, onde serão tratados identidade, RBAC definitivo, ownership, autorização por cenário e governança de migrations. Isso não constitui bloqueador P0 para continuidade da reformulação.
-
-### Saída
-
-**Gate atingido em 24/09/2026.**
-
-Nenhum bloqueador P0 conhecido permanece aberto para continuar a reformulação.
-
-Evidências canônicas: `docs/STATUS.md`, seção **Fechamento formal dos gates I-1 / I0 / G2 / G5 parcial**.
-
----
-
-## SAFRA-C01 - Documentação canônica e PROJECT_PROFILE — CONCLUÍDO
-
-### Objetivo
-
-Evitar que decisões fiquem espalhadas entre README, prompts e materiais da Pragmatis.
-
-### Estrutura canônica
-
-Criados/consolidados:
-
-```text
-docs/ROADMAP.md
-docs/STATUS.md
-docs/ARQUITETURA.md
-docs/PROJECT_PROFILE.yaml
-docs/PRIVACIDADE_THREAT_MODEL.md
-docs/REGRAS_NEGOCIO.md
-docs/MATRIZ_PARIDADE.md
-docs/DECISOES.md
-```
-
-Pastas reservadas para próximas etapas:
-
-```text
-docs/adr/
-docs/evidence/
-docs/data-contracts/
-docs/data-releases/
-```
-
-Não criar documentação paralela quando um destes arquivos já for a autoridade adequada.
-
-### Registrar no perfil
-
-- classe de serviço;
-- criticidade da aplicação;
-- auth;
-- papéis privilegiados;
-- dados pessoais de identidade;
-- integrações;
-- replica;
-- arquivos;
-- API pública;
-- decisão automatizada;
-- regras de domínio.
-
-### Critério de fechamento
-
-Não concluir enquanto houver `UNKNOWN` material.
-
-**Resultado em 24/09/2026:** nenhum UNKNOWN material permanece no escopo C01.
-
-### Retenção aprovada
-
-Dados pessoais identificáveis permanecem até o encerramento formal da Safra e enquanto necessários para auditoria/pós-mortem. Depois disso, eliminar ou anonimizar. Histórico operacional e métricas podem permanecer para comparação entre Safras sem identificação pessoal quando possível.
-
-### Gate EBSA
-
-- G3 — **PASS**;
-- G3.25 — **PASS**.
-
----
-
-## SAFRA-C02 - Threat model e abuso de negócio
-
-### Ameaças específicas
-
-- usuário comum abre protocolo crítico;
-- usuário encerra protocolo alheio;
-- alteração retroativa de owner;
-- alteração de passos de protocolo muda histórico antigo;
-- update direto via API ignora UI;
-- cancelamento sem justificativa;
+- START indevido/duplicado;
+- END prematuro/repetido;
+- CANCEL para mascarar histórico;
+- alteração indevida de owner;
+- alteração de criticidade para manipular comunicação;
 - adulteração de timestamps;
-- alteração de criticidade para evitar notificação;
-- inclusão indevida de diretoria/área impactada;
-- enumeração de dados por usuário fora da área;
-- vazamento de e-mails internos;
-- duplicação por retry;
-- operador fecha protocolo para "parar SLA";
-- edição de cenário validado sem nova versão.
+- edição retroativa de cenário;
+- nova versão afetando tratamento ativo;
+- bypass de UI pela Data API/RPC;
+- enumeração de dados;
+- vazamento de dados internos;
+- duplicidade por retry;
+- manipulação para “parar SLA”;
+- proposta do 12º card entrando em operação sem governança.
 
-### Casos formalizados — C02.2
-
-#### AB-API-01 — Bypass da UI por Data API/RPC
-
-**Abuso:** usuário autenticado chama diretamente a Data API/RPC e tenta executar uma ação que a interface esconderia ou bloquearia.
-
-**Impacto:** START/END/CANCEL indevido, alteração de owner/criticidade, mudança de estado e quebra de invariantes.
-
-**Controles:**
-- autorização obrigatória no backend/banco;
-- RLS como barreira de dados;
-- funções/RPC para operações críticas;
-- constraints e state guards;
-- nunca depender de botão oculto como controle de segurança.
-
-**Teste:** repetir operações críticas diretamente contra API/RPC sem usar a UI e comprovar o mesmo bloqueio aplicado pelo produto.
-
-#### AB-DATA-01 — Enumeração de dados
-
-**Abuso:** usuário autenticado tenta listar IDs, cards, usuários, e-mails ou histórico além do necessário usando filtros, paginação, IDs previsíveis ou chamadas diretas.
-
-**Impacto:** exposição de estrutura interna, pessoas, ownership e histórico operacional.
-
-**Controles:**
-- consultas autorizadas server-side;
-- RLS/escopo mínimo;
-- evitar endpoints de diretório sem finalidade;
-- paginação e filtros sem ampliar escopo de autorização;
-- auditoria de padrões anormais de leitura.
-
-**Teste:** tentar acessar/listar registros fora do escopo permitido por ID direto, paginação e consulta sem filtros de UI.
-
-#### AB-LEAK-01 — Vazamento de dados internos
-
-**Abuso:** e-mail, nome, payload de notificação, logs ou mensagens de erro expõem dados internos além da finalidade.
-
-**Impacto:** vazamento de dados pessoais corporativos e informação operacional.
-
-**Controles:**
-- minimização de payload;
-- logs sem secrets/tokens;
-- mensagens de erro sem detalhes internos;
-- destinatários derivados de regra de negócio;
-- deduplicação de destinatários;
-- evitar exposição de e-mails em respostas públicas/client-side desnecessárias.
-
-**Teste:** inspecionar resposta API, logs, console, mensagens de erro e payloads de notificação.
-
-#### AB-RETRY-01 — Duplicidade por retry
-
-**Abuso/falha:** duplo clique, refresh, timeout ou retry repete START, END, CANCEL ou notificação.
-
-**Impacto:** múltiplas tratativas, eventos duplicados, e-mails repetidos e métricas incorretas.
-
-**Controles:**
-- idempotency key/correlation_id;
-- constraint contra duplicidade incompatível;
-- transação atômica;
-- operação repetida retorna resultado idempotente;
-- notification log com chave única por evento/destinatário.
-
-**Teste:** executar a mesma operação várias vezes, inclusive em paralelo e após timeout simulado.
-
-#### AB-SLA-01 — Manipulação para parar SLA
-
-**Abuso:** usuário tenta usar END, CANCEL, mudança de status, edição de timestamp ou request direto para interromper um SLA sem transição válida.
-
-**Impacto:** cumprimento artificial de SLA, MTTR/duração falsos e perda de accountability.
-
-**Controles:**
-- SLA deriva exclusivamente de eventos/timestamps persistidos;
-- transição de estado validada no backend;
-- CANCEL não equivale automaticamente a SLA cumprido;
-- END só fecha relógios associados ao evento de término definido na regra do SLA;
-- alteração retroativa de timestamp proibida no fluxo normal;
-- correção administrativa gera evento auditável, nunca overwrite silencioso.
-
-**Teste:** tentar parar SLA via alteração direta de status, CANCEL, edição de timestamp, request repetido e manipulação do relógio do browser.
-
-### Controles
+### Controles definidos — ainda não implementar nesta fase
 
 - RLS;
 - autorização server-side;
-- scenario versioning;
+- versionamento de cenário;
 - audit trail append-only;
 - constraints;
 - role mapping;
@@ -1205,420 +834,405 @@ Dados pessoais identificáveis permanecem até o encerramento formal da Safra e 
 - minimização de dados;
 - revisão administrativa.
 
+### Testes derivados
 
+Quatro classes obrigatórias:
 
-### C02.3 — Testes derivados dos abuse cases
-
-#### Positivos
-- usuário Microsoft autenticado executa START em cenário PUBLISHED e recebe sucesso;
-- START persiste ator autenticado, timestamp server-side e scenario_version_id vigente;
-- usuário autenticado executa END em tratativa ACTIVE;
-- CANCEL com justificativa válida encerra como CANCELLED e preserva histórico;
-- owner vigente recebe comunicação prevista para seu card;
-- nova scenario_version publicada só vale para novos STARTs;
-- chamada direta à API/RPC permitida produz o mesmo resultado da UI;
-- SLA encerra apenas quando ocorre o end_event definido na sua regra.
-
-#### Negativos
-- usuário não autenticado não executa START/END/CANCEL;
-- START em cenário DRAFT/PROPOSED/INACTIVE falha;
-- START com scenario_id inexistente ou version_id arbitrário falha;
-- END em RESOLVED/CANCELLED falha;
-- CANCEL sem justificativa falha;
-- tentativa de editar owner/criticidade/protocolo de versão publicada falha;
-- tentativa de alterar opened_at/closed_at/cancelled_at pelo cliente falha ou é ignorada;
-- acesso direto a dado não autorizado por ID/API falha;
-- paginação/filtro não amplia escopo autorizado;
-- resposta de erro não expõe token, secret, stack sensível ou dados pessoais desnecessários;
-- proposta do 12º card não aceita START antes de publicação governada;
-- alteração direta de status não interrompe SLA.
-
-#### Concorrência e retry
-- dois STARTs simultâneos equivalentes não criam duplicidade indevida;
-- duplo clique em START gera uma única tratativa;
-- retry após timeout de START retorna o mesmo resultado idempotente;
-- dois ENDs simultâneos geram um único encerramento;
-- END e CANCEL concorrentes resultam em uma única transição válida;
-- retry de CANCEL não duplica evento nem notificação;
-- mesma notificação reenviada com a mesma chave não gera dois e-mails;
-- concorrência de publicação de scenario_version não cria duas versões correntes;
-- correlação/idempotency key é persistida e reutilizável para reconciliação.
-
-#### Limite / borda
-- START exatamente na troca de versão usa uma única versão determinada pelo backend;
-- END exatamente no instante de breach de SLA produz resultado determinístico;
-- occurrence_started_at igual ao START é aceito;
-- occurrence_started_at no futuro é rejeitado;
-- timestamps em borda de timezone/DST não alteram duração real;
-- CANCEL imediatamente após START preserva ambos os eventos;
-- cenário com criticidade alterada após START mantém a criticidade congelada da versão usada;
-- volume alto de paginação não permite enumeração além do escopo;
-- lista vazia autorizada é distinguida de forbidden/erro;
-- 0, null e ausência de timestamp não são tratados como equivalentes;
-- retry depois de resposta perdida não cria novo evento;
-- SLA com múltiplos end_events fecha somente o relógio correspondente.
+1. positivos;
+2. negativos;
+3. concorrência/retry;
+4. limites/bordas temporais.
 
 ### Critérios de evidência
 
 Cada teste deve registrar:
-- identidade/role do ator;
-- request/correlation_id;
-- estado anterior;
-- ação;
-- resultado HTTP/domínio;
-- estado posterior;
-- eventos de auditoria;
-- timestamps oficiais;
-- notificações geradas ou não;
-- evidência de que não houve mutação colateral.
 
-### Destino
+```text
+ator
+correlation_id
+estado anterior
+ação
+resultado
+estado posterior
+eventos de auditoria
+timestamps oficiais
+notificações
+mutações colaterais
+```
 
-- C04: autenticação, RBAC e RLS;
-- C05: RPCs, constraints, idempotência e concorrência;
-- C06: versionamento/publicação de cenários;
-- C07/M04: relógios, SLA e bordas temporais;
-- M05: notificações e deduplicação;
-- F01/F02: END/CANCEL;
-- F08: execução E2E da matriz completa.
+### Critério de saída do C02
 
+Fechar somente quando:
 
-### Gate EBSA
+- todas as ameaças materiais possuírem controle;
+- todo controle possuir fase de implementação;
+- testes positivos/negativos/concorrência/limite estiverem derivados;
+- riscos residuais estiverem explícitos;
+- `G3.5`, `THREAT-001` e `AUTHZ-001` tiverem evidência suficiente.
 
-- G3.5;
-- THREAT-001;
-- AUTHZ-001.
+### Gate
+
+```text
+G3.5
+THREAT-001
+AUTHZ-001
+```
 
 ---
 
-## SAFRA-C03 - Glossário e modelo de domínio
+## SAFRA-C03 — Glossário e modelo de domínio
 
-### Termos canônicos
+### Objetivo
 
-Definir formalmente:
+Congelar o vocabulário antes de criar schema v2.
+
+### Termos obrigatórios
 
 - cenário;
+- versão de cenário;
 - gatilho;
 - detecção;
-- acionamento;
+- START;
 - protocolo;
 - tratativa;
-- passo/marco;
-- dono;
+- owner;
 - área responsável;
 - área impactada;
 - SLA;
 - criticidade;
-- chamado;
-- comitê técnico;
-- comitê de negócio;
-- diretoria;
+- END;
+- CANCEL;
+- escalonamento;
+- pós-mortem;
 - recorrência;
-- cancelamento;
-- pós-mortem.
+- proposta de cenário;
+- publicação de cenário.
 
-### Decisão
+### Decisões que C03 deve deixar explícitas
 
-`Geral` não é área operacional; é visão agregada.
+- `Geral` = visão agregada;
+- protocolo operacional não é checklist do Painel;
+- diferença entre cenário, versão e tratativa;
+- definição de impacto qualitativo e caminho para impacto quantitativo;
+- lista dos quatro `CRITICAL` se houver evidência suficiente; caso contrário, permanecer governance issue para C06.
 
 ### Entrega
 
-`docs/GLOSSARIO_DOMINIO.md`.
+`docs/GLOSSARIO_DOMINIO.md`
+
+### Critério de saída
+
+Nenhuma entidade de C05 pode possuir nome ambíguo ou duas definições concorrentes.
 
 ---
 
-## SAFRA-C04 - Identidade, RBAC e RLS
+## SAFRA-C04 — Identidade, RBAC e RLS
 
-### Papéis funcionais sugeridos
+### Objetivo
 
-```text
-safra_admin
-scenario_owner
-scenario_updater
-manager_viewer
-executive_viewer
-viewer
-```
+Implementar autenticação corporativa e autorização definitiva conforme o modelo aprovado.
 
-Os papéis não substituem vínculos por cenário.
-
-### Modelo
+### Identidade
 
 ```text
-user
-  -> membership
-      -> operational_area
-      -> role
-
-scenario
-  -> scenario_owner
-      -> user
+Microsoft Entra ID
+    -> SSO
+    -> Supabase/Lovable Auth
+    -> auth.uid()
 ```
 
-### Matriz inicial
+Sem login local por senha.
 
-| Ação | Admin | Owner | Updater | Gestor | Diretoria | Viewer |
-|---|---:|---:|---:|---:|---:|---:|
-| ver painel geral | sim | sim | sim | sim | sim | sim |
-| abrir protocolo próprio | admin controlado | sim | não | não | não | não |
-| atualizar protocolo autorizado | sim | sim | sim | leitura | leitura | leitura |
-| encerrar | admin controlado | sim | não | não | não | não |
-| cancelar | admin/owner | sim | não | não | não | não |
-| editar cenário | admin/governança | não direto | não | não | não | não |
-| aprovar proposta | governança | conforme owner | não | conforme processo | não | não |
+### Role mapping alvo
+
+| Ação | Usuário autenticado | Scenario owner | Governance admin | Executive admin | Platform admin |
+|---|---:|---:|---:|---:|---:|
+| ver cards | sim | sim | sim | sim | sim |
+| START | sim | sim | sim | sim* | sim* |
+| END | sim | sim | sim | sim* | sim* |
+| CANCEL com motivo | sim | sim | sim | sim* | sim* |
+| receber comunicação do próprio card | não por default | sim | conforme governança | não | DEFERRED M05 |
+| gerir ownership | não | não | sim | não | suporte técnico, sem decisão de negócio |
+| publicar cenário | não | não | conforme fluxo M10 | não | não por herança |
+| analytics global | não | seus cards | governança | sim | técnico conforme necessidade |
+| manutenção técnica | não | não | não | não | sim |
+
+`*` capacidade base de usuário autenticado; papel não é necessário para START/END/CANCEL.
+
+### Regras de segurança
+
+- nunca confiar em `user_metadata` para autorização;
+- `app_metadata`/tabelas governadas para papéis;
+- RLS para dados expostos à Data API;
+- browser não define role, owner ou criticidade;
+- sessão inválida não produz efeito;
+- acesso por API deve ter o mesmo resultado de segurança da UI.
 
 ### Testes obrigatórios
 
-- owner A não abre cenário B sem vínculo;
-- usuário sem autoridade de owner não encerra;
-- viewer não escreve por REST direto;
-- anon não lê/escreve dados internos;
-- role alterada revoga imediatamente permissão crítica;
-- sessão expirada não executa efeito.
+- anon não lê/escreve;
+- sessão expirada não executa mutation;
+- usuário autenticado pode START/END/CANCEL conforme regras;
+- usuário autenticado não consegue se tornar owner alterando payload;
+- Jair acessa governança global sem virar platform admin;
+- Bruno acessa analytics global sem receber autorização técnica;
+- Jiane não ganha governança global;
+- platform admin não vira owner automaticamente;
+- acesso direto por REST/RPC obedece às mesmas regras.
 
-### Gate EBSA
+### Gate
 
-- G5;
-- ID-001;
-- ID-002;
-- AUDIT-001.
+```text
+G5
+ID-001
+ID-002
+AUDIT-001
+```
 
 ---
 
-## SAFRA-C05 - Schema v2 e migrations
+## SAFRA-C05 — Schema v2, migrations e invariantes
 
-### Estratégia
+### Objetivo
 
-Adicionar domínio Safra sem breaking change imediato em `applications`/`incidents`.
+Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
 
-### Ordem de migration
+### Antes de criar migration
+1. decidir autoridade canônica de migrations: `supabase/migrations` x Drizzle;
+2. reconciliar drift da migration de hardening;
+3. documentar rollback;
+4. garantir banco descartável para teste.
 
-1. áreas;
-2. systems;
-3. scenarios;
-4. scenario_versions;
-5. scenario_owners;
-6. scenario_impacted_areas;
-7. scenario_systems;
-8. scenario_slas;
-9. protocol_step_definitions;
-10. treatments;
-11. treatment_impacted_areas;
-12. treatment_steps;
-13. treatment_events;
-14. treatment_escalations;
-15. notifications_log;
-16. scenario_proposals;
-17. governance_issues;
-18. mappings para incidentes TI quando aplicável.
+### Ordem recomendada
 
-### Requisitos
+1. `operational_areas`;
+2. `systems`;
+3. `safra_user_roles`;
+4. `scenarios`;
+5. `scenario_versions`;
+6. `scenario_owners`;
+7. `scenario_impacted_areas`;
+8. `scenario_systems`;
+9. `scenario_slas`;
+10. `treatments`;
+11. `treatment_impacted_areas`;
+12. `treatment_events`;
+13. `treatment_escalations`;
+14. `notifications_log`;
+15. `scenario_proposals`;
+16. `scenario_proposal_owner_responses`;
+17. `governance_issues`;
+18. mapeamentos para `incidents` quando aplicável.
+
+### Invariantes mínimos
 
 - FK explícita;
-- índices para filas ativas;
-- constraints de enum/status;
-- timestamps server-side;
-- trigger de `updated_at`;
-- auditoria;
-- sem cascade delete destrutivo em histórico operacional;
-- migration reversível ou rollback documentado.
+- enums/status via constraints ou tipo governado;
+- timestamp oficial server-side;
+- `scenario_version` publicada não é reescrita;
+- tratamento congela `scenario_version_id`;
+- audit events append-only;
+- sem cascade destrutivo em histórico operacional;
+- CANCEL exige razão;
+- END/CANCEL somente em `ACTIVE`;
+- idempotência para mutations críticas;
+- correlation id persistido;
+- constraints de integridade temporal;
+- views expostas devem respeitar RLS/security invoker quando aplicável.
 
 ### Testes
 
 - migration em banco descartável;
-- migration repetida não deve causar estado inconsistente;
-- constraints positivas/negativas;
-- rollback ensaiado.
+- positive/negative constraints;
+- double submit;
+- concorrência END x CANCEL;
+- version freeze;
+- rollback ensaiado;
+- API direto;
+- RLS positiva/negativa.
 
-### Gate EBSA
+### Gate
 
-- G5;
-- G6 parcialmente.
+```text
+G5
+G6 parcial
+```
 
 ---
 
-## SAFRA-C06 - Seed canônico da Matriz v3
+## SAFRA-C06 — Seed canônico da Matriz v3
 
-### Objetivo
-
-Migrar os 11 cenários sem redigitação manual.
-
-### Processo
+### Pipeline
 
 ```text
 XLSX v3
  -> parser versionado
  -> staging
- -> validação de completude
+ -> validação
  -> preview diff
  -> aprovação humana
  -> seed/migration
  -> reconciliação
 ```
 
-### Validações
+### Validar
 
-- 11 cenários;
-- 5 passos onde existirem 5;
-- owner conforme v3;
+- exatamente 11 cenários publicados no seed inicial;
+- owner conforme Matriz v3;
 - área responsável;
-- áreas impactadas;
+- áreas impactáveis;
+- protocolo completo;
+- criticidade quando suportada por fonte/decisão;
 - SLA textual preservado;
 - sistemas/ferramentas;
-- EDB05/EDB06;
-- participantes;
-- nenhum P1-P4 publicado por inferência.
+- mapeamentos EDB05/EDB06;
+- P1-P4 não publicados por inferência.
 
-### Tratamento de campos abertos
+### Campos abertos
 
-`X h`, `X min`, limites não fechados -> `governance_issues`.
+`X h`, `X min`, capacidade, curva A e outras lacunas entram em `governance_issues`.
 
-### Critério de saída
+### Saída
 
-Reconciliação 100% entre XLSX v3 e banco para campos importados.
+Reconciliação 100% dos campos importados contra a Matriz v3.
 
 ---
 
-## SAFRA-C07 - Engine de SLA
+## SAFRA-C07 — Engine de SLA
 
-### Problema atual
+### Princípio
 
-`cenarios.sla_horas` não comporta cenários com múltiplos compromissos.
+SLA de protocolo é diferente do SLO/RTO/RPO do software.
 
-### Solução
+### Modelo
 
-Usar `scenario_slas`.
-
-### Eventos temporais possíveis
+Cada SLA possui:
 
 ```text
-TREATMENT_OPENED
-STEP_X_COMPLETED
-CONTINUITY_STARTED
-SERVICE_RESTORED
-PARTNER_RETURNED
-TREATMENT_RESOLVED
-POSTMORTEM_COMPLETED
+start_event
+end_event
+target_value
+target_unit
 ```
-
-### Cálculo
-
-Duração sempre derivada de timestamps.
 
 ### Regras
 
-- não salvar minutos como fonte primária;
-- salvar timestamps e definição de SLA;
-- sinalizar SLA ainda não mensurável;
+- duração calculada por timestamps;
 - timezone padronizado;
-- não permitir relógio negativo;
-- tolerância temporal somente se documentada.
+- relógio negativo proibido;
+- CANCEL não equivale a SLA cumprido;
+- END só fecha o SLA quando seu `end_event` for `TREATMENT_RESOLVED`;
+- múltiplos SLAs podem coexistir no mesmo cenário;
+- evento ausente => SLA não mensurável, não “OK”.
 
 ### Testes
 
-- borda exata do SLA;
-- horário de verão/timezone;
+- borda exata;
+- breach;
+- END no instante do breach;
+- timezone/DST;
 - evento ausente;
-- passo NA;
-- encerramento após breach;
-- cenário com dois SLAs.
+- CANCEL;
+- dois SLAs simultâneos;
+- tentativa de alterar status/timestamp para parar relógio.
 
 ---
 
-## SAFRA-C08 - UX do começo
+## SAFRA-C08 — UX do COMEÇO
 
 ### Telas
 
 1. Visão Geral;
-2. Minha Área;
-3. Catálogo de Cenários;
-4. Detalhe do Cenário;
-5. Abrir Protocolo;
-6. Administração/Governança.
+2. Catálogo de Cenários;
+3. Detalhe do Cenário;
+4. Abrir Protocolo;
+5. Proposta de novo cenário (12º card);
+6. Administração/Governança conforme papel.
 
-### Fluxo de START
+### START
 
 ```text
-selecionar cenário
+usuário autenticado
+ -> selecionar cenário publicado
  -> confirmar contexto
- -> informar escopo/impacto
- -> selecionar áreas realmente impactadas
+ -> informar escopo/impacto necessário
+ -> confirmar áreas realmente impactadas, se aplicável
  -> revisar criticidade vigente
- -> mostrar owner e versão
- -> confirmar "Ativar protocolo"
- -> backend autoriza
- -> criar tratamento e evento
- -> iniciar relógios
- -> disparar comunicações aplicáveis
+ -> visualizar owner + protocolo + versão
+ -> confirmar START
+ -> backend valida
+ -> cria treatment
+ -> congela scenario_version_id
+ -> grava TREATMENT_OPENED
+ -> inicia SLAs aplicáveis
+ -> dispara comunicação aplicável
 ```
 
-### Guardrails UX
+### Guardrails
 
-- explicar "protocolo não é chamado";
 - confirmação explícita;
+- protocolo completo visível;
 - owner visível;
-- mostrar fonte/gatilho;
-- não permitir cenário proposto;
-- não mostrar verde para cenário sem fonte;
-- ações destrutivas com confirmação;
+- cenário proposto não pode ser aberto;
+- loading/error/forbidden claros;
 - acessibilidade WCAG 2.2 AA;
-- alvo touch preferencial >=44x44 onde prático.
-
-### Gate EBSA
-
-- G4;
-- G4.5.
+- não depender de cor para estado;
+- ação crítica nunca depende só de esconder botão.
 
 ---
 
-## SAFRA-C09 - Fundação operacional antes do MVP real
+## SAFRA-C09 — Fundação operacional
 
-### Definir
+### Decisões já fechadas
 
-- service class;
-- SLO;
-- RTO;
-- RPO;
-- backup;
-- restore;
-- pico esperado de usuários;
-- capacidade sustentável;
-- observabilidade.
+```text
+service_class = CRITICO
+SLO = 99.95%
+RTO = 30 min
+RPO = 5 min
+replica_enabled = false
+```
 
-### Importante
+### Trabalho do C09
 
-A Safra tem período de pico. Testar justamente o cenário de pico esperado.
-
-### Framework
-
-Baseline EBSA: capacidade sustentável >= 2x pico esperado, salvo decisão justificada.
+- definir estratégia real de backup;
+- comprovar restore;
+- comprovar RPO/RTO;
+- medir pico esperado de usuários;
+- testar capacidade sustentável;
+- monitorar latência/erros/login/mutations;
+- validar logs sem secrets;
+- criar runbook de recuperação.
 
 ### Evidências
 
 - restore test;
-- resultado de carga;
-- smoke de autenticação;
-- logs sem secrets.
+- resultado de carga/stress/spike;
+- smoke de auth;
+- evidência RTO/RPO;
+- observabilidade mínima.
 
 ### Gate
 
-- G5.5.
+`G5.5`
 
 ---
 
-# 12. EIXO 2 - MEIO
+# 12. EIXO 2 — MEIO
 
-## Objetivo do eixo
+## Objetivo
 
-Responder corretamente:
+Responder:
 
-> **"O protocolo está ativo. Onde ele está, quem atualizou, quais SLAs estão correndo e precisamos escalar?"**
+> O protocolo está ativo. Há quanto tempo? Quem abriu? Qual versão vale? Qual owner responde? Quais SLAs estão correndo? Houve escalonamento? Quem precisa ser comunicado?
+
+O Painel **não** precisa saber em qual passo operacional a equipe está.
 
 ---
 
-## SAFRA-M01 - State machine da tratativa
+## SAFRA-M01 — State machine
 
-### Estados mínimos
+Estados:
 
 ```text
 ACTIVE
@@ -1626,163 +1240,146 @@ RESOLVED
 CANCELLED
 ```
 
-### Por que não criar dezenas de statuses
-
-A etapa atual do protocolo deve ser derivada de `treatment_steps`, e o escalonamento deve viver em estrutura própria.
-
-Evitar:
+Transições:
 
 ```text
-ACTIVE_TECHNICAL_CRISIS_STEP_3_OVERDUE
+NEW START -> ACTIVE
+ACTIVE -> RESOLVED   # END válido
+ACTIVE -> CANCELLED  # CANCEL válido + motivo
 ```
 
-Preferir composição:
+Regras:
 
-```text
-status = ACTIVE
-current_step = 3
-sla_state = BREACHED
-escalation = TECHNICAL_CRISIS
-```
-
-### Regras de transição
-
-- `ACTIVE -> RESOLVED` por owner;
-- `ACTIVE -> CANCELLED` por owner/admin com justificativa;
-- `RESOLVED` não volta silenciosamente a ACTIVE;
-- reabertura, se necessária, deve gerar evento e política formal.
+- qualquer usuário autenticado pode executar END/CANCEL;
+- backend valida estado atual;
+- `RESOLVED`/`CANCELLED` não voltam silenciosamente a `ACTIVE`;
+- concorrência END x CANCEL precisa resultar em uma única transição;
+- regra de múltiplas tratativas simultâneas do mesmo cenário deve ser decidida aqui.
 
 ---
 
-## SAFRA-M02 - Persistência dos passos
-
-### Cada passo precisa registrar
-
-- status;
-- usuário;
-- instante;
-- nota;
-- evidência opcional futura;
-- mudança anterior no audit trail.
-
-### Concorrência
-
-Dois usuários podem atualizar simultaneamente.
-
-Implementar:
-
-- optimistic concurrency ou versão;
-- tratamento de conflito;
-- refetch após mutation;
-- idempotência.
-
-### Critério
-
-Refresh/troca de computador não perde andamento.
-
----
-
-## SAFRA-M03 - Timeline operacional
-
-### Timeline deve unir
-
-- abertura;
-- passos;
-- notas;
-- mudança de área impactada;
-- notificações;
-- SLA breach;
-- escalonamento;
-- encerramento/cancelamento.
+## SAFRA-M02 — Audit trail e acompanhamento mínimo
 
 ### Objetivo
 
-Uma pessoa que entra no meio da crise deve entender rapidamente:
+Substitui o antigo conceito de “persistência dos passos”.
 
-- o que aconteceu;
-- desde quando;
-- qual cenário;
-- qual owner;
-- quem foi impactado;
-- o que já foi feito;
-- o que falta;
-- qual SLA está vencendo/vencido;
-- se existe comitê de crise.
+Registrar apenas eventos relevantes ao governo da contingência:
+
+- START;
+- alterações de áreas impactadas;
+- nota de governança quando necessária;
+- SLA breach;
+- escalonamento;
+- notificações;
+- END;
+- CANCEL;
+- correção administrativa auditável.
+
+### Regras
+
+- timeline reconstruível após refresh/troca de dispositivo;
+- eventos críticos append-only;
+- concorrência não pode perder evento;
+- notas não substituem protocolo operacional;
+- sem checklist obrigatório.
 
 ---
 
-## SAFRA-M04 - Engine de SLA em tempo real
+## SAFRA-M03 — Timeline operacional
 
-### Exibir
+A timeline une:
+
+- abertura;
+- mudanças relevantes;
+- notificações;
+- breaches;
+- escalonamentos;
+- encerramento/cancelamento;
+- correções administrativas.
+
+Deve responder rapidamente:
+
+- o que aconteceu;
+- desde quando;
+- qual cenário e versão;
+- quem abriu;
+- qual owner;
+- quem foi impactado;
+- quais SLAs estão correndo/vencidos;
+- qual escalonamento existe.
+
+---
+
+## SAFRA-M04 — SLA em tempo real
+
+Exibir:
 
 - tempo decorrido;
 - prazo alvo;
 - tempo restante;
 - estado;
 - breach timestamp;
-- múltiplos SLAs por cenário.
+- múltiplos SLAs.
 
-### Estados visuais
+Estados visuais:
 
 ```text
 ON_TRACK
-AT_RISK
 BREACHED
 COMPLETED_ON_TIME
 COMPLETED_LATE
-NOT_APPLICABLE
+NOT_MEASURABLE
+NOT_APPLICABLE  # somente quando regra aprovada
 ```
 
-`AT_RISK` exige regra definida, não percentual inventado.
-
-Se não houver regra aprovada:
-
-```text
-AT_RISK = NÃO IMPLEMENTAR
-```
+`AT_RISK` só existe se houver regra aprovada; não inventar percentual.
 
 ---
 
-## SAFRA-M05 - Notificações
+## SAFRA-M05 — Notificações
 
-### Criticidade
+### Eventos aprovados
 
-```text
-CRITICAL
- -> política de comunicação imediata à diretoria
+- START;
+- END;
+- CANCEL.
 
-HIGH / MODERATE
- -> comunicação de gestão e áreas impactadas conforme política
-```
+### Conteúdo mínimo
 
-### Requisitos
+- evento;
+- data;
+- hora;
+- autor;
+- card/cenário;
+- protocolo completo;
+- métricas aplicáveis: MTTD, MTTR, MTBF, disponibilidade e ocorrências;
+- período: Safra corrente — janela exata ainda deve ser formalizada nesta fase/F04.
+
+### Regras de destinatário
+
+- owner do card recebe comunicações do próprio card;
+- Jair recebe comunicações de governança aplicáveis;
+- Jiane recebe somente as comunicações dos cards em que é owner;
+- Bruno não recebe e-mail operacional normal;
+- comportamento dos platform admins permanece decisão desta fase;
+- destinatários duplicados devem ser deduplicados por e-mail normalizado.
+
+### Requisitos técnicos
 
 - envio server-side;
-- log de entrega;
-- retry controlado;
-- idempotência;
-- destinatário derivado de cadastro, não hardcoded no frontend;
 - template versionado;
-- não incluir dado além do necessário.
-
-### Tipos
-
-- protocolo aberto;
-- SLA próximo do limite, se aprovado;
-- SLA vencido;
-- mudança de escalonamento;
-- protocolo encerrado;
-- digest periódico.
-
-### Pendência
-
-Definir os quatro cenários críticos antes de ativar regra produtiva.
+- log de entrega;
+- idempotência;
+- retry controlado;
+- nenhuma decisão de destinatário baseada no frontend;
+- não incluir dados além do necessário.
 
 ---
 
-## SAFRA-M06 - Comitê de crise e escalonamento
+## SAFRA-M06 — Escalonamento e comitê
 
-### Níveis
+Níveis:
 
 ```text
 NONE
@@ -1791,345 +1388,263 @@ BUSINESS_CRISIS
 EXECUTIVE
 ```
 
-### Exemplo conceitual
-
-Integração GoDeep-Protheus parada:
-
-1. protocolo é aberto;
-2. equipe técnica investiga;
-3. se contingência mantém cliente protegido, pode permanecer técnica;
-4. se correção exige parada de Protheus ou decisão entre áreas, escalar para negócio;
-5. diretoria é informada/acionada conforme criticidade e necessidade.
-
-### Registro
+Registrar:
 
 - motivo;
-- quem escalou;
-- quando;
+- ator;
+- instante;
 - participantes/áreas;
 - decisão;
-- encerramento do comitê.
+- encerramento do escalonamento.
 
-### Não automatizar
-
-Quantidade de protocolos não deve por si só promover `EXECUTIVE`.
+Recorrência sozinha não promove `EXECUTIVE`.
 
 ---
 
-## SAFRA-M07 - Ponte com incidents de TI
+## SAFRA-M07 — Ponte com incidents de TI
 
-### Objetivo
+Regras:
 
-Aproveitar o que funciona sem confundir incidente e protocolo.
-
-### Modelo recomendado
-
-`treatments.related_incident_id` nullable ou tabela N:N se surgir necessidade real.
-
-### Cenário 6
-
-Pode referenciar incidente Protheus real.
-
-### Regras
-
-- incidente pode existir sem protocolo;
+- incidente TI pode existir sem protocolo;
 - protocolo pode existir sem incidente;
-- um incidente elegível pode sugerir cenário;
+- incidente elegível pode ajudar a sugerir cenário no futuro;
 - MVP não cria protocolo automaticamente;
-- MTTD/MTTR/MTBF continuam indicadores de TI;
-- duração do protocolo é métrica diferente.
+- MTTD/MTTR/MTBF de TI não substituem duração do protocolo Safra.
 
 ---
 
-## SAFRA-M08 - Visão Geral / Torre de Controle
+## SAFRA-M08 — Torre de Controle
 
-### Cards prioritários
+Cards prioritários:
 
 - protocolos ativos agora;
 - críticos ativos;
-- SLAs vencidos;
+- SLA vencido;
 - áreas impactadas;
-- protocolos por área;
-- protocolos por cenário;
-- tempo do protocolo mais antigo;
+- protocolos por área/cenário;
+- tempo da tratativa mais antiga;
 - escalonamentos ativos.
 
-### Lista operacional
-
-Para cada protocolo:
+Lista operacional:
 
 - cenário;
 - criticidade;
 - owner;
 - área responsável;
 - áreas impactadas;
-- passo atual;
-- SLAs;
+- SLA(s);
 - tempo ativo;
-- escalonamento.
+- escalonamento;
+- autor do START;
+- versão do cenário.
 
 ### TV Mode
 
-Criar modo de alta legibilidade:
-
-- atualização automática segura;
-- sem botões de edição;
-- sem dados pessoais desnecessários;
-- contraste alto;
-- legível a distância;
-- resumo de contingências ativas.
+- sem botões de mutação;
+- alta legibilidade;
+- atualização segura;
+- sem dado pessoal desnecessário;
+- contraste adequado.
 
 ---
 
-## SAFRA-M09 - Visão por área
+## SAFRA-M09 — Visões por audiência
 
-### Cada área deve enxergar
+### Usuário autenticado
 
-- cenários sob sua responsabilidade;
-- protocolos ativos;
-- protocolos que a impactam;
-- SLAs;
-- histórico recente;
+Visão ampla dos cards conforme política aprovada.
+
+### Scenario owner
+
+- cards sob sua responsabilidade;
+- ativos;
+- histórico;
+- métricas dos seus cards.
+
+### Jair
+
+- governança global;
+- propostas;
+- ownership;
 - recorrência;
-- pendências de governança.
+- pendências.
 
-### RLS
+### Bruno
 
-Visibilidade pode ser ampla se a política do negócio assim definir, mas permissão de escrita permanece restrita.
-
----
-
-## SAFRA-M10 - Governança de novos cenários
-
-### Tela de proposta
-
-Campos mínimos:
-
-- nome;
-- problema/risco;
-- gatilho;
-- detecção;
-- área responsável;
-- owner candidato;
-- áreas impactadas;
-- criticidade;
-- SLA;
-- ferramentas;
-- passos;
-- justificativa;
-- exemplos.
-
-### Workflow
-
-```text
-DRAFT
- -> SUBMITTED
- -> UNDER_REVIEW
- -> APPROVED
- -> PUBLISHED
-```
-
-ou
-
-```text
-UNDER_REVIEW -> REJECTED
-```
-
-### Regra
-
-Aprovação não altera um cenário publicado sem criar nova versão.
+- analytics global executivo;
+- todos os cards e métricas;
+- sem mutação técnica.
 
 ---
 
-## SAFRA-M11 - Fontes reais futuras
+## SAFRA-M10 — Governança do 12º card
 
-### MVP
+### Formulário inicial
 
-Sem integração obrigatória.
+- nome — da sessão Microsoft;
+- e-mail — da sessão Microsoft;
+- título;
+- descrição do problema;
+- como o problema afeta a Safra.
 
-### Pós-MVP
+### Fluxo aprovado
 
-Criar um adapter por fonte, com contrato e DATA_RELEASE próprios.
+```text
+SUBMITTED
+ -> Jair recebe
+ -> Jair envia para Daniel, Renato e Jiane
+ -> exatamente 1 aceita -> vira owner
+ -> 2+ aceitam -> Jair escolhe
+ -> 0 aceitam -> Jair decide OU escala para Bruno
+```
 
-Possíveis fontes:
+### Depois do ownership
 
-- Intelipost;
-- Protheus;
-- Cockpit;
-- WMS;
-- GoDeep;
-- Mensageria;
-- monitoramento de TI;
-- eventualmente OTRS.
+A fase deve definir, sem inferência:
 
-### Pipeline padrão
+- quais campos adicionais são obrigatórios antes de publicar;
+- quem aprova criticidade;
+- quem aprova SLA;
+- quem aprova protocolo;
+- como nasce a primeira `scenario_version`;
+- quando o status muda para `PUBLISHED`.
+
+Aprovação nunca reescreve cenário já publicado; gera nova versão quando aplicável.
+
+---
+
+## SAFRA-M11 — Fontes reais futuras
+
+Sem integração obrigatória no MVP.
+
+Pipeline futuro:
 
 ```text
 SOURCE
- -> EXTRACT / RECEIVE
+ -> CONTRACT
  -> VALIDATE
  -> NORMALIZE
- -> STORE OBSERVATION
- -> EVALUATE RULE
- -> SIGNAL
+ -> OBSERVATION/SIGNAL
  -> HUMAN CONFIRMATION
  -> TREATMENT
 ```
 
-### Regra crítica
+Cada fonte exige:
 
-`SIGNAL` não é `TREATMENT`.
-
-### Framework
-
-Para cada fonte:
-
-- contrato G6;
-- regra G6.5;
+- SOURCE_CONTRACT;
+- QUALITY_RULES;
 - DATA_RELEASE;
 - timeout/retry;
 - idempotência;
 - observabilidade;
-- testes de falha.
+- teste de falha;
+- rollback.
 
 ---
 
-# 13. EIXO 3 - FIM
+# 13. EIXO 3 — FIM
 
-## Objetivo do eixo
+## Objetivo
 
-Responder corretamente:
-
-> **"A contingência terminou. O que foi feito, qual foi o resultado, cumprimos o prazo e o que precisa mudar para a próxima ocorrência?"**
+Encerrar com integridade, preservar histórico e transformar operação em aprendizado.
 
 ---
 
-## SAFRA-F01 - Encerramento formal
+## SAFRA-F01 — END formal
 
-### Owner deve informar
+### Obrigatório no backend
 
-- resultado;
-- resumo da contingência aplicada;
-- impacto final;
-- observação final;
-- áreas efetivamente impactadas confirmadas;
-- motivo de passos `NOT_APPLICABLE`, se necessário;
-- classificação final quando houver correção autorizada.
+- validar `ACTIVE`;
+- persistir `closed_by`;
+- persistir `closed_at` server-side;
+- gravar `TREATMENT_RESOLVED`;
+- fechar somente SLAs cujo `end_event` corresponda ao END;
+- manter histórico imutável.
 
-### Backend grava
+### Campos humanos adicionais
 
-- `closed_by`;
-- `closed_at`;
-- durações deriváveis;
-- evento `TREATMENT_RESOLVED`.
-
-### Regra
-
-Cliente não calcula timestamp oficial de fechamento sozinho.
+Resultado, observação final e impacto final devem ser decididos/homologados nesta fase; não presumir obrigatoriedade antes da decisão de negócio.
 
 ---
 
-## SAFRA-F02 - Cancelamento
+## SAFRA-F02 — CANCEL
 
-### Usar quando
+Usar quando:
 
-- protocolo aberto por engano;
-- chamado confundido com protocolo;
+- abertura por engano;
 - cenário incorreto;
-- duplicidade.
+- duplicidade;
+- protocolo não aplicável.
 
-### Obrigatório
+Obrigatório:
 
-- justificativa;
+- motivo;
 - ator;
-- instante;
-- referência ao correto, se houver.
+- timestamp server-side;
+- evento auditável.
 
-### Nunca
+Nunca excluir silenciosamente.
 
-Excluir silenciosamente para "limpar histórico".
-
----
-
-## SAFRA-F03 - Pós-mortem e causa-raiz
-
-Nem todo protocolo exige o mesmo pós-mortem.
-
-### Suportar
-
-- pós-mortem obrigatório por cenário;
-- pós-mortem por criticidade;
-- data limite;
-- owner;
-- conclusão;
-- ação preventiva.
-
-### Cenário 6
-
-A Matriz v3 já prevê pós-mortem <=48h.
-
-Portanto ele deve ser modelado como SLA adicional, não nota livre.
+CANCEL não deve ser contado automaticamente como SLA cumprido.
 
 ---
 
-## SAFRA-F04 - Métricas históricas
+## SAFRA-F03 — Pós-mortem
 
-### Indicadores corporativos
+Suportar quando houver regra explícita por cenário/criticidade.
 
-- protocolos abertos;
-- protocolos encerrados;
-- cancelados;
-- tempo médio/mediano de protocolo;
-- p90 de duração;
+Cenário 6 já possui referência de pós-mortem <=48h e deve ser tratado como SLA adicional quando formalizado no seed/regra.
+
+---
+
+## SAFRA-F04 — Analytics
+
+### Métricas Safra
+
+- STARTs;
+- ENDs;
+- CANCELs;
+- duração média/mediana/p90;
 - cumprimento de SLA;
-- breaches por cenário;
-- recorrência por cenário;
-- duração acumulada por cenário;
-- tempo acumulado de impacto;
-- escalonamentos técnicos;
-- escalonamentos de negócio;
-- críticos no período;
-- áreas mais impactadas;
+- breaches;
+- recorrência;
+- duração acumulada;
 - protocolos simultâneos;
-- taxa de reabertura, se existir;
-- pós-mortem concluído no prazo.
+- escalonamentos;
+- críticos no período;
+- áreas impactadas.
 
-### Evitar
-
-Usar apenas média quando distribuição for assimétrica.
-
-### Indicadores de TI preservados
+### Métricas de confiabilidade preservadas
 
 - MTTD;
 - MTTR;
 - MTBF;
 - disponibilidade.
 
-Eles pertencem à camada de confiabilidade de TI e não substituem indicadores Safra.
+### Audiências
+
+- Bruno: todos os cards/métricas;
+- owners: seus cards;
+- Jair: governança global.
+
+### Pendência
+
+Definir janela exata de “Safra corrente” para e-mails e analytics acumulados.
 
 ---
 
-## SAFRA-F05 - Recorrência e ritual semanal
-
-### Tela "Governança Semanal"
+## SAFRA-F05 — Governança semanal
 
 Mostrar:
 
-- cenários repetidos;
+- cenários recorrentes;
 - duração acumulada;
 - SLA breach repetido;
-- causas-raiz recorrentes;
 - ações pendentes;
 - owners;
 - tendência;
-- protocolos críticos da semana;
-- protocolos ainda ativos.
-
-### Regra
-
-A ferramenta suporta decisão humana; não declara crise automaticamente por recorrência.
-
-### Saída
+- críticos da semana;
+- tratativas ainda ativas.
 
 Registrar ação de governança:
 
@@ -2143,22 +1658,23 @@ TRAINING
 NO_ACTION_JUSTIFIED
 ```
 
+Definir janela/ritual oficial nesta fase.
+
 ---
 
-## SAFRA-F06 - Relatório executivo
+## SAFRA-F06 — Relatório executivo
 
-### Períodos
+Períodos:
 
 - dia;
 - semana;
-- safra acumulada;
+- Safra acumulada;
 - intervalo customizado.
 
-### Conteúdo
+Conteúdo:
 
-- total de protocolos;
+- total de tratativas;
 - cenário;
-- área;
 - criticidade;
 - duração;
 - SLA;
@@ -2167,78 +1683,61 @@ NO_ACTION_JUSTIFIED
 - recorrência;
 - ações de governança.
 
-### Princípio
-
-O relatório histórico não substitui a Torre de Controle em tempo real.
-
 ---
 
-## SAFRA-F07 - Homologação com o negócio
+## SAFRA-F07 — Homologação de negócio
 
-### Validadores
+Para cada cenário:
 
-Donos e participantes indicados nas fontes de validação, além dos responsáveis de governança definidos pelo projeto.
-
-### Roteiro por cenário
-
-Para cada um dos 11:
-
-1. cenário aparece correto;
+1. nome/contexto corretos;
 2. owner correto;
 3. área responsável correta;
 4. áreas impactáveis corretas;
-5. passos corretos;
+5. protocolo completo correto;
 6. SLA correto;
 7. ferramenta/origem correta;
-8. opening permission correta;
+8. START correto;
 9. notificações corretas;
-10. fechamento correto;
-11. histórico correto.
+10. END/CANCEL corretos;
+11. histórico/versionamento corretos.
 
-### Evidência
+Evidência: checklist de homologação por cenário.
 
-Checklist assinado/registrado por cenário.
-
-### Gate EBSA
-
-- G10.
+Gate: `G10`.
 
 ---
 
-## SAFRA-F08 - Auditoria E2E pré-release
+## SAFRA-F08 — Auditoria E2E pré-release
 
 ### Segurança
 
 - anon bloqueado;
-- RLS positive/negative;
-- owner isolation;
-- scenario_owner restrictions;
-- admin restrictions;
-- secrets;
-- dependencies;
-- API direto.
+- RLS positiva/negativa;
+- role mapping;
+- API direto;
+- bypass de UI;
+- enumeração;
+- vazamento em logs/erros;
+- secrets/dependencies.
 
 ### Integridade
 
-- dupla abertura;
 - double submit;
+- retry;
 - timestamps;
 - version freeze;
-- passos;
-- cancellation;
-- notification idempotency.
+- END x CANCEL concorrente;
+- notification idempotency;
+- SLA manipulation;
+- append-only audit.
 
 ### UX
 
-- desktop;
-- notebook;
-- tablet;
-- celular;
+- desktop/notebook/tablet/celular;
 - TV mode;
-- teclado;
-- foco;
+- teclado/foco;
 - contraste;
-- erros;
+- loading/empty/error/forbidden;
 - reflow 320 CSS px.
 
 ### Operação
@@ -2247,179 +1746,176 @@ Checklist assinado/registrado por cenário.
 - stress;
 - spike;
 - restore;
-- SLO/RTO/RPO;
+- RTO/RPO;
 - logs;
 - alertas.
 
-### Gate EBSA
+Gates:
 
-- G7;
-- G8;
-- G10.5.
+```text
+G7
+G8
+G10.5
+```
 
 ---
 
-## SAFRA-F09 - Release e operação
+## SAFRA-F09 — Release e operação
 
-### Antes da abertura geral
+Antes da abertura geral:
 
 - business acceptance;
 - auditoria sem bloqueador crítico;
 - RELEASE_APPROVAL;
-- DATA_RELEASE válido para cada fluxo real;
+- DATA_RELEASE para fonte real nova;
 - runbook;
-- owners operacionais;
 - rollback;
 - suporte;
-- monitoramento do próprio Painel.
+- monitoramento do Painel;
+- restore comprovado.
 
-### Operação
+Operação contínua:
 
 - revisar acessos;
-- revisar cenários;
 - revisar owners;
-- revisar SLA;
-- renovar testes de recuperação;
-- acompanhar capacidade durante Safra;
-- reabrir gates quando houver mudança material.
+- revisar cenários e versões;
+- revisar SLAs;
+- renovar teste de recuperação;
+- acompanhar capacidade;
+- reabrir gate após mudança material.
 
-### Gate
-
-- G11.
+Gate: `G11`.
 
 ---
 
-# 14. Jornada E2E de referência
+# 14. Jornada E2E de referência — v2.1
 
 ## 14.1 COMEÇO
 
 ```text
-1. Operador identifica ocorrência em ferramenta/processo.
-2. Consulta catálogo Safra.
-3. Identifica cenário compatível.
-4. Sistema mostra gatilho, owner, protocolo, SLA e impacto esperado.
-5. Owner entra autenticado.
-6. Owner informa escopo e áreas impactadas reais.
-7. Backend valida owner + cenário publicado + versão vigente.
-8. Owner confirma abertura.
-9. Backend cria treatment e snapshot/version binding.
-10. Evento TREATMENT_OPENED é gravado.
-11. SLAs iniciam.
-12. Notificações aplicáveis são enfileiradas.
+1. Usuário autenticado identifica uma necessidade/ocorrência.
+2. Consulta o catálogo.
+3. Seleciona cenário publicado.
+4. Painel mostra owner, protocolo, criticidade, SLA e versão.
+5. Usuário confirma contexto/impacto necessário.
+6. Usuário confirma START.
+7. Backend valida sessão + cenário + versão vigente.
+8. Backend cria treatment e congela scenario_version_id.
+9. Backend grava TREATMENT_OPENED com ator/timestamp.
+10. SLAs aplicáveis iniciam.
+11. Comunicação START é enfileirada/idempotente.
 ```
 
 ## 14.2 MEIO
 
 ```text
-13. Painel mostra protocolo ativo.
-14. Owner autorizado atualiza passos.
-15. Cada alteração cria audit event.
-16. Relógios são recalculados por timestamps.
-17. Áreas impactadas acompanham.
-18. Se necessário, owner escala para comitê técnico.
-19. Se decisão de negócio for necessária, escala para BUSINESS_CRISIS.
-20. Notificações e timeline registram o avanço.
+12. Owner conduz o protocolo com sua equipe fora do checklist do Painel.
+13. Painel mantém tratativa ACTIVE, relógios e timeline.
+14. Mudanças relevantes geram eventos auditáveis.
+15. Breaches são registrados.
+16. Escalonamento, quando necessário, é registrado.
+17. Comunicações aplicáveis são enviadas e logadas.
 ```
 
 ## 14.3 FIM
 
 ```text
-21. Owner confirma normalização/encerramento.
-22. Informa resultado e contingência aplicada.
-23. Backend encerra treatment.
-24. SLAs são fechados.
-25. Evento final é gravado.
-26. Caso necessário, pós-mortem permanece pendente com SLA próprio.
-27. Métricas históricas são atualizadas.
-28. Recorrência alimenta ritual semanal.
-29. Ações de melhoria são registradas.
+18. Necessidade é concluída ou abertura é considerada indevida.
+19. Usuário autenticado executa END ou CANCEL.
+20. Backend valida transição.
+21. Backend grava ator/timestamp/evento.
+22. SLAs são fechados conforme seus end_events.
+23. Comunicação END/CANCEL é enfileirada.
+24. Histórico permanece imutável/auditável.
+25. Métricas e recorrência alimentam analytics/governança.
 ```
 
 ---
 
-# 15. Matriz de testes de negócio
+# 15. Matriz de testes de negócio — v2.1
 
-## 15.1 Abertura
+## 15.1 START
 
-- cenário proposto não abre;
-- cenário inativo não abre;
-- usuário comum não abre;
-- owner correto abre;
-- owner de outro cenário não abre;
+- autenticado abre cenário publicado;
+- não autenticado não abre;
+- cenário DRAFT/PROPOSED/INACTIVE não abre;
+- versão arbitrária enviada pelo client é rejeitada/ignorada;
 - duplo clique não duplica;
-- refresh após start preserva relógio;
-- cenário sem criticality aprovada não ativa notificação incorreta.
+- retry após timeout é idempotente;
+- START na troca de versão usa uma única versão definida pelo backend.
 
-## 15.2 Passos
+## 15.2 END/CANCEL
 
-- scenario_owner autorizado conclui;
-- usuário sem permissão não conclui;
-- concorrência não perde evento;
-- passo NA exige política;
-- alteração de definição futura não muda passo histórico.
+- autenticado encerra `ACTIVE`;
+- END repetido falha/idempotente sem novo evento;
+- CANCEL exige razão;
+- END x CANCEL concorrentes produzem uma única transição válida;
+- CANCEL imediato após START preserva os dois eventos;
+- END/CANCEL não aceita timestamp oficial do browser.
 
-## 15.3 SLA
+## 15.3 Versionamento
+
+- versão publicada não é editada in-place;
+- nova versão não altera tratamento ativo;
+- owner/criticidade/protocolo histórico permanecem congelados;
+- 12º card não vira cenário publicado sem governança.
+
+## 15.4 SLA
 
 - dois SLAs simultâneos;
-- boundary exato;
+- borda exata;
 - breach;
-- cancelamento;
-- encerramento tardio;
-- pós-mortem 48h;
-- dados incompletos.
+- END no instante do breach;
+- CANCEL;
+- evento ausente;
+- timezone/DST;
+- tentativa de alterar status/timestamp para parar SLA falha.
 
-## 15.4 Escalonamento
+## 15.5 Segurança / API
 
-- técnico;
-- negócio;
-- executivo;
-- downgrade/fechamento auditado;
-- quantidade de ocorrências não escala automaticamente.
+- anon sem acesso;
+- REST/RPC direto respeita autorização;
+- payload não eleva role/owner;
+- paginação não permite enumeração fora do escopo;
+- logs/erros não vazam secret/token/e-mail desnecessário;
+- sessão expirada não produz efeito.
 
-## 15.5 Encerramento
+## 15.6 Notificações
 
-- usuário sem autoridade de owner não encerra;
-- owner encerra;
-- close idempotente;
-- cancelamento com razão;
-- sem delete físico.
-
-## 15.6 RLS
-
-Testar acesso pelo cliente e acesso REST direto.
+- START gera no máximo uma comunicação por destinatário/evento;
+- END idem;
+- CANCEL idem;
+- recipient dedup por e-mail normalizado;
+- Bruno não recebe e-mail operacional normal;
+- Jiane recebe somente seus cards;
+- owner vigente recebe protocolo completo.
 
 ---
 
-# 16. Observabilidade do próprio Painel Safra
-
-Não confundir observabilidade do Painel com observabilidade das ferramentas de negócio.
+# 16. Observabilidade do próprio Painel
 
 Monitorar:
 
-- erros de login;
-- falhas de mutation;
-- falhas de notificação;
-- latência;
-- erro de query;
+- erro de login;
+- sessão inválida;
+- mutation negada;
 - RLS denial anômalo;
+- latência de mutation/query;
 - duplicate request;
-- jobs pendentes;
-- tempo de página crítica;
-- disponibilidade do próprio Painel.
+- falha de notificação;
+- fila de notificação;
+- erro de SLA engine;
+- inconsistência de state transition;
+- indisponibilidade do Painel;
+- restore/recovery test status.
 
-Não registrar secrets nem payloads excessivos.
+Não registrar secrets nem payloads pessoais excessivos.
 
 ---
 
 # 17. Estratégia de dados reais
 
-## 17.1 Dados já existentes
-
-Incidentes TI existentes devem passar por revisão de contrato/segurança antes de ampliar consumo.
-
-## 17.2 Novas fontes
-
-Cada fonte futura terá:
+Cada fonte futura deve possuir:
 
 ```text
 SOURCE_CONTRACT
@@ -2433,355 +1929,274 @@ ROLLBACK
 OBSERVABILITY
 ```
 
-## 17.3 Sem fonte real
-
-Cenário continua utilizável como protocolo manual, mas a interface deve diferenciar:
-
-```text
-MANUAL_PROTOCOL
-WAITING_INTEGRATION
-REAL_SIGNAL_CONNECTED
-```
-
-Nunca gerar gráfico fictício para preencher espaço.
+Sem fonte real, o cenário continua operável manualmente. A interface deve diferenciar ausência de integração de “sistema saudável”.
 
 ---
 
-# 18. Arquitetura lógica recomendada
+# 18. Arquitetura lógica alvo
 
 ```text
 [Browser / TV]
       |
       v
-[TanStack / React]
+[React / TanStack]
       |
       v
-[Supabase client/API]
+[Microsoft Entra ID -> Auth]
       |
-      +--> [Auth]
+      v
+[Lovable Cloud PRIMARY]
       |
-      +--> [RLS / Policies]
+      +-- RLS / role mapping
+      +-- Postgres
+      |    +-- catálogo/versionamento
+      |    +-- treatments
+      |    +-- audit events
+      |    +-- SLA definitions
+      |    +-- proposals/governance
+      |    +-- notification log
       |
-      +--> [Postgres]
-      |       +-- catálogo Safra
-      |       +-- treatments
-      |       +-- audit events
-      |       +-- scenario versions
+      +-- RPC / funções transacionais
+           +-- start_treatment
+           +-- resolve_treatment
+           +-- cancel_treatment
+           +-- publish_scenario_version
+           +-- change_escalation
       |
-      +--> [RPC / DB functions]
-      |       +-- start_treatment
-      |       +-- close_treatment
-      |       +-- cancel_treatment
-      |       +-- change_escalation
-      |
-      +--> [Server-side notification adapter]
+      +-- server-side notification adapter
 
-FUTURO:
-[External sources]
-      -> adapters
-      -> normalized signals
-      -> rule evaluation
-      -> human confirmation
+[FUTURO]
+External source
+ -> adapter
+ -> signal
+ -> human confirmation
+ -> treatment
 ```
 
-## 18.1 Autoridade
-
-Operações críticas não devem ser montadas apenas com `.insert()` genérico no browser.
-
-Preferir funções/RPC transacionais para:
-
-- abrir;
-- encerrar;
-- cancelar;
-- promover versão;
-- mudar escalonamento.
-
-Porque essas operações precisam combinar autorização + integridade + audit event de forma atômica.
+Operações críticas não devem ser montadas apenas com `.insert()`/`.update()` genérico do browser.
 
 ---
 
-# 19. Roadmap por ordem de execução
+# 19. Ordem de execução canônica
 
-## Bloco 0 - Parar de ampliar a base insegura
+## Bloco 0 — Fundação segura
 
-1. SAFRA-C00 - baseline e P0 security.
-2. SAFRA-C01 - documentação e profile.
-3. SAFRA-C02 - threat model.
+1. C00 — concluído;
+2. C01 — concluído;
+3. C02 — em andamento.
 
-## Bloco 1 - Refazer o domínio
+## Bloco 1 — Domínio e backend
 
-4. SAFRA-C03 - glossário.
-5. SAFRA-C04 - identity/RBAC/RLS.
-6. SAFRA-C05 - schema v2.
-7. SAFRA-C06 - seed da Matriz v3.
-8. SAFRA-C07 - SLA engine.
+4. C03 — glossário/modelo;
+5. C04 — identidade/RBAC/RLS;
+6. C05 — schema v2/migrations;
+7. C06 — seed Matriz v3;
+8. C07 — engine SLA.
 
-## Bloco 2 - Construir COMEÇO completo
+## Bloco 2 — COMEÇO utilizável
 
-9. SAFRA-C08 - UX de catálogo/start.
-10. SAFRA-C09 - foundation/restore/capacity.
+9. C08 — UX START;
+10. C09 — backup/restore/capacidade.
+## Bloco 3 — MEIO
 
-## Bloco 3 - Construir MEIO completo
+11. M01 — state machine;
+12. M02 — audit trail/acompanhamento mínimo;
+13. M03 — timeline;
+14. M04 — SLA runtime;
+15. M05 — notificações;
+16. M06 — escalonamento;
+17. M07 — ponte TI;
+18. M08 — Torre de Controle;
+19. M09 — visões por audiência;
+20. M10 — governança de novos cenários;
+21. M11 — integrações futuras.
 
-11. SAFRA-M01 - state machine.
-12. SAFRA-M02 - persistent steps.
-13. SAFRA-M03 - timeline.
-14. SAFRA-M04 - SLA runtime.
-15. SAFRA-M05 - notifications.
-16. SAFRA-M06 - crisis escalation.
-17. SAFRA-M07 - bridge TI incidents.
-18. SAFRA-M08 - control tower.
-19. SAFRA-M09 - area views.
-20. SAFRA-M10 - scenario governance.
+## Bloco 4 — FIM
 
-## Bloco 4 - Construir FIM completo
+22. F01 — END;
+23. F02 — CANCEL;
+24. F03 — pós-mortem;
+25. F04 — analytics;
+26. F05 — governança semanal;
+27. F06 — relatório executivo.
 
-21. SAFRA-F01 - close.
-22. SAFRA-F02 - cancel.
-23. SAFRA-F03 - post-mortem.
-24. SAFRA-F04 - analytics.
-25. SAFRA-F05 - weekly governance.
-26. SAFRA-F06 - executive report.
+## Bloco 5 — Homologação e release
 
-## Bloco 5 - Homologar e liberar
-
-27. SAFRA-F07 - homologation.
-28. SAFRA-F08 - E2E audit.
-29. SAFRA-F09 - release/operation.
-
-## Bloco 6 - Integrações reais por ciclo
-
-30. SAFRA-M11 - uma fonte por vez.
-
-Ordem sugerida de avaliação, não de execução automática:
-
-```text
-TI existente
- -> Protheus/Cockpit
- -> Intelipost
- -> WMS
- -> PCP/estoque
- -> outras fontes
- -> OTRS, apenas se ADR futuro aprovar
-```
+28. F07 — homologação;
+29. F08 — auditoria E2E;
+30. F09 — release/operação.
 
 ---
 
-# 20. Gates de produto
+# 20. Gates de produto — melhorados
 
-## Gate P0 - SAFE TO REFACTOR
-
-Só passa se:
+## P0 — SAFE TO REFACTOR — PASS
 
 - secrets tratados;
-- anon não possui CRUD aberto;
-- baseline documentado.
+- anon bloqueado;
+- baseline documentada.
 
-## Gate P1 - DOMAIN READY
+## P1 — DOMAIN READY
 
-Só passa se:
+Só passa quando:
 
+- C02 fechado;
+- glossário aprovado;
+- role model aprovado/implementável;
 - schema aprovado;
 - 11 cenários reconciliados;
-- pending decisions catalogadas;
-- roles definidas.
+- governance issues catalogadas;
+- nenhuma regra crítica depende de suposição.
 
-## Gate P2 - START READY
+## P2 — START READY
 
-Só passa se:
+Só passa quando:
 
-- owner authorization funciona;
-- start é transacional;
-- version snapshot funciona;
+- autenticação Microsoft funciona;
+- usuário autenticado consegue START;
+- não autenticado é bloqueado;
+- START é transacional/idempotente;
+- versão é congelada;
+- audit event existe;
 - SLA inicia corretamente;
-- audit event existe.
+- comunicação START é deduplicada.
 
-## Gate P3 - IN-FLIGHT READY
+## P3 — IN-FLIGHT READY
 
-Só passa se:
+Só passa quando:
 
-- passos persistem;
-- concorrência tratada;
 - timeline confiável;
+- eventos auditáveis;
+- concorrência tratada;
 - SLA runtime correto;
-- escalonamento auditável.
+- escalonamento auditável;
+- nenhuma dependência de checklist operacional existe.
 
-## Gate P4 - CLOSE READY
+## P4 — CLOSE READY
 
-Só passa se:
+Só passa quando:
 
-- owner encerra;
-- cancelamento funciona;
+- END por usuário autenticado funciona;
+- CANCEL com motivo funciona;
+- END x CANCEL concorrente é seguro;
 - histórico é imutável/auditável;
-- métricas batem com timestamps.
+- SLA não pode ser manipulado por status/timestamp do client;
+- comunicação END/CANCEL é idempotente.
 
-## Gate P5 - BUSINESS READY
+## P5 — BUSINESS READY
 
-Só passa se:
+Só passa quando:
 
-- todos os 11 cenários homologados;
-- criticidade aprovada;
-- notificações aprovadas;
-- diretoria/gestores validam visão.
+- 11 cenários homologados;
+- owners/protocolos/SLAs corretos;
+- criticidade homologada;
+- notificações homologadas;
+- Jair/owners/Bruno validam suas visões correspondentes.
 
-## Gate P6 - RELEASE READY
+## P6 — RELEASE READY
 
-Só passa se:
+Só passa quando:
 
 - G7/G10/G10.5 aplicáveis aprovados;
 - restore comprovado;
+- RTO/RPO evidenciados;
 - capacidade aceita;
 - WCAG crítica sem bloqueador;
-- RELEASE_APPROVAL.
+- RELEASE_APPROVAL emitido.
 
 ---
 
-# 21. Mapeamento Framework EBSA x Roadmap Safra
+# 21. Mapeamento Framework EBSA x roadmap
 
-| Framework | Roadmap Safra | Observação |
+| Framework | Fase | Aplicação |
 |---|---|---|
-| I-1 | C00/C02 | trust boundary e secrets |
-| I0 | C00 | repo/branch/env |
-| I0.5 | C01 | perfil candidato |
-| G0 | C01 | intenção já conhecida, formalizar |
-| G1 | C00/C01 | base já existe; revalidar, não recriar |
-| G2 | C00/C01 | GitHub já existe; confirmar sync |
-| G3 | C01 | documentação canônica |
-| G3.25 | C01 | profile completo |
+| I-1 | C00/C02 | trust boundary/secrets |
+| I0/G0 | C00/C01 | ambiente/intenção |
+| G2/G3 | C00/C01 | GitHub-first/docs |
+| G3.25 | C01 | PROJECT_PROFILE |
 | G3.5 | C02 | threat/privacy |
-| G4 | C08/M08/M09 | UX |
-| G4.5 | C08 | frontend |
+| G4/G4.5 | C08/M08/M09 | UX/frontend |
 | G5 | C04/C05/M01-M07/F01-F03 | backend/security |
-| G5.25 | C00/C01/F08 | governance/supply chain |
+| G5.25 | C00/C01/F08 | supply chain/governança |
 | G5.5 | C09 | capacity/recovery |
-| G6 | C06/M11 | data contract |
-| G6.5 | C07 + regras + M11 | business rules/DATA_RELEASE |
-| G7 | F08 | integrated quality |
+| G6 | C06/M11 | data contracts |
+| G6.5 | C07 + regras + M11 | rule traceability |
+| G7 | F08 | qualidade integrada |
 | G8 | F08 | candidate release |
-| G9 | condicional | N/A se replica false |
-| G10 | F07 | business homologation |
-| G10.5 | F08 | final audit |
-| G11 | F09 | operations |
-| G12 | futuro | decommission |
+| G9 | N/A | replica=false |
+| G10 | F07 | homologação |
+| G10.5 | F08 | auditoria final |
+| G11 | F09 | operação |
 
 ---
 
-# 22. Decisões ADR recomendadas
+# 22. ADRs / decisões arquiteturais
 
-## ADR-001 - Evoluir incident-log-pro
-
-Status: aprovado pelo contexto metodológico.
-
-## ADR-002 - PRIMARY e REPLICA
-
-Status: **APROVADO — REPLICA=false**.
-
-Não haverá segundo banco sincronizado.
-
-Backup/restore não é REPLICA e continua obrigatório. O SAFRA-C09 deverá provar recuperação compatível com RTO 30 min e RPO 5 min.
-
-## ADR-003 - Service class
-
-Status: **APROVADO — CRITICO**.
-
-```text
-SLO 99,95%
-RTO 30 min
-RPO 5 min
-```
-
-## ADR-003.1 - Application criticality
-
-Status: **APROVADO — MEDIUM**.
-
-```text
-application_criticality = MEDIUM
-```
-
-É uma decisão específica do projeto e não altera `service_class = CRITICO`.
-
-## ADR-004 - Identity provider
-
-Status: **APROVADO em 24/09/2026**.
-
-```text
-identity_provider = MICROSOFT_ENTRA_ID
-auth_method = CORPORATE_SSO
-local_password_login = false
-```
-
-A autenticação corporativa identifica o usuário. Papéis e permissões Safra permanecem responsabilidade do SAFRA-C04.
-
-## ADR-005 - Tratativas críticas via RPC transacional
-
-Recomendação: aprovar.
-
-## ADR-006 - Geral como visão, não área
-
-Recomendação: aprovar.
-
-## ADR-007 - Ativação manual no MVP
-
-Status: decisão de negócio consolidada.
-
-## ADR-008 - OTRS fora do MVP
-
-Status: manter como hipótese futura sujeita a análise técnica/econômica.
-
-## ADR-009 - Integrações uma por ciclo
-
-Recomendação: aprovar.
+| ADR | Decisão | Estado |
+|---|---|---|
+| ADR-001 | evoluir `incident-log-pro` | APPROVED |
+| ADR-002 | Lovable Cloud PRIMARY; REPLICA=false | APPROVED |
+| ADR-003 | service_class=CRITICO; SLO 99,95%; RTO 30; RPO 5 | APPROVED |
+| ADR-004 | Microsoft Entra ID / SSO | APPROVED |
+| ADR-005 | operações críticas via função/RPC transacional | PROPOSED -> decidir em C05 |
+| ADR-006 | Geral = visão, não área | APPROVED |
+| ADR-007 | ativação humana no MVP | APPROVED |
+| ADR-008 | OTRS fora do MVP | APPROVED |
+| ADR-009 | integrações uma por ciclo | PROPOSED |
+| ADR-010 | tooling de migrations | DEFERRED C05 |
+| ADR-011 | scenario criticality != application criticality | APPROVED |
+| ADR-012 | modelo de papéis/responsabilidades | APPROVED |
+| ADR-013 | subtipos administrativos | APPROVED |
+| ADR-014 | 12º card como proposal | APPROVED |
+| ADR-015 | application_criticality=MEDIUM | APPROVED |
+| ADR-016 | retenção | APPROVED |
+| ADR-017 | fechamento C01 | APPROVED |
 
 ---
 
-# 23. Backlog explícito fora do MVP
+# 23. Backlog fora do MVP
 
-Não incluir no MVP sem nova decisão:
-
-- abertura automática por Intelipost;
-- abertura automática por Protheus;
-- abertura automática por OTRS;
-- monitoramento universal;
-- IA de causa raiz;
+- abertura automática por Intelipost/Protheus/OTRS;
+- remediação automática;
+- IA de causa-raiz;
 - ML de risco;
 - WhatsApp/SMS/push;
-- automação de remediação;
-- criação automática de comitê de crise;
-- decisão automática de criticidade;
-- REPLICA sem ADR;
 - data lake dedicado;
 - event streaming complexo;
-- integração ampla com Power BI como dependência do fluxo operacional.
+- REPLICA;
+- integração ampla com Power BI como dependência operacional;
+- checklist operacional detalhado por área;
+- decisão automática de criticidade/crise.
 
 ---
 
-# 24. Definição de pronto global
+# 24. Definition of Done global
 
-Uma funcionalidade Safra só é `DONE` quando:
+Uma funcionalidade só é `DONE` quando:
 
-1. regra possui fonte de negócio;
-2. rule_id/version existe quando aplicável;
+1. possui fonte/decisão;
+2. regra está identificada/versionada quando aplicável;
 3. autorização está no backend/banco;
-4. RLS foi testada positiva e negativamente;
+4. RLS foi testada quando aplicável;
 5. migration está versionada;
-6. rollback está documentado;
-7. testes unitários/de integração cobrem bordas;
-8. E2E cobre usuário permitido e negado;
-9. audit trail existe para ação sensível;
-10. idempotência existe onde duplicidade é perigosa;
+6. rollback existe;
+7. testes positivos/negativos/borda existem;
+8. concorrência/idempotência foram testadas onde necessário;
+9. E2E cobre API direto quando ação é sensível;
+10. audit trail existe;
 11. UI trata loading/empty/error/forbidden;
 12. acessibilidade crítica foi validada;
 13. documentação foi atualizada;
 14. evidência foi registrada;
 15. homologação de negócio ocorreu quando regra mudou;
 16. DATA_RELEASE existe antes de nova fonte real;
-17. performance/capacidade foi reavaliada quando impacto material existir.
+17. performance/recovery foram reavaliados quando impacto material existir.
 
 ---
 
-# 25. Documentação viva obrigatória
+# 25. Documentação viva
 
-Após cada etapa concluída, atualizar pelo menos:
+Após cada etapa, atualizar no mínimo:
 
 ```text
 docs/STATUS.md
@@ -2797,53 +2212,29 @@ docs/REGRAS_NEGOCIO.md
 docs/PROJECT_PROFILE.yaml
 docs/PRIVACIDADE_THREAT_MODEL.md
 docs/MATRIZ_PARIDADE.md
+docs/evidence/*
 docs/data-contracts/*
 docs/data-releases/*
-docs/adr/*
-docs/evidence/*
 ```
-
-A documentação não pode ficar para o fim do projeto.
 
 ---
 
-# 26. Primeiro ciclo recomendado
+# 26. Regras de execução do programa
 
-Não iniciar redesign amplo de dashboard ainda.
-
-O primeiro ciclo deve ser:
-
-```text
-SAFRA-C00
-    -> P0 security
-    -> baseline
-
-SAFRA-C01
-    -> docs
-    -> PROJECT_PROFILE
-
-SAFRA-C03/C04
-    -> domínio
-    -> papéis
-
-SAFRA-C05
-    -> schema novo
-
-SAFRA-C06
-    -> importar Matriz v3
-
-SAFRA-C07
-    -> SLA múltiplo
-
-SAFRA-C08
-    -> fluxo START
-```
-
-Somente depois construir o painel executivo completo.
+1. GitHub é o registro durável das mudanças.
+2. Não usar force-push/rebase/amend/squash destrutivo sobre histórico sincronizado.
+3. Não alterar regra de negócio por inferência da LLM.
+4. Não criar documentação paralela quando já existe fonte canônica.
+5. Não começar redesign amplo antes de domínio, auth e schema estarem estáveis.
+6. Não introduzir integração real sem contrato e DATA_RELEASE.
+7. Não usar frontend como barreira de segurança.
+8. Não transformar decisão deferida em default silencioso.
+9. Não executar protocolo operacional dentro do Painel; governar a contingência.
+10. Ao fim de cada etapa, atualizar documentação e evidências.
 
 ---
 
-# 27. Resultado esperado ao final dos três eixos
+# 27. Critério de encerramento dos três eixos
 
 ## COMEÇO concluído
 
@@ -2851,77 +2242,78 @@ O sistema sabe:
 
 - quais cenários existem;
 - qual versão está vigente;
-- quem é o dono;
+- quem é o owner;
 - quais áreas podem ser impactadas;
-- quais sistemas participam;
 - quais SLAs existem;
-- quem pode abrir;
-- como abrir com segurança.
+- quem está autenticado;
+- como START acontece com segurança;
+- como recuperar o próprio Painel.
 
 ## MEIO concluído
 
 O sistema sabe:
 
-- quais protocolos estão ativos;
-- em qual passo estão;
-- quem atualizou;
-- quais SLAs correm;
+- quais tratativas estão ativas;
+- desde quando;
+- quem abriu;
+- qual versão vale;
+- quais SLAs estão correndo;
 - quais áreas estão impactadas;
-- qual nível de escalonamento;
-- quem precisa ser comunicado.
+- qual escalonamento existe;
+- quem precisa ser comunicado;
+- qual trilha auditável existe.
 
 ## FIM concluído
 
 O sistema sabe:
 
-- como cada contingência terminou;
+- como a tratativa terminou;
+- quem encerrou/cancelou;
 - quanto durou;
-- quais SLAs foram cumpridos;
+- quais SLAs foram cumpridos ou violados;
 - quais cenários se repetem;
-- quanto impacto acumulado existe;
 - quais ações de governança foram abertas;
-- o que precisa ser revisto antes da próxima Safra.
+- o que deve mudar para a próxima Safra.
 
 ---
 
-# 28. Conclusão arquitetural
+# 28. Próximo passo exato
 
-A reformulação deve conservar o valor do `incident-log-pro`, mas deixar de tratá-lo como modelo completo do produto.
-
-A arquitetura correta é:
+Fase atual:
 
 ```text
-incident-log-pro legado de TI
-        +
-novo domínio Safra versionado
-        +
-autorização real
-        +
-workflow COMEÇO / MEIO / FIM
-        +
-visibilidade executiva
-        +
-auditoria
-        +
-governança
+SAFRA-C02 — Threat model e abuso de negócio
 ```
 
-A principal mudança de mentalidade é esta:
+Já concluído dentro do C02:
 
-> **O Painel Safra não existe para executar o trabalho operacional de cada área. Ele existe para tornar uma contingência visível, governada, temporizada, auditável e aprendível.**
+- ameaças principais identificadas;
+- controles mapeados;
+- casos de bypass/API, enumeração, vazamento, retry e SLA manipulável formalizados;
+- testes positivos, negativos, concorrência/retry e limite derivados.
 
-O Framework EBSA v1.7 é útil porque garante que essa lógica não seja implementada sobre uma base insegura ou sem evidência. Porém, a autoridade da regra de negócio permanece com a Matriz v3 e com as decisões humanas registradas na reunião.
+Próximo movimento:
+
+1. revisar risco residual de cada abuse case;
+2. confirmar cobertura de `G3.5 / THREAT-001 / AUTHZ-001`;
+3. fechar C02 documentalmente;
+4. avançar para C03 — Glossário e modelo de domínio;
+5. somente depois implementar os controles em C04/C05.
 
 ---
 
-# 29. Próximo passo operacional
+# 29. Conclusão
 
-Após aprovação deste roadmap:
+A versão 2.1 corrige uma ambiguidade importante do roadmap anterior: **o Painel Safra não é um executor do protocolo operacional; é uma camada de governança da contingência**.
 
-1. substituir o roadmap anterior por este documento como canônico;
-2. atualizar README apontando para `docs/ROADMAP.md`;
-3. registrar `STATUS` com o estado atual;
-4. iniciar `SAFRA-C00`;
-5. não alterar ainda as regras do produto no Lovable por prompt;
-6. fazer mudanças permanentes GitHub-first;
-7. após cada etapa, atualizar documentação e evidências.
+A arquitetura alvo deve manter cinco compromissos simultaneamente:
+
+```text
+DOMÍNIO CORRETO
++ IDENTIDADE REAL
++ AUTORIZAÇÃO SERVER-SIDE
++ TEMPO/AUDITORIA CONFIÁVEIS
++ GOVERNANÇA/ANALYTICS
+```
+
+O próximo risco a evitar é antecipar implementação antes de concluir o C02/C03. A sequência permanece deliberada: primeiro ameaça e domínio; depois identidade/RLS; depois schema; depois dados; depois UX/operação.
