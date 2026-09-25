@@ -110,6 +110,7 @@ export type Database = {
     Functions: {
       get_my_safra_roles: { Args: never; Returns: string[] }
       safra_has_role: { Args: { requested_role: string }; Returns: boolean }
+      safra_is_corporate_user: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
