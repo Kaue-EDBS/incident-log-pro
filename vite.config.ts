@@ -7,13 +7,13 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 // Public (publishable) Lovable Cloud config — safe to ship. Fallback for builds where .env is absent.
-const PUBLIC_URL = process.env.VITE_SUPABASE_URL || "https://trqkwqkjjjeppuddwenu.supabase.co";
+const PUBLIC_URL = process.env["VITE_SUPABASE_URL"] || "https://trqkwqkjjjeppuddwenu.supabase.co";
 const PUBLIC_KEY =
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "sb_publishable_XFwVZb409e0H2SsvOWZofQ_UOULyk_D";
-process.env.VITE_SUPABASE_URL ||= PUBLIC_URL;
-process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||= PUBLIC_KEY;
-process.env.SUPABASE_URL ||= PUBLIC_URL;
-process.env.SUPABASE_PUBLISHABLE_KEY ||= PUBLIC_KEY;
+  process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || "sb_publishable_XFwVZb409e0H2SsvOWZofQ_UOULyk_D";
+process.env["VITE_SUPABASE_URL"] ||= PUBLIC_URL;
+process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||= PUBLIC_KEY;
+process.env["SUPABASE_URL"] ||= PUBLIC_URL;
+process.env["SUPABASE_PUBLISHABLE_KEY"] ||= PUBLIC_KEY;
 
 export default defineConfig({
   tanstackStart: {
