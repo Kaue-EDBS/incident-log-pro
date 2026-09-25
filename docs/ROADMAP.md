@@ -268,7 +268,7 @@ O framework é explícito: replica é condicional.
 Portanto:
 
 ```text
-replica_enabled = WAITING_HUMAN_DECISION
+replica_enabled = false
 ```
 
 Se a decisão for `false`, G9 vira N/A justificado.
@@ -340,7 +340,7 @@ scenario_criticality:
   source: materiais_mae
   status: APPROVED
 human_interface: true
-replica_enabled: WAITING_HUMAN_DECISION
+replica_enabled: false
 auth_required: true
 identity_provider: MICROSOFT_ENTRA_ID
 auth_method: CORPORATE_SSO
@@ -2509,7 +2509,11 @@ Status: aprovado pelo contexto metodológico.
 
 ## ADR-002 - PRIMARY e REPLICA
 
-Status: WAITING_HUMAN_DECISION.
+Status: **APROVADO — REPLICA=false**.
+
+Não haverá segundo banco sincronizado.
+
+Backup/restore não é REPLICA e continua obrigatório. O SAFRA-C09 deverá provar recuperação compatível com RTO 30 min e RPO 5 min.
 
 ## ADR-003 - Service class
 
