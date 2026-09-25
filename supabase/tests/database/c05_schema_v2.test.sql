@@ -197,8 +197,13 @@ select is(
   'SAFRA domain has no destructive ON DELETE CASCADE foreign keys'
 );
 
-select has_constraint(
-  'public', 'treatments', 'treatments_cancel_reason_required',
+select ok(
+  exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.treatments'::regclass
+      and conname = 'treatments_cancel_reason_required'
+  ),
   'CANCEL requires a non-blank reason'
 );
 
