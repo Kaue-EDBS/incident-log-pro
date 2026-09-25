@@ -2535,12 +2535,12 @@ Só passa quando:
 | ADR-002 | Lovable Cloud PRIMARY; REPLICA=false | APPROVED |
 | ADR-003 | service_class=CRITICO; SLO 99,95%; RTO 30; RPO 5 | APPROVED |
 | ADR-004 | Microsoft Entra ID / SSO | APPROVED |
-| ADR-005 | operações críticas via função/RPC transacional | PROPOSED -> decidir em C05 |
+| ADR-005 | operações críticas via função/RPC transacional | APPROVED — implementação funcional nas fases próprias |
 | ADR-006 | Geral = visão, não área | APPROVED |
 | ADR-007 | ativação humana no MVP | APPROVED |
 | ADR-008 | OTRS fora do MVP | APPROVED |
 | ADR-009 | integrações uma por ciclo | PROPOSED |
-| ADR-010 | tooling de migrations | DEFERRED C05 |
+| ADR-010 | tooling de migrations | APPROVED — supabase/migrations é a autoridade canônica |
 | ADR-011 | scenario criticality != application criticality | APPROVED |
 | ADR-012 | modelo de papéis/responsabilidades | APPROVED |
 | ADR-013 | subtipos administrativos | APPROVED |
@@ -2679,32 +2679,57 @@ O sistema sabe:
 Fase atual:
 
 ```text
-SAFRA-C05 — Schema v2, migrations e invariantes
-subpasso atual: C05.4 — mutações transacionais, idempotência e concorrência
+SAFRA-C05 — CONCLUÍDO
+NEXT = SAFRA-C06 — Seed canônico da Matriz v3
 ```
 
-Já concluído no C05:
+C05 fechado com:
+- schema v2 e 17 tabelas de domínio;
+- migrations canônicas reconstruíveis do zero;
+- tracking PRIMARY reconciliado com as 10 migrations do GitHub;
+- FKs, constraints e integridade temporal;
+- timestamps server-side;
+- version freeze;
+- append-only;
+- proteção contra cascade destrutivo;
+- CANCEL com motivo obrigatório;
+- END/CANCEL somente a partir de ACTIVE;
+- double submit/idempotência estrutural;
+- RLS/API direta;
+- rollback em banco descartável;
+- lint;
+- GitHub Actions Run 27 = SUCCESS.
 
-- autoridade canônica de migrations definida em `supabase/migrations`;
-- drift C00/C04/C05 reconciliado;
-- rollback documentado;
-- banco descartável implementado e validado em CI;
-- schema v2 com 17 tabelas materializado;
-- domínio canônico de áreas, sistemas, papéis, cenários/versionamento, owners, SLAs, treatments, eventos, escalonamentos, notificações, propostas e governance issues consolidado;
-- RLS deny-by-default preservada;
-- `GI-SAFRA-001` permanece OPEN sem inferência.
+### Próximo trabalho — SAFRA-C06
 
-Próximo trabalho:
+Objetivo:
+carregar os 11 cenários oficiais da Matriz v3 por pipeline versionado e auditável.
 
-1. implementar contratos transacionais para START/END/CANCEL e escalonamento;
-2. centralizar timestamp server-side, authorization e validação de estado;
-3. fechar idempotency key e correlation id;
-4. testar retry/double submit;
-5. testar concorrência END x CANCEL;
-6. ampliar pgTAP e testes diretos de RPC/API;
-7. somente depois revisar o gate de saída do C05.
+Fluxo obrigatório:
 
-Não iniciar C06 enquanto C05.4 e seus testes não estiverem concluídos.
+```text
+XLSX v3
+-> parser versionado
+-> staging
+-> validação
+-> preview/diff
+-> aprovação humana
+-> seed/migration
+```
+
+Regras de entrada:
+- não inferir os quatro CRITICAL;
+- preservar `GI-SAFRA-001 = OPEN`;
+- respeitar owners já aprovados;
+- não criar regra de múltiplos ACTIVE;
+- não antecipar START/END/CANCEL funcionais;
+- toda mudança de dado canônico deve ser auditável e reproduzível.
+
+Gate esperado:
+```text
+C06 = DATA_CANONICALIZED
+G6 = PASS_C06_SEED
+```
 
 
 # 29. Conclusão
