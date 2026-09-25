@@ -637,18 +637,18 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 | criticidade técnica da aplicação | WAITING_HUMAN_DECISION — distinta de CRITICAL/HIGH/MODERATE dos cenários |
 | criticidade dos cenários | CRITICAL/HIGH/MODERATE — regra de domínio registrada; lista dos quatro críticos ainda pendente |
 | Auth | **DECIDIDO:** Microsoft Entra ID corporativo via SSO; login frontend ainda não implementado; 0 usuários |
-| papéis privilegiados | **DECIDIDO:** apenas safra_admin e scenario_owner; matriz fina de permissões entre ambos ainda pendente |
+| papéis privilegiados | **DECIDIDO:** safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner; matriz fina deferida ao SAFRA-C04 |
 | dados pessoais | presentes; categorias registradas; minimização obrigatória |
 | integrações | nenhuma ativa no MVP; futuras governadas por contrato/DATA_RELEASE |
 | REPLICA | WAITING_HUMAN_DECISION; não provisionada |
 | API | nenhuma API pública; Data API interna protegida por grants/RLS |
-| regras de domínio | obrigatórias; 17 Safra + 4 legadas registradas |
+| regras de domínio | obrigatórias; regras Safra e legadas registradas; refinamentos específicos seguem nas fases de domínio |
 
 ### Leitura do gate
 
 O requisito de **registrar** esses atributos está cumprido.
 
-O G3/G3.25 ainda não deve ser fechado porque service class, criticidade técnica da aplicação, RBAC final, REPLICA e outras decisões materiais continuam explicitamente abertas. O identity provider já foi decidido.
+O G3/G3.25 ainda não deve ser fechado enquanto existirem decisões materiais sem resolução explícita. Itens já direcionados para fases futuras devem ser marcados como `DEFERRED_TO_...` e não contam como `UNKNOWN`. Identity provider já foi decidido; RBAC fino está deferido ao SAFRA-C04; tooling de migrations está deferido ao SAFRA-C05.
 
 
 ### Correção conceitual — criticidade x service class — 24/09/2026
@@ -749,3 +749,13 @@ Quando o projeto chegar à fase de Frontend, desenhar separadamente as visões d
 - Bruno — todos os cards e métricas;
 - donos de card — métricas dos seus cards;
 - Jair — visão de governança.
+
+
+### Regra UNKNOWN x DEFERRED — 24/09/2026
+
+Para o fechamento do SAFRA-C01:
+
+- `UNKNOWN` / `WAITING_HUMAN_DECISION` material = bloqueia fechamento;
+- `DEFERRED_TO_SAFRA-C04/C05/...` = decisão conscientemente adiada para fase responsável, com destino explícito;
+- item deferido não deve ser tratado como desconhecido;
+- nenhum campo material pode ser silenciosamente convertido em `false` ou default.
