@@ -205,7 +205,8 @@ as $$
     (select auth.uid()) is not null
     and coalesce((select auth.jwt() ->> 'is_anonymous'), 'false') <> 'true'
     and coalesce((select auth.jwt() -> 'app_metadata' ->> 'provider'), '') = 'azure'
-    and lower(coalesce((select auth.jwt() ->> 'email'), '')) like '%@editoradobrasil.com.br';
+    and lower(coalesce((select auth.jwt() ->> 'email'), '')) like '%@editoradobrasil.com.br'
+    and coalesce((select (auth.jwt() ->> 'exp')::bigint), 0) > extract(epoch from now())::bigint;
 $$;
 
 revoke all on function public.safra_is_corporate_user() from public, anon;
@@ -268,4 +269,4 @@ comment on function public.safra_has_role(text) is
 comment on function public.get_my_safra_roles() is
   'Returns governed SAFRA application roles for current auth.uid(). Does not return scenario ownership.';
 comment on function public.safra_is_corporate_user() is
-  'Canonical base authorization predicate for SAFRA corporate users.';
+  'Canonical base authorization predicate for SAFRA corporate users. Requires valid non-expired JWT.';
