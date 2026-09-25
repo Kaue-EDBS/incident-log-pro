@@ -12,10 +12,14 @@ import {
 import { supabase } from "./client";
 import { lovable } from "@/integrations/lovable/index";
 
+type AccessState = "unknown" | "checking" | "granted" | "denied";
+
 type AuthContextValue = {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  access: AccessState;
+  accessReason: string | null;
   signInWithMicrosoft: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -33,9 +37,15 @@ function resolveAuthRedirectUrl() {
   return undefined;
 }
 
+function hasSafraClaim(session: Session | null) {
+  return (session?.user?.app_metadata as Record<string, unknown> | undefined)?.["safra_access"] === true;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [access, setAccess] = useState<AccessState>("unknown");
+  const [accessReason, setAccessReason] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
