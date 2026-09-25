@@ -1,0 +1,12 @@
+{
+  "source_file": "EDB06 - Matriz Contingencia v3.xlsx",
+  "source_sheet": "Matriz de Contingência",
+  "source_sha256": "b0cca8cce835dbdc65ab0c30212fd89480d2cf51e9fb62d215ad1bde0963ead6",
+  "extracted_at": "2026-09-25",
+  "scenario_count": 11,
+  "notes": [
+    "Textos de negócio preservados literalmente.",
+    "criticality não preenchida por GI-SAFRA-001.",
+    "SLA-alvo preservado como texto-fonte; scenario_slas não é preenchido em C06 sem start_event/end_event explícitos."
+  ]
+}
