@@ -45,7 +45,7 @@
 | D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático | APPROVED |
 | D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | APPROVED |
 | D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default | APPROVED |
-| D-33 | Login funcional exclusivamente via Microsoft Entra ID / Supabase Auth; login local por senha proibido | APPROVED / CODE_IMPLEMENTED / PROVIDER_CONFIG_PENDING |
+| D-33 | Login funcional exclusivamente via Microsoft Entra ID; Lovable Cloud Auth cria sessão Supabase; login local por senha proibido | APPROVED / HOMOLOGATED |
 
 ## 3. ADRs
 
@@ -382,4 +382,28 @@ Regras:
 - tenant corporativo deve ser restringido na configuração do provider;
 - nenhuma credencial/secret do Entra entra no GitHub.
 
-A configuração externa do provider permanece pendente de acesso ao projeto Auth do Painel Safra.
+Homologação concluída em 25/09/2026. O provider Microsoft foi configurado via Lovable Cloud Auth e houve autenticação corporativa real bem-sucedida; a identidade resultante foi registrada no Supabase Auth com provider `azure` e `last_sign_in_at` preenchido.
+
+
+### ADR-024 — Homologação runtime do Microsoft SSO
+**APPROVED / HOMOLOGATED — 25/09/2026**.
+
+A implementação efetiva utiliza:
+
+```text
+Microsoft Entra ID
+  -> Lovable Cloud Auth (provider "microsoft")
+  -> tokens OAuth
+  -> supabase.auth.setSession(...)
+  -> Supabase Auth identity provider = azure
+  -> auth.uid()
+```
+
+Evidências:
+- commit de configuração do provider Microsoft: `68f72ea69cd20d02f88633191b57922cfc710350`;
+- usuário real autenticado;
+- `auth.users.last_sign_in_at` preenchido;
+- `auth.identities.provider = azure`;
+- Lovable sincronizado com commits posteriores.
+
+A decisão de produto continua: não oferecer login local por senha.
