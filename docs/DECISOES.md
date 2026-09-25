@@ -41,6 +41,7 @@
 | D-26 | Política de retenção vinculada ao fim formal da Safra, com anonimização/eliminação posterior quando identidade não for necessária | APPROVED |
 | D-27 | Gates G3 e G3.25 fechados; SAFRA-C01 concluído com 0 UNKNOWN material | APPROVED |
 | D-28 | SAFRA-C02 concluído; G3.5, THREAT-001 e AUTHZ-001 = PASS | APPROVED |
+| D-29 | Vocabulário canônico do domínio congelado em docs/GLOSSARIO_DOMINIO.md | APPROVED |
 
 ## 3. ADRs
 
@@ -300,3 +301,11 @@ AUTHZ-001 = PASS
 ```
 
 O fechamento aprova o threat model, os controles requeridos, os testes derivados e a classificação de riscos residuais. Não antecipa a implementação de RLS/RBAC/RPCs/constraints, que permanece nas fases definidas pelo roadmap.
+
+
+### ADR-019 — Vocabulário canônico do domínio
+**APPROVED — 25/09/2026**.
+
+`docs/GLOSSARIO_DOMINIO.md` passa a ser a fonte canônica para os termos funcionais do Painel Safra.
+
+As distinções cenário/versão/tratativa, gatilho/detecção, protocolo/tratativa, owner/ator da ação, área responsável/impactada, SLA/SLO-RTO-RPO, criticidade/escalonamento e END/CANCEL não podem ser redefinidas silenciosamente.
