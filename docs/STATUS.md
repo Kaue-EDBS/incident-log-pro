@@ -630,7 +630,7 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 | service class da aplicação | **DECIDIDO: CRITICO** — SLO 99,95%; RTO 30 min; RPO 5 min |
 | criticidade técnica da aplicação | **DECIDIDO: MEDIUM** — independente de service_class=CRITICO e de CRITICAL/HIGH/MODERATE dos cenários |
 | criticidade dos cenários | CRITICAL/HIGH/MODERATE — regra de domínio registrada; lista dos quatro críticos ainda pendente |
-| Auth | **DECIDIDO:** Microsoft Entra ID corporativo via SSO; login frontend ainda não implementado; 0 usuários |
+| Auth | **HOMOLOGADO:** Microsoft Entra ID corporativo via SSO; login funcional; provider Azure; primeiro usuário autenticado |
 | papéis privilegiados | **DECIDIDO:** safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner; matriz fina deferida ao SAFRA-C04 |
 | dados pessoais | presentes; categorias registradas; minimização obrigatória |
 | integrações | nenhuma ativa no MVP; futuras governadas por contrato/DATA_RELEASE |
@@ -1180,13 +1180,13 @@ C05 recebeu regra explícita de não inventar decisões ainda deferidas.
 
 ---
 
-## SAFRA-C04 — Microsoft SSO implementado no código — 25/09/2026
+## SAFRA-C04 — Microsoft SSO homologado — 25/09/2026
 
 Implementação concluída no repositório:
 
-- `AuthProvider` com Microsoft Azure/Entra via Supabase Auth;
+- `AuthProvider` com Microsoft Entra via Lovable Cloud Auth e sessão Supabase;
 - `AuthGate` protege toda a aplicação;
-- único método funcional de entrada: `signInWithOAuth({ provider: "azure" })`;
+- único método funcional de entrada: Lovable Cloud Auth com provider `microsoft`;
 - escopo Microsoft `email`;
 - sessão Supabase restaurada e observada via `onAuthStateChange`;
 - logout disponível;
@@ -1197,16 +1197,15 @@ Implementação concluída no repositório:
 
 Estado de homologação:
 
-**PARTIAL / EXTERNAL_CONFIG_REQUIRED**
+**PASS / HOMOLOGATED**
 
-O código está pronto, mas a configuração do provider não foi aplicada porque o projeto Lovable Cloud do Painel Safra não está disponível entre os projetos acessíveis pelo conector Supabase desta sessão.
+Homologação confirmada:
+- provider Microsoft configurado via GitHub/Lovable Cloud Auth;
+- login corporativo real executado com sucesso;
+- `auth.users` contém usuário autenticado;
+- `auth.identities.provider = azure`;
+- `last_sign_in_at` preenchido;
+- Lovable sincronizado com os commits posteriores à configuração;
+- cadeia de sessão Supabase pronta para uso de `auth.uid()`.
 
-Antes de liberar usuários reais:
-1. criar/confirmar App Registration no Microsoft Entra ID;
-2. configurar callback do Supabase Auth;
-3. habilitar provider Azure;
-4. restringir ao tenant corporativo;
-5. desabilitar Email/Password no Auth backend;
-6. validar redirect allow list;
-7. realizar login real;
-8. comprovar que a sessão chega ao banco e `auth.uid()` retorna o usuário autenticado.
+A implementação atual utiliza `@lovable.dev/cloud-auth-js` como broker de autenticação Microsoft e, após retorno bem-sucedido, grava os tokens na sessão Supabase.
