@@ -49,6 +49,7 @@
 | D-34 | Role mapping governado no banco e ownership específico separado de papéis administrativos | APPROVED / IMPLEMENTED |
 | D-35 | RLS e autorização server-side usam o mesmo predicado corporativo; safra_access removido | APPROVED / IMPLEMENTED |
 | D-36 | supabase/migrations é a autoridade canônica; migration C04 capturada e versionada | APPROVED |
+| D-37 | Gates C04 não fecham sem evidência explícita do Manual EBSA; G5 parcial e ID-001/ID-002/AUDIT-001 bloqueados por evidência | APPROVED |
 
 ## 3. ADRs
 
