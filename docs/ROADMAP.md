@@ -1081,6 +1081,10 @@ Não criar documentação paralela quando um destes arquivos já for a autoridad
 
 Enquanto houver `UNKNOWN` material.
 
+### Retenção aprovada
+
+Dados pessoais identificáveis permanecem até o encerramento formal da Safra e enquanto necessários para auditoria/pós-mortem. Depois disso, eliminar ou anonimizar. Histórico operacional e métricas podem permanecer para comparação entre Safras sem identificação pessoal quando possível.
+
 ### Gate EBSA
 
 - G3;
