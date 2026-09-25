@@ -27,7 +27,7 @@ Notas, causa e resolução podem receber dados pessoais incidentalmente.
 
 ### Dados pessoais sensíveis
 
-**WAITING_HUMAN_DECISION** para classificação formal. O produto não foi desenhado para tratar categorias sensíveis da LGPD.
+**Fora do escopo intencional aprovado.** O produto não foi desenhado para coletar categorias sensíveis. Ocorrência incidental em texto livre deve ser minimizada e tratada como exceção de privacidade.
 
 ### Crianças e adolescentes
 
@@ -50,14 +50,12 @@ Evitar CPF, telefone pessoal, endereço residencial, credenciais, tokens, senhas
 
 ## 5. Retenção
 
-`retention_policy = WAITING_HUMAN_DECISION`.
+**APPROVED.**
 
-Até decisão formal:
-
-- não implementar exclusão automática;
-- não presumir retenção infinita;
-- preservar histórico necessário à auditoria;
-- não destruir tratativas no fluxo normal.
+- dados pessoais identificáveis permanecem até o encerramento formal da Safra e enquanto necessários para auditoria/pós-mortem;
+- depois da finalidade, eliminar ou anonimizar;
+- histórico operacional e métricas podem permanecer entre Safras sem identificação pessoal quando ela não for necessária;
+- tratativas não são destruídas silenciosamente no fluxo normal.
 
 ## 6. Acesso
 
@@ -83,8 +81,8 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 | T-01 | acesso anônimo | bloqueado no C00 |
 | T-02 | secret no Git | `.env` fora do tracking |
 | T-03 | elevação de privilégio | usar `app_metadata`; RBAC futuro |
-| T-04 | owner A operar cenário B | C04 + RLS |
-| T-05 | updater encerrar protocolo | RB-SAFRA-005 |
+| T-04 | usuário autenticado executar START/END/CANCEL de forma indevida | auditoria + backend transacional + C04/C05 |
+| T-05 | elevação de responsabilidade/role pelo cliente | role mapping server-side + C04 |
 | T-06 | cancelamento sem justificativa | CANCELLED + motivo |
 | T-07 | exclusão física | proibida no fluxo normal |
 | T-08 | edição retroativa de versão | snapshot por scenario_version |
@@ -123,13 +121,13 @@ Toda nova funcionalidade deve responder:
 9. existe DATA_RELEASE?
 10. o dado aparece em relatório executivo?
 
-## 10. Pendências
+## 10. Pendências e deferimentos
 
-- base legal / enquadramento formal: **WAITING_HUMAN_DECISION**;
-- retenção: **WAITING_HUMAN_DECISION**;
-- sensibilidade formal: **WAITING_HUMAN_DECISION**;
+- base legal / enquadramento formal: **DEFERRED_TO_PRIVACY_OWNER_BEFORE_REAL_USER_RELEASE**;
+- retenção: **APPROVED**;
+- dados sensíveis: **fora do escopo intencional aprovado**;
 - identity provider: **Microsoft Entra ID corporativo via SSO — APPROVED**;
-- política de notificações/e-mail: **WAITING_HUMAN_DECISION**.
+- política/provedor de notificações/e-mail: **DEFERRED_TO_SAFRA_M05**.
 
 ## 11. Atualização
 
