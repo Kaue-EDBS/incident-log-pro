@@ -139,12 +139,7 @@ function AuthedShell() {
   }, [loading, session, isAuthRoute, navigate]);
 
   if (isAuthRoute) {
-    return (
-      <>
-        <Outlet />
-        <Toaster position="top-right" />
-      </>
-    );
+    return <Outlet />;
   }
 
   if (loading || !session) {
@@ -159,13 +154,10 @@ function AuthedShell() {
   }
 
   return (
-    <TooltipProvider delayDuration={150}>
-      <AppLayout>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-      </AppLayout>
-      <Toaster position="top-right" />
-    </TooltipProvider>
+    <AppLayout>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <Outlet />
+    </AppLayout>
   );
 }
 
@@ -175,7 +167,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <AuthedShell />
+        <TooltipProvider delayDuration={150}>
+          <AuthedShell />
+          <Toaster position="top-right" />
+        </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
