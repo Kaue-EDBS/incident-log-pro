@@ -1079,6 +1079,27 @@ Pendência do C04:
 - sessão inválida não produz efeito;
 - acesso por API deve ter o mesmo resultado de segurança da UI.
 
+### C04.3 — RLS e autorização equivalente entre UI, REST/Data API, RPC e servidor — IMPLEMENTADO
+
+Concluído em 25/09/2026:
+
+- removido o gate temporário `app_metadata.safra_access`;
+- criado `public.safra_is_corporate_user()` como predicado único de acesso base;
+- RLS de `applications` e `incidents` usa o mesmo predicado;
+- middleware server-side consulta o mesmo RPC;
+- UI/Data API permanecem sujeitas às mesmas policies;
+- RPCs usam o mesmo contexto autenticado;
+- `user_metadata` não participa de autorização;
+- roles continuam em tabelas governadas.
+
+Validação:
+- corporativo Azure: acesso permitido;
+- outsider autenticado: zero linhas;
+- anon: sem SELECT/EXECUTE;
+- `safra_access` removido de app_metadata.
+
+Migration formal da mudança live: reconciliar no C05.
+
 ### Testes obrigatórios
 
 - anon não lê/escreve;
