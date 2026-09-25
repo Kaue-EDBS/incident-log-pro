@@ -15,6 +15,13 @@
       "when": 1790354625722,
       "tag": "0001_c04_rbac_audit_and_session_binding",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790354715965,
+      "tag": "0002_c04_controlled_selftest_harness",
+      "breakpoints": true
     }
   ]
 }
