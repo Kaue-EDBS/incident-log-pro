@@ -255,7 +255,7 @@ O produto deve preservar eventos de START, passos, alterações relevantes, esca
 **WAITING_HUMAN_DECISION**:
 
 - service class da aplicação — **CRITICO**, atributo técnico do Framework EBSA, não derivado dos cenários;
-- criticidade técnica/operacional da aplicação — distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
+- criticidade técnica/operacional da aplicação — **MEDIUM**, distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
 - matriz fina de permissões entre `safra_admin` e `scenario_owner`;
 - tratamento de usuário autenticado sem papel funcional;
 - replica;
@@ -272,7 +272,7 @@ domínio Safra
 
 governança técnica
  -> application.service_class = CRITICO
- -> application.criticality = WAITING_HUMAN_DECISION
+ -> application.criticality = MEDIUM
 ```
 
 Os SLAs dos protocolos medem resposta operacional do cenário. Eles não definem SLO, RTO ou RPO do software.
