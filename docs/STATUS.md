@@ -1247,3 +1247,28 @@ Regra preservada:
 Pendência:
 - RLS legado C00 ainda depende de `app_metadata.safra_access`;
 - migração das policies para o role mapping definitivo é próximo subpasso do C04.
+
+
+---
+
+## Sincronização Lovable — fallback de ambiente e tipos RBAC — 25/09/2026
+
+Commit Lovable revisado: `91417ab45a70233d9603ba50259bd744b35fc67b` — **Added fallback env vars**.
+
+Mudanças confirmadas:
+
+1. `src/integrations/supabase/types.ts`
+   - passou a tipar `get_my_safra_roles()`;
+   - passou a tipar `safra_has_role(requested_role)`;
+   - frontend agora reconhece os RPCs criados pelo role mapping.
+
+2. `vite.config.ts`
+   - adicionou fallback para `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`;
+   - replica os valores públicos para `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` no build;
+   - usa apenas URL pública e publishable key; nenhum `service_role` foi introduzido.
+
+Impacto:
+- correção compatível com o role mapping implementado;
+- evita falha de preview/build quando o arquivo `.env` não está presente;
+- publishable key continua sendo credencial pública por desenho;
+- manter atenção futura para evitar acoplamento indevido entre ambientes dev/preview/prod.
