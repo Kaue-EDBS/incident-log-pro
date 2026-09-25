@@ -1,18 +1,18 @@
 # ARQUITETURA — Painel Safra
 
 > Documento canônico de arquitetura.
-> Atualizado em: 24/09/2026
-> Estado: **SAFRA-C01 concluído; próxima fase SAFRA-C02**
+> Atualizado em: 25/09/2026
+> Estado: **SAFRA-C05 em execução — schema v2 materializado; domínio canônico consolidado**
 
 ## 1. Objetivo
 
-Registrar a arquitetura real e a arquitetura alvo, separando o que já existe, o que foi aprovado, o que é transitório e o que depende de decisão humana.
+Registrar a arquitetura real do Painel Safra e o contrato entre identidade, catálogo, operação e governança.
 
-## 2. Princípio arquitetural
+O Painel Safra evolui o repositório existente. Não criar aplicação paralela e não criar estruturas duplicadas quando um conceito já possui fonte de verdade aprovada.
 
-O Painel Safra evolui o projeto existente. Não criar aplicação paralela.
+## 2. Arquitetura atual confirmada
 
-```text
+~~~text
 GitHub <-> Lovable
           |
           v
@@ -20,18 +20,22 @@ GitHub <-> Lovable
        PRIMARY
           |
           +-- PostgreSQL
-          +-- Auth
-          +-- RLS / Policies
-          +-- Data API
-          +-- stack Supabase
-```
+          +-- Supabase Auth / Data API
+          +-- RLS / grants / funções
+          |
+Microsoft Entra ID
+          |
+          v
+  Lovable Cloud Auth
+          |
+          v
+      Supabase Auth
+          |
+          v
+       auth.uid()
+~~~
 
-**Lovable Cloud é o provedor do backend e governa o PRIMARY.**
-Supabase é a stack técnica utilizada pelo banco, Auth e Data API.
-
-## 3. Estado atual confirmado
-
-### Aplicação
+Stack de aplicação:
 
 - React 19;
 - TanStack Start / Router / Query;
@@ -40,269 +44,401 @@ Supabase é a stack técnica utilizada pelo banco, Auth e Data API.
 - Tailwind;
 - Recharts.
 
-### Banco
+Banco:
 
 - backend provider: **Lovable Cloud**;
 - database role: **PRIMARY**;
-- engine: PostgreSQL;
-- database stack: Supabase;
+- PostgreSQL;
+- stack Supabase;
 - RLS habilitada;
-- `anon` sem acesso após SAFRA-C00;
-- autorização transitória via `app_metadata.safra_access`.
+- `anon` sem acesso aos dados internos;
+- autenticação corporativa Microsoft homologada;
+- autorização interna governada pelo banco.
 
-### Tooling de banco
+## 3. Autoridade de migrations
 
-O repositório hoje contém:
+Decisão vigente:
 
-1. `supabase/migrations/` — migrations históricas e hardening do C00;
-2. `drizzle.config.ts` — PostgreSQL via `LOVABLE_DB_MIGRATION_URL`.
+~~~text
+supabase/migrations = ÚNICA FONTE CANÔNICA DE MIGRATIONS
+Drizzle = tooling/ORM auxiliar, sem autoridade de schema/deploy
+~~~
 
-A convivência é estado de transição. O SAFRA-C05 deve definir uma estratégia canônica e impedir duas autoridades concorrentes para migrations.
+A migration-base do domínio Safra é:
 
-### Git
+`supabase/migrations/20260925170000_c05_schema_v2_canonical_base.sql`
 
-- branch canônica: `main`;
-- GitHub e Lovable compartilham a mesma linha de commits;
-- force push, rebase destrutivo, amend ou squash de commits já sincronizados são proibidos.
+O histórico remoto de migrations foi reconciliado. Mudança futura de schema deve nascer em migration canônica e ser validada em banco descartável antes de produção.
 
-## 4. Arquitetura funcional atual
+## 4. Domínios canônicos
 
-```text
-Browser
-  |
-  v
-TanStack / React
-  |
-  v
-src/lib/queries.ts
-  |
-  v
-Supabase client
-  |
-  v
-Lovable Cloud PRIMARY
-  |
-  +-- applications
-  +-- incidents
-```
+### 4.1 Identidade e papéis
 
-As rotas atuais representam o Reliability Monitor legado e serão preservadas apenas onde fizer sentido para o domínio de TI.
+Fonte de verdade já existente e reutilizada:
 
-## 5. Arquitetura alvo
-
-```text
-[Browser / TV]
-      |
-      v
-[TanStack / React]
-      |
-      v
-[Auth + autorização]
-      |
-      v
-[Lovable Cloud PRIMARY]
-      |
-      +-- catálogo Safra
-      |     +-- operational_areas
-      |     +-- systems
-      |     +-- scenarios
-      |     +-- scenario_versions
-      |     +-- scenario_owners
-      |     +-- scenario_slas
-      |     +-- protocol_step_definitions
-      |
-      +-- operação
-      |     +-- treatments
-      |     +-- treatment_steps
-      |     +-- treatment_events
-      |     +-- treatment_escalations
-      |
-      +-- governança
-      |     +-- scenario_proposals
-      |     +-- governance_issues
-      |     +-- rule_versions
-      |     +-- notifications_log
-      |
-      +-- RPC / funções transacionais
-            +-- start_treatment
-            +-- close_treatment
-            +-- cancel_treatment
-            +-- change_escalation
-```
-
-Operações críticas não devem depender apenas de `.insert()` ou `.update()` genérico no navegador.
-
-## 6. Trust boundaries
-
-### Navegador
-
-Pode renderizar, coletar entrada e solicitar operações. Não pode decidir autorização, elevar papel ou usar secret/service role.
-
-### Auth
-
-Responsável por identidade.
-
-Decisão aprovada:
-
-```text
-Microsoft Entra ID corporativo
-        |
-        v
-      SSO
-        |
-        v
-Lovable Cloud / Supabase Auth
-        |
-        v
-identidade autenticada
-```
-
-Não haverá login local por senha como caminho funcional do produto.
-
-Autenticação responde **quem é o usuário**. RBAC/RLS do Painel Safra responde **o que ele pode fazer**.
-
-### Modelo RBAC aprovado
+- `private.safra_principals`;
+- `private.safra_role_grants`.
 
 Papéis funcionais:
 
-- `safra_admin`;
+- `safra_platform_admin`;
+- `safra_governance_admin`;
+- `safra_executive_admin`;
 - `scenario_owner`.
 
-Não existirão papéis funcionais separados para updater, gestor, diretoria ou viewer.
+Regra estrutural:
 
-Modelo:
+~~~text
+PAPEL != OWNERSHIP
+administração != ownership automático
+scenario_owner = elegibilidade funcional
+scenario_owners = vínculo explícito pessoa <-> cenário
+~~~
 
-```text
-user
- -> safra_admin
-    ou
- -> scenario_owner + vínculos explícitos de cenário
-```
+Não criar `safra_user_roles` concorrente.
 
-`safra_admin` não recebe ownership de cenário automaticamente.
+### 4.2 Catálogo organizacional
 
-### Banco / RLS
+#### `operational_areas`
 
-Barreira obrigatória para dados expostos pela Data API.
+Representa áreas operacionais reais.
 
-Regra transitória do C00:
+Regras:
+- código e nome únicos;
+- `Geral` não é área operacional;
+- pode ser ativada/desativada;
+- cenário possui uma área responsável;
+- versões podem declarar áreas potencialmente impactáveis;
+- tratativas registram áreas efetivamente impactadas.
 
-```text
-authenticated
-+ auth.uid presente
-+ is_anonymous != true
-+ app_metadata.safra_access = true
-```
+#### `systems`
 
-O SAFRA-C04 substituirá isso pelo RBAC definitivo.
+Catálogo de sistemas/plataformas relevantes para os cenários.
 
-### Integrações externas
+Relação com cenário é versionada por `scenario_version_systems`, permitindo que uma nova versão altere os sistemas relacionados sem reescrever histórico.
 
-No MVP nenhuma fonte cria tratativa automaticamente.
+### 4.3 Cenários e versionamento
 
-```text
-external source
- -> adapter
- -> normalized signal
- -> rule evaluation
- -> human confirmation
- -> treatment
-```
+#### `scenarios`
 
-## 7. Fontes de verdade técnicas
+Identidade estável da contingência.
 
-- roadmap: `docs/ROADMAP.md`;
-- execução: `docs/STATUS.md`;
-- arquitetura: `docs/ARQUITETURA.md`;
-- perfil: `docs/PROJECT_PROFILE.yaml`;
-- regras: `docs/REGRAS_NEGOCIO.md`;
-- decisões: `docs/DECISOES.md`;
-- paridade: `docs/MATRIZ_PARIDADE.md`;
-- privacidade: `docs/PRIVACIDADE_THREAT_MODEL.md`.
+Contém:
+- código;
+- nome;
+- lifecycle;
+- área responsável;
+- referência para a versão publicada corrente.
 
-## 8. Segurança atual
+#### `scenario_versions`
 
-Fechado no C00:
+Fotografia versionada do conteúdo operacional.
 
-- `.env` fora do Git;
-- `anon` sem grants;
-- policies permissivas removidas;
-- RLS real ativa;
-- acesso sem autorização testado e negado;
-- histórico Git preservado.
+Contém:
+- gatilho;
+- detecção;
+- protocolo;
+- impacto esperado;
+- criticidade;
+- referência de fonte;
+- estado DRAFT/PUBLISHED/RETIRED.
 
-Ainda aberto:
+Regras:
+- uma versão publicada não é reescrita;
+- uma versão retired é imutável;
+- apenas uma versão PUBLISHED pode estar corrente por cenário;
+- criticidade pode permanecer nula enquanto houver governance issue aberta;
+- valores não nulos: `CRITICAL | HIGH | MODERATE`.
 
-- login corporativo;
-- identidade definitiva;
-- papéis Safra;
-- ownership por cenário;
-- autorização START/END;
-- governança definitiva de migrations.
+#### Relações versionadas
 
-## 9. REPLICA
+- `scenario_version_impacted_areas`;
+- `scenario_version_systems`;
+- `scenario_slas`.
 
-`replica_enabled = false`.
+Essas relações pertencem à **versão**, não ao cenário estável, para preservar a fotografia histórica.
+
+### 4.4 Owners
+
+`scenario_owners` representa o vínculo explícito entre cenário e principal responsável.
+
+Regras:
+- no máximo um owner ativo por cenário;
+- owner ativo precisa ser principal elegível com role `scenario_owner`;
+- troca de owner preserva histórico por `valid_from/valid_to`;
+- platform/governance/executive admin não herdam ownership.
+
+O START grava snapshot de owner e área responsável na tratativa para impedir reescrita histórica quando o cenário mudar depois.
+
+### 4.5 SLAs
+
+`scenario_slas` pertence a `scenario_version`.
+
+Cada SLA define:
+- código;
+- rótulo;
+- `start_event`;
+- `end_event`;
+- alvo estruturado quando aplicável;
+- texto-alvo;
+- regra de aplicabilidade.
+
+Princípios:
+- um cenário pode ter múltiplos SLAs;
+- duração é derivada de eventos/timestamps;
+- SLA operacional não é SLO/RTO/RPO da aplicação;
+- thresholds não aprovados permanecem ausentes, nunca inventados.
+
+### 4.6 Treatments
+
+`treatments` representa uma ocorrência real criada por START.
+
+Estados canônicos:
+
+~~~text
+ACTIVE
+RESOLVED
+CANCELLED
+~~~
+
+O treatment congela no START:
+- `scenario_id`;
+- `scenario_version_id`;
+- `owner_id_at_start`;
+- `responsible_area_id_at_start`;
+- ator;
+- timestamp;
+- `correlation_id`;
+- `idempotency_key`.
+
+Relações:
+- `treatment_impacted_areas` — áreas efetivamente impactadas;
+- `treatment_impact_measurements` — impacto quantitativo com métrica, valor, unidade, fonte e data.
+
+Regras:
+- tratamento encerrado não reabre;
+- CANCEL usa campos próprios e justificativa;
+- END e CANCEL não são delete;
+- múltiplos ACTIVE do mesmo cenário continuam sem bloqueio estrutural até decisão M01.
+
+### 4.7 Eventos
+
+`treatment_events` é a trilha append-only da ocorrência.
+
+Eventos canônicos iniciais:
+
+- `TREATMENT_OPENED`;
+- `NOTE_ADDED`;
+- `IMPACT_AREA_ADDED`;
+- `IMPACT_AREA_REMOVED`;
+- `ESCALATION_CHANGED`;
+- `SLA_BREACHED`;
+- `TREATMENT_RESOLVED`;
+- `TREATMENT_CANCELLED`;
+- `ADMIN_CORRECTION_RECORDED`.
+
+Cada evento registra:
+- treatment;
+- tipo;
+- ator;
+- timestamp server-side;
+- correlation id;
+- idempotency key quando aplicável;
+- payload contextual.
+
+Eventos não são editados para corrigir histórico. Correções administrativas geram novo evento.
+
+### 4.8 Escalonamentos
+
+`treatment_escalations` representa elevação formal da governança da ocorrência.
+
+Níveis:
+
+~~~text
+NONE
+TECHNICAL_CRISIS
+BUSINESS_CRISIS
+EXECUTIVE
+~~~
+
+Regras:
+- escalonamento não altera o status do treatment;
+- criticidade de cenário não é escalonamento;
+- no máximo um escalonamento vigente por treatment;
+- histórico é preservado por validade temporal.
+
+### 4.9 Notificações
+
+`notifications_log` registra intenção/entrega de comunicação operacional.
+
+Pode se relacionar a:
+- treatment;
+- proposal.
+
+Campos estruturais incluem:
+- tipo;
+- destinatário;
+- canal;
+- provider;
+- estado de entrega;
+- idempotency key;
+- correlation id;
+- timestamps de fila/envio/falha;
+- motivo de falha.
+
+Provider e canal produtivos permanecem decisão de M05.
+
+A mesma idempotency key não pode gerar duas entregas lógicas.
+
+### 4.10 Propostas
+
+O 12º card persiste em `scenario_proposals`.
+
+A proposta:
+- nasce de usuário Microsoft autenticado;
+- preserva snapshot de nome/e-mail;
+- registra título, problema e impacto na Safra;
+- **não é cenário produtivo**;
+- **não aceita START**.
+
+`scenario_proposal_owner_responses` registra aceite/recusa dos candidatos a owner.
+
+A publicação de um novo cenário ocorre somente após o fluxo de governança previsto para M10.
+
+### 4.11 Governance issues
+
+`governance_issues` registra decisões materiais ainda abertas.
+
+Exemplo vigente:
+- `GI-SAFRA-001` — identificação formal dos quatro cenários CRITICAL.
+
+Regra:
+- questão aberta não pode ser convertida em default de implementação;
+- resolução exige ator, timestamp e texto de resolução;
+- somente após resolução a decisão pode alimentar nova versão/seed/regra.
+
+## 5. Relações centrais
+
+~~~text
+private.safra_principals
+        |
+        +--> private.safra_role_grants
+        |
+        +--> scenario_owners
+                  |
+                  v
+operational_areas --> scenarios --> scenario_versions
+                          |              |
+                          |              +--> scenario_version_impacted_areas
+                          |              +--> scenario_version_systems --> systems
+                          |              +--> scenario_slas
+                          |
+                          +--> treatments
+                                  |
+                                  +--> treatment_impacted_areas
+                                  +--> treatment_impact_measurements
+                                  +--> treatment_events
+                                  +--> treatment_escalations
+                                  +--> notifications_log
+
+scenario_proposals
+        |
+        +--> scenario_proposal_owner_responses
+        +--> notifications_log
+
+governance_issues
+        |
+        +--> decisões pendentes que NÃO viram default
+~~~
+
+## 6. Invariantes de arquitetura
+
+1. `scenario` é identidade; `scenario_version` é conteúdo; `treatment` é ocorrência.
+2. START sempre congela a versão usada.
+3. Ownership é vínculo explícito, nunca herança de papel administrativo.
+4. Histórico operacional usa `ON DELETE RESTRICT`; não usar cascade destrutivo.
+5. Versão PUBLISHED não é reescrita.
+6. Eventos e medições históricas são append-only.
+7. Timestamps oficiais de ações críticas vêm do backend/banco.
+8. Idempotência e correlation id são obrigatórios nas mutações críticas.
+9. Proposta não é cenário publicado.
+10. Governance issue aberta não pode virar regra/default por inferência.
+11. `Geral` é visão, não área.
+12. REPLICA permanece desabilitada; backup/restore continua obrigatório.
+
+## 7. Segurança e exposição
+
+As 17 tabelas novas do domínio C05 foram criadas com:
+- RLS habilitada;
+- deny-by-default para `anon` e `authenticated`;
+- acesso técnico de `service_role` sem `TRUNCATE`.
+
+Isso é deliberado: a criação do schema não antecipa as policies de operação que serão abertas somente junto às RPCs/regras autorizadas.
+
+Para tabelas expostas pela Data API, grants e RLS são controles distintos e ambos precisam estar corretos.
+
+## 8. Operações críticas
+
+Próximo subpasso do C05:
+
+- `start_treatment`;
+- `resolve_treatment`;
+- `cancel_treatment`;
+- `change_escalation`;
+- mutações auxiliares auditáveis quando necessárias.
+
+Essas operações devem ser transacionais e concentrar:
+- autenticação/autorização;
+- validação de estado;
+- timestamp server-side;
+- idempotência;
+- correlation id;
+- mutação;
+- evento de auditoria;
+- preparação de notificação.
+
+Operações críticas não devem depender de `.insert()`/`.update()` genérico no navegador.
+
+## 9. Legado TI
+
+`applications` e `incidents` continuam preservados como domínio legado de confiabilidade de TI.
+
+Eles não são substitutos de `scenarios`/`treatments`.
+
+Ponte futura entre incidentes TI e tratativas Safra só deve ser criada quando houver regra explícita de integração.
+
+## 10. REPLICA, backup e recovery
+
+~~~text
+replica_enabled = false
+~~~
 
 Não haverá segundo banco sincronizado.
 
-### Backup e recuperação
+A aplicação permanece com:
+- service_class = CRITICO;
+- RTO = 30 minutos;
+- RPO = 5 minutos.
 
-REPLICA não é sinônimo de backup.
+Backup, restore e recovery testado serão fechados no SAFRA-C09.
 
-A ausência de REPLICA não remove os requisitos de backup, restore e recovery testado. Como a aplicação foi classificada com `service_class=CRITICO`, a estratégia de recuperação deverá atender:
+## 11. Fontes de verdade
 
-- RTO 30 min;
-- RPO 5 min.
-
-A estratégia e as evidências serão fechadas no SAFRA-C09.
-
-## 10. Observabilidade e auditoria
-
-O produto deve preservar eventos de START, passos, alterações relevantes, escalonamento, notificações, END e CANCEL. A trilha não pode depender apenas do frontend.
-
-## 11. Pendências arquiteturais deferidas
-
-Não há UNKNOWN material de arquitetura no escopo C01.
-
-Itens com destino explícito:
-- RBAC fino e ciclo de identidade -> SAFRA-C04;
-- estratégia canônica de migrations -> SAFRA-C05;
-- domínio/criticidade dos cenários -> SAFRA-C03/C06;
-- notificações -> SAFRA-M05;
-- recovery testado -> SAFRA-C09;
-- demais regras operacionais -> fases de domínio/MEIO/FIM correspondentes.
-
-## 12.1 Separação obrigatória de criticidades
-
-```text
-domínio Safra
- -> scenario.criticality = CRITICAL | HIGH | MODERATE
-
-governança técnica
- -> application.service_class = CRITICO
- -> application.criticality = MEDIUM
-```
-
-Os SLAs dos protocolos medem resposta operacional do cenário. Eles não definem SLO, RTO ou RPO do software.
+- arquitetura: `docs/ARQUITETURA.md`;
+- vocabulário: `docs/GLOSSARIO_DOMINIO.md`;
+- regras: `docs/REGRAS_NEGOCIO.md`;
+- decisões: `docs/DECISOES.md`;
+- execução: `docs/STATUS.md`;
+- sequência: `docs/ROADMAP.md`;
+- schema: `supabase/migrations`;
+- perfil: `docs/PROJECT_PROFILE.yaml`.
 
 ## 12. Regra de mudança
 
-Mudança material de arquitetura deve atualizar ARQUITETURA, PROJECT_PROFILE, DECISOES e STATUS e reabrir gates afetados quando necessário.
-
-
-## Autenticação corporativa homologada — 25/09/2026
-
-Fluxo runtime:
-
-```text
-Microsoft Entra ID
-  -> Lovable Cloud Auth (provider `microsoft`)
-  -> retorno OAuth
-  -> `supabase.auth.setSession(...)`
-  -> identidade Supabase provider `azure`
-  -> JWT
-  -> `auth.uid()`
-```
-
-A autenticação foi validada com usuário corporativo real. O frontend não oferece login local por senha.
+Mudança material de domínio/arquitetura deve:
+1. registrar decisão quando alterar contrato aprovado;
+2. atualizar documentação canônica;
+3. criar migration quando alterar persistência;
+4. atualizar testes derivados;
+5. validar em banco descartável;
+6. preservar histórico já publicado.
