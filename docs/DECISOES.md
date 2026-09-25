@@ -38,6 +38,7 @@
 | D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED |
 | D-24 | Application criticality = MEDIUM | APPROVED |
 | D-25 | replica_enabled = false; backup/restore continua obrigatório | APPROVED |
+| D-26 | Política de retenção vinculada ao fim formal da Safra, com anonimização/eliminação posterior quando identidade não for necessária | APPROVED |
 
 ## 3. ADRs
 
@@ -107,7 +108,6 @@ Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade úni
 - matriz exata de permissões por papel;
 - canal de notificação;
 - aprovadores de novos cenários;
-- retenção;
 - janela semanal;
 - impacto quantitativo.
 
@@ -257,3 +257,14 @@ Ela é independente de:
 - `scenario.criticality = CRITICAL/HIGH/MODERATE`.
 
 A combinação `service_class=CRITICO` + `application_criticality=MEDIUM` é uma decisão explícita do projeto.
+
+
+### ADR-016 — Política de retenção
+**APPROVED — 24/09/2026**.
+
+Regra:
+
+- dados pessoais identificáveis permanecem até o encerramento formal da Safra e enquanto necessários para auditoria e pós-mortem;
+- após essa finalidade, devem ser eliminados ou anonimizados;
+- histórico operacional e métricas podem ser preservados para comparação entre Safras quando não dependerem de identificação pessoal;
+- retenção indefinida de identidade não é o padrão do projeto.
