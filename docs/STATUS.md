@@ -1995,3 +1995,45 @@ Resultado:
 ```text
 C05_TECHNICAL_VALIDATION = PASS
 ```
+
+
+## SAFRA-C05 — FECHAMENTO FORMAL — 25/09/2026
+
+Auditoria final concluída.
+
+Resultado live no PRIMARY:
+- 17/17 tabelas do domínio presentes;
+- 17/17 com RLS;
+- zero FK com `ON DELETE CASCADE` no domínio Safra;
+- sem grants diretos para `anon`/`authenticated`;
+- version freeze, append-only e guardas de treatment presentes;
+- criticidade sem default;
+- `GI-SAFRA-001 = OPEN`;
+- nenhuma unicidade de ACTIVE por cenário criada;
+- GitHub e PRIMARY agora registram as mesmas 10 migrations canônicas.
+
+Repair final de tracking:
+- `20260925173000_c05_invariants_temporal_hardening`;
+- `20260925210500_c05_terminal_state_guards`.
+
+As duas já estavam aplicadas fisicamente. Somente o histórico de migrations foi reconciliado; nenhuma DDL foi reaplicada.
+
+Evidência CI:
+- Database Disposable Test Run 27;
+- run_id `36189333481`;
+- conclusão SUCCESS.
+
+Estado final:
+
+```text
+SAFRA-C05 = CONCLUIDO
+C05_SCHEMA = PASS
+C05_INVARIANTS = PASS
+C05_MIGRATIONS = PASS
+C05_ROLLBACK = PASS
+C05_API_RLS = PASS
+MIGRATION_DRIFT = 0
+NEXT_PHASE = SAFRA-C06
+```
+
+Próxima fase canônica: **SAFRA-C06 — Seed canônico da Matriz v3**.
