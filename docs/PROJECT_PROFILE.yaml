@@ -65,6 +65,12 @@ identity_and_auth:
   safra_access_legacy_flag: "REMOVED"
   role_source_of_truth: "private.safra_principals + private.safra_role_grants"
   role_mapping_rls_integration: "IMPLEMENTED"
+  c04_closeout_execution_environment: "LOVABLE_CLOUD"
+  c04_temp_grant_cleanup_required: true
+  c04_external_identity_evidence:
+    recovery: "PENDING_MICROSOFT_ENTRA_TI"
+    privileged_mfa: "PENDING_MICROSOFT_ENTRA_TI"
+  service_accounts_mvp: "NOT_APPLICABLE_UNLESS_REOPENED"
   microsoft_sso_runtime_evidence:
     provider: "azure"
     authenticated_users_verified: 1
