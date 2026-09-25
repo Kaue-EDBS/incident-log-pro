@@ -509,3 +509,30 @@ Fora do escopo:
 - START/END/CANCEL continuam C08.1/F02.1.
 
 GitHub e `supabase/migrations` permanecem os registros duráveis das mudanças.
+
+### ADR-029 — Autorização exclusivamente governada pelo banco e vinculada à sessão viva
+**APPROVED — 25/09/2026**.
+
+Decisão:
+- `public.safra_is_corporate_user()` passa a exigir, além da identidade corporativa Entra e do JWT não expirado, que o claim `session_id` exista em `auth.sessions` para o mesmo usuário;
+- a claim `app_metadata.safra_access` foi descontinuada como mecanismo de acesso, e o server function que a concedia foi removido do frontend;
+- o logout passa a ser global, encerrando a sessão no servidor.
+
+Motivo: revogação e desligamento precisam valer imediatamente, sem depender do conteúdo local do token.
+
+### ADR-030 — Trilha de auditoria RBAC append-only (AUDIT-001)
+**APPROVED — 25/09/2026**.
+
+Decisão: toda concessão, troca, revogação e remoção de grant governado gera evento em
+`private.safra_rbac_audit_events` por trigger server-side, com ator, ação, recurso,
+horário do servidor, resultado e `correlation_id`. O histórico é append-only por trigger
+(UPDATE/DELETE bloqueados inclusive para sessões privilegiadas). Tentativas negadas são
+registradas por `public.safra_log_access_denied`, com autoria e horário resolvidos no servidor.
+Secrets e tokens nunca são registrados.
+
+### ADR-031 — Contas de serviço fora de escopo no MVP
+**APPROVED — 25/09/2026**.
+
+`SERVICE_ACCOUNT_SCOPE = NOT_APPLICABLE_MVP`. Não existe identidade funcional de serviço
+no Painel Safra. O `service_role` é credencial técnica de backend e não é usuário funcional.
+A criação de qualquer conta de integração reabre ID-001.

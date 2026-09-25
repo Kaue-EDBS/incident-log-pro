@@ -109,8 +109,26 @@ export type Database = {
     }
     Functions: {
       get_my_safra_roles: { Args: never; Returns: string[] }
+      get_safra_rbac_audit_events: {
+        Args: { p_limit?: number }
+        Returns: {
+          action: string
+          actor_email: string
+          correlation_id: string
+          occurred_at: string
+          resource: string
+          result: string
+          target_principal_email: string
+          target_role: string
+        }[]
+      }
       safra_has_role: { Args: { requested_role: string }; Returns: boolean }
       safra_is_corporate_user: { Args: never; Returns: boolean }
+      safra_log_access_denied: {
+        Args: { p_reason?: string; p_resource: string }
+        Returns: string
+      }
+      safra_session_is_live: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

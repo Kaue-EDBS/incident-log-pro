@@ -2635,3 +2635,17 @@ DOMÍNIO CORRETO
 ```
 
 O próximo risco a evitar é antecipar implementação antes de concluir o C02/C03. A sequência permanece deliberada: primeiro ameaça e domínio; depois identidade/RLS; depois schema; depois dados; depois UX/operação.
+---
+
+## SAFRA-C04 — concluído internamente (25/09/2026)
+
+Entregue: limpeza do grant temporário, troca e revogação de papel validadas em tempo real,
+vínculo com sessão viva (`session_id` x `auth.sessions`), trilha de auditoria RBAC append-only,
+contas de serviço classificadas como N/A no MVP.
+
+Pendências externas (TI / Microsoft Entra): `ENTRA_RECOVERY` e `PRIVILEGED_MFA`.
+
+Não iniciado neste ciclo, conforme restrição: scenarios, scenario_versions, scenario_owners,
+treatments, START (C08.1), END/CANCEL (F02.1) e seed dos 11 cenários (C06.1).
+
+Próximo passo: revisão humana do relatório C04 antes de avançar para SAFRA-C05.

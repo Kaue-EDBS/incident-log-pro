@@ -263,3 +263,21 @@ c02_gate:
   authz_001: "PASS"
   residual_risks_classified: true
   material_blockers_without_owner: 0
+
+c04_gate:
+  status: "APPROVED_INTERNAL"
+  closed_at: "2026-09-25"
+  temp_grant_cleanup: "PASS"
+  role_change: "PASS"
+  role_revocation: "PASS"
+  revoked_session: "PASS"
+  rbac_audit_trail: "PASS"
+  service_account_scope: "NOT_APPLICABLE_MVP"
+  entra_recovery: "EXTERNAL_EVIDENCE_PENDING"
+  privileged_mfa: "EXTERNAL_EVIDENCE_PENDING"
+  g5: "PASS"
+  id_001: "CLOSED"
+  id_002: "CLOSED_INTERNAL"
+  audit_001: "CLOSED"
+  authorization_source: "private.safra_principals + private.safra_role_grants"
+  user_metadata_as_authorization: false
