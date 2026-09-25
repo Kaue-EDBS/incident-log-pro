@@ -50,6 +50,7 @@
 | D-35 | RLS e autorização server-side usam o mesmo predicado corporativo; safra_access removido | APPROVED / IMPLEMENTED |
 | D-36 | supabase/migrations é a autoridade canônica; migration C04 capturada e versionada | APPROVED |
 | D-37 | Gates C04 não fecham sem evidência explícita do Manual EBSA; G5 parcial e ID-001/ID-002/AUDIT-001 bloqueados por evidência | APPROVED |
+| D-38 | Fechamento dos gaps restantes de C04 será executado no ambiente Lovable; recuperação e MFA permanecem dependências do Entra/TI | APPROVED |
 
 ## 3. ADRs
 
@@ -486,3 +487,25 @@ Ela captura o estado C04 já validado no PRIMARY:
 - remoção de `safra_access`.
 
 O artefato está fechado em Git. A sincronização do histórico interno do Supabase permanece pendente de migration repair suportado e não deve ser simulada por INSERT manual na tabela interna.
+
+
+### ADR-028 — Fechamento do C04 via ambiente Lovable
+**APPROVED — 25/09/2026**.
+
+Motivo:
+- os conectores externos permitiram parte das operações de banco, mas bloquearam mutações necessárias para troca/revogação controlada de roles;
+- o Lovable Cloud é o backend PRIMARY do projeto e é o ambiente adequado para concluir esses testes com contexto integral do produto.
+
+Escopo:
+- limpar `C04_ID001_TEMP_TEST`;
+- validar troca e revogação de roles;
+- validar sessão ativa por `session_id`;
+- implementar auditoria RBAC compatível com AUDIT-001;
+- classificar contas de serviço como N/A no MVP quando aplicável.
+
+Fora do escopo:
+- recuperação de acesso e MFA são evidências do Microsoft Entra/TI;
+- domínio scenarios/treatments continua nas fases já previstas;
+- START/END/CANCEL continuam C08.1/F02.1.
+
+GitHub e `supabase/migrations` permanecem os registros duráveis das mudanças.
