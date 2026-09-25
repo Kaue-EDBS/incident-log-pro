@@ -1,8 +1,8 @@
 # GLOSSÁRIO DE DOMÍNIO — Painel Safra
 
-**Versão:** 1.0  
+**Versão:** 1.1  
 **Data:** 25/09/2026  
-**Status:** CANÔNICO — SAFRA-C03  
+**Status:** CANÔNICO — SAFRA-C03 / READY_FOR_C05  
 **Autoridade:** este documento congela o vocabulário funcional do Painel Safra. Alteração material exige decisão registrada.
 
 ## 1. Objetivo
@@ -605,3 +605,348 @@ Uma tratativa pode possuir zero, uma ou várias medições quantitativas.
 | impacto × criticidade | consequência da ocorrência × classificação governada do cenário |
 | impacto × SLA | magnitude do efeito × compromisso temporal |
 | impacto quantitativo desconhecido × zero | ausência de medida × valor medido igual a zero |
+
+
+---
+
+## 8. Contrato de handoff para SAFRA-C05
+
+Esta seção transforma o glossário em contrato de implementação. O C05 pode decidir detalhes físicos de PostgreSQL, índices, tipos e estratégia de migration, mas não pode alterar estas fronteiras sem nova decisão de domínio.
+
+### 8.1 Fonte de verdade por conceito
+
+| Conceito | Fonte de verdade | Mutabilidade |
+|---|---|---|
+| identidade do cenário | `scenarios` | estável |
+| conteúdo operacional vigente | `scenario_versions` | nova versão; versão publicada é imutável |
+| owner atual do cenário | `scenario_owners` | temporal, com validade |
+| área responsável atual | `scenarios.responsible_area_id` | governada; histórico operacional deve ser preservado na tratativa |
+| áreas potencialmente impactáveis | relação da `scenario_version` | versionada |
+| sistemas/ferramentas associados | relação da `scenario_version` | versionada |
+| SLAs | `scenario_slas` vinculados à `scenario_version` | versionados |
+| ocorrência real | `treatments` | estado controlado |
+| áreas realmente impactadas | `treatment_impacted_areas` | pertencem à tratativa |
+| impacto qualitativo observado | `treatments.impact_summary` | auditável |
+| impacto quantitativo observado | `treatment_impact_measurements` | append/auditável |
+| eventos operacionais | `treatment_events` | append-only |
+| escalonamento | `treatment_escalations` | entidade separada do status |
+| proposta de novo cenário | `scenario_proposals` | nunca equivale a cenário publicado |
+| decisão aberta de governança | `governance_issues` | permanece explícita até resolução |
+
+### 8.2 Cardinalidades canônicas
+
+```text
+scenario 1 ---- N scenario_versions
+scenario 1 ---- N scenario_owners (histórico temporal)
+scenario_version 1 ---- N scenario_slas
+scenario_version 1 ---- N potential_impacted_areas
+scenario_version 1 ---- N associated_systems
+scenario 1 ---- N treatments
+scenario_version 1 ---- N treatments
+treatment 1 ---- N treatment_events
+treatment 1 ---- N treatment_impacted_areas
+treatment 1 ---- N treatment_escalations
+treatment 1 ---- N treatment_impact_measurements
+scenario_proposal 1 ---- N owner_responses
+```
+
+Para um cenário publicado, deve existir **exatamente um owner ativo** no instante operacional. Histórico de owners é preservado por validade temporal.
+
+### 8.3 Estados canônicos
+
+#### Cenário — catálogo
+
+[DERIVADO — contrato técnico para C05]
+
+```text
+ACTIVE
+INACTIVE
+```
+
+`ACTIVE` significa que o cenário pertence ao catálogo operacional. Isso não basta para START: precisa também existir uma versão corrente `PUBLISHED`.
+
+#### Versão de cenário
+
+[DERIVADO — contrato técnico para C05]
+
+```text
+DRAFT
+PUBLISHED
+RETIRED
+```
+
+Regras:
+- apenas `PUBLISHED` pode ser usada em START;
+- no máximo uma versão `PUBLISHED` corrente por cenário;
+- `PUBLISHED` nunca é editada in-place;
+- nova publicação aposenta/substitui a versão corrente sem reescrever histórico;
+- o termo antigo `VALIDATED` não é estado canônico do banco; validação é parte do processo de governança anterior à publicação.
+
+#### Tratativa
+
+```text
+ACTIVE
+RESOLVED
+CANCELLED
+```
+
+Transições permitidas:
+
+```text
+START  -> ACTIVE
+ACTIVE -> RESOLVED   via END
+ACTIVE -> CANCELLED  via CANCEL + motivo
+```
+
+Não existe transição silenciosa de `RESOLVED` ou `CANCELLED` para `ACTIVE`.
+
+### 8.4 Elegibilidade para START
+
+START é permitido somente quando todas as condições estruturais forem verdadeiras:
+
+```text
+scenario.lifecycle_status = ACTIVE
+AND scenario.current_version_id aponta para version.status = PUBLISHED
+AND sessão/autorização válida
+```
+
+O client não escolhe uma versão histórica. O backend resolve a versão corrente e persiste `scenario_version_id`.
+
+### 8.5 Snapshot obrigatório no START
+
+A tratativa deve preservar contexto suficiente para não depender de relações futuras mutáveis.
+
+[DERIVADO — requisito de auditabilidade para C05]
+
+Persistir no START:
+
+- `scenario_id`;
+- `scenario_version_id`;
+- `opened_by`;
+- `opened_at` server-side;
+- `owner_id_at_start`;
+- `responsible_area_id_at_start`.
+
+A criticidade, gatilho, protocolo e SLAs históricos são obtidos da `scenario_version_id` congelada e não precisam ser duplicados na tratativa.
+
+Se owner ou área responsável mudar depois, a tratativa antiga continua mostrando quem respondia no momento do START. O vínculo atual do cenário continua separado para operação futura.
+
+### 8.6 Owner
+
+`scenario_owner` é responsabilidade de negócio, não role administrativa genérica.
+
+Contrato:
+
+- vínculo explícito `scenario_id + user_id`;
+- validade temporal `valid_from/valid_to`;
+- no máximo um vínculo ativo por cenário;
+- cenário não pode ser publicado para uso operacional sem owner ativo;
+- platform/governance/executive admin não viram owner por herança;
+- `owner_id_at_start` da tratativa é snapshot histórico.
+
+### 8.7 Área responsável e áreas impactadas
+
+#### Área responsável
+- exatamente uma área responsável corrente por cenário publicado;
+- representa quem responde primariamente pelo cenário;
+- snapshot `responsible_area_id_at_start` preserva o contexto da tratativa.
+
+#### Área potencialmente impactável
+- pertence à **versão do cenário**, não à tratativa;
+- relação N:N;
+- informa quem pode ser afetado segundo aquela versão.
+
+#### Área efetivamente impactada
+- pertence à tratativa;
+- relação N:N;
+- pode ser subconjunto, conjunto igual ou diferente do potencial previsto;
+- não deve reescrever a versão do cenário.
+
+Para C05, usar relação versionada, preferencialmente nomeada `scenario_version_impacted_areas`, evitando o nome ambíguo `scenario_impacted_areas`.
+
+### 8.8 Sistemas/ferramentas associados
+
+Ferramentas de detecção, origem, apoio ou monitoramento podem mudar entre versões.
+
+Para C05, a relação deve ser versionada, preferencialmente `scenario_version_systems`.
+
+Uma tratativa histórica não deve passar a mostrar uma ferramenta nova apenas porque a versão atual do cenário mudou.
+
+### 8.9 Criticidade
+
+Valores válidos quando definidos:
+
+```text
+CRITICAL
+HIGH
+MODERATE
+```
+
+Por causa de `GI-SAFRA-001`:
+
+- `scenario_versions.criticality` **não pode receber default**;
+- deve aceitar ausência explícita enquanto a classificação nominal não estiver resolvida;
+- quando não nula, deve aceitar somente os três valores canônicos;
+- ausência não equivale a `MODERATE`;
+- C06 não pode preencher criticidade por inferência.
+
+### 8.10 SLA
+
+SLA pertence à versão do cenário.
+
+Cada registro precisa referenciar:
+- `scenario_version_id`;
+- `start_event`;
+- `end_event`;
+- alvo;
+- unidade;
+- aplicabilidade.
+
+Regras:
+- timestamps oficiais são a fonte primária;
+- duração é calculada;
+- CANCEL não equivale a SLA cumprido;
+- ausência do evento necessário significa SLA **não mensurável**, não `OK`;
+- múltiplos SLAs podem coexistir.
+
+### 8.11 END e CANCEL — semântica de persistência
+
+#### RESOLVED
+Quando `status = RESOLVED`:
+- `closed_by` obrigatório;
+- `closed_at` obrigatório e server-side;
+- campos de cancelamento devem permanecer nulos.
+
+#### CANCELLED
+Quando `status = CANCELLED`:
+- `cancelled_by` obrigatório;
+- `cancelled_at` obrigatório e server-side;
+- `cancellation_reason` obrigatório;
+- `closed_by/closed_at` não representam resolução e devem permanecer nulos.
+
+CANCEL preserva START e todo o histórico anterior.
+
+### 8.12 Eventos e audit trail
+
+`treatment_events` é append-only.
+
+Eventos mínimos canônicos:
+
+```text
+TREATMENT_OPENED
+NOTE_ADDED
+IMPACT_AREA_ADDED
+IMPACT_AREA_REMOVED
+ESCALATION_CHANGED
+SLA_BREACHED
+TREATMENT_RESOLVED
+TREATMENT_CANCELLED
+ADMIN_CORRECTION_RECORDED
+```
+
+Regras:
+- evento possui ator quando houver ação humana;
+- `occurred_at` oficial é server-side;
+- `correlation_id` deve ser persistido para mutations críticas;
+- correção administrativa cria novo evento; não altera evento passado.
+
+### 8.13 Impacto quantitativo — contrato físico mínimo
+
+C05 deve criar estrutura capaz de receber medições futuras sem inventar métricas de negócio.
+
+```text
+treatment_impact_measurements
+  id
+  treatment_id
+  metric_code
+  metric_label
+  value_numeric
+  unit
+  source_type
+  source_reference
+  measured_at
+  recorded_by
+  created_at
+```
+
+Invariantes:
+- se não existe medição, não criar linha fictícia com zero;
+- uma linha de medição exige valor, unidade e referência de fonte suficientes para auditoria;
+- métricas/thresholds específicos continuam deferidos para C06/F04;
+- tabela não gera score automático.
+
+### 8.14 Recorrência
+
+Recorrência é **métrica derivada**, não entidade transacional obrigatória.
+
+C05 não deve criar status ou tabela de “recorrência” como fonte primária. Ela será calculada a partir de tratativas por cenário e janela temporal definida posteriormente.
+
+### 8.15 Pós-mortem
+
+Pós-mortem está no domínio, mas seu workflow pertence ao F03.
+
+C05 não deve presumir:
+- que toda tratativa exige pós-mortem;
+- enum/status final do pós-mortem;
+- tabela obrigatória nesta migration inicial.
+
+Quando formalizado, deve referenciar a tratativa original e não alterar seu END.
+
+### 8.16 Múltiplas tratativas simultâneas
+
+A regra ainda está deferida para M01.
+
+Portanto, **C05 não deve criar constraint de unicidade que impeça duas tratativas ACTIVE do mesmo cenário** até existir decisão formal.
+
+### 8.17 Proposta de cenário
+
+`scenario_proposals` é entidade separada.
+
+C05 deve garantir estruturalmente:
+- proposta não possui `scenario_id` produtivo por default;
+- proposta não recebe START;
+- conversão/publicação depende do fluxo M10;
+- enum completo do lifecycle da proposta pode permanecer deferido a M10, sem inventar estados finais agora.
+
+### 8.18 Governance issue
+
+`governance_issues` registra pendência material sem preencher default.
+
+Para `GI-SAFRA-001`:
+- issue permanece OPEN;
+- seed C06 não define os quatro CRITICAL;
+- resolução futura gera decisão registrada e versão de cenário apropriada.
+
+### 8.19 Itens explicitamente fora do C05
+
+C05 não deve decidir por conta própria:
+- os quatro cenários CRITICAL;
+- thresholds dos cenários 2, 4, 10 e 11;
+- mínimo oficial da curva A;
+- regra de múltiplas tratativas simultâneas;
+- métricas/thresholds quantitativos específicos;
+- fluxo final de publicação do 12º card;
+- provider/canal de e-mail;
+- janela semanal de governança.
+
+### 8.20 Checklist de aceite para entrada no C05
+
+Antes de escrever migration, o implementador deve conseguir responder sem interpretação:
+
+- qual entidade representa identidade do cenário? → `scenarios`;
+- qual entidade guarda conteúdo mutável? → `scenario_versions`;
+- qual entidade representa ocorrência real? → `treatments`;
+- qual versão vale na tratativa? → `scenario_version_id` congelada no START;
+- owner histórico vem de onde? → `owner_id_at_start`;
+- área responsável histórica vem de onde? → `responsible_area_id_at_start`;
+- áreas potenciais vêm de onde? → versão do cenário;
+- áreas reais vêm de onde? → tratativa;
+- criticidade desconhecida vira MODERATE? → não;
+- CANCEL usa `closed_at`? → não;
+- impacto quantitativo desconhecido vira zero? → não;
+- recorrência é tabela transacional? → não;
+- múltiplos ACTIVE do mesmo cenário são proibidos no C05? → não, decisão M01;
+- proposta é cenário? → não;
+- versão publicada pode ser UPDATE in-place? → não.
+
+Se qualquer resposta acima for implementada de forma diferente, a mudança precisa voltar ao domínio antes de ser codificada.
