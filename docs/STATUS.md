@@ -1402,3 +1402,40 @@ applications_visible = 0
 Resultado: sessão/JWT expirado não produz autorização nem leitura protegida.
 
 Próximo item C04.4: troca de papel.
+
+
+---
+
+## SAFRA-C04 — bateria ID-001/ID-002/AUDIT-001 — 25/09/2026
+
+Resultado geral: **NÃO AVANÇAR PARA C05 AINDA**.
+
+### Matriz
+
+| Item | Resultado | Evidência / gap |
+|---|---|---|
+| troca de papel | BLOCKED / CLEANUP REQUIRED | grant temporário de governance foi criado para o principal técnico de teste; leitura/revogação subsequentes foram bloqueadas pelos conectores. Assumir ativo até verificação/limpeza. |
+| revogação de papel | BLOCKED | conectores bloquearam UPDATE/DELETE no grant temporário; não marcar PASS. |
+| desligamento / sessão antiga | FAIL CONTROL GAP | getClaims valida assinatura/expiração, mas não confirma existência atual da sessão após logout/revogação; falta validação de session_id contra auth.sessions para garantia forte. |
+| recuperação de acesso | EXTERNAL / N/A LOCAL | aplicação não implementa senha nem recovery local; autenticação é delegada ao Microsoft Entra. Falta evidência do processo corporativo de recuperação. |
+| contas de serviço | N/A MVP | nenhum service account / service credential do produto encontrado no repositório; registrar explicitamente que não há conta de serviço no MVP. |
+| MFA privilegiado | BLOCKED_EXTERNAL | não há evidência no repositório sobre Conditional Access/MFA do Entra para Kaue/Amanda/Vinicius/João/Jair/Bruno. Supabase AAL não deve ser usado para inferir MFA do provedor externo. |
+| AUDIT-001 identidade/RBAC | FAIL / NOT IMPLEMENTED | não foram encontrados audit_events, correlation_id, granted_by/revoked_by ou trilha equivalente para mudanças de acesso. |
+
+### Ação corretiva prioritária
+
+1. verificar e revogar/remover o grant temporário `source = C04_ID001_TEMP_TEST`;
+2. implementar validação de sessão ativa por `session_id` para ações sensíveis/autorizações que exigem revogação imediata;
+3. implementar trilha de auditoria de RBAC com ator, ação, recurso, data, resultado e correlation_id;
+4. registrar formalmente contas de serviço como N/A no MVP, salvo decisão contrária;
+5. obter com TI/Entra evidência do fluxo de recuperação de acesso e da política MFA/Conditional Access para papéis privilegiados;
+6. somente então repetir troca/revogação e fechar ID-001/ID-002/AUDIT-001.
+
+Gates permanecem:
+
+```text
+G5 = PARTIAL
+ID-001 = BLOCKED_EVIDENCE
+ID-002 = BLOCKED_EVIDENCE
+AUDIT-001 = BLOCKED_EVIDENCE
+```
