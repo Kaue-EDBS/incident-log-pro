@@ -143,3 +143,24 @@ Mudança de identidade, integração, dados pessoais, retenção, arquivos ou ex
 - após a finalidade: eliminar ou anonimizar dados pessoais identificáveis;
 - histórico e métricas podem permanecer para análises comparativas entre Safras sem identificação pessoal quando ela não for necessária;
 - a política final de implementação deve ser validada no gate de privacidade antes do release.
+
+
+## 12. Riscos residuais do SAFRA-C02 — 25/09/2026
+
+| ID | Risco residual | Estado | Fase responsável | Bloqueia C02? |
+|---|---|---|---|---|
+| RR-C02-01 | uso indevido de START/END/CANCEL por usuário autenticado | DEFERRED_CONTROL | C04/C05/F01/F02 | não |
+| RR-C02-02 | role/claim desatualizado em sessão autenticada | DEFERRED_CONTROL | C04 | não |
+| RR-C02-03 | enumeração ou leitura excessiva de dados internos | DEFERRED_CONTROL | C04/F08 | não |
+| RR-C02-04 | dado pessoal indevido em texto livre/log/notificação | DEFERRED_CONTROL | C08/M05/F08 | não |
+| RR-C02-05 | duplicidade por retry/concorrência | DEFERRED_CONTROL | C05 | não |
+| RR-C02-06 | manipulação de estado/timestamp para afetar SLA | DEFERRED_CONTROL | C05/C07/M04/F01/F02 | não |
+| RR-C02-07 | alteração de cenário/owner/criticidade afetando histórico | DEFERRED_CONTROL | C05/C06/M10 | não |
+| RR-C02-08 | destinatário de notificação incorreto ou duplicado | DEFERRED_CONTROL | M05 | não |
+| RR-C02-09 | enquadramento/base legal formal ainda não registrado | DEFERRED_GOVERNANCE | privacy owner antes de liberar usuários reais | não para C02; sim para release se continuar aberto |
+
+### Regra de fechamento
+
+O C02 pode ser encerrado porque todos os riscos materiais identificados possuem controle definido, fase responsável, teste esperado e risco residual explícito.
+
+O fechamento de G3.5, THREAT-001 e AUTHZ-001 neste ciclo significa modelo de ameaça e contrato de autorização aprovados. Não significa implementação final de RLS, RBAC, RPCs ou constraints; isso permanece em C04/C05 e fases dependentes.
