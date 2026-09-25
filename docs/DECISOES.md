@@ -45,6 +45,7 @@
 | D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático | APPROVED |
 | D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | APPROVED |
 | D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default | APPROVED |
+| D-33 | Login funcional exclusivamente via Microsoft Entra ID / Supabase Auth; login local por senha proibido | APPROVED / CODE_IMPLEMENTED / PROVIDER_CONFIG_PENDING |
 
 ## 3. ADRs
 
@@ -358,3 +359,27 @@ Decisões derivadas para preservar histórico:
 - múltiplas tratativas ACTIVE do mesmo cenário não serão proibidas em C05 antes da decisão M01.
 
 Alteração dessas fronteiras exige retorno ao domínio antes de migration.
+
+
+### ADR-023 — Microsoft Entra ID como único login funcional
+**APPROVED / CODE_IMPLEMENTED — 25/09/2026**.
+
+Fluxo alvo:
+
+```text
+Microsoft Entra ID
+  -> OAuth/SSO
+  -> Supabase/Lovable Auth
+  -> sessão JWT
+  -> Data API / server functions
+  -> auth.uid()
+```
+
+Regras:
+- não existe login local por senha no produto;
+- frontend oferece apenas entrada Microsoft;
+- backend Auth deve ter Email/Password desabilitado antes da homologação;
+- tenant corporativo deve ser restringido na configuração do provider;
+- nenhuma credencial/secret do Entra entra no GitHub.
+
+A configuração externa do provider permanece pendente de acesso ao projeto Auth do Painel Safra.
