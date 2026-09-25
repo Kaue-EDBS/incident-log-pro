@@ -46,11 +46,15 @@ identity_and_auth:
   auth_required: true
   auth_stack_available: true
   auth_stack: "Lovable Cloud / Supabase Auth"
-  frontend_login_implemented: false
+  frontend_login_implemented: true
   corporate_identity_provider: "MICROSOFT_ENTRA_ID"
   auth_method: "CORPORATE_SSO"
   local_password_login: false
   identity_decision_status: "APPROVED"
+  microsoft_sso_code_status: "IMPLEMENTED"
+  microsoft_provider_runtime_status: "EXTERNAL_CONFIG_REQUIRED"
+  password_login_ui_present: false
+  password_login_backend_required_disabled: true
   current_auth_users: 0
   current_users_with_safra_access: 0
   anonymous_database_access: false
