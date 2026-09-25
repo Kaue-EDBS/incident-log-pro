@@ -2,7 +2,7 @@
 
 **Versão:** 2.0  
 **Data:** 23/09/2026  
-**Status:** Roadmap canônico em execução — SAFRA-C00 concluído; SAFRA-C01 em andamento  
+**Status:** Roadmap canônico em execução — SAFRA-C00 e SAFRA-C01 concluídos; SAFRA-C02 é o próximo ciclo  
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Destino do produto:** Painel Safra - Torre de Governança de Contingências  
 
@@ -303,7 +303,7 @@ Referências do Framework para service class:
 - `OPERACIONAL`: SLO 99,9%, RTO 60 min, RPO 15 min;
 - `CRITICO`: SLO 99,95%, RTO 30 min, RPO 5 min.
 
-**Estado:** `WAITING_HUMAN_DECISION`.
+**Estado:** decisão técnica do perfil concluída; service_class = CRITICO e application_criticality = MEDIUM.
 
 A decisão deverá considerar o impacto de indisponibilidade do **próprio Painel Safra**, e não o impacto do cenário monitorado.
 
@@ -347,12 +347,12 @@ auth_method: CORPORATE_SSO
 local_password_login: false
 privileged_roles: true
 personal_data: true   # identidade/nome/e-mail de usuários internos
-sensitive_data: false # confirmar
+sensitive_data: false # aprovado por escopo; coleta intencional não permitida
 children_or_adolescents_data: false
-storage_files: false  # confirmar escopo futuro
+storage_files: false  # atual; política futura deferida até Storage ser habilitado
 external_integrations: false # MVP; true quando integração real entrar
 public_api: false
-payments_or_financial_impact: false # confirmar se algum fluxo futuro alterar isso
+payments_or_financial_impact: false # escopo atual; reavaliar se fluxo futuro mudar
 automated_decisioning: false # MVP: regra sugere, humano decide
 domain_rules_required: true
 ```
@@ -1031,7 +1031,7 @@ Evidências canônicas: `docs/STATUS.md`, seção **Fechamento formal dos gates 
 
 ---
 
-## SAFRA-C01 - Documentação canônica e PROJECT_PROFILE — EM ANDAMENTO
+## SAFRA-C01 - Documentação canônica e PROJECT_PROFILE — CONCLUÍDO
 
 ### Objetivo
 
@@ -1077,9 +1077,11 @@ Não criar documentação paralela quando um destes arquivos já for a autoridad
 - decisão automatizada;
 - regras de domínio.
 
-### Não concluir
+### Critério de fechamento
 
-Enquanto houver `UNKNOWN` material.
+Não concluir enquanto houver `UNKNOWN` material.
+
+**Resultado em 24/09/2026:** nenhum UNKNOWN material permanece no escopo C01.
 
 ### Retenção aprovada
 
@@ -1087,8 +1089,8 @@ Dados pessoais identificáveis permanecem até o encerramento formal da Safra e 
 
 ### Gate EBSA
 
-- G3;
-- G3.25.
+- G3 — **PASS**;
+- G3.25 — **PASS**.
 
 ---
 
