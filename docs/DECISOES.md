@@ -39,6 +39,7 @@
 | D-24 | Application criticality = MEDIUM | APPROVED |
 | D-25 | replica_enabled = false; backup/restore continua obrigatório | APPROVED |
 | D-26 | Política de retenção vinculada ao fim formal da Safra, com anonimização/eliminação posterior quando identidade não for necessária | APPROVED |
+| D-27 | Gates G3 e G3.25 fechados; SAFRA-C01 concluído com 0 UNKNOWN material | APPROVED |
 
 ## 3. ADRs
 
@@ -95,7 +96,7 @@ Decisões associadas:
 **PROPOSED**.
 
 ### ADR-010 — Tooling de migrations
-**WAITING_HUMAN_DECISION**.
+**DEFERRED_TO_SAFRA_C05**.
 Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade única.
 
 ## 4. Decisões humanas abertas
@@ -132,13 +133,13 @@ Não esconder decisão em prompt, commit ou mensagem de chat.
 
 | Tema | Estado registrado |
 |---|---|
-| Service class | **WAITING_HUMAN_DECISION** — candidatos INTERNO x OPERACIONAL |
+| Service class | **CRITICO — APPROVED**; SLO 99,95%; RTO 30 min; RPO 5 min |
 | Criticidade da aplicação | **MEDIUM — APPROVED**; independente de service_class=CRITICO e da criticidade dos cenários |
 | Auth | Microsoft Entra ID corporativo via SSO aprovado; frontend ainda não implementado; 0 usuários Auth |
-| Papéis privilegiados | funcionais aprovados: apenas safra_admin e scenario_owner; service_role permanece técnico/server-side |
+| Papéis privilegiados | safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner; service_role permanece técnico/server-side |
 | Dados pessoais | **sim** — identidade interna, nome, e-mail, papéis, autoria/auditoria e possíveis dados incidentais em texto livre |
 | Integrações | nenhuma integração externa ativa no MVP/código atual; futuras entram por ciclo governado |
-| REPLICA | **WAITING_HUMAN_DECISION**; nenhuma REPLICA provisionada |
+| REPLICA | **false — APPROVED**; backup/restore continua obrigatório |
 | API | nenhuma API pública; Data API interna existe e é protegida por grants + RLS |
 | Regras de domínio | obrigatórias; 17 regras Safra + 4 regras legadas TI registradas; ativação automática de treatment = false |
 
@@ -169,7 +170,7 @@ Regras estruturais:
 - `scenario_owner` depende de vínculo explícito com cenário;
 - não existe herança automática entre os dois papéis.
 
-A matriz fina de permissões entre `safra_admin` e `scenario_owner` permanece `WAITING_HUMAN_DECISION`.
+A matriz fina de permissões está **DEFERRED_TO_SAFRA_C04**.
 
 
 ### ADR-013 — Subtipos de safra_admin
@@ -268,3 +269,18 @@ Regra:
 - após essa finalidade, devem ser eliminados ou anonimizados;
 - histórico operacional e métricas podem ser preservados para comparação entre Safras quando não dependerem de identificação pessoal;
 - retenção indefinida de identidade não é o padrão do projeto.
+
+
+### ADR-017 — Fechamento do SAFRA-C01
+**APPROVED — 24/09/2026**.
+
+Resultado:
+
+```text
+G3 = PASS
+G3.25 = PASS
+unknown_material_count = 0
+SAFRA-C01 = CONCLUIDO
+```
+
+Pendências de fases posteriores não foram apagadas. Elas foram classificadas como `DEFERRED_TO_<fase>` e deverão ser retomadas nos respectivos gates.
