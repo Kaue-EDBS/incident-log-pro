@@ -1224,8 +1224,8 @@ ROLE_REVOCATION = PASS
 REVOKED_SESSION = PASS
 SERVICE_ACCOUNT_SCOPE = N/A_MVP
 RBAC_AUDIT_TRAIL = PASS
-ENTRA_RECOVERY = EXTERNAL_EVIDENCE_PENDING|PASS
-PRIVILEGED_MFA = EXTERNAL_EVIDENCE_PENDING|PASS
+ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL|PASS
+PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL|PASS
 ```
 
 Somente após essas evidências reavaliar:
@@ -2637,18 +2637,18 @@ DOMÍNIO CORRETO
 O próximo risco a evitar é antecipar implementação antes de concluir o C02/C03. A sequência permanece deliberada: primeiro ameaça e domínio; depois identidade/RLS; depois schema; depois dados; depois UX/operação.
 ---
 
-## SAFRA-C04 — controles internos concluídos (25/09/2026)
+## SAFRA-C04 — CONCLUÍDO (25/09/2026)
 
 Entregue: limpeza do grant temporário, troca e revogação de papel validadas em tempo real,
 vínculo com sessão viva (`session_id` x `auth.sessions`), trilha de auditoria RBAC append-only,
 contas de serviço classificadas como N/A no MVP.
 
-Pendências externas (TI / Microsoft Entra): `ENTRA_RECOVERY` e `PRIVILEGED_MFA`.
+Controles corporativos externos ao escopo da aplicação: `ENTRA_RECOVERY` e `PRIVILEGED_MFA`, sob responsabilidade da TI/Microsoft Entra.
 
 Não iniciado neste ciclo, conforme restrição: scenarios, scenario_versions, scenario_owners,
 treatments, START (C08.1), END/CANCEL (F02.1) e seed dos 11 cenários (C06.1).
 
-Próximo passo: revisão humana do relatório C04 antes de avançar para SAFRA-C05.
+Próximo passo: SAFRA-C05 — Schema v2, migrations e invariantes.
 
 
 ### C04.6 — Auditoria pós-Lovable
@@ -2662,15 +2662,39 @@ Resultado técnico interno:
 - RBAC_AUDIT_TRAIL = PASS.
 
 Dependências externas:
-- ENTRA_RECOVERY = EXTERNAL_EVIDENCE_PENDING;
-- PRIVILEGED_MFA = EXTERNAL_EVIDENCE_PENDING.
+- ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL;
+- PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL.
 
 Gates:
 ```text
-G5 = INTERNAL_PASS / EXTERNAL_IDENTITY_EVIDENCE_PENDING
-ID-001 = INTERNAL_CONTROLS_PASS / EXTERNAL_RECOVERY_EVIDENCE_PENDING
-ID-002 = INTERNAL_CONTROLS_PASS / PRIVILEGED_MFA_EXTERNAL_EVIDENCE_PENDING
+G5 = PASS
+ID-001 = PASS_APP_SCOPE
+ID-002 = PASS_APP_SCOPE
 AUDIT-001 = PASS
 ```
 
 Não avançar o status para C05 por decisão automática; revisão humana permanece necessária.
+
+
+### C04.7 — Fronteira de responsabilidade Entra — APROVADA
+
+Decisão humana:
+- recuperação de acesso Microsoft pertence à TI/Microsoft Entra;
+- bloqueio, MFA e Conditional Access da identidade Microsoft pertencem à TI/Microsoft Entra;
+- o Painel Safra não implementa controles paralelos para esses processos.
+
+Logo:
+- `ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL`;
+- `PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL`;
+- esses itens não bloqueiam o encerramento do C04 no escopo da aplicação.
+
+Fechamento:
+```text
+G5 = PASS
+ID-001 = PASS_APP_SCOPE
+ID-002 = PASS_APP_SCOPE
+AUDIT-001 = PASS
+SAFRA-C04 = CONCLUIDO
+```
+
+Próxima etapa: SAFRA-C05.
