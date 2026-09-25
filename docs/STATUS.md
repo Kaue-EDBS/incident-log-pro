@@ -1007,3 +1007,23 @@ Cada teste deve registrar:
 - M05: notificações e deduplicação;
 - F01/F02: END/CANCEL;
 - F08: execução E2E da matriz completa.
+
+
+---
+
+## Roadmap v2.1 promovido a canônico — 25/09/2026
+
+O arquivo `docs/ROADMAP.md` foi substituído pela versão consolidada 2.1.
+
+Principais efeitos:
+
+- C00 e C01 permanecem concluídos;
+- C02 permanece fase ativa;
+- decisões posteriores ao roadmap v2.0 foram incorporadas;
+- modelo de acesso START/END/CANCEL foi alinhado às decisões atuais;
+- papéis administrativos e ownership foram reconciliados;
+- checklist operacional deixou de ser requisito estrutural do Painel;
+- critérios de entrada/saída, dependências, evidências e dívida de decisão foram reforçados;
+- roadmap v2.1 passa a ser a fonte canônica de sequência de execução.
+
+Commit de promoção do roadmap: `f36f04d7d14c09cf5ee8a56b511c63081d6acb4f`.
