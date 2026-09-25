@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(20);
+select plan(23);
 
 select has_table('public', 'scenarios', 'scenarios exists');
 select has_table('public', 'scenario_versions', 'scenario_versions exists');
@@ -172,6 +172,39 @@ select has_trigger(
 select has_trigger(
   'public', 'scenario_slas', 'trg_scenario_slas_freeze',
   'published scenario SLA content is version-frozen'
+);
+
+
+
+select is(
+  (
+    select count(*)::bigint
+    from pg_constraint c
+    join pg_class cl on cl.oid = c.conrelid
+    join pg_namespace n on n.oid = cl.relnamespace
+    where c.contype = 'f'
+      and n.nspname = 'public'
+      and cl.relname in (
+        'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
+        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'treatments','treatment_impacted_areas','treatment_impact_measurements',
+        'treatment_events','treatment_escalations','scenario_proposals',
+        'scenario_proposal_owner_responses','notifications_log','governance_issues'
+      )
+      and c.confdeltype = 'c'
+  ),
+  0::bigint,
+  'SAFRA domain has no destructive ON DELETE CASCADE foreign keys'
+);
+
+select has_constraint(
+  'public', 'treatments', 'treatments_cancel_reason_required',
+  'CANCEL requires a non-blank reason'
+);
+
+select has_trigger(
+  'public', 'treatments', 'trg_treatments_guard',
+  'treatment guard enforces terminal transition rules and delete protection'
 );
 
 select * from finish();
