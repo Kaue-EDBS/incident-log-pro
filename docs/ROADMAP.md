@@ -1262,13 +1262,13 @@ Decisão:
 Estado:
 - conteúdo equivalente ao estado live validado do C04;
 - role mapping, predicado corporativo e RLS capturados em código;
-- histórico remoto ainda precisa de repair administrativo porque mudanças anteriores foram aplicadas diretamente no PRIMARY.
+- histórico remoto reconciliado em 25/09/2026; sem drift conhecido de C00/C04/C05.
 
 ### Antes de criar migration
-1. autoridade canônica definida: `supabase/migrations`; Drizzle não é fonte de verdade de schema;
-2. reconciliar drift da migration de hardening;
-3. documentar rollback;
-4. garantir banco descartável para teste.
+1. autoridade canônica definida: `supabase/migrations`; Drizzle não é fonte de verdade de schema — **CONCLUÍDO**;
+2. reconciliar drift da migration de hardening — **CONCLUÍDO**;
+3. documentar rollback — **CONCLUÍDO** em `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
+4. garantir banco descartável para teste — **IMPLEMENTADO** via Supabase local + pgTAP + GitHub Actions.
 
 ### C05.1 — Schema v2 canônico — IMPLEMENTADO
 
@@ -1291,11 +1291,30 @@ Não incluído:
 - criticidade inferida;
 - notificações produtivas.
 
+### C05.2 — Rollback e banco descartável — IMPLEMENTADO
+
+Artefatos:
+- `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
+- `supabase/seed.sql` sem dados produtivos;
+- `supabase/tests/database/c05_schema_v2.test.sql`;
+- `.github/workflows/database-disposable-test.yml`.
+
+Contrato:
+```text
+supabase start
+-> supabase db reset --local
+-> supabase test db
+-> supabase db lint --local --level error
+-> supabase stop --no-backup
+```
+
+O PRIMARY nunca é tratado como banco descartável. Após C06, rollback padrão passa a ser forward fix, preservando histórico operacional.
+
 ### Ordem recomendada
 
 1. `operational_areas`;
 2. `systems`;
-3. `safra_user_roles`;
+3. reutilizar `private.safra_principals` + `private.safra_role_grants` (sem `safra_user_roles` concorrente);
 4. `scenarios`;
 5. `scenario_versions`;
 6. `scenario_owners`;
