@@ -334,7 +334,7 @@ service_class: CRITICO                  # aprovado em 24/09/2026
 exposure: internal
 backend_type: lovable_cloud_postgres
 primary_role: primary
-application_criticality: WAITING_HUMAN_DECISION # atributo técnico; não é criticidade de cenário
+application_criticality: MEDIUM                 # aprovado em 24/09/2026
 scenario_criticality:
   values: [CRITICAL, HIGH, MODERATE]
   source: materiais_mae
@@ -2520,6 +2520,16 @@ SLO 99,95%
 RTO 30 min
 RPO 5 min
 ```
+
+## ADR-003.1 - Application criticality
+
+Status: **APROVADO — MEDIUM**.
+
+```text
+application_criticality = MEDIUM
+```
+
+É uma decisão específica do projeto e não altera `service_class = CRITICO`.
 
 ## ADR-004 - Identity provider
 
