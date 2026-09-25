@@ -76,7 +76,19 @@ Qualquer usuário autenticado pode enviar proposta contendo:
 - descrição do problema;
 - descrição de como o problema afeta a Safra.
 
-A proposta não cria cenário produtivo automaticamente. Jiane Rodrigues e Jair Silva fazem a revisão de governança antes de eventual publicação.
+A proposta não cria cenário produtivo automaticamente.
+
+Fluxo de governança aprovado:
+
+1. Jair Silva recebe a notificação da proposta;
+2. Jair lê e encaminha a proposta para Daniel Garcia, Renato Paulo e Jiane Rodrigues;
+3. se exatamente um aceitar, esse usuário torna-se owner do novo card;
+4. se dois ou mais aceitarem, Jair realiza o check final e define o owner;
+5. se ninguém aceitar, Jair é informado e pode:
+   - acionar Bruno Palhão para escalonamento executivo; ou
+   - decidir o ownership por conta própria.
+
+Jiane participa desse fluxo como candidata a owner e não como governança global.
 
 ### RB-SAFRA-015 — Recorrência
 Recorrência é métrica; não promove automaticamente nível de crise.
@@ -176,3 +188,16 @@ START/END/CANCEL e demais operações críticas devem preferir RPC/função tran
 ## 9. Pronto de regra
 
 Uma regra só está pronta com fonte, owner, decisão, contrato, exemplos, testes, implementação e evidência.
+
+
+### RB-SAFRA-021 — Governança global
+Jair Silva é o único `safra_governance_admin`.
+
+Jiane Rodrigues não possui governança global. Ela recebe comunicações somente dos cards em que é `scenario_owner`.
+
+### RB-SAFRA-022 — Resolução de ownership do 12º card
+O ownership de uma proposta do 12º card segue a regra de aceite:
+
+- 1 aceite entre Daniel/Renato/Jiane -> ownership automático para quem aceitou;
+- 2 ou mais aceites -> Jair define o owner final;
+- 0 aceites -> Jair decide diretamente ou aciona Bruno para escalonamento executivo.
