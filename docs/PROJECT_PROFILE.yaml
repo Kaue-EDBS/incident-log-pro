@@ -307,3 +307,26 @@ c05_schema_v2:
   active_treatment_uniqueness_constraint: false
   seed_11_scenarios: "NOT_STARTED_C06"
   start_end_cancel_rpcs: "NOT_STARTED"
+
+
+disposable_database:
+  status: "IMPLEMENTED"
+  engine: "SUPABASE_LOCAL_DOCKER"
+  production_primary_used_for_disposable_tests: false
+  rebuild_command: "supabase db reset --local"
+  db_test_command: "supabase test db"
+  db_lint_command: "supabase db lint --local --level error"
+  teardown_command: "supabase stop --no-backup"
+  seed_contains_production_data: false
+  ci_workflow: ".github/workflows/database-disposable-test.yml"
+  rollback_document: "docs/ROLLBACK_E_BANCO_DESCARTAVEL.md"
+  rollback_after_c06: "FORWARD_FIX_DEFAULT"
+
+
+jair_runtime_access:
+  corporate_email: "jair.silva@editoradobrasil.com.br"
+  status: "AUTHENTICATED_AND_BOUND"
+  identity_provider: "azure"
+  role: "safra_governance_admin"
+  last_sign_in_at_utc: "2026-09-25T18:05:38.625392Z"
+  verified_at: "2026-09-25"
