@@ -130,11 +130,21 @@ integrations:
   candidate_sources_status: "NOT_IMPLEMENTED"
 
 replication:
-  replica_enabled: "WAITING_HUMAN_DECISION"
+  replica_enabled: false
+  decision_status: "APPROVED"
   replica_currently_provisioned: false
   replica_provider: null
-  gate: "G9_CONDITIONAL"
-  note: "Do not provision replica only to satisfy the framework."
+  gate: "G9_NOT_APPLICABLE"
+  note: "No synchronized secondary database will be maintained."
+
+backup_and_recovery:
+  required: true
+  replica_is_backup: false
+  strategy: "DEFERRED_TO_SAFRA_C09"
+  recovery_targets:
+    rto_minutes: 30
+    rpo_minutes: 5
+  note: "replica_enabled=false does not mean no backup. Backup/restore and recovery evidence remain mandatory for service_class=CRITICO."
 
 api:
   public_api: false
@@ -198,7 +208,6 @@ open_human_decisions:
   - "official minimum source for scenario 9 curve A"
   - "multiple simultaneous treatments rule"
   - "close policy with incomplete / NOT_APPLICABLE steps"
-  - "replica_enabled"
   - "email/notification provider and channel"
   - "formal approvers of new scenarios"
   - "history retention"
