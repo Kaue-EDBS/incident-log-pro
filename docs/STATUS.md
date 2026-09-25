@@ -784,3 +784,21 @@ application_criticality = MEDIUM
 ```
 
 A decisão é explícita do projeto e não altera a service class CRITICO nem a criticidade dos cenários.
+
+
+### REPLICA desabilitada; recovery obrigatório — 24/09/2026
+
+```text
+replica_enabled = false
+```
+
+Não haverá segundo banco sincronizado.
+
+Isso não significa ausência de backup.
+
+Como o Painel Safra possui `service_class=CRITICO`, a estratégia de backup/restore e os testes de recuperação continuam obrigatórios e devem comprovar:
+
+- RTO: 30 minutos;
+- RPO: 5 minutos.
+
+A implementação/evidência de recovery fica direcionada ao SAFRA-C09.
