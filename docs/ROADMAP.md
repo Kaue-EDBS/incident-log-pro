@@ -1310,6 +1310,43 @@ supabase start
 
 O PRIMARY nunca é tratado como banco descartável. Após C06, rollback padrão passa a ser forward fix, preservando histórico operacional.
 
+### C05.3 — Domínio canônico por agregados — CONCLUÍDO
+
+A estrutura física já materializada em C05.1 foi validada como contrato de domínio:
+
+- áreas: `operational_areas` + relações potenciais/reais;
+- sistemas: `systems` + relação versionada;
+- papéis: reutilizar `private.safra_principals` + `private.safra_role_grants`;
+- cenários/versionamento: `scenarios` + `scenario_versions`;
+- owners: `scenario_owners`;
+- SLAs: `scenario_slas`;
+- treatments: `treatments` + impacto;
+- eventos: `treatment_events`;
+- escalonamentos: `treatment_escalations`;
+- notificações: `notifications_log`;
+- propostas: `scenario_proposals` + respostas de owners;
+- governance issues: `governance_issues`.
+
+Regras:
+- nenhuma tabela concorrente de roles;
+- ownership explícito e separado de papel administrativo;
+- versionamento preserva fotografia histórica;
+- proposta permanece separada de cenário produtivo;
+- governance issue não vira default;
+- `GI-SAFRA-001` continua aberta;
+- documentação arquitetural reconciliada com o schema real.
+
+Resultado:
+
+```text
+C05_DOMAIN_MODEL = PASS
+schema_change_required_this_round = false
+```
+
+### C05.4 — Mutações transacionais, idempotência e concorrência — PRÓXIMO
+
+Implementar e testar as operações críticas do domínio via RPC/funções transacionais, começando por START e contratos comuns de idempotência/correlation_id, sem antecipar decisões deferidas a M01/M05.
+
 ### Ordem recomendada
 
 1. `operational_areas`;
