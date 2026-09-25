@@ -1100,17 +1100,21 @@ Validação:
 
 Migration formal da mudança live: reconciliar no C05.
 
-### Testes obrigatórios
+### Testes obrigatórios do C04
 
+Executar ainda no C04:
 - anon não lê/escreve;
-- sessão expirada não executa mutation;
-- usuário autenticado pode START/END/CANCEL conforme regras;
-- usuário autenticado não consegue se tornar owner alterando payload;
-- Jair acessa governança global sem virar platform admin;
-- Bruno acessa analytics global sem receber autorização técnica;
-- Jiane não ganha governança global;
-- platform admin não vira owner automaticamente;
-- acesso direto por REST/RPC obedece às mesmas regras.
+- sessão inválida/expirada não produz autorização;
+- usuário autenticado não consegue alterar principals/roles governados;
+- platform admin não herda scenario_owner;
+- acesso direto por REST/RPC obedece à mesma regra-base da UI/server.
+
+Os testes que dependem do domínio real ficam explicitamente deferidos:
+- ownership por cenário + separação Jair/Bruno/Jiane/platform admins -> C06.1, após seed dos 11 cenários;
+- START autenticado -> C08.1, após fluxo START existir;
+- END/CANCEL autenticado -> F02.1, após state machine + END + CANCEL existirem.
+
+Não marcar esses testes como PASS antes da entidade/mutation existir.
 
 ### Gate
 
@@ -1245,6 +1249,26 @@ XLSX v3
 
 Reconciliação 100% dos campos importados contra a Matriz v3.
 
+### C06.1 — Regressão RBAC/ownership com cenários reais
+
+Executar somente depois que os 11 cenários e seus vínculos de owner estiverem materializados.
+
+Testes:
+- Daniel é owner somente dos cenários 1, 2, 3, 7, 10 e 11;
+- Jiane é owner somente dos cenários 4, 5, 6 e 8;
+- Renato é owner somente do cenário 9;
+- Jair mantém governance admin sem herdar ownership;
+- Bruno mantém executive admin sem ownership e sem permissão técnica;
+- Kaue/Amanda/Vinicius/João mantêm platform admin sem ownership automático;
+- usuário autenticado não consegue se autoatribuir owner via payload/REST/RPC;
+- alteração de ownership exige caminho de governança;
+- leitura direta por Data API/RPC preserva o mesmo modelo de autorização.
+
+Critério de PASS:
+- todos os testes usam cenários reais do seed;
+- nenhuma role global produz ownership implícito;
+- ownership é demonstrado pelo vínculo explícito scenario↔user.
+
 ---
 
 ## SAFRA-C07 — Engine de SLA
@@ -1327,6 +1351,18 @@ usuário autenticado
 - acessibilidade WCAG 2.2 AA;
 - não depender de cor para estado;
 - ação crítica nunca depende só de esconder botão.
+
+### C08.1 — Regressão de autorização do START
+
+Testar com cenário PUBLISHED real:
+- usuário Microsoft corporativo autenticado consegue START;
+- anon/outsider não consegue START;
+- START por não-owner é permitido conforme regra de negócio;
+- scenario_version_id é resolvida e congelada no backend;
+- ator e timestamp são server-side;
+- payload não consegue trocar owner/criticidade/version_id;
+- UI, REST/RPC e server-side produzem decisão equivalente;
+- retry/duplo clique não duplica tratativa.
 
 ---
 
@@ -1735,6 +1771,21 @@ Obrigatório:
 Nunca excluir silenciosamente.
 
 CANCEL não deve ser contado automaticamente como SLA cumprido.
+
+### F02.1 — Regressão de autorização END/CANCEL
+
+Executar com tratativa ACTIVE real:
+- usuário Microsoft corporativo autenticado pode END;
+- usuário Microsoft corporativo autenticado pode CANCEL com motivo;
+- anon/outsider não consegue END/CANCEL;
+- END repetido falha/idempotente conforme contrato;
+- CANCEL repetido não duplica evento/notificação;
+- END x CANCEL concorrentes produzem uma única transição válida;
+- CANCEL não mascara SLA nem apaga histórico;
+- payload não consegue elevar owner/role;
+- UI, REST/RPC e server-side produzem decisão equivalente.
+
+Este bloco fecha os testes originalmente listados no C04 que dependiam da existência de treatments e mutations reais.
 
 ---
 
