@@ -1272,3 +1272,42 @@ Impacto:
 - evita falha de preview/build quando o arquivo `.env` não está presente;
 - publishable key continua sendo credencial pública por desenho;
 - manter atenção futura para evitar acoplamento indevido entre ambientes dev/preview/prod.
+
+
+---
+
+## SAFRA-C04 — RLS e autorização equivalente UI/REST/RPC/server — 25/09/2026
+
+Implementado no Lovable Cloud PRIMARY:
+
+- removida dependência de `app_metadata.safra_access`;
+- criado `public.safra_is_corporate_user()` como predicado canônico de acesso base;
+- RLS de `applications` e `incidents` passa a usar esse predicado;
+- `anon` sem grants de leitura;
+- `authenticated` recebe apenas grants compatíveis com o produto legado atual;
+- middleware server-side consulta o mesmo RPC canônico;
+- frontend/Data API continua sujeito ao RLS;
+- RPC usa o mesmo contexto `auth.uid()`/JWT;
+- `user_metadata` não participa de autorização;
+- roles permanecem em tabelas governadas privadas.
+
+Predicado base:
+
+```text
+auth.uid() != null
+AND is_anonymous != true
+AND app_metadata.provider = azure
+AND email termina com @editoradobrasil.com.br
+```
+
+Validação:
+
+- usuário Microsoft corporativo: 3 applications / 14 incidents;
+- outsider autenticado: 0 / 0;
+- anon: sem SELECT e sem EXECUTE no RPC;
+- `safra_access` removido de `auth.users.raw_app_meta_data`;
+- role mapping continua independente de ownership.
+
+Observação de governança:
+- a alteração live foi aplicada no PRIMARY;
+- como a autoridade canônica de migrations ainda pertence ao C05, esta mudança deverá ser reconciliada em migration formal naquela fase.
