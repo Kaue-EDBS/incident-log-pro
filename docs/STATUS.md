@@ -1715,3 +1715,44 @@ Como o schema v2 ainda não possui dados produtivos nem seed C06:
 - fluxo final do 12º card;
 - pós-mortem;
 - analytics.
+
+
+---
+
+## SAFRA-C05 — autoridade canônica de migrations e drift reconciliado — 25/09/2026
+
+Decisão definitiva:
+
+```text
+supabase/migrations = ÚNICA FONTE CANÔNICA DE MIGRATIONS
+Drizzle = ORM/tooling auxiliar, SEM autoridade de schema/deploy
+```
+
+Diagnóstico:
+- Git possuía 8 migrations em `supabase/migrations`;
+- o histórico remoto registrava apenas as duas migrations originais de agosto;
+- C00/C04/C05 já estavam efetivamente aplicados no PRIMARY;
+- `drizzle/migrations` continha cópias históricas de migrations já espelhadas em `supabase/migrations`.
+
+Reconciliação executada:
+- estado live pré-validado antes do repair;
+- versões adicionadas ao tracking sem reexecutar SQL:
+  - 20260924212155
+  - 20260925133200
+  - 20260925164500
+  - 20260925164600
+  - 20260925164700
+  - 20260925170000
+- `supabase_migrations.schema_migrations` agora contém as oito migrations conhecidas;
+- nenhuma DDL foi reaplicada;
+- nenhuma migration foi revertida.
+
+Nota operacional:
+- o comando oficial `supabase migration repair --status applied` não estava acessível pelos conectores disponíveis;
+- foi executado repair equivalente somente na tabela de tracking, após validação explícita dos artefatos live;
+- futuras mudanças de schema devem entrar primeiro em `supabase/migrations` e ser aplicadas pelo fluxo de migration, evitando novo drift.
+
+Drizzle:
+- `drizzle/schema.ts` permanece vazio;
+- não existe script de deploy Drizzle no `package.json`;
+- `drizzle/migrations` não é fonte de verdade e não deve ser usada para deploy.
