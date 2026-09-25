@@ -2721,3 +2721,12 @@ SAFRA-C04 = CONCLUIDO
 ```
 
 Próxima etapa: SAFRA-C05.
+
+
+### C05.0.1 — Autoridade de migrations e drift — CONCLUÍDO
+
+- `supabase/migrations` é a única fonte canônica de schema/migrations;
+- Drizzle é tooling auxiliar sem autoridade de deploy;
+- drift de C00/C04/C05 reconciliado em `supabase_migrations.schema_migrations`;
+- nenhuma DDL foi reaplicada durante o repair;
+- migrations remotas diretas ficam proibidas fora de exceção formal documentada.
