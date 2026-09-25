@@ -653,7 +653,7 @@ Após revisão dos três materiais-mãe:
 - os materiais-mãe não definem `service_class`, SLO, RTO ou RPO do software Painel Safra;
 - `service_class` e `application_criticality` permanecem requisitos técnicos do Framework EBSA;
 - nenhum desses atributos técnicos será inferido a partir do SLA ou da criticidade dos protocolos;
-- a lista exata dos quatro cenários críticos continua `WAITING_HUMAN_DECISION`.
+- a lista exata dos quatro cenários críticos está em `GI-SAFRA-001`; fontes atuais confirmam que existem quatro, mas não identificam nominalmente quais são.
 
 
 ### Decisão Auth — Microsoft Entra ID — 24/09/2026
@@ -1127,3 +1127,29 @@ Impacto:
 Desenho conceitual para C05/F04:
 - `treatments.impact_summary` para qualitativo;
 - coleção separada de medições quantitativas por tratativa.
+
+
+---
+
+## SAFRA-C03 — criticidade CRITICAL mantida como governance issue — 25/09/2026
+
+Foi feita revisão conservadora das fontes de negócio.
+
+Resultado:
+
+- a Matriz v3 não contém coluna formal de criticidade;
+- a reunião de 22/09 confirma níveis CRITICAL/HIGH/MODERATE e menciona quatro temas “super pesados”;
+- a reunião não identifica nominalmente os quatro;
+- o PDF v2 é preliminar e não fornece lista formal dos quatro.
+
+Decisão:
+
+```text
+GI-SAFRA-001 = OPEN
+inferência da lista CRITICAL = PROIBIDA
+```
+
+Até resolução formal:
+- nenhum dos 11 cenários será marcado como CRITICAL apenas por interpretação;
+- regras específicas de comunicação à diretoria baseadas na lista dos quatro permanecem dependentes da decisão;
+- C06 deve carregar a pendência sem preencher default.
