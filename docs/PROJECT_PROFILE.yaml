@@ -23,7 +23,7 @@ architecture:
     current:
       - "supabase/migrations"
       - "drizzle.config.ts"
-    canonical_strategy: "WAITING_HUMAN_DECISION"
+    canonical_strategy: "DEFERRED_TO_SAFRA_C05"
     known_drift:
       - "hardening state is live but version 20260924212155 is absent from supabase_migrations.schema_migrations"
 
@@ -70,12 +70,19 @@ privileged_roles:
   functional_roles:
     status: "APPROVED"
     roles:
-      - "safra_admin"
+      - "safra_platform_admin"
+      - "safra_governance_admin"
+      - "safra_executive_admin"
       - "scenario_owner"
+    base_authenticated_user:
+      can_view_cards: true
+      can_start: true
+      can_end: true
+      can_cancel: true
     assignment_model: "NON_HIERARCHICAL"
     inheritance: false
-    note: "Only two functional roles exist. Administrative authority does not automatically grant scenario ownership."
-  exact_permission_matrix: "WAITING_HUMAN_DECISION"
+    note: "Microsoft-authenticated users are base actors. Responsibility roles add technical, governance, executive or card-owner duties."
+  exact_permission_matrix: "DEFERRED_TO_SAFRA_C04"
 
 security:
   rls_enabled: true
@@ -152,7 +159,7 @@ domain_rules:
       - "Painel SAFRA.docx - reunião de 22/09/2026"
       - "EDB06 - Protocolos de contingência v2.pdf"
     note: "Business/domain attribute of scenarios. Not equivalent to application service_class."
-  critical_scenarios_list: "WAITING_HUMAN_DECISION"
+  critical_scenarios_list: "DEFERRED_TO_DOMAIN_RULES"
   safra_rules_registered: 17
   legacy_it_rules_registered: 4
   automated_decisioning: false
@@ -181,7 +188,6 @@ governance:
   destructive_git_history_rewrite_allowed: false
 
 open_human_decisions:
-  - "exact permission matrix by role"
   - "application service class"
   - "application criticality"
   - "four CRITICAL scenarios"
