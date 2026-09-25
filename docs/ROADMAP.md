@@ -1025,6 +1025,35 @@ Microsoft Entra ID
 
 Sem login local por senha.
 
+### C04.2 — Role mapping sem herança de ownership — IMPLEMENTADO
+
+Implementado no PRIMARY em 25/09/2026:
+
+- cadastro governado de principals em `private.safra_principals`;
+- grants em `private.safra_role_grants`;
+- pré-provisionamento por e-mail corporativo;
+- binding automático para `auth.uid()` no login;
+- funções de consulta de role isoladas em schema `private`;
+- wrappers públicos `SECURITY INVOKER`;
+- nenhum papel administrativo confere ownership de cenário;
+- `scenario_owner` indica elegibilidade/responsabilidade, não vínculo com card específico.
+
+Pessoas pré-provisionadas:
+- platform admin: Kaue, Amanda, Vinicius, João;
+- governance admin: Jair;
+- executive admin: Bruno;
+- scenario_owner: Daniel, Jiane, Renato.
+
+Validação:
+- usuário autenticado Kaue -> `safra_platform_admin = true`;
+- `scenario_owner = false`;
+- nenhuma tabela scenario→owner existe ainda;
+- ownership específico permanece para C05/C06.
+
+Pendência do C04:
+- policies RLS atuais ainda usam o gate temporário `app_metadata.safra_access` do C00;
+- próximo passo: migrar RLS para o novo role mapping sem quebrar acesso base autenticado.
+
 ### Role mapping alvo
 
 | Ação | Usuário autenticado | Scenario owner | Governance admin | Executive admin | Platform admin |
