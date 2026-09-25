@@ -1927,3 +1927,48 @@ C05_INTEGRITY_HARDENING = APPLIED
 PRIMARY_VALIDATION = PASS
 CI_DISPOSABLE_DB = RUNNING
 ```
+
+
+---
+
+## SAFRA-C05 — bateria técnica de migration, constraints, double submit, rollback, API direta e RLS — 25/09/2026
+
+Escopo desta rodada: validar a fundação técnica sem antecipar os testes funcionais de START/END/CANCEL.
+
+### Cobertura adicionada
+
+- replay de migrations e presença da migration C05 mais recente no histórico local;
+- constraints estruturais e vocabulário de criticidade;
+- proteção de CANCEL com razão obrigatória;
+- double submit/idempotência por chave única;
+- RLS negativa para `anon` e `authenticated` sem policy governada;
+- tentativa de acesso direto pela Data API com chave anônima;
+- ensaio de rollback da última migration no banco descartável;
+- reconstrução completa após rollback;
+- lint após reconstrução.
+
+### Evidência já obtida
+
+No Lovable Cloud PRIMARY:
+- double submit foi bloqueado por `unique_violation`;
+- teste foi executado dentro de transação e revertido, sem persistir fixture.
+
+No GitHub:
+- `supabase/tests/database/c05_technical_guards.test.sql` criado;
+- `supabase/rollback-tests/c05_latest_rollback.test.sql` criado;
+- `.github/scripts/test-safra-direct-api.sh` criado;
+- workflow `database-disposable-test.yml` ampliado para executar API direta e rollback real.
+
+### Limite deliberado
+
+Os fluxos funcionais de START/END/CANCEL não são testados nesta bateria.
+Eles permanecem nas fases próprias de implementação funcional.
+
+### Estado
+
+```text
+C05_TECHNICAL_TEST_SUITE = IMPLEMENTED
+PRIMARY_DOUBLE_SUBMIT = PASS
+DISPOSABLE_CI_FULL_RUN = IN_PROGRESS
+START_END_CANCEL_FUNCTIONAL_TESTS = DEFERRED_TO_OWN_PHASES
+```
