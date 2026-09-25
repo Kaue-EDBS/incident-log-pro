@@ -242,9 +242,20 @@ Ainda aberto:
 
 ## 9. REPLICA
 
-`replica_enabled = WAITING_HUMAN_DECISION`.
+`replica_enabled = false`.
 
-Não criar REPLICA apenas para cumprir framework.
+Não haverá segundo banco sincronizado.
+
+### Backup e recuperação
+
+REPLICA não é sinônimo de backup.
+
+A ausência de REPLICA não remove os requisitos de backup, restore e recovery testado. Como a aplicação foi classificada com `service_class=CRITICO`, a estratégia de recuperação deverá atender:
+
+- RTO 30 min;
+- RPO 5 min.
+
+A estratégia e as evidências serão fechadas no SAFRA-C09.
 
 ## 10. Observabilidade e auditoria
 
@@ -258,7 +269,6 @@ O produto deve preservar eventos de START, passos, alterações relevantes, esca
 - criticidade técnica/operacional da aplicação — **MEDIUM**, distinta da criticidade CRITICAL/HIGH/MODERATE dos cenários;
 - matriz fina de permissões entre `safra_admin` e `scenario_owner`;
 - tratamento de usuário autenticado sem papel funcional;
-- replica;
 - RTO/RPO;
 - retenção;
 - canal de notificação;
