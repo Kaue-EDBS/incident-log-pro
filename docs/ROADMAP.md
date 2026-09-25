@@ -1129,8 +1129,21 @@ AUDIT-001
 
 Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
 
+### C05.0 — Autoridade de migrations e captura do C04 — CONCLUÍDO
+
+Decisão:
+- `supabase/migrations` é a fonte canônica de migrations;
+- Drizzle permanece como tooling/ORM auxiliar e não cria uma segunda trilha de schema;
+- migration canônica do C04 criada em:
+  `supabase/migrations/20260925133200_c04_role_mapping_and_corporate_rls.sql`.
+
+Estado:
+- conteúdo equivalente ao estado live validado do C04;
+- role mapping, predicado corporativo e RLS capturados em código;
+- histórico remoto ainda precisa de repair administrativo porque mudanças anteriores foram aplicadas diretamente no PRIMARY.
+
 ### Antes de criar migration
-1. decidir autoridade canônica de migrations: `supabase/migrations` x Drizzle;
+1. autoridade canônica definida: `supabase/migrations`; Drizzle não é fonte de verdade de schema;
 2. reconciliar drift da migration de hardening;
 3. documentar rollback;
 4. garantir banco descartável para teste.
