@@ -397,15 +397,15 @@ O chamado resolve uma ocorrência operacional.
 
 O protocolo comunica e governa uma contingência relevante.
 
-## D-06 - Dono do processo controla START/END
+## D-06 - Usuário autenticado controla START/END; owner responde pelo protocolo
 
-O líder/dono do processo pode:
+Qualquer usuário autenticado pelo Microsoft Entra ID pode:
 
 - iniciar protocolo;
 - encerrar protocolo;
-- designar pessoas para atualizar acompanhamento.
+- cancelar com justificativa.
 
-Outros usuários não devem conseguir promover uma ocorrência a protocolo por conta própria.
+O `scenario_owner` é o responsável formal pelo card e conduz o protocolo com sua equipe, mas não possui exclusividade sobre START/END/CANCEL.
 
 ## D-07 - Não apagar tratativa
 
@@ -897,15 +897,15 @@ Nenhum sinal externo cria automaticamente `treatments` no MVP.
 
 ## RB-SAFRA-003 - Autorização para START
 
-Somente owner autorizado do cenário pode iniciar.
+Qualquer usuário Microsoft autenticado pode iniciar cenário publicado. Ator e timestamp oficial são persistidos no backend.
 
-## RB-SAFRA-004 - Autorização para END
+## RB-SAFRA-004 - Autorização para END/CANCEL
 
-Somente owner autorizado pode resolver ou cancelar.
+Qualquer usuário Microsoft autenticado pode encerrar uma tratativa ativa. CANCEL exige justificativa e preserva histórico.
 
 ## RB-SAFRA-005 - Atualizadores delegados
 
-Usuário designado pode atualizar andamento, passos e notas, mas não adquire automaticamente START/END.
+O trabalho operacional do protocolo é conduzido pelo owner e sua equipe fora do controle passo a passo do Painel; o Painel registra governança, tempos, eventos e encerramento.
 
 ## RB-SAFRA-006 - Cancelamento auditável
 
