@@ -289,3 +289,20 @@ Os SLAs dos protocolos medem resposta operacional do cenário. Eles não definem
 ## 12. Regra de mudança
 
 Mudança material de arquitetura deve atualizar ARQUITETURA, PROJECT_PROFILE, DECISOES e STATUS e reabrir gates afetados quando necessário.
+
+
+## Autenticação corporativa homologada — 25/09/2026
+
+Fluxo runtime:
+
+```text
+Microsoft Entra ID
+  -> Lovable Cloud Auth (provider `microsoft`)
+  -> retorno OAuth
+  -> `supabase.auth.setSession(...)`
+  -> identidade Supabase provider `azure`
+  -> JWT
+  -> `auth.uid()`
+```
+
+A autenticação foi validada com usuário corporativo real. O frontend não oferece login local por senha.
