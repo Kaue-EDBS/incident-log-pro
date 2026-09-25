@@ -51,6 +51,7 @@
 | D-36 | supabase/migrations é a autoridade canônica; migration C04 capturada e versionada | APPROVED |
 | D-37 | Gates C04 não fecham sem evidência explícita do Manual EBSA; G5 parcial e ID-001/ID-002/AUDIT-001 bloqueados por evidência | APPROVED |
 | D-38 | Fechamento dos gaps restantes de C04 será executado no ambiente Lovable; recuperação e MFA permanecem dependências do Entra/TI | APPROVED |
+| D-39 | Auditoria pós-Lovable confirma controles internos; ID-001/ID-002 permanecem dependentes de evidência externa do Entra/TI | APPROVED |
 
 ## 3. ADRs
 
@@ -536,3 +537,21 @@ Secrets e tokens nunca são registrados.
 `SERVICE_ACCOUNT_SCOPE = NOT_APPLICABLE_MVP`. Não existe identidade funcional de serviço
 no Painel Safra. O `service_role` é credencial técnica de backend e não é usuário funcional.
 A criação de qualquer conta de integração reabre ID-001.
+
+
+### ADR-032 — Fechamento interno não equivale a fechamento externo
+**APPROVED — 25/09/2026**.
+
+A auditoria independente confirmou os controles internos do C04:
+- troca/revogação de role;
+- sessão viva/revogada;
+- auditoria RBAC;
+- limpeza do grant temporário;
+- ausência de conta de serviço funcional no MVP.
+
+Entretanto:
+- ID-001 permanece dependente de evidência do processo corporativo de recuperação de acesso;
+- ID-002 permanece dependente de evidência de MFA/Conditional Access dos privilegiados no Microsoft Entra;
+- AUDIT-001 está aprovado no escopo de RBAC do C04.
+
+As migrations geradas pelo ambiente Lovable foram espelhadas para `supabase/migrations`; esta continua sendo a fonte canônica.
