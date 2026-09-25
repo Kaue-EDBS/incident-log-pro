@@ -48,6 +48,7 @@
 | D-33 | Login funcional exclusivamente via Microsoft Entra ID; Lovable Cloud Auth cria sessão Supabase; login local por senha proibido | APPROVED / HOMOLOGATED |
 | D-34 | Role mapping governado no banco e ownership específico separado de papéis administrativos | APPROVED / IMPLEMENTED |
 | D-35 | RLS e autorização server-side usam o mesmo predicado corporativo; safra_access removido | APPROVED / IMPLEMENTED |
+| D-36 | supabase/migrations é a autoridade canônica; migration C04 capturada e versionada | APPROVED |
 
 ## 3. ADRs
 
@@ -104,8 +105,11 @@ Decisões associadas:
 **PROPOSED**.
 
 ### ADR-010 — Tooling de migrations
-**DEFERRED_TO_SAFRA_C05**.
-Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade única.
+**APPROVED — 25/09/2026**.
+
+Autoridade canônica: `supabase/migrations`.
+
+Drizzle permanece como tooling/ORM auxiliar e não pode manter uma segunda trilha concorrente de schema/migrations.
 
 ## 4. Decisões humanas abertas
 
@@ -464,3 +468,20 @@ Regras:
 - ownership de cenário permanece fora de metadata e fora de herança de role.
 
 A mudança live deverá ser reconciliada com migration canônica no SAFRA-C05.
+
+
+### ADR-027 — Captura canônica da migration C04
+**APPROVED — 25/09/2026**.
+
+Migration:
+`20260925133200_c04_role_mapping_and_corporate_rls.sql`.
+
+Ela captura o estado C04 já validado no PRIMARY:
+- role mapping;
+- identidade corporativa;
+- RLS;
+- Data API;
+- RPC/server authorization equivalente;
+- remoção de `safra_access`.
+
+O artefato está fechado em Git. A sincronização do histórico interno do Supabase permanece pendente de migration repair suportado e não deve ser simulada por INSERT manual na tabela interna.
