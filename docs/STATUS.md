@@ -802,3 +802,13 @@ Como o Painel Safra possui `service_class=CRITICO`, a estratégia de backup/rest
 - RPO: 5 minutos.
 
 A implementação/evidência de recovery fica direcionada ao SAFRA-C09.
+
+
+### Retenção — APPROVED — 24/09/2026
+
+Dados pessoais identificáveis serão mantidos até o encerramento formal da Safra e enquanto forem necessários para auditoria e pós-mortem.
+
+Depois disso:
+
+- eliminar ou anonimizar identidade;
+- preservar histórico operacional e métricas para análise entre Safras quando a identificação pessoal não for necessária.
