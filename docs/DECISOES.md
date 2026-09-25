@@ -53,6 +53,7 @@
 | D-38 | Fechamento dos gaps restantes de C04 será executado no ambiente Lovable; recuperação e MFA permanecem dependências do Entra/TI | APPROVED |
 | D-39 | Auditoria pós-Lovable confirma controles internos; ID-001/ID-002 permanecem dependentes de evidência externa do Entra/TI | SUPERSEDED_BY_D40 |
 | D-40 | Recuperação e MFA Microsoft são controles corporativos externos à aplicação; C04 pode fechar no escopo do Painel | APPROVED |
+| D-41 | Schema v2 canônico materializado no PRIMARY e versionado em supabase/migrations | APPROVED / IMPLEMENTED |
 
 ## 3. ADRs
 
@@ -573,3 +574,24 @@ Consequência:
 - isso não constitui auditoria ou certificação do ambiente Entra; apenas define fronteira de responsabilidade.
 
 Com os controles internos aprovados, SAFRA-C04 é considerado concluído no escopo do produto.
+
+
+### ADR-034 — Schema v2 canônico
+**APPROVED / IMPLEMENTED — 25/09/2026**.
+
+Fonte canônica:
+`supabase/migrations/20260925170000_c05_schema_v2_canonical_base.sql`.
+
+Decisões:
+- o domínio Safra passa a ter schema próprio separado do legado de incidentes TI;
+- `private.safra_principals` e `private.safra_role_grants` permanecem a fonte de identidade/responsabilidade global;
+- não existe `safra_user_roles` concorrente;
+- novas tabelas começam deny-by-default;
+- seed e API produtiva ficam para fases seguintes;
+- nenhuma criticidade é inferida;
+- múltiplos treatments ACTIVE do mesmo cenário não são bloqueados no C05;
+- histórico usa FK RESTRICT e estruturas append-only em vez de cascata destrutiva.
+
+Rollback:
+- antes de dados produtivos, schema pode ser removido por migration explícita;
+- após C06, correções são forward-only e não devem apagar histórico.
