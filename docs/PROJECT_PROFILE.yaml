@@ -1,6 +1,6 @@
 schema_version: 2
 updated_at: "2026-09-24"
-status: IN_PROGRESS
+status: C01_APPROVED
 
 project:
   name: "Painel Safra"
@@ -105,8 +105,11 @@ personal_data:
     - "audit authorship"
     - "free-text operational notes may incidentally contain personal data"
   sensitive_personal_data:
-    value: "WAITING_HUMAN_DECISION"
+    value: false
+    decision_status: "APPROVED_BY_SCOPE"
     expected_by_design: false
+    intentional_collection_allowed: false
+    note: "Sensitive personal data is not part of the approved product scope. Incidental occurrence in free text must be minimized and handled under the privacy gate."
   children_or_adolescents_data: false
   minimization_required: true
   audit_history_required: true
@@ -117,7 +120,7 @@ personal_data:
     operational_history_and_metrics: "MAY_BE_RETAINED_FOR_CROSS_SAFRA_ANALYTICS_WITHOUT_PERSONAL_IDENTIFICATION_WHEN_NOT_NEEDED"
     note: "End of Safra is the operational retention boundary, extended only while identity is necessary for audit/post-mortem."
   storage_files_currently_enabled: false
-  storage_files_future_policy: "WAITING_HUMAN_DECISION"
+  storage_files_future_policy: "DEFERRED_UNTIL_STORAGE_IS_ENABLED"
 
 integrations:
   external_integrations_active: false
@@ -204,16 +207,23 @@ governance:
   project_profile: "docs/PROJECT_PROFILE.yaml"
   destructive_git_history_rewrite_allowed: false
 
-open_human_decisions:
-  - "four CRITICAL scenarios"
-  - "scenario 2 X-hour threshold"
-  - "scenario 4 X-minute threshold"
-  - "scenario 10 lead-time/queue threshold"
-  - "scenario 11 capacity threshold"
-  - "official minimum source for scenario 9 curve A"
-  - "multiple simultaneous treatments rule"
-  - "close policy with incomplete / NOT_APPLICABLE steps"
-  - "email/notification provider and channel"
-  - "formal approvers of new scenarios"
-  - "official weekly governance window"
-  - "quantitative impact definition"
+deferred_decisions:
+  four_CRITICAL_scenarios: "DEFERRED_TO_SAFRA_C03_C06"
+  scenario_2_threshold: "DEFERRED_TO_SAFRA_C06_C07"
+  scenario_4_threshold: "DEFERRED_TO_SAFRA_C06_C07"
+  scenario_10_threshold: "DEFERRED_TO_SAFRA_C06_C07"
+  scenario_11_threshold: "DEFERRED_TO_SAFRA_C06_C07"
+  scenario_9_curve_A_source: "DEFERRED_TO_SAFRA_C06_C07"
+  multiple_simultaneous_treatments: "DEFERRED_TO_SAFRA_M01"
+  incomplete_or_not_applicable_close_policy: "DEFERRED_TO_SAFRA_F01"
+  email_notification_provider_and_channel: "DEFERRED_TO_SAFRA_M05"
+  formal_new_scenario_approval_flow: "DEFERRED_TO_SAFRA_M10"
+  weekly_governance_window: "DEFERRED_TO_SAFRA_F05"
+  quantitative_impact_definition: "DEFERRED_TO_SAFRA_C03_F04"
+
+c01_gate:
+  status: "APPROVED"
+  unknown_material_count: 0
+  g3: "PASS"
+  g3_25: "PASS"
+  closed_at: "2026-09-24"
