@@ -265,7 +265,7 @@ c02_gate:
   material_blockers_without_owner: 0
 
 c04_gate:
-  status: "APPROVED_INTERNAL"
+  status: "INTERNAL_CONTROLS_PASS_EXTERNAL_EVIDENCE_PENDING"
   closed_at: "2026-09-25"
   temp_grant_cleanup: "PASS"
   role_change: "PASS"
@@ -275,9 +275,9 @@ c04_gate:
   service_account_scope: "NOT_APPLICABLE_MVP"
   entra_recovery: "EXTERNAL_EVIDENCE_PENDING"
   privileged_mfa: "EXTERNAL_EVIDENCE_PENDING"
-  g5: "PASS"
-  id_001: "CLOSED"
-  id_002: "CLOSED_INTERNAL"
-  audit_001: "CLOSED"
+  g5: "INTERNAL_PASS_EXTERNAL_IDENTITY_EVIDENCE_PENDING"
+  id_001: "INTERNAL_CONTROLS_PASS_EXTERNAL_RECOVERY_EVIDENCE_PENDING"
+  id_002: "INTERNAL_CONTROLS_PASS_PRIVILEGED_MFA_EXTERNAL_EVIDENCE_PENDING"
+  audit_001: "PASS"
   authorization_source: "private.safra_principals + private.safra_role_grants"
   user_metadata_as_authorization: false
