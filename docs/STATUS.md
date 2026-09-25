@@ -1374,3 +1374,31 @@ Lacunas para fechamento:
 - AUDIT-001: persistir ator, ação, recurso, data, resultado e correlation_id das ações sensíveis.
 
 Os testes de START/END/CANCEL permanecem deferidos para C08.1/F02.1 e não bloqueiam esta leitura dos gates do C04.
+
+
+---
+
+## SAFRA-C04 — teste de sessão expirada — 25/09/2026
+
+**PASS**
+
+Validação em duas camadas:
+
+- middleware server-side usa `supabase.auth.getClaims(token)`, que valida assinatura e expiração do JWT;
+- `public.safra_is_corporate_user()` passou a exigir também `exp > now()`.
+
+Teste determinístico no RLS:
+
+```text
+JWT corporativo válido:
+corporate_ok = true
+applications_visible = 3
+
+mesmo usuário com exp vencido:
+corporate_ok = false
+applications_visible = 0
+```
+
+Resultado: sessão/JWT expirado não produz autorização nem leitura protegida.
+
+Próximo item C04.4: troca de papel.
