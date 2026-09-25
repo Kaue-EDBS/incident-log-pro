@@ -1,7 +1,7 @@
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 24/09/2026  
-> Fase atual: **SAFRA-C04 — Identidade, RBAC e RLS**  
+> Fase atual: **SAFRA-C05 — Schema v2, migrations e invariantes**  
 > Escopo atual: consolidar fontes canônicas, perfil estruturado do projeto, arquitetura, privacidade, regras, paridade e decisões.
 
 ---
@@ -1507,8 +1507,8 @@ Autorização exclusivamente por `private.safra_principals` + `private.safra_rol
 | REVOKED_SESSION | PASS | `private.safra_session_is_live()` valida o claim `session_id` contra `auth.sessions`. Evidências: sessão existente → `true`; `session_id` inexistente/revogado → `false`; JWT expirado → `false`; sessão viva + JWT válido → `true`. A verificação é banco/server-side e integra `public.safra_is_corporate_user()`, usada pelas policies de `applications` e `incidents`. |
 | SERVICE_ACCOUNT_SCOPE | NOT_APPLICABLE_MVP | `auth.users` contém apenas identidades humanas corporativas. Nenhuma identidade funcional de serviço usa o Painel. O `service_role` é credencial técnica do backend, nunca exposta ao frontend, e não é classificada como usuário funcional. Se uma conta de integração for criada, ID-001 deve ser reaberto. |
 | RBAC_AUDIT_TRAIL | PASS | `private.safra_rbac_audit_events` (append-only) + trigger `trg_safra_audit_role_grant_change`. Run de teste gerou 4 eventos (`ROLE_GRANTED`, `ROLE_REVOKED`, `ROLE_GRANT_DELETED`, `ACCESS_DENIED`) com ator (`kaue.pastrello@editoradobrasil.com.br`), ação, recurso, horário do servidor, resultado e `correlation_id` comum. Tentativa de `UPDATE` no histórico falhou com `private.safra_rbac_audit_events is append-only`, inclusive em sessão privilegiada. Nenhum secret ou token é registrado. |
-| ENTRA_RECOVERY | EXTERNAL_EVIDENCE_PENDING | Nenhum fluxo de recuperação próprio criado no Supabase: sem `resetPasswordForEmail`, sem senha local, sem magic link. Recuperação de acesso é responsabilidade do Microsoft Entra/TI corporativo. |
-| PRIVILEGED_MFA | EXTERNAL_EVIDENCE_PENDING | MFA/Conditional Access dos usuários privilegiados (Kaue, Amanda, Vinicius, João — platform admin; Jair — governance admin; Bruno — executive admin) deve ser comprovado pelo Microsoft Entra/TI. Nenhum MFA paralelo criado no Supabase; AAL do Supabase não é usado como inferência. |
+| ENTRA_RECOVERY | EXTERNAL_CORPORATE_CONTROL | Recuperação de acesso é responsabilidade direta da TI com a Microsoft/Entra. O Painel não implementa recovery próprio, senha local ou fluxo paralelo. Fora do escopo da aplicação. |
+| PRIVILEGED_MFA | EXTERNAL_CORPORATE_CONTROL | Bloqueio, MFA e Conditional Access da identidade Microsoft são responsabilidade da TI/Microsoft Entra. O Painel não cria MFA paralelo nem governa o bloqueio da conta corporativa. Fora do escopo da aplicação. |
 
 ### Objetos criados
 
@@ -1530,9 +1530,9 @@ Autorização exclusivamente por `private.safra_principals` + `private.safra_rol
 ### Estado dos gates após o C04
 
 ```text
-G5 = INTERNAL_PASS / EXTERNAL_IDENTITY_EVIDENCE_PENDING
-ID-001 = INTERNAL_CONTROLS_PASS / EXTERNAL_RECOVERY_EVIDENCE_PENDING
-ID-002 = INTERNAL_CONTROLS_PASS / PRIVILEGED_MFA_EXTERNAL_EVIDENCE_PENDING
+G5 = PASS
+ID-001 = PASS_APP_SCOPE
+ID-002 = PASS_APP_SCOPE
 AUDIT-001 = PASS
 ```
 
@@ -1563,8 +1563,50 @@ Correção de governança:
 
 Estado:
 ```text
-G5 = INTERNAL_PASS / EXTERNAL_IDENTITY_EVIDENCE_PENDING
-ID-001 = INTERNAL_CONTROLS_PASS / EXTERNAL_RECOVERY_EVIDENCE_PENDING
-ID-002 = INTERNAL_CONTROLS_PASS / PRIVILEGED_MFA_EXTERNAL_EVIDENCE_PENDING
+G5 = PASS
+ID-001 = PASS_APP_SCOPE
+ID-002 = PASS_APP_SCOPE
 AUDIT-001 = PASS
 ```
+
+
+---
+
+## SAFRA-C04 — fechamento formal por fronteira de responsabilidade — 25/09/2026
+
+Decisão humana de escopo:
+
+- recuperação de acesso Microsoft é responsabilidade direta da TI junto à Microsoft/Entra;
+- bloqueio de acesso, MFA e Conditional Access da conta Microsoft também são responsabilidade da TI/Microsoft Entra;
+- o Painel Safra não implementa, duplica nem audita esses controles corporativos;
+- a aplicação apenas consome a identidade Microsoft autenticada e aplica seus próprios controles de sessão, RBAC, RLS e auditoria.
+
+Classificação:
+
+```text
+ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL
+PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL
+```
+
+Esses itens deixam de ser bloqueadores do ciclo da aplicação. Isso não significa que o Painel auditou ou certificou os controles do Entra; significa somente que sua governança pertence ao ambiente corporativo externo.
+
+Fechamento do C04 no escopo do Painel:
+
+```text
+TEMP_GRANT_CLEANUP = PASS
+ROLE_CHANGE = PASS
+ROLE_REVOCATION = PASS
+REVOKED_SESSION = PASS
+SERVICE_ACCOUNT_SCOPE = NOT_APPLICABLE_MVP
+RBAC_AUDIT_TRAIL = PASS
+ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL
+PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL
+
+G5 = PASS
+ID-001 = PASS_APP_SCOPE
+ID-002 = PASS_APP_SCOPE
+AUDIT-001 = PASS
+SAFRA-C04 = CONCLUIDO
+```
+
+Próxima fase canônica: **SAFRA-C05 — Schema v2, migrations e invariantes**.
