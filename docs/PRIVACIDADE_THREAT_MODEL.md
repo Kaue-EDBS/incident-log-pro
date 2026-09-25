@@ -134,3 +134,14 @@ Toda nova funcionalidade deve responder:
 ## 11. Atualização
 
 Mudança de identidade, integração, dados pessoais, retenção, arquivos ou exposição deve atualizar este documento e `PROJECT_PROFILE.yaml`.
+
+
+## Política de retenção aprovada — 24/09/2026
+
+**Status: APPROVED**
+
+- fronteira operacional: encerramento formal da Safra;
+- extensão permitida: somente enquanto identidade for necessária para auditoria/pós-mortem;
+- após a finalidade: eliminar ou anonimizar dados pessoais identificáveis;
+- histórico e métricas podem permanecer para análises comparativas entre Safras sem identificação pessoal quando ela não for necessária;
+- a política final de implementação deve ser validada no gate de privacidade antes do release.
