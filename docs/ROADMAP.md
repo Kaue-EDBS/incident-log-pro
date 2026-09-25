@@ -992,6 +992,27 @@ Nenhuma entidade de C05 pode possuir nome ambíguo ou duas definições concorre
 
 Implementar autenticação corporativa e autorização definitiva conforme o modelo aprovado.
 
+### C04.1 — Microsoft Entra ID / SSO — IMPLEMENTAÇÃO DE CÓDIGO CONCLUÍDA
+
+Implementado no frontend:
+- gate global de sessão;
+- login exclusivamente por `signInWithOAuth({ provider: "azure" })`;
+- escopo `email`;
+- persistência/restauração de sessão Supabase;
+- logout;
+- bearer token anexado às server functions pelo middleware existente;
+- middleware server-side valida token e expõe `sub`/user id;
+- nenhum fluxo funcional de senha local foi adicionado.
+
+Dependência externa ainda necessária antes de homologar ID-001/ID-002:
+- registrar/configurar app no Microsoft Entra ID;
+- configurar callback Supabase Auth;
+- habilitar provider Azure no Lovable/Supabase Auth;
+- restringir ao tenant corporativo;
+- desabilitar Email/Password no backend do Auth;
+- cadastrar redirect URLs de produção/preview;
+- testar login real e `auth.uid()`.
+
 ### Identidade
 
 ```text
