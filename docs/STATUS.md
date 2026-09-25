@@ -634,7 +634,7 @@ Os atributos exigidos pelo SAFRA-C01 foram registrados no `docs/PROJECT_PROFILE.
 | Atributo | Registro atual |
 |---|---|
 | service class da aplicação | **DECIDIDO: CRITICO** — SLO 99,95%; RTO 30 min; RPO 5 min |
-| criticidade técnica da aplicação | WAITING_HUMAN_DECISION — distinta de CRITICAL/HIGH/MODERATE dos cenários |
+| criticidade técnica da aplicação | **DECIDIDO: MEDIUM** — independente de service_class=CRITICO e de CRITICAL/HIGH/MODERATE dos cenários |
 | criticidade dos cenários | CRITICAL/HIGH/MODERATE — regra de domínio registrada; lista dos quatro críticos ainda pendente |
 | Auth | **DECIDIDO:** Microsoft Entra ID corporativo via SSO; login frontend ainda não implementado; 0 usuários |
 | papéis privilegiados | **DECIDIDO:** safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner; matriz fina deferida ao SAFRA-C04 |
@@ -773,3 +773,14 @@ RPO = 5 min
 ```
 
 A decisão classifica o próprio Painel Safra e não deve ser confundida com a criticidade CRITICAL/HIGH/MODERATE dos cenários.
+
+
+### Application criticality — MEDIUM — 24/09/2026
+
+**APPROVED**
+
+```text
+application_criticality = MEDIUM
+```
+
+A decisão é explícita do projeto e não altera a service class CRITICO nem a criticidade dos cenários.
