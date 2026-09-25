@@ -34,9 +34,10 @@ service:
     decision_status: "APPROVED"
     note: "Technical classification of the Painel Safra application. It is independent from scenario criticality."
   application_criticality:
-    value: "WAITING_HUMAN_DECISION"
-    source: "Framework EBSA"
-    note: "Technical/operational criticality of the application itself. It is distinct from business scenario criticality."
+    value: "MEDIUM"
+    source: "Project decision / Framework EBSA field"
+    decision_status: "APPROVED"
+    note: "Business/operational impact classification of the application itself. It remains independent from service_class=CRITICO and from scenario criticality."
   slo: "99.95%"
   rto_minutes: 30
   rpo_minutes: 5
@@ -189,7 +190,6 @@ governance:
   destructive_git_history_rewrite_allowed: false
 
 open_human_decisions:
-  - "application criticality"
   - "four CRITICAL scenarios"
   - "scenario 2 X-hour threshold"
   - "scenario 4 X-minute threshold"
