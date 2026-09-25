@@ -1,7 +1,7 @@
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 24/09/2026  
-> Fase atual: **SAFRA-C03 — Glossário e modelo de domínio**  
+> Fase atual: **SAFRA-C04 — Identidade, RBAC e RLS**  
 > Escopo atual: consolidar fontes canônicas, perfil estruturado do projeto, arquitetura, privacidade, regras, paridade e decisões.
 
 ---
@@ -1340,3 +1340,37 @@ Pendência administrativa:
 - o histórico remoto `supabase_migrations.schema_migrations` ainda não contém todas as migrations aplicadas fora do fluxo formal;
 - regularizar por migration repair quando houver CLI/acesso apropriado;
 - não editar manualmente a tabela interna como substituto do repair.
+
+
+---
+
+## SAFRA-C04 — revisão formal dos gates de identidade — 25/09/2026
+
+A revisão contra o Manual Operacional EBSA v1.7 mostrou que os gates não podem ser fechados apenas com SSO/RLS funcionando.
+
+Estado:
+
+```text
+G5 = PARTIAL
+ID-001 = BLOCKED_EVIDENCE
+ID-002 = BLOCKED_EVIDENCE
+AUDIT-001 = BLOCKED_EVIDENCE
+```
+
+Evidências existentes:
+- Entra ID / SSO homologado;
+- auth.uid() funcional;
+- role mapping em tabelas governadas;
+- RLS positiva/negativa;
+- anon bloqueado;
+- outsider autenticado bloqueado;
+- elevação direta de role negada;
+- platform admin não herda ownership;
+- mesma regra-base para Data API/RPC/server.
+
+Lacunas para fechamento:
+- ID-001: testar troca de papel, revogação, desligamento/sessão antiga, recuperação e definir contas de serviço;
+- ID-002: revisar acessos privilegiados e MFA conforme risco;
+- AUDIT-001: persistir ator, ação, recurso, data, resultado e correlation_id das ações sensíveis.
+
+Os testes de START/END/CANCEL permanecem deferidos para C08.1/F02.1 e não bloqueiam esta leitura dos gates do C04.
