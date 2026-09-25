@@ -2679,25 +2679,33 @@ O sistema sabe:
 Fase atual:
 
 ```text
-SAFRA-C03 — Glossário e modelo de domínio
+SAFRA-C05 — Schema v2, migrations e invariantes
+subpasso atual: C05.4 — mutações transacionais, idempotência e concorrência
 ```
 
-Já concluído dentro do C02:
+Já concluído no C05:
 
-- ameaças principais identificadas;
-- controles mapeados;
-- casos de bypass/API, enumeração, vazamento, retry e SLA manipulável formalizados;
-- testes positivos, negativos, concorrência/retry e limite derivados.
+- autoridade canônica de migrations definida em `supabase/migrations`;
+- drift C00/C04/C05 reconciliado;
+- rollback documentado;
+- banco descartável implementado e validado em CI;
+- schema v2 com 17 tabelas materializado;
+- domínio canônico de áreas, sistemas, papéis, cenários/versionamento, owners, SLAs, treatments, eventos, escalonamentos, notificações, propostas e governance issues consolidado;
+- RLS deny-by-default preservada;
+- `GI-SAFRA-001` permanece OPEN sem inferência.
 
-Fechamento C02 concluído:
+Próximo trabalho:
 
-1. riscos residuais revisados;
-2. cobertura de G3.5 / THREAT-001 / AUTHZ-001 confirmada;
-3. C02 encerrado documentalmente;
-4. próximo ciclo: C03 — Glossário e modelo de domínio;
-5. controles permanecem para implementação em C04/C05 e fases dependentes.
+1. implementar contratos transacionais para START/END/CANCEL e escalonamento;
+2. centralizar timestamp server-side, authorization e validação de estado;
+3. fechar idempotency key e correlation id;
+4. testar retry/double submit;
+5. testar concorrência END x CANCEL;
+6. ampliar pgTAP e testes diretos de RPC/API;
+7. somente depois revisar o gate de saída do C05.
 
----
+Não iniciar C06 enquanto C05.4 e seus testes não estiverem concluídos.
+
 
 # 29. Conclusão
 
