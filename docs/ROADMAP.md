@@ -1050,9 +1050,11 @@ Validação:
 - nenhuma tabela scenario→owner existe ainda;
 - ownership específico permanece para C05/C06.
 
-Pendência do C04:
-- policies RLS atuais ainda usam o gate temporário `app_metadata.safra_access` do C00;
-- próximo passo: migrar RLS para o novo role mapping sem quebrar acesso base autenticado.
+Estado do C04:
+- `app_metadata.safra_access` foi removido;
+- RLS usa o predicado canônico `safra_is_corporate_user()`;
+- role mapping permanece em tabelas governadas;
+- testes dependentes de cenário/tratativa foram movidos para as fases executáveis correspondentes.
 
 ### Role mapping alvo
 
@@ -1098,7 +1100,7 @@ Validação:
 - anon: sem SELECT/EXECUTE;
 - `safra_access` removido de app_metadata.
 
-Migration formal da mudança live: reconciliar no C05.
+Migration canônica versionada em `supabase/migrations/20260925133200_c04_role_mapping_and_corporate_rls.sql`. O único item administrativo remanescente é o migration repair do histórico remoto.
 
 ### Testes obrigatórios do C04
 
