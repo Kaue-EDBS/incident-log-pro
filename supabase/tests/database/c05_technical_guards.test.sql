@@ -29,8 +29,13 @@ select ok(
 );
 
 -- Constraint behavior: CANCEL reason remains mandatory at the persistence layer.
-select has_constraint(
-  'public', 'treatments', 'treatments_cancel_reason_required',
+select ok(
+  exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.treatments'::regclass
+      and conname = 'treatments_cancel_reason_required'
+  ),
   'CANCEL reason constraint exists'
 );
 
