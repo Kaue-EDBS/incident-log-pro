@@ -25,15 +25,23 @@ Somente cenário `VALIDATED/PUBLISHED` pode originar tratativa real.
 Nenhum sinal externo cria automaticamente `treatments` no MVP.
 
 ### RB-SAFRA-003 — START
-Somente owner autorizado do cenário pode iniciar.
+Qualquer usuário autenticado pelo Microsoft Entra ID pode iniciar um protocolo publicado.
+
+O ator do START deve ser persistido pelo backend com timestamp oficial e trilha de auditoria.
+
+O `scenario_owner` não possui exclusividade sobre o START; seu papel é responsabilidade pelo card e execução do protocolo com sua equipe.
 
 ### RB-SAFRA-004 — END
-Somente owner autorizado pode resolver ou cancelar.
+Qualquer usuário autenticado pelo Microsoft Entra ID pode encerrar uma tratativa ativa quando a necessidade que motivou a ativação estiver concluída.
 
-### RB-SAFRA-005 — Atualização de protocolo
+O ator do END e o timestamp oficial devem ser persistidos pelo backend.
+
+### RB-SAFRA-005 — Execução durante a tratativa
 Não existe papel funcional separado de `scenario_updater`.
 
-A atualização operacional deve ser atribuída pela matriz final a `scenario_owner` e/ou `safra_admin`, conforme decisão explícita.
+O Painel Safra não executa nem controla passo a passo o trabalho operacional do protocolo. O `scenario_owner` conduz o protocolo com sua equipe, conforme o procedimento definido para o card.
+
+O usuário autenticado que ativou ou acompanha o caso pode encerrar a tratativa quando a necessidade estiver concluída.
 
 ### RB-SAFRA-006 — Cancelamento auditável
 Tratativa incorreta vira `CANCELLED`; exclusão física é proibida no fluxo normal.
@@ -142,14 +150,14 @@ Escalonamento não cria status adicional.
 
 ## 5. Autoridade
 
-### Owner
-START, END, CANCEL e delegação.
+### Usuário autenticado
+Pode visualizar cards e executar START, END e CANCEL conforme regras auditáveis do produto.
 
-Papéis funcionais aprovados: somente `safra_admin` e `scenario_owner`.
+### Scenario owner
+É o responsável formal pelo card e pelo protocolo operacional junto ao seu time. Recebe as comunicações do próprio card e responde pela estrutura do procedimento, mas não possui exclusividade sobre START/END/CANCEL.
 
-Não existirão papéis funcionais separados de updater ou viewer.
-
-A matriz fina de permissões entre os dois papéis continua **WAITING_HUMAN_DECISION**.
+### Papéis administrativos
+Os subtipos administrativos e suas responsabilidades estão registrados em `docs/DECISOES.md`. A implementação fina de RBAC permanece deferida ao SAFRA-C04.
 
 ## 6. Decisões humanas abertas
 
