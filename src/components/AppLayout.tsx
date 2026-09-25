@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Activity, BarChart3, LayoutGrid, PlusCircle, Server, ShieldAlert } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/integrations/supabase/AuthProvider";
 
 const NAV = [
   { to: "/", label: "Visão Geral", icon: LayoutGrid },
@@ -17,6 +18,7 @@ function isActive(pathname: string, to: string) {
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { user, signOut } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,9 +47,18 @@ export function AppLayout({ children }: { children: ReactNode }) {
             </Link>
           ))}
         </nav>
-        <p className="px-6 py-6 text-xs text-muted-foreground">
-          Confiabilidade e disponibilidade de aplicações
-        </p>
+        <div className="border-t border-sidebar-border px-4 py-4">
+          <p className="truncate text-xs font-medium text-sidebar-foreground">
+            {user?.email ?? "Usuário corporativo"}
+          </p>
+          <button
+            type="button"
+            className="mt-3 w-full rounded-lg border border-sidebar-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            onClick={() => void signOut()}
+          >
+            Sair
+          </button>
+        </div>
       </aside>
 
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-card px-4 py-3 lg:hidden">
