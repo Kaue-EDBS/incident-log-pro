@@ -670,7 +670,7 @@ Nada nesta seção deve voltar a aparecer como `UNKNOWN` genérico.
 | período exato da “Safra corrente” para métricas em e-mail | DEFERRED | M05/F04 |
 | publicação formal após ownership do 12º card | DEFERRED | M10 |
 | janela oficial de governança semanal | DEFERRED | F05 |
-| definição de impacto quantitativo | DEFERRED | C03/F04 |
+| métricas/thresholds quantitativos específicos | DEFERRED | C06/F04 |
 | estratégia canônica de migrations (Drizzle x supabase/migrations) | DEFERRED | C05 |
 
 ---
@@ -917,6 +917,22 @@ Congelar o vocabulário antes de criar schema v2.
 Termos congelados: cenário, versão de cenário, gatilho, detecção, START, protocolo, tratativa, owner, área responsável, área impactada, SLA, criticidade, END, CANCEL, escalonamento, pós-mortem, recorrência, proposta de cenário e publicação de cenário.
 
 Fonte canônica: `docs/GLOSSARIO_DOMINIO.md`.
+
+### C03.2 — Cenário, versão, tratativa e impacto — CONCLUÍDO
+
+Congelado em 25/09/2026:
+
+- cenário = identidade estável do tipo de contingência;
+- versão = conteúdo imutável vigente daquele cenário;
+- tratativa = ocorrência real criada por START;
+- impacto qualitativo = descrição contextual das consequências;
+- impacto quantitativo = medição estruturada com métrica + valor + unidade + fonte + referência temporal;
+- cenário/versão pode conter impacto esperado;
+- tratativa contém impacto observado;
+- impacto não altera automaticamente criticidade, escalonamento ou SLA;
+- score/threshold quantitativo permanece proibido sem regra e fonte explícitas.
+
+Desenho técnico de medições quantitativas fica para C05/F04.
 
 ### Decisões que C03 deve deixar explícitas
 
