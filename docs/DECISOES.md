@@ -35,6 +35,7 @@
 | D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico | APPROVED |
 | D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards | APPROVED |
 | D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | APPROVED |
+| D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED |
 
 ## 3. ADRs
 
@@ -46,11 +47,18 @@ PRIMARY Lovable Cloud: **APPROVED**.
 REPLICA: **WAITING_HUMAN_DECISION**.
 
 ### ADR-003 — Service class da aplicação
-**WAITING_HUMAN_DECISION**.
+**APPROVED — 24/09/2026**.
 
-É uma classificação técnica exigida pelo Framework EBSA. Não deriva dos materiais-mãe do negócio e não deve ser inferida a partir de SLA, criticidade ou impacto de qualquer cenário Safra.
+A aplicação Painel Safra foi classificada como:
 
-A decisão deverá considerar apenas o impacto da indisponibilidade do próprio Painel Safra.
+```text
+service_class = CRITICO
+SLO = 99,95%
+RTO = 30 min
+RPO = 5 min
+```
+
+Esta decisão pertence ao Framework EBSA e classifica o próprio software. Não altera nem deriva da criticidade dos cenários Safra.
 
 ### ADR-004 — Identity provider
 **APPROVED — 24/09/2026**.
@@ -91,8 +99,6 @@ Hoje coexistem `supabase/migrations` e Drizzle. C05 deve definir autoridade úni
 - múltiplas tratativas simultâneas;
 - fechamento com passo incompleto/NA;
 - matriz exata de permissões por papel;
-- service class;
-- RTO/RPO;
 - REPLICA;
 - canal de notificação;
 - aprovadores de novos cenários;
