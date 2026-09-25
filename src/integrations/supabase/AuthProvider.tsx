@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { supabase } from "./client";
+import { lovable } from "@/integrations/lovable/index";
 
 type AuthContextValue = {
   session: Session | null;
@@ -66,17 +67,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithMicrosoft = useCallback(async () => {
-    const redirectTo = resolveAuthRedirectUrl();
+    const redirectTo = resolveAuthRedirectUrl() ?? window.location.origin;
 
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "azure",
-      options: {
-        scopes: "email",
-        ...(redirectTo ? { redirectTo } : {}),
-      },
+    const result = await lovable.auth.signInWithOAuth("microsoft", {
+      redirect_uri: redirectTo,
     });
 
-    if (error) throw error;
+    if (result.error) throw result.error;
+    if (result.redirected) return;
   }, []);
 
   const signOut = useCallback(async () => {
