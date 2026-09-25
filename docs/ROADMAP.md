@@ -992,11 +992,11 @@ Nenhuma entidade de C05 pode possuir nome ambíguo ou duas definições concorre
 
 Implementar autenticação corporativa e autorização definitiva conforme o modelo aprovado.
 
-### C04.1 — Microsoft Entra ID / SSO — IMPLEMENTAÇÃO DE CÓDIGO CONCLUÍDA
+### C04.1 — Microsoft Entra ID / SSO — HOMOLOGADO
 
 Implementado no frontend:
 - gate global de sessão;
-- login exclusivamente por `signInWithOAuth({ provider: "azure" })`;
+- login exclusivamente via Lovable Cloud Auth com provider `microsoft`, que estabelece a sessão Supabase;
 - escopo `email`;
 - persistência/restauração de sessão Supabase;
 - logout;
@@ -1004,21 +1004,22 @@ Implementado no frontend:
 - middleware server-side valida token e expõe `sub`/user id;
 - nenhum fluxo funcional de senha local foi adicionado.
 
-Dependência externa ainda necessária antes de homologar ID-001/ID-002:
-- registrar/configurar app no Microsoft Entra ID;
-- configurar callback Supabase Auth;
-- habilitar provider Azure no Lovable/Supabase Auth;
-- restringir ao tenant corporativo;
-- desabilitar Email/Password no backend do Auth;
-- cadastrar redirect URLs de produção/preview;
-- testar login real e `auth.uid()`.
+Homologação concluída em 25/09/2026:
+- provider Microsoft configurado via Lovable Cloud Auth;
+- primeiro login corporativo realizado com sucesso;
+- sessão persistida no Supabase Auth;
+- identidade registrada com provider Azure;
+- cadeia Microsoft -> Lovable Auth -> Supabase session validada;
+- login local por senha permanece proibido pela decisão do projeto;
+- evidência runtime: usuário Azure presente em `auth.users` com `last_sign_in_at` preenchido.
 
 ### Identidade
 
 ```text
 Microsoft Entra ID
     -> SSO
-    -> Supabase/Lovable Auth
+    -> Lovable Cloud Auth (provider microsoft)
+    -> Supabase Auth session
     -> auth.uid()
 ```
 
