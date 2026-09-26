@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(8);
+select plan(9);
 
 select is(
   (select count(*)::bigint from pg_class c
@@ -86,6 +86,17 @@ select is(
   (select count(*)::bigint from storage.buckets),
   0::bigint,
   'storage remains disabled/unused in current MVP scope'
+);
+
+
+
+select ok(
+  not has_function_privilege(
+    'authenticated',
+    'public.safra_log_access_denied(text,text)',
+    'EXECUTE'
+  ),
+  'access-denied audit writer is backend-only'
 );
 
 select * from finish();
