@@ -36,8 +36,18 @@ jobs:
         run: python3 .github/scripts/check-known-vulnerable-dependency-floors.py
 
       - name: General dependency audit
-        continue-on-error: true
-        run: bun audit --audit-level=high
+        run: |
+          for attempt in 1 2 3; do
+            echo "Dependency audit attempt ${attempt}/3"
+            if bun audit --audit-level=high; then
+              exit 0
+            fi
+            if [ "${attempt}" -lt 3 ]; then
+              sleep $((attempt * 5))
+            fi
+          done
+          echo "Dependency audit failed after 3 attempts."
+          exit 1
 
       - name: Typecheck
         run: bunx tsc --noEmit
