@@ -288,3 +288,51 @@ Contrato:
 - todos os critérios do roadmap daquele gate precisam estar explicitamente evidenciados;
 - ausência de evidência mantém o gate não publicado;
 - CI deve falhar se um gate for marcado como `PASS` sem aprovação/evidência.
+
+
+### RB-SAFRA-029 — Reconciliação 100% da Matriz v3
+**Status: IMPLEMENTED**
+
+Todo dado importado da Matriz v3 deve reconciliar integralmente com o estado canônico publicado antes de qualquer avanço de fase.
+
+Contrato:
+- 11 cenários canônicos;
+- 18 campos importados por cenário;
+- 198 comparações obrigatórias;
+- tolerância de divergência = zero;
+- qualquer diferença bloqueia o CI;
+- mudança de fonte exige novo hash, novo staging, novo preview diff e nova aprovação humana;
+- não é permitido alterar simultaneamente o snapshot esperado e o banco para “fazer o teste passar” sem reconhecer formalmente a mudança da fonte.
+
+Campos cobertos:
+- number;
+- code;
+- name;
+- trigger;
+- activation;
+- protocol;
+- responsible_area;
+- owner;
+- impacted_areas;
+- sla_target;
+- tool;
+- monitoring_visibility;
+- validation_participants;
+- mapping;
+- source_row;
+- source_file;
+- source_sheet;
+- source_sha256.
+
+Além da comparação dos 18 campos importados, o gate valida as representações normalizadas no schema:
+- nome;
+- gatilho;
+- acionamento;
+- protocolo;
+- área responsável;
+- owner;
+- áreas impactáveis;
+- vínculo de ferramenta/sistema.
+
+Resultado esperado:
+`MATRIX_V3_RECONCILIATION = 198/198`.
