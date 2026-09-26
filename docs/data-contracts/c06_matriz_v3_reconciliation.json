@@ -1,0 +1,61 @@
+{
+  "pipeline_stage": "reconciliation",
+  "executed_on": "2026-09-25",
+  "parser": {
+    "name": "c06_matrix_v3",
+    "version": "1.0.0"
+  },
+  "source_sha256": "b0cca8cce835dbdc65ab0c30212fd89480d2cf51e9fb62d215ad1bde0963ead6",
+  "staging_sha256": "242a31fcb033b9382c136b0ca88f186e9a49a8fb83d766e6d8902893e8140cff",
+  "validation_status": "PASS",
+  "preview_diff_status": "NO_DIFF",
+  "preview_difference_count": 0,
+  "human_approval": "APPROVED_FOR_RECONCILIATION",
+  "seed_migration": {
+    "version": "20260925213118",
+    "name": "c06_seed_canonical_matrix_v3",
+    "path": "supabase/migrations/20260925213118_c06_seed_canonical_matrix_v3.sql",
+    "tracking_present_in_primary": true,
+    "new_migration_required": false,
+    "reason": "zero diff against already-applied canonical C06.01 state"
+  },
+  "primary": {
+    "scenarios": 11,
+    "published_v1": 11,
+    "active_owners": 11,
+    "impacted_area_links": 20,
+    "system_links": 11,
+    "structured_slas": 0,
+    "null_criticality": 11,
+    "current_version_ok": 11,
+    "source_hash_ok": 11
+  },
+  "owner_mapping": {
+    "SAFRA-01": "Daniel Garcia",
+    "SAFRA-02": "Daniel Garcia",
+    "SAFRA-03": "Daniel Garcia",
+    "SAFRA-04": "Jiane Rodrigues",
+    "SAFRA-05": "Jiane Rodrigues",
+    "SAFRA-06": "Jiane Rodrigues",
+    "SAFRA-07": "Daniel Garcia",
+    "SAFRA-08": "Jiane Rodrigues",
+    "SAFRA-09": "Renato de Paulo",
+    "SAFRA-10": "Daniel Garcia",
+    "SAFRA-11": "Daniel Garcia"
+  },
+  "admin_ownerships": {
+    "Bruno Palhao": 0,
+    "Jair Silva": 0,
+    "Amanda Bueno": 0,
+    "Joao Jurado": 0,
+    "Kaue Pastrello": 0,
+    "Vinicius Moraes": 0
+  },
+  "unresolved_by_design": [
+    "GI-SAFRA-001 criticality list",
+    "GI-SAFRA-002 thresholds scenarios 2,4,10,11",
+    "GI-SAFRA-003 curve-A minimum source/rule",
+    "structured SLA start_event/end_event for C07"
+  ],
+  "status": "PASS"
+}
