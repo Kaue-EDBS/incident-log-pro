@@ -1,0 +1,124 @@
+{
+  "evidence_type": "PRIMARY_REAL_OWNERSHIP_LINKS",
+  "captured_on": "2026-09-26",
+  "source_tables": [
+    "public.scenarios",
+    "public.scenario_owners",
+    "private.safra_principals",
+    "private.safra_role_grants"
+  ],
+  "note": "UUIDs are PRIMARY evidence only; regression tests validate relationships semantically because disposable databases generate different UUIDs.",
+  "active_link_count": 11,
+  "rows": [
+    {
+      "code": "SAFRA-01",
+      "corporate_email": "daniel.garcia@editoradobrasil.com.br",
+      "display_name": "Daniel Garcia",
+      "owner_id": "76cc4206-796f-4c6f-bb73-26716b91abaa",
+      "ownership_link_id": "b34f9172-0a40-4dc1-b8e6-762eab8c6835",
+      "scenario_id": "2c88c5b5-bd33-418a-9380-a12f7e0862d1",
+      "valid_from": "2026-09-25 21:38:17.280931+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-02",
+      "corporate_email": "daniel.garcia@editoradobrasil.com.br",
+      "display_name": "Daniel Garcia",
+      "owner_id": "76cc4206-796f-4c6f-bb73-26716b91abaa",
+      "ownership_link_id": "b14cb106-f712-4a2d-8124-5ee4ab702bbd",
+      "scenario_id": "10f18972-529f-487f-9e40-8edf5308a273",
+      "valid_from": "2026-09-25 21:38:17.281921+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-03",
+      "corporate_email": "daniel.garcia@editoradobrasil.com.br",
+      "display_name": "Daniel Garcia",
+      "owner_id": "76cc4206-796f-4c6f-bb73-26716b91abaa",
+      "ownership_link_id": "9ea1e297-7939-4833-92d5-109477fd9b41",
+      "scenario_id": "9f43f0dd-39bd-4326-b0eb-f010f9b2c043",
+      "valid_from": "2026-09-25 21:38:17.282388+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-04",
+      "corporate_email": "jiane.rodrigues@editoradobrasil.com.br",
+      "display_name": "Jiane Rodrigues",
+      "owner_id": "cb2803a7-7fa6-484a-abe8-23189910ab76",
+      "ownership_link_id": "554efcd6-9ac7-4802-a9ea-8668595c95b6",
+      "scenario_id": "c663d21a-0cd0-43ff-a9dd-5856798f958d",
+      "valid_from": "2026-09-25 21:38:17.282857+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-05",
+      "corporate_email": "jiane.rodrigues@editoradobrasil.com.br",
+      "display_name": "Jiane Rodrigues",
+      "owner_id": "cb2803a7-7fa6-484a-abe8-23189910ab76",
+      "ownership_link_id": "c47a3eb2-1fff-410f-8c6c-e7f03bfb57f8",
+      "scenario_id": "9c271ead-34c4-490c-b564-8d68b8fd0bc8",
+      "valid_from": "2026-09-25 21:38:17.283295+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-06",
+      "corporate_email": "jiane.rodrigues@editoradobrasil.com.br",
+      "display_name": "Jiane Rodrigues",
+      "owner_id": "cb2803a7-7fa6-484a-abe8-23189910ab76",
+      "ownership_link_id": "4963f32a-f6c2-4164-b881-11017d71852c",
+      "scenario_id": "06972c6d-39a9-4120-885d-b54febc4c858",
+      "valid_from": "2026-09-25 21:38:17.283746+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-07",
+      "corporate_email": "daniel.garcia@editoradobrasil.com.br",
+      "display_name": "Daniel Garcia",
+      "owner_id": "76cc4206-796f-4c6f-bb73-26716b91abaa",
+      "ownership_link_id": "535e5432-6f40-407c-a5d6-a798eb5d9feb",
+      "scenario_id": "22def355-9379-4598-99f0-6713f10f740a",
+      "valid_from": "2026-09-25 21:38:17.284218+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-08",
+      "corporate_email": "jiane.rodrigues@editoradobrasil.com.br",
+      "display_name": "Jiane Rodrigues",
+      "owner_id": "cb2803a7-7fa6-484a-abe8-23189910ab76",
+      "ownership_link_id": "19957e49-649d-4bd5-8839-8d87775188b6",
+      "scenario_id": "73f7b826-2eb3-4411-a2b1-2c142e13595f",
+      "valid_from": "2026-09-25 21:38:17.284578+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-09",
+      "corporate_email": "renato.paulo@editoradobrasil.com.br",
+      "display_name": "Renato de Paulo",
+      "owner_id": "136643c4-8540-4c2c-87e8-e38fed5ec5fb",
+      "ownership_link_id": "d4b4f7ea-b2e3-414d-a53f-a1c419141fdf",
+      "scenario_id": "b1cbd7c4-2bdf-45cf-853a-1fd5f76e50a8",
+      "valid_from": "2026-09-25 21:38:17.285469+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-10",
+      "corporate_email": "daniel.garcia@editoradobrasil.com.br",
+      "display_name": "Daniel Garcia",
+      "owner_id": "76cc4206-796f-4c6f-bb73-26716b91abaa",
+      "ownership_link_id": "5d6b39b9-fec1-46a6-b32b-310e7e8ab011",
+      "scenario_id": "1dcccede-fa9f-4b7d-a8a1-35e40df27f6f",
+      "valid_from": "2026-09-25 21:38:17.286361+00",
+      "valid_to": null
+    },
+    {
+      "code": "SAFRA-11",
+      "corporate_email": "daniel.garcia@editoradobrasil.com.br",
+      "display_name": "Daniel Garcia",
+      "owner_id": "76cc4206-796f-4c6f-bb73-26716b91abaa",
+      "ownership_link_id": "b6c21bdf-9333-49f3-851a-5423d022c1cc",
+      "scenario_id": "6ad1b0af-d00f-49ca-9d2a-01656a5f72ff",
+      "valid_from": "2026-09-25 21:38:17.286751+00",
+      "valid_to": null
+    }
+  ]
+}
