@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "rule": "P1-P4 may never be published as PASS by inference.",
+  "allowed_status": [
+    "NOT_PUBLISHED",
+    "WAITING_HUMAN_DECISION",
+    "PASS"
+  ],
+  "gates": {
+    "P1": {
+      "name": "DOMAIN_READY",
+      "status": "NOT_PUBLISHED",
+      "human_approval": false,
+      "evidence": []
+    },
+    "P2": {
+      "name": "START_READY",
+      "status": "NOT_PUBLISHED",
+      "human_approval": false,
+      "evidence": []
+    },
+    "P3": {
+      "name": "IN_FLIGHT_READY",
+      "status": "NOT_PUBLISHED",
+      "human_approval": false,
+      "evidence": []
+    },
+    "P4": {
+      "name": "CLOSE_READY",
+      "status": "NOT_PUBLISHED",
+      "human_approval": false,
+      "evidence": []
+    }
+  },
+  "publication_contract": {
+    "pass_requires": [
+      "human_approval=true",
+      "non-empty evidence[]",
+      "all roadmap criteria explicitly evidenced"
+    ],
+    "inference_forbidden": true,
+    "phase_completion_is_not_gate_pass": true,
+    "commit_name_is_not_evidence": true,
+    "llm_judgement_is_not_evidence": true
+  }
+}
