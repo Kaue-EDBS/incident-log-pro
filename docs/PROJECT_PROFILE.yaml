@@ -1,5 +1,5 @@
 schema_version: 2
-updated_at: "2026-09-24"
+updated_at: "2026-09-26"
 status: C01_APPROVED
 
 project:
@@ -89,9 +89,9 @@ identity_and_auth:
   current_users_with_safra_access: 1
   anonymous_database_access: false
   temporary_authorization:
-    mechanism: "app_metadata.safra_access"
+    mechanism: "legacy app_metadata.safra_access"
     scope: "SAFRA-C00 containment"
-    status: "IMPLEMENTED"
+    status: "REMOVED_SUPERSEDED_BY_C04"
   final_rbac:
     status: "NOT_IMPLEMENTED"
     target_phase: "SAFRA-C04"
@@ -118,7 +118,7 @@ privileged_roles:
     assignment_model: "NON_HIERARCHICAL"
     inheritance: false
     note: "Microsoft-authenticated users are base actors. Responsibility roles add technical, governance, executive or card-owner duties."
-  exact_permission_matrix: "DEFERRED_TO_SAFRA_C04"
+  exact_permission_matrix: "IMPLEMENTED_IN_SAFRA_C04"
 
 security:
   rls_enabled: true
@@ -214,7 +214,7 @@ domain_rules:
       - "EDB06 - Protocolos de contingência v2.pdf"
     note: "Business/domain attribute of scenarios. Not equivalent to application service_class."
   critical_scenarios_list: "GOVERNANCE_ISSUE_GI_SAFRA_001"
-  safra_rules_registered: 17
+  safra_rules_registered: 29
   legacy_it_rules_registered: 4
   automated_decisioning: false
   protocol_activation_mode: "MANUAL"
@@ -243,16 +243,16 @@ governance:
 
 deferred_decisions:
   four_CRITICAL_scenarios: "GOVERNANCE_ISSUE_GI_SAFRA_001; BLOCKED_UNTIL_HUMAN_DECISION; C06_MUST_NOT_INFER"
-  scenario_2_threshold: "DEFERRED_TO_SAFRA_C06_C07"
-  scenario_4_threshold: "DEFERRED_TO_SAFRA_C06_C07"
-  scenario_10_threshold: "DEFERRED_TO_SAFRA_C06_C07"
-  scenario_11_threshold: "DEFERRED_TO_SAFRA_C06_C07"
-  scenario_9_curve_A_source: "DEFERRED_TO_SAFRA_C06_C07"
-  multiple_simultaneous_treatments: "DEFERRED_TO_SAFRA_M01"
+  scenario_2_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
+  scenario_4_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
+  scenario_10_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
+  scenario_11_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
+  scenario_9_curve_A_source: "GOVERNANCE_ISSUE_GI_SAFRA_003"
+  multiple_simultaneous_treatments: "GOVERNANCE_ISSUE_GI_SAFRA_004"
   incomplete_or_not_applicable_close_policy: "DEFERRED_TO_SAFRA_F01"
-  email_notification_provider_and_channel: "DEFERRED_TO_SAFRA_M05"
-  formal_new_scenario_approval_flow: "DEFERRED_TO_SAFRA_M10"
-  weekly_governance_window: "DEFERRED_TO_SAFRA_F05"
+  email_notification_provider_and_channel: "GOVERNANCE_ISSUE_GI_SAFRA_005"
+  formal_new_scenario_approval_flow: "GOVERNANCE_ISSUE_GI_SAFRA_007"
+  weekly_governance_window: "GOVERNANCE_ISSUE_GI_SAFRA_008"
   quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_C06_F04"
 
 c01_gate:
@@ -305,7 +305,7 @@ c05_schema_v2:
   gi_safra_001_status: "OPEN"
   criticality_default: null
   active_treatment_uniqueness_constraint: false
-  seed_11_scenarios: "NOT_STARTED_C06"
+  seed_11_scenarios: "PASS_C06_01_RECONCILED_198_OF_198"
   start_end_cancel_rpcs: "NOT_STARTED"
 
 
