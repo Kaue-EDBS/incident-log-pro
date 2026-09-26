@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Product gates P1-P4
+        run: python3 .github/scripts/check-product-gates.py
+
       - name: Known HIGH dependency floors
         run: python3 .github/scripts/check-known-vulnerable-dependency-floors.py
 
