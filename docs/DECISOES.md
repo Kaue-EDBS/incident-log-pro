@@ -685,3 +685,46 @@ Limites preservados:
 - múltiplos treatments ACTIVE por cenário continua decisão M01;
 - notificações produtivas permanecem M05;
 - criticidade dos quatro cenários permanece em GI-SAFRA-001.
+
+
+### ADR-038 — Engine de SLA determinística e privada
+**APPROVED / IMPLEMENTED — 25/09/2026**.
+
+Decisão:
+- o cálculo de SLA é derivado de timestamps/eventos server-side;
+- a engine não escolhe `start_event`, `end_event` ou threshold por inferência;
+- funções de avaliação permanecem em schema `private`;
+- `anon` e `authenticated` não recebem EXECUTE direto;
+- uso produtivo ocorrerá via operações server-side/RPCs governadas nas fases próprias;
+- SLAs textuais dos 11 cenários atuais permanecem sem estruturação até existir decisão/fonte explícita;
+- versões PUBLISHED existentes não serão reescritas para anexar SLA estruturado; nova configuração nasce em nova `scenario_version`.
+
+Estados:
+`ON_TRACK`, `BREACHED`, `COMPLETED_ON_TIME`, `COMPLETED_LATE`, `NOT_MEASURABLE`, `NOT_APPLICABLE`.
+
+Regra de borda:
+- instante exato do deadline ainda é on-time;
+- breach começa apenas após o deadline.
+
+### ADR-039 — P1–P4 nunca recebem PASS por inferência
+**APPROVED / IMPLEMENTED — 25/09/2026**.
+
+`P1 DOMAIN READY`, `P2 START READY`, `P3 IN-FLIGHT READY` e `P4 CLOSE READY` são gates de produto, não prioridades de cenário.
+
+Nenhum desses gates pode ser publicado como `PASS` automaticamente.
+
+Fonte canônica:
+`docs/product-gates/P1_P4.json`.
+
+Para publicar PASS:
+- aprovação humana explícita;
+- evidência concreta para cada critério obrigatório do gate;
+- todos os critérios do roadmap daquele gate precisam estar comprovados.
+
+Não contam como evidência suficiente:
+- conclusão automática de fase;
+- nome de commit;
+- interpretação da LLM;
+- simples ausência de erro no CI.
+
+O CI bloqueia PASS sem essas condições.
