@@ -19,6 +19,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Matrix v3 reconciliation contract
+        run: python3 .github/scripts/check-matrix-v3-reconciliation-contract.py
+
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
         with:
