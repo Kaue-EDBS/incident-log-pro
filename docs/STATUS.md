@@ -2301,3 +2301,29 @@ P3 = NOT_PUBLISHED
 P4 = NOT_PUBLISHED
 C07_CI = PENDING
 ```
+
+
+### Gate de reconciliação integral da Matriz v3 — 26/09/2026
+
+Regra agora obrigatória:
+
+```text
+CANONICAL_RECORDS = 11
+IMPORTED_FIELDS_PER_RECORD = 18
+REQUIRED_COMPARISONS = 198
+MATRIX_V3_RECONCILIATION = 198/198
+TOLERANCE = 0
+```
+
+CI valida:
+- SHA256 da fonte;
+- SHA256 do staging;
+- 11 códigos canônicos;
+- exatamente 18 campos por registro;
+- 198/198 valores importados;
+- campos centrais normalizados;
+- áreas impactáveis;
+- ferramenta/sistema;
+- ausência de cenário canônico extra ou faltante.
+
+Qualquer diferença bloqueia o avanço.
