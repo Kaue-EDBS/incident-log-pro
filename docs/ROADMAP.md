@@ -1498,9 +1498,13 @@ Critério de saída:
 
 ## SAFRA-C07 — Engine de SLA
 
+**Estado: EM IMPLEMENTAÇÃO — núcleo determinístico aplicado ao PRIMARY; CI final em validação.**
+
 ### Princípio
 
 SLA de protocolo é diferente do SLO/RTO/RPO do software.
+
+A engine é técnica e determinística. Ela não publica SLA estruturado sem `start_event`, `end_event` e alvo suportados por fonte/decisão explícita.
 
 ### Modelo
 
@@ -2463,6 +2467,8 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 
 ## P1 — DOMAIN READY
 
+**Publication status: NOT_PUBLISHED**
+
 Só passa quando:
 
 - C02 fechado;
@@ -2474,6 +2480,8 @@ Só passa quando:
 - nenhuma regra crítica depende de suposição.
 
 ## P2 — START READY
+
+**Publication status: NOT_PUBLISHED**
 
 Só passa quando:
 
@@ -2488,6 +2496,8 @@ Só passa quando:
 
 ## P3 — IN-FLIGHT READY
 
+**Publication status: NOT_PUBLISHED**
+
 Só passa quando:
 
 - timeline confiável;
@@ -2498,6 +2508,8 @@ Só passa quando:
 - nenhuma dependência de checklist operacional existe.
 
 ## P4 — CLOSE READY
+
+**Publication status: NOT_PUBLISHED**
 
 Só passa quando:
 
