@@ -1466,6 +1466,34 @@ Critério de PASS:
 - nenhuma role global produz ownership implícito;
 - ownership é demonstrado pelo vínculo explícito scenario↔user.
 
+### C06.2 — Pipeline reproduzível + regressão RBAC/ownership
+
+Estado: **CONCLUÍDO no pipeline; gate CI final em validação**.
+
+Fluxo executado:
+
+```text
+XLSX v3 -> parser v1.0.0 -> staging -> validação -> preview diff
+-> aprovação humana -> seed/migration canônica -> reconciliação
+```
+
+Resultado:
+- 11 registros;
+- 0 erros de validação;
+- 5 warnings convertidos/preservados como governance issues;
+- 0 diferenças no preview contra o PRIMARY;
+- migration canônica C06.01 permanece a autoridade do seed;
+- reconciliação 100%;
+- regressão de owner/admin/autorização versionada em pgTAP;
+- autoatribuição direta de owner permanece negada.
+
+Critério de saída:
+- Database Disposable Test com `c06_02_rbac_ownership.test.sql` = PASS;
+- API direta de `scenario_owners` = negada;
+- após PASS, avançar para C07.
+
+---
+
 ---
 
 ## SAFRA-C07 — Engine de SLA
