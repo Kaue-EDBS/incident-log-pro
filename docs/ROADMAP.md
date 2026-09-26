@@ -1343,9 +1343,9 @@ C05_DOMAIN_MODEL = PASS
 schema_change_required_this_round = false
 ```
 
-### C05.4 — Mutações transacionais, idempotência e concorrência — PRÓXIMO
+### C05.4 — Invariantes técnicos e contratos transacionais — CONCLUÍDO NO ESCOPO C05
 
-Implementar e testar as operações críticas do domínio via RPC/funções transacionais, começando por START e contratos comuns de idempotência/correlation_id, sem antecipar decisões deferidas a M01/M05.
+Os invariantes, timestamps, idempotência estrutural, correlation_id, rollback e guardas de persistência foram fechados no C05. As mutações funcionais de START/END/CANCEL permanecem deliberadamente nas fases próprias (C08/F02), sem antecipação.
 
 ### Ordem recomendada
 
