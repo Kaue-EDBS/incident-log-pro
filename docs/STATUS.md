@@ -2164,3 +2164,52 @@ NEXT_TECHNICAL_PHASE = SAFRA-C07
 Dívida não bloqueante:
 - formatação/Prettier do frontend legado deve ser tratada em mudança cosmética separada;
 - frontend visual continua legado até as fases próprias de UX/fluxos Safra.
+
+
+---
+
+## SAFRA-C06.02 — pipeline e regressão — 25/09/2026
+
+Pipeline executado:
+
+```text
+XLSX v3
+-> parser versionado 1.0.0
+-> staging
+-> validação
+-> preview diff
+-> aprovação humana
+-> seed/migration
+-> reconciliação
+```
+
+Evidências:
+- fonte XLSX SHA256: `b0cca8cce835dbdc65ab0c30212fd89480d2cf51e9fb62d215ad1bde0963ead6`;
+- duas cópias da fonte encontradas possuem o mesmo hash;
+- parser: `scripts/c06_matrix_pipeline.py`;
+- staging: 11 registros;
+- validação: PASS, 0 erros e 5 warnings de governance issues já conhecidos;
+- preview diff contra PRIMARY: NO_DIFF, 0 diferenças;
+- aprovação humana registrada para replay sem mudança de negócio;
+- seed/migration canônica reutilizada: `20260925213118_c06_seed_canonical_matrix_v3.sql`;
+- nenhuma migration adicional necessária porque o diff é zero;
+- reconciliação PRIMARY: PASS.
+
+Regressão RBAC/ownership:
+- Daniel: somente 1,2,3,7,10,11;
+- Jiane: somente 4,5,6,8;
+- Renato: somente 9;
+- Jair/Bruno/platform admins: zero ownership ativo;
+- authenticated sem INSERT/UPDATE/DELETE em `scenario_owners`;
+- RLS permanece ativa;
+- Data API direta agora testa também `scenario_owners`.
+
+Estado:
+
+```text
+C06_02_PIPELINE = PASS
+C06_02_PREVIEW_DIFF = NO_DIFF
+C06_02_RECONCILIATION = PASS
+C06_02_RBAC_OWNERSHIP = CI_PENDING
+NEXT_AFTER_GREEN_CI = SAFRA-C07
+```
