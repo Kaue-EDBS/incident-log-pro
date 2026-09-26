@@ -2210,6 +2210,32 @@ Estado:
 C06_02_PIPELINE = PASS
 C06_02_PREVIEW_DIFF = NO_DIFF
 C06_02_RECONCILIATION = PASS
-C06_02_RBAC_OWNERSHIP = CI_PENDING
+C06_02_RBAC_OWNERSHIP = PASS_RUN_72
 NEXT_AFTER_GREEN_CI = SAFRA-C07
+```
+
+
+### Reconciliação dos campos canônicos — C06.02
+
+Run 72: PASS.
+
+Resultado contra Matriz v3 / PRIMARY:
+- área responsável: 11/11;
+- áreas potencialmente impactáveis: 11/11, 20 vínculos;
+- protocolo: 11/11, texto literal preservado;
+- criticidade suportada: 11/11 corretamente NULL; a XLSX não contém classificação nominal;
+- SLA textual: 11/11 preservado; 0 registros estruturados em scenario_slas até C07;
+- sistemas/ferramentas: 11/11 vinculados ao valor literal da coluna Ferramenta; 10 valores únicos;
+- mapeamento: 11/11, sendo EDB05=2 e EDB06=9.
+
+Sem divergências.
+
+Estado:
+
+```text
+C06_02_PIPELINE = PASS
+C06_02_RBAC_OWNERSHIP = PASS_RUN_72
+C06_02_FIELD_RECONCILIATION = PASS
+C06_02 = CONCLUIDO
+NEXT = SAFRA-C07
 ```
