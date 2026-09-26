@@ -93,8 +93,8 @@ identity_and_auth:
     scope: "SAFRA-C00 containment"
     status: "REMOVED_SUPERSEDED_BY_C04"
   final_rbac:
-    status: "NOT_IMPLEMENTED"
-    target_phase: "SAFRA-C04"
+    status: "IMPLEMENTED"
+    closed_phase: "SAFRA-C04"
 
 privileged_roles:
   required: true
