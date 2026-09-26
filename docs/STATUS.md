@@ -2239,3 +2239,65 @@ C06_02_FIELD_RECONCILIATION = PASS
 C06_02 = CONCLUIDO
 NEXT = SAFRA-C07
 ```
+
+
+---
+
+## SAFRA-C07 — Engine de SLA — 25/09/2026
+
+Núcleo aplicado no PRIMARY.
+
+Migration:
+`20260925234000_c07_sla_engine.sql`
+
+Funções:
+- `private.safra_sla_target_interval`;
+- `private.safra_evaluate_sla`;
+- `private.safra_treatment_event_time`;
+- `private.safra_treatment_sla_state`.
+
+Estados:
+- ON_TRACK;
+- BREACHED;
+- COMPLETED_ON_TIME;
+- COMPLETED_LATE;
+- NOT_MEASURABLE;
+- NOT_APPLICABLE apenas por regra explícita.
+
+Bordas validadas:
+- depois do deadline => BREACHED;
+- END exatamente no deadline => COMPLETED_ON_TIME;
+- START ausente => NOT_MEASURABLE;
+- target estruturado ausente => NOT_MEASURABLE;
+- CANCEL antes do deadline => NOT_MEASURABLE;
+- CANCEL depois do breach => BREACHED;
+- relógio anterior ao START => NOT_MEASURABLE;
+- timezone/DST usa timestamptz;
+- NOT_APPLICABLE exige regra explícita.
+
+Importante:
+- nenhum dos 11 cenários recebeu SLA estruturado por inferência;
+- `scenario_slas` continua sem seed produtivo;
+- configuração futura de SLA em cenário PUBLISHED exige nova `scenario_version`.
+
+P1–P4:
+- fonte canônica: `docs/product-gates/P1_P4.json`;
+- P1 = NOT_PUBLISHED;
+- P2 = NOT_PUBLISHED;
+- P3 = NOT_PUBLISHED;
+- P4 = NOT_PUBLISHED;
+- PASS exige aprovação humana + evidência por critério;
+- CI bloqueia publicação inferida.
+
+Estado:
+
+```text
+C07_ENGINE_CORE = IMPLEMENTED_PRIMARY
+C07_BOUNDARY_TESTS = VERSIONED
+P1_P4_INFERENCE_GUARD = IMPLEMENTED
+P1 = NOT_PUBLISHED
+P2 = NOT_PUBLISHED
+P3 = NOT_PUBLISHED
+P4 = NOT_PUBLISHED
+C07_CI = PENDING
+```
