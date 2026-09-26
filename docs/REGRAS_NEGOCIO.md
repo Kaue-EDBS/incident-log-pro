@@ -243,3 +243,48 @@ Os quatro cenários `CRITICAL` não podem ser definidos por inferência.
 - termos como “crítico” dentro de gatilho/protocolo não equivalem a `scenario_version.criticality = CRITICAL`;
 - até resolução de `GI-SAFRA-001`, nenhuma regra produtiva deve assumir a lista dos quatro;
 - C06 deve preservar a pendência no seed/reconciliação.
+
+
+### RB-SAFRA-027 — Engine de SLA determinística
+**Status: IMPLEMENTED**
+
+A engine de SLA é determinística e derivada de eventos/timestamps server-side.
+
+Estados canônicos:
+- `ON_TRACK`;
+- `BREACHED`;
+- `COMPLETED_ON_TIME`;
+- `COMPLETED_LATE`;
+- `NOT_MEASURABLE`;
+- `NOT_APPLICABLE` somente quando uma regra explícita declarar não aplicabilidade.
+
+Regras:
+- SLA textual sem `start_event`, `end_event` e alvo estruturado permanece `NOT_MEASURABLE`;
+- ausência do evento inicial => `NOT_MEASURABLE`;
+- evento final exatamente no deadline => `COMPLETED_ON_TIME`;
+- breach ocorre somente após o deadline;
+- CANCEL antes do end_event não equivale a cumprimento;
+- CANCEL após o deadline preserva breach;
+- relógio anterior ao start é inválido;
+- cálculos usam `timestamptz`;
+- alvo estruturado aceita apenas MINUTE/HOUR/DAY e valor > 0;
+- a engine não publica SLAs de cenário por inferência.
+
+Implementação:
+- `private.safra_sla_target_interval`;
+- `private.safra_evaluate_sla`;
+- `private.safra_treatment_event_time`;
+- `private.safra_treatment_sla_state`.
+
+### RB-SAFRA-028 — P1–P4 não publicados por inferência
+**Status: IMPLEMENTED**
+
+Os gates de produto `P1`, `P2`, `P3` e `P4` não podem receber `PASS` por conclusão automática, inferência de LLM, nome de commit, conclusão de fase ou interpretação subjetiva.
+
+Contrato:
+- estado inicial: `NOT_PUBLISHED`;
+- `PASS` exige `human_approval=true`;
+- `PASS` exige pacote de evidências não vazio;
+- todos os critérios do roadmap daquele gate precisam estar explicitamente evidenciados;
+- ausência de evidência mantém o gate não publicado;
+- CI deve falhar se um gate for marcado como `PASS` sem aprovação/evidência.
