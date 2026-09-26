@@ -659,17 +659,17 @@ Nada nesta seção deve voltar a aparecer como `UNKNOWN` genérico.
 | Decisão | Estado | Fase responsável |
 |---|---|---|
 | quatro cenários CRITICAL | GOVERNANCE_ISSUE GI-SAFRA-001 | decisão humana + C06 |
-| threshold cenário 2 | DEFERRED | C06/C07 |
-| threshold cenário 4 | DEFERRED | C06/C07 |
-| threshold cenário 10 | DEFERRED | C06/C07 |
-| threshold cenário 11 | DEFERRED | C06/C07 |
-| fonte mínima curva A cenário 9 | DEFERRED | C06/C07 |
-| regra para múltiplas tratativas simultâneas do mesmo cenário | DEFERRED | M01 |
-| provider/canal de e-mail | DEFERRED | M05 |
-| comportamento de e-mail dos platform admins | DEFERRED | M05 |
-| período exato da “Safra corrente” para métricas em e-mail | DEFERRED | M05/F04 |
-| publicação formal após ownership do 12º card | DEFERRED | M10 |
-| janela oficial de governança semanal | DEFERRED | F05 |
+| threshold cenário 2 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
+| threshold cenário 4 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
+| threshold cenário 10 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
+| threshold cenário 11 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
+| fonte mínima curva A cenário 9 | GOVERNANCE_ISSUE GI-SAFRA-003 | C06/C07 |
+| regra para múltiplas tratativas simultâneas do mesmo cenário | GOVERNANCE_ISSUE GI-SAFRA-004 | M01 |
+| provider/canal de e-mail | GOVERNANCE_ISSUE GI-SAFRA-005 | M05 |
+| comportamento de e-mail dos platform admins | GOVERNANCE_ISSUE GI-SAFRA-005 | M05 |
+| período exato da “Safra corrente” para métricas em e-mail | GOVERNANCE_ISSUE GI-SAFRA-006 | M05/F04 |
+| publicação formal após ownership do 12º card | GOVERNANCE_ISSUE GI-SAFRA-007 | M10 |
+| janela oficial de governança semanal | GOVERNANCE_ISSUE GI-SAFRA-008 | F05 |
 | métricas/thresholds quantitativos específicos | DEFERRED | C06/F04 |
 | estratégia canônica de migrations (Drizzle x supabase/migrations) | DEFERRED | C05 |
 
