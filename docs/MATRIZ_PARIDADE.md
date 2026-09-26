@@ -46,9 +46,9 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 | `anon` lê tabelas | sim | não | não |
 | policies abertas | sim | não | não |
 | RLS efetiva | não | sim | sim |
-| login funcional | não | não | sim |
-| RBAC final | não | não | sim |
-| owner isolation | não | não | sim |
+| login funcional | não | sim | sim |
+| RBAC final | não | sim | sim |
+| owner isolation | não | sim | sim |
 | START/END server-side | não | não | sim |
 
 ## 3. Domínio
@@ -88,10 +88,10 @@ Antes de remover fluxo legado:
 
 ## 5. Pendências de paridade
 
-- 11 cenários;
-- schema v2;
-- RBAC;
-- login;
+- 11 cenários — CONCLUÍDO;
+- schema v2 — CONCLUÍDO;
+- RBAC — CONCLUÍDO no escopo atual;
+- login Microsoft — CONCLUÍDO no escopo da aplicação;
 - RPCs;
 - timeline;
 - SLA engine;
