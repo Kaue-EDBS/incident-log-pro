@@ -1,3 +1,8 @@
+-- MATRIX_V3_SOURCE_SHA256: b0cca8cce835dbdc65ab0c30212fd89480d2cf51e9fb62d215ad1bde0963ead6
+-- MATRIX_V3_STAGING_SHA256: 242a31fcb033b9382c136b0ca88f186e9a49a8fb83d766e6d8902893e8140cff
+-- MATRIX_V3_EXPECTED_RECORDS: 11
+-- MATRIX_V3_IMPORTED_FIELDS: 18
+-- MATRIX_V3_EXPECTED_COMPARISONS: 198
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(25);
