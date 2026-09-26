@@ -1,0 +1,37 @@
+{
+  "phase": "SAFRA-C06.02",
+  "reconciliation_scope": [
+    "responsible_area",
+    "potential_impacted_areas",
+    "protocol",
+    "supported_criticality",
+    "sla_text",
+    "systems_tools",
+    "mapping_edb05_edb06"
+  ],
+  "source": {
+    "file": "EDB06 - Matriz Contingencia v3.xlsx",
+    "sheet": "Matriz de Contingência",
+    "sha256": "b0cca8cce835dbdc65ab0c30212fd89480d2cf51e9fb62d215ad1bde0963ead6"
+  },
+  "result": {
+    "status": "PASS",
+    "scenarios": 11,
+    "responsible_area": "11/11",
+    "potential_impacted_areas": "11/11",
+    "protocol": "11/11",
+    "criticality": "11/11 correctly NULL because source does not identify nominal criticality",
+    "sla_text": "11/11 preserved literally in source_reference; 0 structured SLA rows by design until C07",
+    "systems_tools": "11/11 literal Ferramenta values linked; 10 unique catalog entries",
+    "mappings": "11/11; EDB05=2, EDB06=9",
+    "impacted_area_links": 20,
+    "system_links": 11
+  },
+  "modeling_notes": {
+    "criticality": "The XLSX has no criticality column and no visual marker identifying the four CRITICAL scenarios. GI-SAFRA-001 remains WAITING_HUMAN_DECISION.",
+    "sla_text": "The textual SLA is canonical source data, but scenario_slas requires start_event/end_event. No structured SLA is inferred in C06.",
+    "systems_tools": "The XLSX column is Ferramenta. C06 preserves each literal cell value as the version-associated catalog entry. Decomposition into atomic systems is not inferred.",
+    "mappings": "EDB05/EDB06 is preserved as source metadata on scenario_version; no new table/enum was introduced solely for this source label."
+  },
+  "gate": "PASS"
+}
