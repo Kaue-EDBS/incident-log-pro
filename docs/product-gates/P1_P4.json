@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "rule": "P1-P4 may never be published as PASS by inference.",
   "allowed_status": [
     "NOT_PUBLISHED",
@@ -11,32 +11,67 @@
       "name": "DOMAIN_READY",
       "status": "NOT_PUBLISHED",
       "human_approval": false,
-      "evidence": []
+      "required_criteria": [
+        "C02_CLOSED",
+        "GLOSSARY_APPROVED",
+        "ROLE_MODEL_APPROVED",
+        "SCHEMA_APPROVED",
+        "ELEVEN_SCENARIOS_RECONCILED",
+        "GOVERNANCE_ISSUES_CATALOGUED",
+        "NO_CRITICAL_RULE_BY_ASSUMPTION"
+      ],
+      "evidence": {}
     },
     "P2": {
       "name": "START_READY",
       "status": "NOT_PUBLISHED",
       "human_approval": false,
-      "evidence": []
+      "required_criteria": [
+        "MICROSOFT_AUTH_WORKS",
+        "AUTHENTICATED_START_WORKS",
+        "UNAUTHENTICATED_START_BLOCKED",
+        "START_TRANSACTIONAL_IDEMPOTENT",
+        "VERSION_FROZEN",
+        "START_AUDIT_EVENT_EXISTS",
+        "SLA_STARTS_CORRECTLY",
+        "START_COMMUNICATION_DEDUPLICATED"
+      ],
+      "evidence": {}
     },
     "P3": {
       "name": "IN_FLIGHT_READY",
       "status": "NOT_PUBLISHED",
       "human_approval": false,
-      "evidence": []
+      "required_criteria": [
+        "TIMELINE_RELIABLE",
+        "EVENTS_AUDITABLE",
+        "CONCURRENCY_HANDLED",
+        "SLA_RUNTIME_CORRECT",
+        "ESCALATION_AUDITABLE",
+        "NO_OPERATIONAL_CHECKLIST_DEPENDENCY"
+      ],
+      "evidence": {}
     },
     "P4": {
       "name": "CLOSE_READY",
       "status": "NOT_PUBLISHED",
       "human_approval": false,
-      "evidence": []
+      "required_criteria": [
+        "AUTHENTICATED_END_WORKS",
+        "CANCEL_WITH_REASON_WORKS",
+        "END_CANCEL_CONCURRENCY_SAFE",
+        "HISTORY_IMMUTABLE_AUDITABLE",
+        "SLA_CLIENT_TAMPER_RESISTANT",
+        "END_CANCEL_COMMUNICATION_IDEMPOTENT"
+      ],
+      "evidence": {}
     }
   },
   "publication_contract": {
     "pass_requires": [
       "human_approval=true",
-      "non-empty evidence[]",
-      "all roadmap criteria explicitly evidenced"
+      "evidence exists for every required_criteria item",
+      "all evidence references are explicit and reviewable"
     ],
     "inference_forbidden": true,
     "phase_completion_is_not_gate_pass": true,
