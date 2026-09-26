@@ -2337,3 +2337,34 @@ CI valida:
 - ausência de cenário canônico extra ou faltante.
 
 Qualquer diferença bloqueia o avanço.
+
+
+### Ownership real persistido — schema v2 — 26/09/2026
+
+Validação feita diretamente sobre:
+`scenarios -> scenario_owners -> safra_principals -> safra_role_grants`.
+
+Resultado PRIMARY:
+- 11 cenários;
+- 11 vínculos ativos;
+- exatamente 1 owner ativo por cenário;
+- 3 owners distintos;
+- 0 vínculos órfãos;
+- 0 owner ativo sem role `scenario_owner`;
+- 0 overlap indevido com roles administrativas;
+- 0 validade temporal inválida;
+- índice único parcial protege contra dois owners ativos por cenário.
+
+Teste versionado:
+`supabase/tests/database/c06_02_real_ownership_persistence.test.sql`.
+
+Evidência:
+`docs/data-contracts/c06_02_real_ownership_primary_snapshot.json`.
+
+```text
+REAL_OWNERSHIP_LINKS = 11/11
+ORPHAN_LINKS = 0
+DUPLICATE_ACTIVE_OWNER = 0
+OWNER_ROLE_MISMATCH = 0
+ADMIN_OWNER_OVERLAP = 0
+```
