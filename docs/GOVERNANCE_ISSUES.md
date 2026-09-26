@@ -165,3 +165,31 @@ Após definição do owner, ainda precisa ser decidido:
 **Fase:** SAFRA-F05.
 
 Definir periodicidade/horário e corte de dados do ritual de governança semanal.
+
+
+## GI-SAFRA-009 — Mapeamento formal dos eventos dos SLAs textuais
+
+**Status:** WAITING_HUMAN_DECISION  
+**Fase:** SAFRA-C07/M04.
+
+Os 11 cenários possuem SLA textual preservado, mas a estrutura `scenario_slas` exige definição explícita de:
+
+- `start_event`;
+- `end_event`;
+- alvo estruturado;
+- quando um texto representa mais de um relógio.
+
+Até decisão/fonte formal:
+- não criar `scenario_slas` por inferência;
+- manter o texto canônico preservado;
+- a engine retorna `NOT_MEASURABLE` quando faltam eventos/alvo estruturados;
+- qualquer nova configuração deve nascer em nova `scenario_version`.
+
+### Persistência operacional
+
+As issues `GI-SAFRA-001..009` também estão materializadas em `public.governance_issues`.
+
+No banco:
+- `OPEN` representa a decisão ainda pendente;
+- resolução exige `RESOLVED` + ator + timestamp + texto de resolução;
+- ausência de decisão nunca é convertida em default.
