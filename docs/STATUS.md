@@ -2305,6 +2305,16 @@ C07_CI = PENDING
 
 ### Gate de reconciliação integral da Matriz v3 — 26/09/2026
 
+Evidência final:
+- Database Disposable Test Run 98 / ID `36216982679` = SUCCESS.
+
+```text
+MATRIX_V3_RECONCILIATION = 198/198
+TOLERANCE = 0
+DATABASE_DISPOSABLE_RUN_98 = PASS
+```
+
+
 Regra agora obrigatória:
 
 ```text
