@@ -18,7 +18,7 @@
 | D-03 | Geral é visão agregadora, não área | APPROVED |
 | D-04 | Detecção e ativação são conceitos separados | APPROVED |
 | D-05 | Protocolo não é chamado | APPROVED |
-| D-06 | Owner controla START/END e delega atualização | APPROVED |
+| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — decisão vigente |
 | D-07 | Tratativa errada é CANCELLED; não apagar | APPROVED |
 | D-08 | Novo cenário exige governança | APPROVED |
 | D-09 | Criticidade usa CRITICAL/HIGH/MODERATE | APPROVED; lista crítica pendente |
@@ -30,7 +30,7 @@
 | D-15 | Acesso `anon` ao banco interno é proibido | APPROVED |
 | D-16 | G5 C00 fecha P0; RBAC final fica no C04/C05 | APPROVED |
 | D-17 | Microsoft Entra ID corporativo via SSO será o provedor de identidade | APPROVED |
-| D-18 | Família safra_admin e scenario_owner compõem o modelo de responsabilidade | APPROVED |
+| D-18 | Família administrativa e scenario_owner compõem o modelo de responsabilidade | SUPERSEDED_BY_D19_D34 |
 | D-19 | safra_admin dividido em plataforma, governança e executivo | APPROVED |
 | D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico | APPROVED |
 | D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards | APPROVED |
@@ -175,7 +175,7 @@ Este registro descreve o estado atual e não transforma os itens pendentes em de
 
 
 ### ADR-012 — Modelo de papéis funcionais
-**APPROVED — 24/09/2026**.
+**SUPERSEDED — 25/09/2026 por ADR-013 / ADR-025.**
 
 Papéis aprovados:
 
@@ -753,3 +753,18 @@ Proteções:
 - CI bloqueante.
 
 Qualquer alteração futura na fonte exige novo pipeline de staging/diff/aprovação. Não existe reconciliação parcial silenciosa.
+
+
+### ADR-041 — Reconciliação retrospectiva do C03
+**APPROVED — 26/09/2026**.
+
+A auditoria do SAFRA-C03 confirmou que o glossário e o schema v2 preservam as fronteiras semânticas aprovadas.
+
+Correções documentais:
+- D-06 foi atualizado para a decisão vigente: qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner não possui exclusividade;
+- ADR-012 foi marcado como SUPERSEDED pelo refinamento posterior dos papéis administrativos;
+- a decomposição vigente de papéis permanece em safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner;
+- nenhuma tabela concorrente safra_user_roles foi criada;
+- scenario_owners continua sendo o vínculo explícito de ownership.
+
+A correção preserva histórico e elimina definições concorrentes sem reescrever decisões publicadas silenciosamente.
