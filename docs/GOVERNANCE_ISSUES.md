@@ -97,3 +97,71 @@ Quando resolvido:
 - criticidade entra em nova/publicada `scenario_version`;
 - tratativas antigas continuam vinculadas à criticidade da versão congelada no START;
 - nenhuma alteração retroativa de histórico.
+
+
+---
+
+# Pendências formais — WAITING_HUMAN_DECISION
+
+As decisões abaixo não devem ser completadas pela aplicação, por migration ou por LLM sem aprovação humana explícita.
+
+## GI-SAFRA-002 — Thresholds ainda abertos dos cenários 2, 4, 10 e 11
+
+**Status:** WAITING_HUMAN_DECISION  
+**Bloqueia:** fechamento completo do SAFRA-C07 para os cenários afetados.
+
+Pendências preservadas literalmente:
+- cenário 2: gatilho contém `X h`;
+- cenário 4: gatilho contém `X min`;
+- cenário 10: limite de lead time/fila não definido numericamente;
+- cenário 11: limiar de capacidade não definido numericamente.
+
+Nenhum valor será inferido.
+
+## GI-SAFRA-003 — Fonte oficial do mínimo da curva A — cenário 9
+
+**Status:** WAITING_HUMAN_DECISION  
+**Bloqueia:** automação objetiva do gatilho/SLA relacionado à ruptura de estoque.
+
+É necessário definir qual fonte/regra oficial determina o saldo mínimo de um SKU curva A.
+
+## GI-SAFRA-004 — Treatments simultâneos do mesmo cenário
+
+**Status:** WAITING_HUMAN_DECISION  
+**Fase:** SAFRA-M01.
+
+Decidir se um cenário pode possuir mais de uma tratativa `ACTIVE` simultaneamente. Até decisão, nenhuma constraint de unicidade será criada.
+
+## GI-SAFRA-005 — Canal/provider de notificações e comportamento dos platform admins
+
+**Status:** WAITING_HUMAN_DECISION  
+**Fase:** SAFRA-M05.
+
+Definir:
+- provider/canal produtivo;
+- se platform admins recebem comunicação operacional e em quais condições.
+
+## GI-SAFRA-006 — Janela temporal oficial da “Safra corrente”
+
+**Status:** WAITING_HUMAN_DECISION  
+**Fase:** M05/F04.
+
+Definir o período exato usado em métricas, e-mails e análises da Safra corrente.
+
+## GI-SAFRA-007 — Publicação formal do 12º card após ownership
+
+**Status:** WAITING_HUMAN_DECISION  
+**Fase:** SAFRA-M10.
+
+Após definição do owner, ainda precisa ser decidido:
+- quem aprova protocolo;
+- quem aprova SLA;
+- quem aprova criticidade;
+- quando a primeira versão se torna `PUBLISHED`.
+
+## GI-SAFRA-008 — Janela oficial da governança semanal
+
+**Status:** WAITING_HUMAN_DECISION  
+**Fase:** SAFRA-F05.
+
+Definir periodicidade/horário e corte de dados do ritual de governança semanal.
