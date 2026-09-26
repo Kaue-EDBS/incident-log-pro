@@ -1466,7 +1466,7 @@ Critério de PASS:
 - nenhuma role global produz ownership implícito;
 - ownership é demonstrado pelo vínculo explícito scenario↔user.
 
-### C06.2 — Pipeline reproduzível + regressão RBAC/ownership
+### C06.02 — Pipeline reproduzível + regressão RBAC/ownership
 
 Estado: **CONCLUÍDO no pipeline; gate CI final em validação**.
 
