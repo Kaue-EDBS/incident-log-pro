@@ -62,11 +62,15 @@ Evitar CPF, telefone pessoal, endereço residencial, credenciais, tokens, senhas
 ### Atual
 
 - `anon` sem acesso ao banco;
-- regra transitória exige sessão autenticada e `app_metadata.safra_access=true`.
+- Microsoft Entra ID corporativo homologado via SSO;
+- autorização governada por `private.safra_principals` + `private.safra_role_grants`;
+- predicado corporativo exige sessão válida, não anônima, provider Azure e e-mail corporativo;
+- `app_metadata.safra_access` foi removido como mecanismo de autorização;
+- ownership de cenário depende de vínculo explícito em `scenario_owners`, sem herança automática de papel administrativo.
 
-### Alvo
+### Evolução posterior ao C02
 
-RBAC no SAFRA-C04 por papel, área e vínculo com cenário.
+Os controles desenhados no C02 foram materializados progressivamente em C04/C05/C06/C07. O threat model continua sendo a fonte das ameaças e do contrato de teste; a implementação corrente é descrita em ROADMAP, STATUS, ARQUITETURA e migrations canônicas.
 
 ### Identidade corporativa
 
@@ -80,7 +84,7 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 |---|---|---|
 | T-01 | acesso anônimo | bloqueado no C00 |
 | T-02 | secret no Git | `.env` fora do tracking |
-| T-03 | elevação de privilégio | usar `app_metadata`; RBAC futuro |
+| T-03 | elevação de privilégio | RBAC governado no banco; `user_metadata` e flag legado `safra_access` não autorizam |
 | T-04 | usuário autenticado executar START/END/CANCEL de forma indevida | auditoria + backend transacional + C04/C05 |
 | T-05 | elevação de responsabilidade/role pelo cliente | role mapping server-side + C04 |
 | T-06 | cancelamento sem justificativa | CANCELLED + motivo |
@@ -164,3 +168,20 @@ Mudança de identidade, integração, dados pessoais, retenção, arquivos ou ex
 O C02 pode ser encerrado porque todos os riscos materiais identificados possuem controle definido, fase responsável, teste esperado e risco residual explícito.
 
 O fechamento de G3.5, THREAT-001 e AUTHZ-001 neste ciclo significa modelo de ameaça e contrato de autorização aprovados. Não significa implementação final de RLS, RBAC, RPCs ou constraints; isso permanece em C04/C05 e fases dependentes.
+
+
+## 13. Auditoria retrospectiva das 7 ações do C02 — 26/09/2026
+
+O fechamento do C02 foi reavaliado contra o roadmap e as implementações posteriores.
+
+| Ação | Estado da especificação C02 | Estado atual da evidência |
+|---|---|---|
+| ameaças de negócio centrais | PASS | ameaças registradas e preservadas |
+| abusos API/dados/retry/SLA | PASS | casos AB-API-01, AB-DATA-01, AB-LEAK-01, AB-RETRY-01 e AB-SLA-01 formalizados |
+| controles + fase responsável | PASS | todos os controles possuem destino; vários já implementados em C04-C07 |
+| quatro classes de testes | PASS | positivos, negativos, concorrência/retry e limites/bordas derivados |
+| contrato de evidência | PASS | ator, correlation_id, estados, ação, resultado, auditoria, timestamps, notificações e efeitos colaterais definidos |
+| riscos residuais | PASS | riscos explicitados e com owner/fase; não significam default ou inferência |
+| gates C02 | PASS | G3.5, THREAT-001 e AUTHZ-001 encerrados no escopo de modelagem |
+
+Observação: o C02 aprova modelo de ameaça, abuso e contrato de autorização. A execução integral de todos os testes funcionais permanece distribuída nas fases de implementação previstas no roadmap; isso não reabre o C02.
