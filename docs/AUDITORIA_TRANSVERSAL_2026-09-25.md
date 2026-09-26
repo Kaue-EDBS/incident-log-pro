@@ -35,7 +35,7 @@ A carga canônica possui exatamente 11 cenários oficiais da Matriz v3, sem trat
 | Frontend build | PASS | CI |
 | Lint legado | TECH_DEBT | erros antigos de Prettier; não funcionais |
 | Tipos Supabase | PASS | schema v2 regenerado no frontend |
-| Supply chain | CORRIGIDO / VALIDAR CI FINAL | patches transitivos seguros aplicados |
+| Supply chain | PASS | patches transitivos seguros aplicados; gate HIGH passou no App Smoke 20 |
 | Backup/restore/RTO/RPO | FUTURA FASE | SAFRA-C09 |
 | UX Safra | FUTURA FASE | frontend ainda preserva legado conforme roadmap |
 
@@ -114,11 +114,13 @@ Pendências:
 
 ## 9. Gate
 
-A baseline C00–C06.1 pode avançar quando as duas pipelines da revisão mais recente estiverem verdes:
+Gate final aprovado:
 
 ```text
-Database Disposable Test = PASS
-App Smoke Test = PASS
+Database Disposable Test Run 58 / 36205238018 = PASS
+App Smoke Test Run 20 / 36205238059 = PASS
+C00_TO_C06_1_CROSS_AXIS_AUDIT = PASS
+TECHNICAL_BASELINE = READY_TO_ADVANCE
 ```
 
-Se alguma falhar, a falha deve ser corrigida antes de declarar o gate final.
+O lint/Prettier legado permanece dívida cosmética não bloqueante; todas as verificações funcionais e de segurança exigidas nesta auditoria passaram.
