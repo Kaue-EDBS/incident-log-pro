@@ -1,8 +1,8 @@
 # STATUS — incident-log-pro / Painel Safra
 
-> Atualizado em: 24/09/2026  
-> Fase atual: **SAFRA-C05 — Schema v2, migrations e invariantes**  
-> Escopo atual: consolidar fontes canônicas, perfil estruturado do projeto, arquitetura, privacidade, regras, paridade e decisões.
+> Atualizado em: 25/09/2026  
+> Fase atual: **SAFRA-C06 — Seed canônico e validação da Matriz v3**  
+> Escopo atual: consolidar os 11 cenários oficiais no schema v2, validar reconstrução, segurança, paridade e preparar C07 sem inferir decisões de negócio.
 
 ---
 
@@ -2086,5 +2086,48 @@ Estado:
 C06_CANONICAL_11_SCENARIOS = PASS_PRIMARY
 CRITICALITY_INFERENCE = NONE
 GI-SAFRA-001 = OPEN
-C06_CI = IN_PROGRESS
+C06_CI = PASS_DB_RUN_40
+```
+
+
+---
+
+## Auditoria transversal pós-C06.1 — 25/09/2026
+
+Smoke/auditoria executados:
+- migration replay do zero;
+- rollback da migration mais recente;
+- pgTAP;
+- Data API direta;
+- RLS/grants;
+- RBAC/owners;
+- version freeze e append-only;
+- ausência de cascade destrutivo;
+- consistência dos 11 cenários canônicos;
+- hardening de funções privadas;
+- índices de FKs do domínio;
+- typecheck do frontend;
+- smoke de build/lint adicionado ao CI.
+
+Correções automáticas aplicadas:
+- rollback CI deixou de depender do C05 e passou a validar qualquer migration mais recente;
+- concorrência do workflow cancela runs antigas;
+- Supabase CLI fixado em versão estável no CI;
+- EXECUTE público removido de helpers privados;
+- índices de FK adicionados antes do crescimento do volume;
+- smoke do frontend separa build/typecheck bloqueantes de dívida legada de formatação.
+
+Evidência:
+- Database Disposable Test Run 40 = SUCCESS.
+
+Estado parcial:
+```text
+DATABASE_SMOKE = PASS
+MIGRATION_REPLAY = PASS
+ROLLBACK_LATEST = PASS
+RLS_DIRECT_API = PASS
+CANONICAL_11_SCENARIOS = PASS
+APP_TYPECHECK = PASS
+APP_BUILD = AWAITING_LATEST_SMOKE
+LEGACY_LINT = NON_BLOCKING_TECH_DEBT
 ```
