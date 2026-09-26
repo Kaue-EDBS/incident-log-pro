@@ -2086,7 +2086,7 @@ Estado:
 C06_CANONICAL_11_SCENARIOS = PASS_PRIMARY
 CRITICALITY_INFERENCE = NONE
 GI-SAFRA-001 = OPEN
-C06_CI = PASS_DB_RUN_40
+C06_CI = PASS_DB_RUN_58
 ```
 
 
@@ -2123,11 +2123,44 @@ Evidência:
 Estado parcial:
 ```text
 DATABASE_SMOKE = PASS
+DATABASE_DISPOSABLE_RUN = 58 / 36205238018
 MIGRATION_REPLAY = PASS
 ROLLBACK_LATEST = PASS
 RLS_DIRECT_API = PASS
 CANONICAL_11_SCENARIOS = PASS
+MIGRATION_DRIFT = 0
+UNINDEXED_DOMAIN_FKS = 0
+RBAC_PRIMARY_SMOKE = PASS_9_OF_9
+APP_SMOKE_RUN = 20 / 36205238059
+DEPENDENCY_HIGH_GUARD = PASS
 APP_TYPECHECK = PASS
-APP_BUILD = AWAITING_LATEST_SMOKE
+APP_BUILD = PASS
 LEGACY_LINT = NON_BLOCKING_TECH_DEBT
 ```
+
+
+---
+
+## Fechamento da auditoria transversal — PASS — 25/09/2026
+
+Evidências finais:
+- Database Disposable Test Run 58 / ID 36205238018 = SUCCESS;
+- App Smoke Test Run 20 / ID 36205238059 = SUCCESS;
+- smoke controlado de RBAC no PRIMARY = 9/9 PASS;
+- GitHub e PRIMARY = 15/15 migrations, drift zero;
+- 35/35 FKs relevantes cobertas por índice;
+- 11/11 cenários canônicos publicados e com owner correto;
+- zero treatment fictício;
+- zero bucket de storage;
+- dependências HIGH conhecidas corrigidas e bloqueadas por CI.
+
+Estado de handoff:
+
+C00_TO_C06_1_CROSS_AXIS_AUDIT = PASS
+TECHNICAL_BASELINE = READY_TO_ADVANCE
+WAITING_HUMAN_DECISION = GI-SAFRA-001..008
+NEXT_TECHNICAL_PHASE = SAFRA-C07
+
+Dívida não bloqueante:
+- formatação/Prettier do frontend legado deve ser tratada em mudança cosmética separada;
+- frontend visual continua legado até as fases próprias de UX/fluxos Safra.
