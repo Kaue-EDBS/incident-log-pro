@@ -728,3 +728,28 @@ Não contam como evidência suficiente:
 - simples ausência de erro no CI.
 
 O CI bloqueia PASS sem essas condições.
+
+
+### ADR-040 — Reconciliação integral da Matriz v3
+**APPROVED / IMPLEMENTED — 26/09/2026**.
+
+A Matriz v3 somente é considerada reconciliada quando todos os campos importados correspondem integralmente ao estado canônico.
+
+Gate:
+```text
+11 registros
+x 18 campos importados
+= 198 comparações
+EXPECTED = 198/198
+TOLERANCE = 0
+```
+
+Proteções:
+- hash SHA256 da XLSX;
+- hash SHA256 do staging;
+- exatamente 18 campos canônicos por registro;
+- teste pgTAP contra o banco reconstruído;
+- validação das relações normalizadas;
+- CI bloqueante.
+
+Qualquer alteração futura na fonte exige novo pipeline de staging/diff/aprovação. Não existe reconciliação parcial silenciosa.
