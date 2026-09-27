@@ -12,14 +12,14 @@ select ok(
   'scenario_slas has resolved-only END constraint'
 );
 
-select like(
+select matches(
   (
     select pg_get_constraintdef(oid)
     from pg_constraint
     where conrelid='public.scenario_slas'::regclass
       and conname='scenario_slas_end_event_resolved_only'
   ),
-  '%TREATMENT_RESOLVED%',
+  'TREATMENT_RESOLVED',
   'resolved-only constraint explicitly names TREATMENT_RESOLVED'
 );
 
