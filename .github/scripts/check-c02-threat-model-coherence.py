@@ -20,6 +20,9 @@ api_smoke = read(".github/scripts/test-safra-direct-api.sh")
 rpc_smoke = read(".github/scripts/test-safra-direct-rpc.sh")
 parity = read("docs/MATRIZ_PARIDADE.md")
 profile = read("docs/PROJECT_PROFILE.yaml")
+c05_guards = read("supabase/migrations/20260925210500_c05_terminal_state_guards.sql")
+c07_boundaries = read("supabase/tests/database/c07_boundary_adversarial_matrix.test.sql")
+c08_start = read("supabase/tests/database/c08_start_end_to_end.test.sql")
 
 for abuse_id in (
     "AB-START-01",
@@ -88,4 +91,11 @@ require(parity, "END server-side", "END parity")
 require(parity, "CANCEL server-side", "CANCEL parity")
 require(profile, "c02_reaudit:", "PROJECT_PROFILE C02 reaudit state")
 
-print("PASS: C02 threat-model, authz, concurrency and API-surface contracts are coherent.")
+require(c05_guards, "END is allowed only from ACTIVE treatment", "END transition guard")
+require(c05_guards, "CANCEL requires cancellation_reason", "CANCEL reason guard")
+require(c07_boundaries, "CANCEL after deadline preserves breach", "CANCEL SLA abuse boundary")
+require(c07_boundaries, "future CANCEL is invisible to an earlier historical snapshot", "historical snapshot boundary")
+require(c08_start, "same idempotency key returns same treatment", "sequential START retry contract")
+require(c08_start, "retry does not duplicate TREATMENT_OPENED", "START event dedupe contract")
+
+print("PASS: C02 threat-model, authz, state-transition, temporal, concurrency and API-surface contracts are coherent.")
