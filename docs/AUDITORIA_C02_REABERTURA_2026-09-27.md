@@ -96,6 +96,15 @@ O smoke anônimo atual cobre somente parte das tabelas. O schema Safra possui 17
 
 END, CANCEL e 12º card ainda não possuem command/RPC produtivo. Nesta rodada, o threat model e os testes esperados serão formalizados, mas a implementação funcional continuará na fase própria do roadmap.
 
+### C02-AUD-10 — imutabilidade de treatment terminal
+
+**Estado:** OPEN  
+**Severidade:** HIGH / INTEGRIDADE HISTÓRICA
+
+Durante a execução foi identificado que o status terminal já era protegido, porém uma linha `RESOLVED`/`CANCELLED` ainda poderia ter campos históricos reescritos por caminho privilegiado sem mudar o status, por exemplo `cancellation_reason` ou timestamps de fechamento.
+
+**Direção corretiva:** tornar qualquer UPDATE posterior ao estado terminal inválido; correções posteriores devem ser representadas exclusivamente por evento append-only (`ADMIN_CORRECTION_RECORDED`/evento governado), preservando a evidência original.
+
 ## 4. Controles já confirmados na abertura
 
 - 17 tabelas do domínio Safra com RLS habilitada;
@@ -138,7 +147,7 @@ Direção aprovada para a execução:
 
 A reauditoria somente poderá ser marcada como concluída quando:
 
-- C02-AUD-01 a C02-AUD-09 estiverem corrigidos ou formalmente classificados/deferidos;
+- C02-AUD-01 a C02-AUD-10 estiverem corrigidos ou formalmente classificados/deferidos;
 - os testes derivados estiverem versionados e verdes;
 - a superfície Data API/RPC auditada estiver coerente com deny-by-default;
 - o bypass de RBAC estiver comprovadamente fechado;
