@@ -2424,3 +2424,28 @@ TESTS = 10/10
 ADMIN_ROLE_INHERITANCE = 0
 SILENT_OWNER_FALLBACK = 0
 ```
+
+
+### SAFRA-C06.1 — Ação 3 — coerência UI / REST-RPC / banco
+
+Evidência:
+`docs/data-contracts/C06_1_READ_AUTHORIZATION_EVIDENCE.md`
+
+Validação:
+- PRIMARY pgTAP = 12/12 PASS;
+- App Smoke 83/85 = PASS para checker UI/server;
+- Database Disposable Run 123: rebuild PASS, pgTAP PASS, REST denial PASS, RPC denial PASS;
+- RLS ativa no catálogo Safra;
+- anon e authenticated sem SELECT direto no catálogo Safra;
+- browser sem acesso às tabelas privadas de RBAC;
+- sem RPC público de leitura de scenario/owner nesta fase.
+
+Importante:
+a UI Safra ainda não implementa leitura dos 11 cenários. Logo, não foi inferida paridade positiva de dataset.
+
+```text
+C06_1_ACTION_03 = PASS
+AUTHORIZATION_COHERENCE = PASS
+SAFRA_UI_CATALOG_READ = NOT_IMPLEMENTED_YET
+UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API
+```
