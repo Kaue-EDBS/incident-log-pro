@@ -6,7 +6,7 @@ import { useAuth } from "@/integrations/supabase/AuthProvider";
 
 const NAV = [
   { to: "/", label: "Visão Geral", icon: LayoutGrid },
-  { to: "/novo-incidente", label: "Novo Incidente", icon: PlusCircle },
+  { to: "/novo-incidente", label: "Abrir Protocolo", icon: PlusCircle },
   { to: "/incidentes", label: "Incidentes", icon: ShieldAlert },
   { to: "/aplicacoes", label: "Aplicações", icon: Server },
   { to: "/indicadores", label: "Indicadores", icon: BarChart3 },
@@ -28,7 +28,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Activity className="size-5 text-primary-foreground" />
           </span>
           <div className="leading-tight">
-            <p className="text-sm font-semibold text-sidebar-foreground">Reliability Monitor</p>
+            <p className="text-sm font-semibold text-sidebar-foreground">Painel Safra</p>
             <p className="text-xs text-muted-foreground">Editora do Brasil</p>
           </div>
         </div>
@@ -66,13 +66,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary">
             <Activity className="size-4 text-primary-foreground" />
           </span>
-          <span className="text-sm font-semibold">Reliability Monitor</span>
+          <span className="text-sm font-semibold">Painel Safra</span>
         </div>
         <Link
           to="/novo-incidente"
           className="rounded-lg bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground"
         >
-          Novo incidente
+          Abrir protocolo
         </Link>
       </header>
 
@@ -89,7 +89,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             )}
           >
             <item.icon className="size-4" />
-            {item.label.replace("Novo Incidente", "Novo")}
+            {item.label.replace("Abrir Protocolo", "Abrir")}
           </Link>
         ))}
       </nav>

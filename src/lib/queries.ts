@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Application, Incident } from "./types";
+import type { SafraStartCatalogItem, SafraStartResult } from "./safra";
 
 export function useApplications() {
   return useQuery({
@@ -82,6 +83,44 @@ export function useUpdateIncident() {
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["incidents"] });
       qc.invalidateQueries({ queryKey: ["incidents", data.id] });
+    },
+  });
+}
+
+
+export function useSafraStartCatalog() {
+  return useQuery({
+    queryKey: ["safra-start-catalog"],
+    queryFn: async (): Promise<SafraStartCatalogItem[]> => {
+      const { data, error } = await supabase.rpc("safra_get_start_catalog");
+      if (error) throw error;
+      return (data ?? []) as unknown as SafraStartCatalogItem[];
+    },
+  });
+}
+
+export function useSafraStartTreatment() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: {
+      scenarioId: string;
+      idempotencyKey: string;
+      impactSummary: string | null;
+      impactedAreaIds: string[];
+    }): Promise<SafraStartResult> => {
+      const { data, error } = await supabase.rpc("safra_start_treatment", {
+        p_scenario_id: input.scenarioId,
+        p_idempotency_key: input.idempotencyKey,
+        p_impact_summary: input.impactSummary,
+        p_impacted_area_ids: input.impactedAreaIds,
+      });
+
+      if (error) throw error;
+      return data as unknown as SafraStartResult;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["safra-start-catalog"] });
     },
   });
 }

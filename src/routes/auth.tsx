@@ -8,12 +8,12 @@ export const Route = createFileRoute("/auth")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Entrar | Reliability Monitor" },
+      { title: "Entrar | Painel Safra" },
       {
         name: "description",
-        content: "Acesso ao painel de confiabilidade das aplicações da Editora do Brasil.",
+        content: "Acesso ao Painel Safra da Editora do Brasil.",
       },
-      { property: "og:title", content: "Entrar | Reliability Monitor" },
+      { property: "og:title", content: "Entrar | Painel Safra" },
       {
         property: "og:description",
         content: "Acesso ao painel de confiabilidade das aplicações da Editora do Brasil.",
@@ -56,7 +56,7 @@ function AuthPage() {
             <Activity className="size-5 text-primary-foreground" />
           </span>
           <div className="leading-tight">
-            <p className="text-sm font-semibold text-foreground">Reliability Monitor</p>
+            <p className="text-sm font-semibold text-foreground">Painel Safra</p>
             <p className="text-xs text-muted-foreground">Editora do Brasil</p>
           </div>
         </div>
@@ -65,7 +65,7 @@ function AuthPage() {
           Acesse o painel
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Entre com sua conta Microsoft para acompanhar incidentes e indicadores de confiabilidade.
+          Entre com sua conta Microsoft para abrir e acompanhar protocolos operacionais da Safra.
         </p>
 
         {erro ? (

@@ -372,6 +372,9 @@ export type Database = {
           target_text: string
           target_unit: string
           target_value: number
+          tolerance_documentation: string | null
+          tolerance_unit: string | null
+          tolerance_value: number | null
         }
         Insert: {
           applicability_text?: string | null
@@ -385,6 +388,9 @@ export type Database = {
           target_text: string
           target_unit: string
           target_value: number
+          tolerance_documentation?: string | null
+          tolerance_unit?: string | null
+          tolerance_value?: number | null
         }
         Update: {
           applicability_text?: string | null
@@ -398,6 +404,9 @@ export type Database = {
           target_text?: string
           target_unit?: string
           target_value?: number
+          tolerance_documentation?: string | null
+          tolerance_unit?: string | null
+          tolerance_value?: number | null
         }
         Relationships: [
           {
@@ -915,6 +924,16 @@ export type Database = {
         Returns: string
       }
       safra_session_is_live: { Args: never; Returns: boolean }
+      safra_get_start_catalog: { Args: never; Returns: Json }
+      safra_start_treatment: {
+        Args: {
+          p_scenario_id: string
+          p_idempotency_key: string
+          p_impact_summary?: string | null
+          p_impacted_area_ids?: string[]
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

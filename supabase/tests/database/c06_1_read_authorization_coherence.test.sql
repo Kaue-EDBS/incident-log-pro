@@ -73,15 +73,10 @@ select ok(
   'authenticated can execute role predicate'
 );
 
-select is(
-  (select count(*)::bigint
-   from pg_proc p
-   join pg_namespace n on n.oid=p.pronamespace
-   where n.nspname='public'
-     and p.prokind='f'
-     and (lower(p.proname) like '%scenario%' or lower(p.proname) like '%owner%')),
-  0::bigint,
-  'no public scenario read RPC exists yet; UI cannot bypass deny-by-default through RPC'
+select ok(
+  has_function_privilege('authenticated','public.safra_get_start_catalog()','EXECUTE')
+  and not has_function_privilege('anon','public.safra_get_start_catalog()','EXECUTE'),
+  'C08 governed START catalog is authenticated-only while direct catalog tables stay denied'
 );
 
 select is(

@@ -23,3 +23,36 @@ fi
 
 echo "PASS direct anonymous RPC denial: safra_is_corporate_user -> HTTP ${http_code}"
 rm -f "${body_file}"
+
+
+# C08: START RPCs are authenticated-only. Anonymous calls remain denied.
+declare -a start_rpcs=(
+  "safra_get_start_catalog|{}"
+  "safra_start_treatment|{\"p_scenario_id\":\"00000000-0000-0000-0000-000000000001\",\"p_idempotency_key\":\"00000000-0000-4000-8000-000000000002\",\"p_impact_summary\":null,\"p_impacted_area_ids\":[]}"
+)
+
+for entry in "${start_rpcs[@]}"; do
+  rpc_name="${entry%%|*}"
+  data="${entry#*|}"
+  body_file="$(mktemp)"
+  http_code="$(
+    curl --silent --show-error \
+      --output "${body_file}" \
+      --write-out "%{http_code}" \
+      --request POST \
+      --header "apikey: ${PUBLIC_KEY}" \
+      --header "Content-Type: application/json" \
+      --data "${data}" \
+      "${API_BASE}/rest/v1/rpc/${rpc_name}"
+  )"
+
+  if [[ "${http_code}" != "401" && "${http_code}" != "403" ]]; then
+    echo "Direct anonymous RPC unexpectedly succeeded: ${rpc_name} -> HTTP ${http_code}"
+    cat "${body_file}"
+    rm -f "${body_file}"
+    exit 1
+  fi
+
+  echo "PASS direct anonymous RPC denial: ${rpc_name} -> HTTP ${http_code}"
+  rm -f "${body_file}"
+done
