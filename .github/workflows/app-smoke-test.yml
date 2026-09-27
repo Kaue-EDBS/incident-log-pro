@@ -38,6 +38,12 @@ jobs:
       - name: C06.1 UI/server authorization coherence
         run: python3 .github/scripts/check-c06-1-ui-auth-coherence.py
 
+      - name: C07 analytics timezone contract - UTC host
+        run: TZ=UTC bun .github/scripts/test-c07-analytics-timezone.ts
+
+      - name: C07 analytics timezone contract - alternate host
+        run: TZ=Asia/Tokyo bun .github/scripts/test-c07-analytics-timezone.ts
+
       - name: Known HIGH dependency floors
         run: python3 .github/scripts/check-known-vulnerable-dependency-floors.py
 
