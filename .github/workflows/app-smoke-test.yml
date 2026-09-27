@@ -45,7 +45,7 @@ jobs:
         run: TZ=Asia/Tokyo bun .github/scripts/test-c07-analytics-timezone.ts
 
       - name: C01 runtime contracts
-        run: bun test src/lib/safra.test.ts src/lib/supabase-key-safety.test.ts
+        run: bun test .github/tests/c01-runtime-contracts.test.ts
 
       - name: Known HIGH dependency floors
         run: python3 .github/scripts/check-known-vulnerable-dependency-floors.py
