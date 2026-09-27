@@ -206,3 +206,37 @@ Evidência final:
 - Database Disposable Run 134 = SUCCESS.
 
 Estado: **APPROVED — 27/09/2026**.
+
+
+## Regra aprovada — relógio não-negativo e semântica de CANCEL
+
+### Relógio
+
+A engine nunca expõe contador negativo.
+
+```text
+remaining_seconds = max(0, deadline - effective_time)
+elapsed_seconds < 0 => inválido / NOT_MEASURABLE
+```
+
+Depois do breach, `remaining_seconds` permanece em zero e o estado comunica a violação.
+
+### CANCEL
+
+`CANCEL` não é sinônimo de cumprimento do SLA.
+
+Regras:
+- CANCEL antes do prazo => `NOT_MEASURABLE`;
+- CANCEL exatamente no prazo => `NOT_MEASURABLE`;
+- CANCEL depois do prazo => `BREACHED`;
+- nenhum caminho de CANCEL pode retornar `COMPLETED_ON_TIME` ou `COMPLETED_LATE`;
+- END e CANCEL simultâneos => `CONFLICTING_TERMINAL_EVENTS`.
+
+Somente o `end_event` real pode produzir estado `COMPLETED_*`.
+
+Evidência:
+- `supabase/tests/database/c07_clock_cancel_contract.test.sql`;
+- Database Disposable Run 136 = SUCCESS;
+- PRIMARY smoke = PASS.
+
+Estado: **APPROVED — 27/09/2026**.
