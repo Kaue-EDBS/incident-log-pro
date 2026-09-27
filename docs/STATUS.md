@@ -2551,3 +2551,35 @@ A fase corrente passa a ser **SAFRA-C07 — Engine de SLA**.
 O mesmo Database Disposable Run 125 também reexecutou com sucesso a bateria C07 já versionada,
 eliminando o estado documental anterior `C07_CI = PENDING`. Isso não antecipa decisões de
 start_event/end_event/thresholds nem publica P1-P4.
+
+
+---
+
+## C07 — contrato obrigatório dos quatro campos do SLA — 27/09/2026
+
+Modelo canônico:
+
+```text
+start_event
+end_event
+target_value
+target_unit
+```
+
+Resultado:
+- os quatro campos são obrigatórios em `public.scenario_slas`;
+- `target_value > 0`;
+- `target_unit in (MINUTE,HOUR,DAY)`;
+- `start_event <> end_event`;
+- RLS preservada;
+- nenhum SLA dos 11 cenários foi inferido/publicado;
+- App Smoke Run 90 = SUCCESS;
+- Database Disposable Run 128 = SUCCESS;
+- PRIMARY sincronizado com migration `20260927094000_c07_require_complete_sla_model.sql`.
+
+```text
+C07_SLA_MODEL = PASS
+C07_SLA_MODEL_PRIMARY = PASS
+C07_SLA_MODEL_CI = PASS_RUN_128
+STRUCTURED_SLA_ROWS = 0
+```
