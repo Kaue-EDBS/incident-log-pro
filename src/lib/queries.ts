@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Application, Incident } from "./types";
 import type { SafraStartCatalogItem, SafraStartResult } from "./safra";
 
-
 type LegacyIncidentUpdate = Partial<
   Pick<
     Incident,
