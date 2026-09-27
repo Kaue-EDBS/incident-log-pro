@@ -28,3 +28,37 @@ for table in "${tables[@]}"; do
   echo "PASS direct API public/anon denial: ${table} -> HTTP ${http_code}"
   rm -f "${body_file}"
 done
+
+
+# C06.1 Action 4: ownership cannot be self-assigned or rewritten through the public Data API.
+for method in POST PATCH; do
+  body_file="$(mktemp)"
+  if [[ "${method}" == "POST" ]]; then
+    url="${API_BASE}/rest/v1/scenario_owners"
+    data='{"scenario_id":"00000000-0000-0000-0000-000000000001","owner_id":"00000000-0000-0000-0000-000000000002","assignment_reason":"unauthorized direct API audit"}'
+  else
+    url="${API_BASE}/rest/v1/scenario_owners?id=eq.00000000-0000-0000-0000-000000000001"
+    data='{"assignment_reason":"unauthorized direct API audit"}'
+  fi
+
+  http_code="$(
+    curl --silent --show-error \
+      --output "${body_file}" \
+      --write-out "%{http_code}" \
+      --request "${method}" \
+      --header "apikey: ${PUBLIC_KEY}" \
+      --header "Content-Type: application/json" \
+      --data "${data}" \
+      "${url}"
+  )"
+
+  if [[ "${http_code}" != "401" && "${http_code}" != "403" ]]; then
+    echo "Direct ownership mutation unexpectedly reached scenario_owners: ${method} -> HTTP ${http_code}"
+    cat "${body_file}"
+    rm -f "${body_file}"
+    exit 1
+  fi
+
+  echo "PASS direct ownership mutation denial: scenario_owners ${method} -> HTTP ${http_code}"
+  rm -f "${body_file}"
+done
