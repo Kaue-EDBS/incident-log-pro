@@ -1,6 +1,6 @@
-schema_version: 2
-updated_at: "2026-09-26"
-status: C01_APPROVED
+schema_version: 3
+updated_at: "2026-09-27"
+status: C01_AUD_IN_EXECUTION
 
 project:
   name: "Painel Safra"
@@ -8,9 +8,13 @@ project:
   lovable_project_id: "27aaa43d-ca38-4c18-96c0-eb54a37a1792"
   project_type: "internal_operational_control"
   exposure: "internal"
+  business_audience: "INTERNAL"
+  application_access: "MICROSOFT_CORPORATE_AUTH_ONLY"
+  hosting_entrypoint_visibility: "PUBLIC_ENDPOINT_AUTH_GATED"
   human_interface: true
   lovable_status: "ready"
-  published: false
+  published: true
+  lovable_publish_audience: "public"
 
 architecture:
   backend_provider: "lovable_cloud"
@@ -24,6 +28,7 @@ architecture:
       - "supabase/migrations"
     canonical_strategy: "SUPABASE_MIGRATIONS_CANONICAL"
     c04_canonical_migration: "20260925133200_c04_role_mapping_and_corporate_rls.sql"
+    c01_audit_canonical_migration: "20260927204325_c01_corporate_domains_and_profile_alignment.sql"
     drizzle_schema_authority: false
     drizzle_tooling_role: "AUXILIARY_ORM_ONLY_NO_DEPLOY_AUTHORITY"
     remote_direct_schema_changes_allowed: false
@@ -35,7 +40,8 @@ architecture:
       - "20260925164700"
       - "20260925170000"
     migration_history_repair_status: "RECONCILED_2026-09-25"
-    known_drift: []
+    known_drift:
+      - "20260927204325 pending PRIMARY promotion during C01-AUD"
 
 service:
   service_class:
@@ -67,7 +73,10 @@ identity_and_auth:
   password_login_backend_required_disabled: true
   role_mapping_status: "IMPLEMENTED"
   ownership_inheritance: false
-  canonical_authorization_predicate: "auth.uid present + non-anonymous + provider azure + corporate email domain"
+  canonical_authorization_predicate: "auth.uid present + non-anonymous + provider azure + approved corporate email domain + unexpired JWT + live auth.sessions row"
+  allowed_email_domains:
+    - "editoradobrasil.com.br"
+    - "editoradobrasil1.onmicrosoft.com"
   user_metadata_authorization: false
   safra_access_legacy_flag: "REMOVED"
   role_source_of_truth: "private.safra_principals + private.safra_role_grants"
@@ -80,13 +89,14 @@ identity_and_auth:
   service_accounts_mvp: "NOT_APPLICABLE_UNLESS_REOPENED"
   microsoft_sso_runtime_evidence:
     provider: "azure"
-    authenticated_users_verified: 1
+    authenticated_users_verified: 2
     first_real_sign_in_verified: true
     supabase_session_created: true
     auth_uid_chain_status: "READY_FOR_AUTHORIZED_DB_CALLS"
-    verified_at: "2026-09-25"
-  current_auth_users: 1
-  current_users_with_safra_access: 1
+    verified_at: "2026-09-27"
+  current_auth_users: 2
+  current_bound_active_principals: 2
+  current_users_with_safra_access: 0
   anonymous_database_access: false
   temporary_authorization:
     mechanism: "legacy app_metadata.safra_access"
@@ -153,6 +163,11 @@ personal_data:
     after_operational_purpose: "DELETE_OR_ANONYMIZE"
     operational_history_and_metrics: "MAY_BE_RETAINED_FOR_CROSS_SAFRA_ANALYTICS_WITHOUT_PERSONAL_IDENTIFICATION_WHEN_NOT_NEEDED"
     note: "End of Safra is the operational retention boundary, extended only while identity is necessary for audit/post-mortem."
+  privacy_release_gate:
+    status: "SATISFIED"
+    decision: "D-49"
+    verified_at: "2026-09-27"
+    note: "Governance confirmation records that privacy/base-legal review required before real-user release has been completed."
   storage_files_currently_enabled: false
   storage_files_future_policy: "DEFERRED_UNTIL_STORAGE_IS_ENABLED"
 
@@ -229,6 +244,8 @@ domain_rules:
     - "Plano de Ação - Metodologia do Painel Safra.md"
     - "legacy implementation"
   material_business_decisions_open: true
+  unknown_material_decisions: 0
+  note: "Open governance issues are classified/deferred or have approved safe non-blocking behavior; open does not mean unknown."
 
 governance:
   roadmap: "docs/ROADMAP.md"
@@ -242,18 +259,20 @@ governance:
   destructive_git_history_rewrite_allowed: false
 
 deferred_decisions:
-  four_CRITICAL_scenarios: "GOVERNANCE_ISSUE_GI_SAFRA_001; BLOCKED_UNTIL_HUMAN_DECISION; C06_MUST_NOT_INFER"
-  scenario_2_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
-  scenario_4_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
-  scenario_10_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
-  scenario_11_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
-  scenario_9_curve_A_source: "GOVERNANCE_ISSUE_GI_SAFRA_003"
-  multiple_simultaneous_treatments: "GOVERNANCE_ISSUE_GI_SAFRA_004"
+  four_CRITICAL_scenarios: "GI-SAFRA-001; OPEN_NON_BLOCKING_D44; CRITICALITY_NULL; FUTURE_VERSION_REQUIRED"
+  scenario_2_threshold: "GI-SAFRA-002; OPEN_NON_BLOCKING_D45; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_4_threshold: "GI-SAFRA-002; OPEN_NON_BLOCKING_D45; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_10_threshold: "GI-SAFRA-002; OPEN_NON_BLOCKING_D45; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_11_threshold: "GI-SAFRA-002; OPEN_NON_BLOCKING_D45; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_9_curve_A_source: "GI-SAFRA-003; OPEN_NON_BLOCKING_D46; AUTO_DETECTION_NOT_CONFIGURED"
+  multiple_simultaneous_treatments: "GI-SAFRA-004; DEFERRED_TO_M01; CURRENTLY_ALLOWED"
   incomplete_or_not_applicable_close_policy: "DEFERRED_TO_SAFRA_F01"
-  email_notification_provider_and_channel: "GOVERNANCE_ISSUE_GI_SAFRA_005"
-  formal_new_scenario_approval_flow: "GOVERNANCE_ISSUE_GI_SAFRA_007"
-  weekly_governance_window: "GOVERNANCE_ISSUE_GI_SAFRA_008"
-  quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_C06_F04"
+  email_notification_provider_and_channel: "GI-SAFRA-005; DEFERRED_TO_M05"
+  current_safra_time_window: "GI-SAFRA-006; DEFERRED_TO_F04_M05"
+  formal_new_scenario_approval_flow: "GI-SAFRA-007; DEFERRED_TO_M10"
+  weekly_governance_window: "GI-SAFRA-008; DEFERRED_TO_GOVERNANCE_PHASE"
+  textual_sla_event_mapping: "GI-SAFRA-009; OPEN_NON_BLOCKING_D47"
+  quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_F04"
 
 c01_gate:
   status: "APPROVED"
@@ -261,6 +280,14 @@ c01_gate:
   g3: "PASS"
   g3_25: "PASS"
   closed_at: "2026-09-24"
+
+c01_reaudit:
+  status: "IN_EXECUTION"
+  opened_at: "2026-09-27T17:34:00-03:00"
+  material_decisions_resolved: true
+  unknown_material_count_candidate: 0
+  recertification_status: "PENDING_TECHNICAL_AND_PRIMARY_VERIFICATION"
+  audit_document: "docs/AUDITORIA_C01_REABERTURA_2026-09-27.md"
 
 c02_gate:
   status: "APPROVED"
@@ -306,7 +333,9 @@ c05_schema_v2:
   criticality_default: null
   active_treatment_uniqueness_constraint: false
   seed_11_scenarios: "PASS_C06_01_RECONCILED_198_OF_198"
-  start_end_cancel_rpcs: "NOT_STARTED"
+  start_rpc: "IMPLEMENTED_C08"
+  end_rpc: "NOT_IMPLEMENTED_F01_F02"
+  cancel_rpc: "NOT_IMPLEMENTED_F01_F02"
 
 
 disposable_database:

@@ -64,7 +64,7 @@ Evitar CPF, telefone pessoal, endereço residencial, credenciais, tokens, senhas
 - `anon` sem acesso ao banco;
 - Microsoft Entra ID corporativo homologado via SSO;
 - autorização governada por `private.safra_principals` + `private.safra_role_grants`;
-- predicado corporativo exige sessão válida, não anônima, provider Azure e e-mail corporativo;
+- predicado corporativo exige sessão válida, não anônima, provider Azure e e-mail pertencente a `editoradobrasil.com.br` ou `editoradobrasil1.onmicrosoft.com`;
 - `app_metadata.safra_access` foi removido como mecanismo de autorização;
 - ownership de cenário depende de vínculo explícito em `scenario_owners`, sem herança automática de papel administrativo.
 
@@ -74,7 +74,7 @@ Os controles desenhados no C02 foram materializados progressivamente em C04/C05/
 
 ### Identidade corporativa
 
-O Painel Safra utilizará Microsoft Entra ID corporativo via SSO.
+O Painel Safra utiliza Microsoft Entra ID corporativo via SSO. O acesso funcional é restrito aos domínios `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com`.
 
 O sistema deve armazenar somente os atributos necessários à identidade, autorização e auditoria, evitando replicar informações do diretório corporativo sem finalidade funcional.
 
@@ -127,7 +127,7 @@ Toda nova funcionalidade deve responder:
 
 ## 10. Pendências e deferimentos
 
-- base legal / enquadramento formal: **DEFERRED_TO_PRIVACY_OWNER_BEFORE_REAL_USER_RELEASE**;
+- base legal / enquadramento formal: **SATISFIED — confirmação de governança registrada em D-49 em 27/09/2026**;
 - retenção: **APPROVED**;
 - dados sensíveis: **fora do escopo intencional aprovado**;
 - identity provider: **Microsoft Entra ID corporativo via SSO — APPROVED**;
@@ -146,7 +146,7 @@ Mudança de identidade, integração, dados pessoais, retenção, arquivos ou ex
 - extensão permitida: somente enquanto identidade for necessária para auditoria/pós-mortem;
 - após a finalidade: eliminar ou anonimizar dados pessoais identificáveis;
 - histórico e métricas podem permanecer para análises comparativas entre Safras sem identificação pessoal quando ela não for necessária;
-- a política final de implementação deve ser validada no gate de privacidade antes do release.
+- o gate de privacidade/base legal exigido antes do release com usuários reais foi confirmado como atendido em D-49; a política de retenção permanece obrigatória.
 
 
 ## 12. Riscos residuais do SAFRA-C02 — 25/09/2026
@@ -161,7 +161,7 @@ Mudança de identidade, integração, dados pessoais, retenção, arquivos ou ex
 | RR-C02-06 | manipulação de estado/timestamp para afetar SLA | DEFERRED_CONTROL | C05/C07/M04/F01/F02 | não |
 | RR-C02-07 | alteração de cenário/owner/criticidade afetando histórico | DEFERRED_CONTROL | C05/C06/M10 | não |
 | RR-C02-08 | destinatário de notificação incorreto ou duplicado | DEFERRED_CONTROL | M05 | não |
-| RR-C02-09 | enquadramento/base legal formal ainda não registrado | DEFERRED_GOVERNANCE | privacy owner antes de liberar usuários reais | não para C02; sim para release se continuar aberto |
+| RR-C02-09 | enquadramento/base legal formal | CLOSED_BY_D49 | governança/privacidade | não — gate confirmado como atendido em 27/09/2026 |
 
 ### Regra de fechamento
 

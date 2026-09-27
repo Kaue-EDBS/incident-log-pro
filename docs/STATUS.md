@@ -8,9 +8,13 @@
 
 > Reauditoria corretiva **C01-AUD aberta em 27/09/2026 às 17:34 BRT**. Foram aprovadas duas decisões materiais: audiência funcional interna com acesso Microsoft limitado aos domínios `@editoradobrasil.com.br` e `@editoradobrasil1.onmicrosoft.com`, e gate de privacidade/base legal confirmado como atendido. A rodada corretiva foi autorizada, porém ainda está **EM EXECUÇÃO**. Fonte: `docs/AUDITORIA_C01_REABERTURA_2026-09-27.md`.
 
+> Snapshot runtime da C01-AUD: Lovable publicado tecnicamente com endpoint acessível, porém audiência funcional **INTERNAL**; acesso da aplicação deve exigir Microsoft/Azure + sessão viva + um dos dois domínios corporativos aprovados. PRIMARY observado com **2 usuários Auth corporativos**, **2 principals ativos vinculados** e **9 grants funcionais ativos**.
+
 ---
 
 ## 1. Baseline registrada
+
+> **SNAPSHOT HISTÓRICO:** as seções de baseline abaixo registram o estado encontrado no início do SAFRA-C00. Referências a rotas, hooks, autenticação e migrations dentro desse snapshot não descrevem necessariamente o estado atual. O estado corrente é o cabeçalho deste documento e as evidências das fases posteriores.
 
 ### Repositório
 
@@ -113,9 +117,11 @@ A primeira migration popula incidentes históricos fictícios para XPTO, ABC e S
 
 ---
 
-## 4. Rotas atuais
+## 4. Rotas observadas na baseline histórica — não representam o estado atual
 
-Fonte: `src/routes/` e `src/routeTree.gen.ts`.
+Fonte histórica da baseline: `src/routes/` e `src/routeTree.gen.ts`.
+
+> **Estado atual:** `src/routes/__root.tsx` usa `AuthProvider` + `AuthedShell`; usuários sem sessão são redirecionados para `/auth`. O START atual não usa mais `useStartIncident()` e opera por RPC governada.
 
 | URL | Arquivo | Papel atual | Acesso no router |
 |---|---|---|---|
@@ -128,7 +134,7 @@ Fonte: `src/routes/` e `src/routeTree.gen.ts`.
 
 O layout raiz está em `src/routes/__root.tsx`.
 
-### Acesso a dados usado pelas rotas
+### Acesso a dados observado nas rotas da baseline histórica
 
 As páginas usam os hooks de `src/lib/queries.ts`, que consultam diretamente o Supabase pelo client de navegador:
 

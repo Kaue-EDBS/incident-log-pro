@@ -124,18 +124,28 @@ Autoridade canônica: `supabase/migrations`.
 
 Drizzle permanece como tooling/ORM auxiliar e não pode manter uma segunda trilha concorrente de schema/migrations.
 
-## 4. Decisões humanas abertas
+## 4. Inventário atual de decisões abertas e classificadas
 
-- quatro cenários CRITICAL — `GI-SAFRA-001`, sem evidência nominal suficiente;
-- thresholds 2/4/10/11;
-- origem do mínimo curva A;
-- múltiplas tratativas simultâneas;
-- fechamento com passo incompleto/NA;
-- matriz exata de permissões por papel;
-- canal de notificação;
-- aprovadores de novos cenários;
-- janela semanal;
-- impacto quantitativo.
+Questão conhecida, registrada e com comportamento seguro/fase responsável **não é UNKNOWN**. O inventário vigente é:
+
+| Item | Estado | Tratamento atual |
+|---|---|---|
+| GI-SAFRA-001 — quatro cenários CRITICAL | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-44 mantém criticidade `NULL`; não inferir; futura decisão cria nova versão |
+| GI-SAFRA-002 — thresholds 2/4/10/11 | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-45 mantém detecção automática `NOT_CONFIGURED`; START manual permitido |
+| GI-SAFRA-003 — fonte mínimo curva A | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-46 mantém automação desligada e START manual |
+| GI-SAFRA-004 — múltiplas tratativas simultâneas | OPEN / DEFERRED_TO_M01 | comportamento atual permite múltiplas ACTIVE; mudança exige decisão explícita |
+| GI-SAFRA-005 — canal/provider de notificações e platform admins | OPEN / DEFERRED_TO_M05 | nenhuma decisão de destinatário/provider é inferida |
+| GI-SAFRA-006 — janela temporal oficial da Safra | OPEN / DEFERRED_TO_F04_M05 | métricas/comunicações não devem inventar janela |
+| GI-SAFRA-007 — publicação formal do 12º card | OPEN / DEFERRED_TO_M10 | proposta não vira cenário produtivo automaticamente |
+| GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_GOVERNANCE_PHASE | nenhuma cadência é inferida |
+| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-47 permite estruturar apenas cláusulas inequivocamente elegíveis; demais permanecem não estruturadas |
+| fechamento com passo incompleto/NA | DEFERRED_TO_F01 | não impacta START |
+| impacto quantitativo — métricas/thresholds | DEFERRED_TO_F04 | modelo conceitual aprovado; thresholds não inferidos |
+| matriz exata de permissões por papel | IMPLEMENTED_C04 | fonte: `private.safra_principals` + `private.safra_role_grants` e matriz C04 |
+| audiência/domínios corporativos | APPROVED_D48 / C01-AUD_IMPLEMENTATION | `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com` |
+| privacidade/base legal pré-release | SATISFIED_D49 | gate confirmado como atendido em 27/09/2026 |
+
+**Contagem material desconhecida candidata após D-48/D-49: `0`.** A recertificação formal ocorre apenas no fechamento da C01-AUD após testes e verificação no PRIMARY.
 
 ## 5. Precedência
 

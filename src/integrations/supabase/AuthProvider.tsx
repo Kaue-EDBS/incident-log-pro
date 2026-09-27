@@ -16,6 +16,8 @@ type AuthContextValue = {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  corporateAuthorized: boolean | null;
+  authorizationError: string | null;
   signInWithMicrosoft: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -29,6 +31,9 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authorizationLoading, setAuthorizationLoading] = useState(false);
+  const [corporateAuthorized, setCorporateAuthorized] = useState<boolean | null>(null);
+  const [authorizationError, setAuthorizationError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -53,6 +58,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!session) {
+      setCorporateAuthorized(null);
+      setAuthorizationError(null);
+      setAuthorizationLoading(false);
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    setAuthorizationLoading(true);
+    setCorporateAuthorized(null);
+    setAuthorizationError(null);
+
+    void (async () => {
+      try {
+        const { data, error } = await supabase.rpc("safra_is_corporate_user");
+        if (cancelled) return;
+
+        if (error || data !== true) {
+          setCorporateAuthorized(false);
+          setAuthorizationError(
+            "Acesso permitido somente para contas Microsoft corporativas da Editora do Brasil.",
+          );
+          return;
+        }
+
+        setCorporateAuthorized(true);
+      } finally {
+        if (!cancelled) setAuthorizationLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session]);
+
   const signInWithMicrosoft = useCallback(async () => {
     const result = await lovable.auth.signInWithOAuth("microsoft", {
       redirect_uri: window.location.origin,
@@ -72,11 +117,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       session,
       user: session?.user ?? null,
-      loading,
+      loading: loading || authorizationLoading,
+      corporateAuthorized,
+      authorizationError,
       signInWithMicrosoft,
       signOut,
     }),
-    [loading, session, signInWithMicrosoft, signOut],
+    [
+      authorizationError,
+      authorizationLoading,
+      corporateAuthorized,
+      loading,
+      session,
+      signInWithMicrosoft,
+      signOut,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

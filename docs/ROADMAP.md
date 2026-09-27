@@ -1,8 +1,8 @@
 # Roadmap de Reformulação — Painel Safra / incident-log-pro
 
-**Versão:** 2.1  
-**Data:** 24/09/2026  
-**Status:** roadmap consolidado em execução — C00 e C01 concluídos; C02 em andamento  
+**Versão:** 2.2  
+**Data:** 27/09/2026  
+**Status:** roadmap consolidado em execução — SAFRA-C08 em andamento; C01-AUD em revalidação corretiva  
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Produto-alvo:** Painel Safra — Torre de Governança de Contingências  
 **Regra de execução:** GitHub-first; não reescrever histórico publicado; documentação viva ao fim de cada etapa.
@@ -33,7 +33,7 @@ OCORRÊNCIA / NECESSIDADE
 2. **O Painel não acompanha checklist operacional passo a passo.** A execução do protocolo ocorre com o owner e sua equipe; o Painel governa o ciclo, os tempos, as comunicações, o histórico e o aprendizado.
 3. **Papéis administrativos foram separados por responsabilidade**, sem herança automática de ownership.
 4. **12º card é proposta de novo cenário**, com fluxo próprio de triagem e ownership; não é protocolo genérico.
-5. **C00 e C01 estão concluídos.** C02 é a fase atual.
+5. **C00 e C01 permanecem historicamente concluídos.** A fase funcional atual é C08; a reauditoria corretiva C01-AUD está em execução para reconciliar documentação, runtime e acesso corporativo.
 6. **C02 modela controles; não os implementa.** RLS, autorização server-side, versionamento, audit trail, constraints e role mapping são definidos como resposta às ameaças e implementados nas fases C04/C05 e seguintes.
 7. **REPLICA está desabilitada**, sem eliminar backup/restore.
 8. **Retenção, service class, application criticality e RTO/RPO estão decididos.**
@@ -143,12 +143,16 @@ AUTHENTICATION != AUTHORIZATION
 - RLS habilitada;
 - policies permissivas antigas removidas;
 - `service_role` não exposto no browser;
-- contenção transitória por `app_metadata.safra_access=true`;
-- RBAC definitivo ainda será implementado em C04.
+- `app_metadata.safra_access` removido;
+- RBAC definitivo implementado em C04 com `private.safra_principals` + `private.safra_role_grants`;
+- sessão corporativa validada por provider Azure, JWT válido, `auth.sessions` viva e domínio corporativo aprovado;
+- domínios aprovados: `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com`.
 
-## 3.3 Migration drift conhecido
+## 3.3 Estado de migrations
 
-A migration `20260924212155_harden_safra_c00_access.sql` representa o hardening aplicado, porém seu registro no histórico formal de migrations precisa ser reconciliado no C05.
+O drift histórico C00/C04/C05 foi reconciliado. Até a abertura da C01-AUD, GitHub e PRIMARY estavam alinhados inclusive com `20260927154505_c00_restore_legacy_least_privilege.sql`.
+
+A migration `20260927204325_c01_corporate_domains_and_profile_alignment.sql` pertence à rodada C01-AUD e somente poderá ser considerada alinhada após passar no banco descartável, entrar em `main` e ser promovida/verificada no PRIMARY.
 
 ---
 
@@ -784,6 +788,18 @@ G3 = PASS
 G3.25 = PASS
 unknown_material_count = 0
 ```
+
+### Reauditoria C01-AUD — EM EXECUÇÃO em 27/09/2026
+
+A conclusão histórica de 24/09 permanece preservada. A reauditoria atual encontrou drift documental e uma ampliação de domínio corporativo a implementar.
+
+Decisões materiais da reauditoria:
+- acesso funcional exclusivamente interno;
+- domínios Microsoft permitidos: `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com`;
+- gate de privacidade/base legal confirmado como atendido;
+- questões abertas classificadas/deferidas não contam como UNKNOWN.
+
+A recertificação de `unknown_material_count = 0` somente será registrada após testes, promoção ao PRIMARY e reconciliação final do `PROJECT_PROFILE`.
 
 ### Decisões fechadas
 
