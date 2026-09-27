@@ -313,14 +313,16 @@ c02_reaudit:
     g3_5: "PENDING"
     threat_001: "PENDING"
     authz_001: "PENDING_FULL_C02_RECERTIFICATION"
-  open_findings: 6
+  open_findings: 4
   highest_severity: "HIGH_AUTHZ"
   closed_findings:
     c02_aud_01: "PASS_2026-09-27T20:04:00-03:00"
     c02_aud_02: "PASS_CANONICAL_ABUSE_CASES"
     c02_aud_03: "PASS_RESIDUAL_RISK_RECONCILED"
     c02_aud_09: "PASS_CONTRACT_DEFINED_IMPLEMENTATION_DEFERRED"
-  primary_finding: "Remaining findings continue under fragmented review: C02-AUD-04/05/06/07/08 plus final gate recertification"
+    c02_aud_04: "PASS_CONCURRENT_START_RETRY"
+    c02_aud_05: "PASS_IDEMPOTENCY_CONFLICT_REGRESSION"
+  primary_finding: "Remaining findings continue under fragmented review: C02-AUD-06/07/08/10 plus final gate recertification"
   audit_document: "docs/AUDITORIA_C02_REABERTURA_2026-09-27.md"
 
 c04_gate:
