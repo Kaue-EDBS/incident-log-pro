@@ -103,14 +103,12 @@ describe("browser Supabase key safety", () => {
   });
 
   test("rejects a legacy service_role JWT", () => {
-    const key =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.signature";
+    const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.signature";
     expect(() => assertBrowserSafeSupabaseKey(key)).toThrow("secret/service-role");
   });
 
   test("allows a legacy anon JWT", () => {
-    const key =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.signature";
+    const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.signature";
     expect(assertBrowserSafeSupabaseKey(key)).toBe(key);
   });
 });
