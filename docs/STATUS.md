@@ -6,9 +6,9 @@
 
 > Reauditoria corretiva **C00-AUD concluída em 27/09/2026 às 13:15 BRT**. C00-AUD-01 a C00-AUD-04 foram fechados: regressão HTTP do legado reforçada, menor privilégio restaurado e promovido ao PRIMARY, lint convertido em gate zero-warning e hook legado morto removido. Evidências completas: `docs/AUDITORIA_C00_REABERTURA_2026-09-27.md`.
 
-> Reauditoria corretiva **C01-AUD aberta em 27/09/2026 às 17:34 BRT**. Foram aprovadas duas decisões materiais: audiência funcional interna com acesso Microsoft limitado aos domínios `@editoradobrasil.com.br` e `@editoradobrasil1.onmicrosoft.com`, e gate de privacidade/base legal confirmado como atendido. A rodada corretiva foi autorizada, porém ainda está **EM EXECUÇÃO**. Fonte: `docs/AUDITORIA_C01_REABERTURA_2026-09-27.md`.
+> Reauditoria corretiva **C01-AUD concluída e recertificada em 27/09/2026 às 18:16 BRT**. PROJECT_PROFILE, documentação canônica, domínios corporativos, privacidade, inventário de decisões e fronteiras de runtime foram reconciliados. `unknown_material_count = 0` foi recertificado. Evidências: `docs/AUDITORIA_C01_REABERTURA_2026-09-27.md`.
 
-> Snapshot runtime da C01-AUD: Lovable publicado tecnicamente com endpoint acessível, porém audiência funcional **INTERNAL**; acesso da aplicação deve exigir Microsoft/Azure + sessão viva + um dos dois domínios corporativos aprovados. PRIMARY observado com **2 usuários Auth corporativos**, **2 principals ativos vinculados** e **9 grants funcionais ativos**.
+> Snapshot runtime recertificado no fechamento da C01-AUD: Lovable publicado tecnicamente com endpoint acessível, audiência funcional **INTERNAL**, Microsoft/Azure + sessão viva + domínio corporativo aprovado. PRIMARY observado com **2 usuários Auth corporativos**, **2 principals ativos vinculados**, **9 grants funcionais ativos**, **0 grants anon nas estruturas centrais** e **0 policies públicas `USING (true)`**.
 
 ---
 

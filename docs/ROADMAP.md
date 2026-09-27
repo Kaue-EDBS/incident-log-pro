@@ -2,7 +2,7 @@
 
 **Versão:** 2.2  
 **Data:** 27/09/2026  
-**Status:** roadmap consolidado em execução — SAFRA-C08 em andamento; C01-AUD em revalidação corretiva  
+**Status:** roadmap consolidado em execução — SAFRA-C08 em andamento; C01-AUD concluída e recertificada  
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Produto-alvo:** Painel Safra — Torre de Governança de Contingências  
 **Regra de execução:** GitHub-first; não reescrever histórico publicado; documentação viva ao fim de cada etapa.
@@ -33,7 +33,7 @@ OCORRÊNCIA / NECESSIDADE
 2. **O Painel não acompanha checklist operacional passo a passo.** A execução do protocolo ocorre com o owner e sua equipe; o Painel governa o ciclo, os tempos, as comunicações, o histórico e o aprendizado.
 3. **Papéis administrativos foram separados por responsabilidade**, sem herança automática de ownership.
 4. **12º card é proposta de novo cenário**, com fluxo próprio de triagem e ownership; não é protocolo genérico.
-5. **C00 e C01 permanecem historicamente concluídos.** A fase funcional atual é C08; a reauditoria corretiva C01-AUD está em execução para reconciliar documentação, runtime e acesso corporativo.
+5. **C00 e C01 permanecem historicamente concluídos.** A fase funcional atual é C08; a reauditoria corretiva C01-AUD foi concluída em 27/09/2026 com `unknown_material_count = 0` recertificado.
 6. **C02 modela controles; não os implementa.** RLS, autorização server-side, versionamento, audit trail, constraints e role mapping são definidos como resposta às ameaças e implementados nas fases C04/C05 e seguintes.
 7. **REPLICA está desabilitada**, sem eliminar backup/restore.
 8. **Retenção, service class, application criticality e RTO/RPO estão decididos.**
@@ -789,7 +789,7 @@ G3.25 = PASS
 unknown_material_count = 0
 ```
 
-### Reauditoria C01-AUD — EM EXECUÇÃO em 27/09/2026
+### Reauditoria C01-AUD — CONCLUÍDA / RECERTIFICADA em 27/09/2026
 
 A conclusão histórica de 24/09 permanece preservada. A reauditoria atual encontrou drift documental e uma ampliação de domínio corporativo a implementar.
 
@@ -799,7 +799,7 @@ Decisões materiais da reauditoria:
 - gate de privacidade/base legal confirmado como atendido;
 - questões abertas classificadas/deferidas não contam como UNKNOWN.
 
-A recertificação de `unknown_material_count = 0` somente será registrada após testes, promoção ao PRIMARY e reconciliação final do `PROJECT_PROFILE`.
+A recertificação de `unknown_material_count = 0` foi concluída após testes, merge do PR #5, validação no PRIMARY e reconciliação final do `PROJECT_PROFILE`.
 
 ### Decisões fechadas
 

@@ -2,7 +2,7 @@
 
 > Documento canônico de arquitetura.
 > Atualizado em: 27/09/2026
-> Estado: **SAFRA-C08 em execução — START end-to-end implementado; C01-AUD reconciliando documentação e domínios corporativos**
+> Estado: **SAFRA-C08 em execução — START end-to-end implementado; C01-AUD concluída e recertificada em 27/09/2026**
 
 ## 1. Objetivo
 
