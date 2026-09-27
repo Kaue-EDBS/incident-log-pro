@@ -370,8 +370,8 @@ export type Database = {
           scenario_version_id: string
           start_event: string
           target_text: string
-          target_unit: string | null
-          target_value: number | null
+          target_unit: string
+          target_value: number
         }
         Insert: {
           applicability_text?: string | null
@@ -383,8 +383,8 @@ export type Database = {
           scenario_version_id: string
           start_event: string
           target_text: string
-          target_unit?: string | null
-          target_value?: number | null
+          target_unit: string
+          target_value: number
         }
         Update: {
           applicability_text?: string | null
@@ -396,8 +396,8 @@ export type Database = {
           scenario_version_id?: string
           start_event?: string
           target_text?: string
-          target_unit?: string | null
-          target_value?: number | null
+          target_unit?: string
+          target_value?: number
         }
         Relationships: [
           {
