@@ -2368,3 +2368,35 @@ DUPLICATE_ACTIVE_OWNER = 0
 OWNER_ROLE_MISMATCH = 0
 ADMIN_OWNER_OVERLAP = 0
 ```
+
+
+---
+
+## SAFRA-C06.1 — Teste de ownership real — 26/09/2026
+
+Fase atual de validação.
+
+### Ação 1
+
+Testar ownership real dos 11 cenários usando os vínculos efetivamente persistidos no schema v2.
+
+Teste:
+`supabase/tests/database/c06_02_real_ownership_persistence.test.sql`
+
+Resultado técnico no PRIMARY:
+- 11 cenários;
+- 11 vínculos ativos;
+- exatamente 1 owner ativo por cenário;
+- 3 owners distintos;
+- 0 vínculos órfãos;
+- 0 role mismatch;
+- 0 admin/owner overlap;
+- 0 duplicidade ativa;
+- assignment_reason presente em todos.
+
+```text
+C06_1_ACTION_01_TECHNICAL = PASS
+C06_1_ACTION_01_HUMAN_VALIDATION = WAITING_HUMAN_DECISION
+```
+
+Próximo passo: validação humana dos 11 cenários e respectivos owners.
