@@ -13,6 +13,7 @@ import {
   incidentDowntime,
   incidentMttd,
   incidentMttr,
+  analyticsLocalInputToIso,
   toLocalInput,
 } from "@/lib/metrics";
 import { INCIDENT_TYPES } from "@/lib/types";
@@ -82,15 +83,13 @@ function IncidentDetail() {
   const isActive = incident.status === "active";
   const downtime = incidentDowntime(incident);
 
-  const toIso = (local: string) => (local ? new Date(local).toISOString() : null);
-
   const handleRecover = async () => {
     try {
       await update.mutateAsync({
         id: incident.id,
         values: {
-          failure_started_at: toIso(failureStartedAt),
-          response_started_at: toIso(responseStartedAt),
+          failure_started_at: analyticsLocalInputToIso(failureStartedAt),
+          response_started_at: analyticsLocalInputToIso(responseStartedAt),
           responsible: responsible || null,
           notes: notes || null,
           recovered_at: new Date().toISOString(),
@@ -109,8 +108,8 @@ function IncidentDetail() {
       await update.mutateAsync({
         id: incident.id,
         values: {
-          failure_started_at: toIso(failureStartedAt),
-          response_started_at: toIso(responseStartedAt),
+          failure_started_at: analyticsLocalInputToIso(failureStartedAt),
+          response_started_at: analyticsLocalInputToIso(responseStartedAt),
           responsible: responsible || null,
           notes: notes || null,
         },
@@ -126,8 +125,8 @@ function IncidentDetail() {
       await update.mutateAsync({
         id: incident.id,
         values: {
-          failure_started_at: toIso(failureStartedAt),
-          response_started_at: toIso(responseStartedAt),
+          failure_started_at: analyticsLocalInputToIso(failureStartedAt),
+          response_started_at: analyticsLocalInputToIso(responseStartedAt),
           responsible: responsible || null,
           category: category || null,
           cause: cause || null,
