@@ -1630,7 +1630,7 @@ A engine é técnica e determinística. Ela não publica SLA estruturado sem `st
 
 ### Modelo
 
-Cada SLA possui:
+Cada SLA possui obrigatoriamente:
 
 ```text
 start_event
@@ -1638,6 +1638,8 @@ end_event
 target_value
 target_unit
 ```
+
+O banco rejeita SLA estruturado incompleto. `target_text` permanece apenas como evidência textual e não substitui os quatro campos.
 
 ### Regras
 
