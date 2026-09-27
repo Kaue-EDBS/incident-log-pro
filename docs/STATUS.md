@@ -1,8 +1,8 @@
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 27/09/2026  
-> Fase atual: **GATE PRÉ-C08 — resolver GI-SAFRA-001, 002, 003 e 009 antes da UX do START**  
-> Escopo atual: remover bloqueios de governança do START sem inventar criticidade, thresholds, fonte de estoque ou SLA estruturado.
+> Fase atual: **SAFRA-C08 — UX do COMEÇO / START**  
+> Escopo atual: implementar START transacional/idempotente com ausência de criticidade/threshold/SLA tratada explicitamente e sem inferência.
 
 ---
 
@@ -2975,3 +2975,39 @@ BLOCKERS = GI-001,GI-002,GI-003,GI-009
 
 Próximo passo após este gate:
 `SAFRA-C08.1 — contrato transacional e autorização do START`.
+
+
+---
+
+## Gate pré-C08 — FECHADO — 27/09/2026
+
+As quatro pendências que impediram iniciar a UX foram tratadas no nível necessário para o MVP:
+
+```text
+GI-SAFRA-001 = NON_BLOCKING_C08
+GI-SAFRA-002 = AUTOMATION_DEFERRED / NON_BLOCKING_C08
+GI-SAFRA-003 = AUTOMATION_DEFERRED / NON_BLOCKING_C08
+GI-SAFRA-009 = MAPPING_POLICY_RESOLVED_FOR_C08
+```
+
+Decisões:
+- D-44: criticidade NULL é estado explícito e não bloqueia START;
+- D-45: thresholds ausentes => detector NOT_CONFIGURED + START manual;
+- D-46: cenário 9 sem fonte curva A => START manual, sem ruptura automática;
+- D-47: política formal para converter SLA textual em SLA runtime sem inferência.
+
+PRIMARY:
+- migration `20260927133000_pre_c08_governance_nonblocking.sql` aplicada e rastreada;
+- teste transacional pré-promoção = 12/12 PASS;
+- registry operacional atualizado.
+
+Importante:
+- GI-001/002/003 continuam OPEN porque os dados de negócio continuam inexistentes;
+- GI-009 continua OPEN para materialização produtiva em nova scenario_version;
+- nenhuma delas bloqueia mais C08.
+
+```text
+PRE_C08_GOVERNANCE_GATE = PASS
+C08_UX_STARTED = false
+NEXT_EXACT_STEP = SAFRA-C08.1
+```
