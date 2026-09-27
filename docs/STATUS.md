@@ -2695,3 +2695,42 @@ Smoke PRIMARY:
 - CANCEL 13:30 => `BREACHED`, `remaining_seconds = 0`;
 - END antes do START => `NOT_MEASURABLE`;
 - relógio antes do START => `NOT_MEASURABLE`.
+
+
+---
+
+## C07 — Regra 4 aprovada: fechamento somente em TREATMENT_RESOLVED — 27/09/2026
+
+Decisão humana: **APROVADA**.
+
+Contrato:
+
+```text
+SLA_COMPLETION_END_EVENT = TREATMENT_RESOLVED
+OTHER_END_EVENTS = NOT_MEASURABLE
+COMPLETED_ON_TIME_REQUIRES = TREATMENT_RESOLVED
+COMPLETED_LATE_REQUIRES = TREATMENT_RESOLVED
+```
+
+Defesa em profundidade:
+- constraint `scenario_slas_end_event_resolved_only`;
+- wrapper `private.safra_evaluate_configured_sla(...)`;
+- `private.safra_treatment_sla_state(...)` usa obrigatoriamente o wrapper configurado.
+
+Smoke PRIMARY:
+- `TREATMENT_RESOLVED` no prazo => `COMPLETED_ON_TIME`;
+- `TREATMENT_RESOLVED` após prazo => `COMPLETED_LATE`;
+- `NOTE_ADDED` como END => `NOT_MEASURABLE / END_EVENT_NOT_TREATMENT_RESOLVED`;
+- `TREATMENT_CANCELLED` como END => `NOT_MEASURABLE / END_EVENT_NOT_TREATMENT_RESOLVED`;
+- END ausente => `NOT_MEASURABLE / END_EVENT_NOT_TREATMENT_RESOLVED`;
+- 0 SLAs estruturados incompatíveis no PRIMARY.
+
+CI final:
+```text
+APP_SMOKE_RUN_101 = SUCCESS
+DATABASE_DISPOSABLE_RUN_139 = SUCCESS
+C07_RESOLVED_END_ONLY_TESTS = 11/11 PASS
+REBUILD = PASS
+ROLLBACK = PASS
+DATABASE_LINT = PASS
+```
