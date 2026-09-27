@@ -8,7 +8,7 @@
 
 > Reauditoria corretiva **C01-AUD concluída e recertificada em 27/09/2026 às 18:16 BRT**. PROJECT_PROFILE, documentação canônica, domínios corporativos, privacidade, inventário de decisões e fronteiras de runtime foram reconciliados. `unknown_material_count = 0` foi recertificado. Evidências: `docs/AUDITORIA_C01_REABERTURA_2026-09-27.md`.
 
-> Reauditoria corretiva **C02-AUD aberta em 27/09/2026 às 18:37 BRT**. Já estão fechados **C02-AUD-01, C02-AUD-02, C02-AUD-03, C02-AUD-04, C02-AUD-05 e C02-AUD-09**. O START agora possui teste concorrente real e regressão explícita de `SAFRA_START_IDEMPOTENCY_CONFLICT`. Restam **4 achados** para revisão fragmentada: C02-AUD-06, C02-AUD-07, C02-AUD-08 e C02-AUD-10. A recertificação global de `G3.5`, `THREAT-001` e `AUTHZ-001` permanece pendente até os demais itens.
+> Reauditoria corretiva **C02-AUD aberta em 27/09/2026 às 18:37 BRT**. Já estão fechados **C02-AUD-01, C02-AUD-02, C02-AUD-03, C02-AUD-04, C02-AUD-05, C02-AUD-08 e C02-AUD-09**. A matriz de paridade está reconciliada: **START server-side = sim** via `safra_start_treatment`; **END/CANCEL = não implementados**, deferidos para F01/F02. Restam **3 achados** para revisão fragmentada: C02-AUD-06, C02-AUD-07 e C02-AUD-10. A recertificação global de `G3.5`, `THREAT-001` e `AUTHZ-001` permanece pendente até os demais itens.
 
 > Snapshot runtime recertificado no fechamento da C01-AUD: Lovable publicado tecnicamente com endpoint acessível, audiência funcional **INTERNAL**, Microsoft/Azure + sessão viva + domínio corporativo aprovado. PRIMARY observado com **2 usuários Auth corporativos**, **2 principals ativos vinculados**, **9 grants funcionais ativos**, **0 grants anon nas estruturas centrais** e **0 policies públicas `USING (true)`**.
 
