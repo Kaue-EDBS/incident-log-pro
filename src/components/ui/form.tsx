@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- shadcn primitive intentionally co-exports helpers with components. */
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
@@ -159,8 +160,6 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = "FormMessage";
 
-// shadcn-style primitive intentionally co-exports helpers/variants with components.
-// eslint-disable-next-line react-refresh/only-export-components
 export {
   useFormField,
   Form,
