@@ -31,7 +31,28 @@ jobs:
         run: supabase --version
 
       - name: Start disposable Supabase stack
-        run: supabase start
+        run: |
+          set -euo pipefail
+
+          start_stack() {
+            timeout 360s supabase start
+          }
+
+          # Defensive cleanup: GitHub-hosted runners occasionally retain a
+          # partially-created local Supabase stack after a Docker/network hiccup.
+          supabase stop --no-backup >/dev/null 2>&1 || true
+
+          if start_stack; then
+            exit 0
+          fi
+
+          echo "::warning::First Supabase start attempt failed or timed out. Collecting diagnostics and retrying once."
+          docker ps -a || true
+          docker network ls || true
+          supabase stop --no-backup || true
+          sleep 5
+
+          start_stack
 
       - name: Rebuild database from canonical migrations
         run: supabase db reset --local
