@@ -146,7 +146,7 @@ Estado atual:
 
 ```text
 C06_1_ACTION_01_TECHNICAL = PASS
-C06_1_ACTION_01_HUMAN_VALIDATION = WAITING_HUMAN_DECISION
+C06_1_ACTION_01_HUMAN_VALIDATION = APPROVED
 ```
 
 
@@ -189,3 +189,34 @@ C06_1_ACTION_03 = PASS
 AUTHORIZATION_COHERENCE = PASS
 UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API
 ```
+
+
+---
+
+## Atualização pós-fechamento C06.1 — 27/09/2026
+
+A fotografia de 26/09 foi reauditada após a aprovação humana e a materialização da quarta ação.
+
+Fonte de fechamento atual:
+`docs/AUDITORIA_C06_1_OWNERSHIP_2026-09-27.md`.
+
+Resultado:
+
+```text
+C06_1_ACTION_01 = PASS
+C06_1_ACTION_02 = PASS
+C06_1_ACTION_03 = PASS
+C06_1_ACTION_04 = PASS
+APP_SMOKE_RUN_87 = SUCCESS
+DATABASE_DISPOSABLE_RUN_125 = SUCCESS
+MIGRATION_DRIFT = 0
+SAFRA-C06.1 = CONCLUIDO
+NEXT_PHASE = SAFRA-C07
+```
+
+A quarta ação formaliza a proibição já prevista de autoatribuição/mutação direta de owner:
+browser roles não possuem escrita em `scenario_owners`, não existe RPC público de reatribuição,
+POST/PATCH direto é negado e o histórico de ownership não pode ser reescrito ou apagado.
+
+A ausência de read API governada do catálogo e de um fluxo produtivo de reatribuição permanece
+deny-by-default e não constitui abertura de autorização.
