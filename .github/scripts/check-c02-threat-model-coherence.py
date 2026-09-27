@@ -55,6 +55,8 @@ for marker in (
     "SAFRA_START_IDEMPOTENCY_CONFLICT",
     "END/CANCEL RPCs remain unexposed",
     "CANCEL reason/history cannot be rewritten",
+    "scenario proposal cannot create or publish a productive scenario by itself",
+    "scenario proposal does not become a 12th START catalog card",
 ):
     require(db_test, marker, "C02 pgTAP regression")
 
