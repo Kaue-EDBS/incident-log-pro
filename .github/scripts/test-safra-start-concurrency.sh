@@ -96,10 +96,10 @@ if [[ "${id_one}" != "${id_two}" ]]; then
 fi
 
 treatment_count="$(
-  psql "${DB_URL}" -X -qAt -c "select count(*) from public.treatments where start_idempotency_key='${IDEMPOTENCY_KEY}'::uuid;"
+  psql "${DB_URL}" -X -qAt -c "select count(*) from public.treatments where start_idempotency_key='${IDEMPOTENCY_KEY}';"
 )"
 event_count="$(
-  psql "${DB_URL}" -X -qAt -c "select count(*) from public.treatment_events e join public.treatments t on t.id=e.treatment_id where t.start_idempotency_key='${IDEMPOTENCY_KEY}'::uuid and e.event_type='TREATMENT_OPENED';"
+  psql "${DB_URL}" -X -qAt -c "select count(*) from public.treatment_events e join public.treatments t on t.id=e.treatment_id where t.start_idempotency_key='${IDEMPOTENCY_KEY}' and e.event_type='TREATMENT_OPENED';"
 )"
 
 if [[ "${treatment_count}" != "1" ]]; then
