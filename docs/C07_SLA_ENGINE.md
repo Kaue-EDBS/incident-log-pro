@@ -240,3 +240,43 @@ Evidência:
 - PRIMARY smoke = PASS.
 
 Estado: **APPROVED — 27/09/2026**.
+
+
+## Regra aprovada — END somente em TREATMENT_RESOLVED
+
+Um SLA configurado só pode alcançar estado `COMPLETED_ON_TIME` ou `COMPLETED_LATE` quando:
+
+```text
+end_event = TREATMENT_RESOLVED
+```
+
+Qualquer outro valor de `end_event` é inválido para fechamento do SLA e resulta em:
+
+```text
+sla_state = NOT_MEASURABLE
+evaluation_reason = END_EVENT_NOT_TREATMENT_RESOLVED
+```
+
+### Defesa em profundidade
+
+1. O schema impede novos SLAs estruturados com outro `end_event`.
+2. A engine configurada revalida `end_event` antes de chamar o avaliador temporal.
+3. A função de estado por tratamento usa obrigatoriamente essa engine configurada.
+
+Assim, mesmo uma escrita privilegiada fora do fluxo esperado não transforma um evento intermediário em sucesso de SLA.
+
+### Evidência
+
+Migration:
+`supabase/migrations/20260927104000_c07_resolved_end_only.sql`
+
+Teste:
+`supabase/tests/database/c07_resolved_end_only.test.sql`
+
+CI:
+- App Smoke Run 101 = SUCCESS;
+- Database Disposable Run 139 = SUCCESS;
+- 11/11 testes da regra = PASS;
+- rebuild/rollback/lint = PASS.
+
+Estado: **APPROVED — 27/09/2026**.
