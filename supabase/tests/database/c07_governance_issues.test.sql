@@ -48,9 +48,11 @@ select ok(
 select ok(
   exists(select 1 from public.governance_issues
          where issue_key='GI-SAFRA-009'
-           and description like '%start_event%'
-           and description like '%end_event%'),
-  'GI-SAFRA-009 records formal SLA event mapping gap'
+           and description ilike '%TREATMENT_OPENED%'
+           and description ilike '%TREATMENT_RESOLVED%'
+           and description ilike '%SAFRA-01%'
+           and description ilike '%SAFRA-05%'),
+  'GI-SAFRA-009 records approved SLA mapping policy and unambiguous candidates'
 );
 
 select is(
