@@ -3,6 +3,22 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Application, Incident } from "./types";
 import type { SafraStartCatalogItem, SafraStartResult } from "./safra";
 
+type LegacyIncidentUpdate = Partial<
+  Pick<
+    Incident,
+    | "failure_started_at"
+    | "response_started_at"
+    | "recovered_at"
+    | "status"
+    | "type"
+    | "category"
+    | "responsible"
+    | "cause"
+    | "resolution"
+    | "notes"
+  >
+>;
+
 export function useApplications() {
   return useQuery({
     queryKey: ["applications"],
@@ -43,34 +59,10 @@ export function useIncident(id: string) {
   });
 }
 
-export function useStartIncident() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (input: { application_id: string; type: string }) => {
-      const { data, error } = await supabase
-        .from("incidents")
-        .insert({
-          application_id: input.application_id,
-          type: input.type,
-          category: input.type,
-          status: "active",
-          detected_at: new Date().toISOString(),
-        })
-        .select("*")
-        .single();
-      if (error) throw error;
-      return data as Incident;
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["incidents"] });
-    },
-  });
-}
-
 export function useUpdateIncident() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, values }: { id: string; values: Partial<Incident> }) => {
+    mutationFn: async ({ id, values }: { id: string; values: LegacyIncidentUpdate }) => {
       const { data, error } = await supabase
         .from("incidents")
         .update(values)
@@ -86,7 +78,6 @@ export function useUpdateIncident() {
     },
   });
 }
-
 
 export function useSafraStartCatalog() {
   return useQuery({

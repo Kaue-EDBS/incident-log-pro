@@ -190,7 +190,10 @@ export type Metrics = {
 /** Métricas agregadas. MTBF é sempre calculado por aplicação e depois consolidado. */
 export function computeMetrics(incidents: Incident[], range: Range): Metrics {
   const mttds = incidents.map(incidentMttd).filter(isNum);
-  const mttrs = incidents.filter((i) => i.status === "resolved").map(incidentMttr).filter(isNum);
+  const mttrs = incidents
+    .filter((i) => i.status === "resolved")
+    .map(incidentMttr)
+    .filter(isNum);
 
   let downtime = 0;
   let estimated = false;

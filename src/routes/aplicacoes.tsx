@@ -12,7 +12,10 @@ export const Route = createFileRoute("/aplicacoes")({
         content: "Resumo de status, incidentes e indicadores por aplicação monitorada.",
       },
       { property: "og:title", content: "Aplicações | Reliability Monitor" },
-      { property: "og:description", content: "Status e confiabilidade de cada aplicação da Editora do Brasil." },
+      {
+        property: "og:description",
+        content: "Status e confiabilidade de cada aplicação da Editora do Brasil.",
+      },
     ],
   }),
   component: ApplicationsPage,

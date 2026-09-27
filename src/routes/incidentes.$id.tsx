@@ -27,14 +27,22 @@ export const Route = createFileRoute("/incidentes/$id")({
         content: "Cronômetro, linha do tempo e indicadores detalhados do incidente registrado.",
       },
       { property: "og:title", content: "Detalhes do Incidente | Reliability Monitor" },
-      { property: "og:description", content: "Acompanhe e finalize o incidente com todos os timestamps." },
+      {
+        property: "og:description",
+        content: "Acompanhe e finalize o incidente com todos os timestamps.",
+      },
     ],
   }),
   component: IncidentDetail,
 });
 
 function errMsg(e: unknown, fallback: string) {
-  if (e && typeof e === "object" && "message" in e && typeof (e as { message: unknown }).message === "string") {
+  if (
+    e &&
+    typeof e === "object" &&
+    "message" in e &&
+    typeof (e as { message: unknown }).message === "string"
+  ) {
     return (e as { message: string }).message;
   }
   return fallback;
@@ -142,7 +150,10 @@ function IncidentDetail() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
-      <Link to="/incidentes" className="inline-flex items-center gap-1 text-sm text-muted-foreground">
+      <Link
+        to="/incidentes"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground"
+      >
         <ChevronLeft className="size-4" /> Voltar ao histórico
       </Link>
 
@@ -194,7 +205,11 @@ function IncidentDetail() {
           </div>
         </Field>
         <Field label="Responsável">
-          <Input value={responsible} onChange={(e) => setResponsible(e.target.value)} placeholder="Nome do responsável" />
+          <Input
+            value={responsible}
+            onChange={(e) => setResponsible(e.target.value)}
+            placeholder="Nome do responsável"
+          />
         </Field>
         <Field label="Observações">
           <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
@@ -264,7 +279,11 @@ function IncidentDetail() {
               <Textarea value={cause} onChange={(e) => setCause(e.target.value)} rows={2} />
             </Field>
             <Field label="Solução aplicada">
-              <Textarea value={resolution} onChange={(e) => setResolution(e.target.value)} rows={2} />
+              <Textarea
+                value={resolution}
+                onChange={(e) => setResolution(e.target.value)}
+                rows={2}
+              />
             </Field>
             <button
               type="button"

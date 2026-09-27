@@ -36,14 +36,30 @@ console.log(`PASS formatted analytics datetime: ${formatted}`);
 
 const now = new Date(storedInstant);
 const today = resolveRange("today", undefined, now);
-assertEqual(today.from.toISOString(), "2026-09-27T03:00:00.000Z", "today starts at Sao Paulo midnight");
+assertEqual(
+  today.from.toISOString(),
+  "2026-09-27T03:00:00.000Z",
+  "today starts at Sao Paulo midnight",
+);
 assertEqual(today.to.toISOString(), storedInstant, "today ends at supplied current instant");
 
 const month = resolveRange("month", undefined, now);
-assertEqual(month.from.toISOString(), "2026-09-01T03:00:00.000Z", "month starts at Sao Paulo local month boundary");
+assertEqual(
+  month.from.toISOString(),
+  "2026-09-01T03:00:00.000Z",
+  "month starts at Sao Paulo local month boundary",
+);
 
 const custom = resolveRange("custom", { from: "2026-09-27", to: "2026-09-27" }, now);
-assertEqual(custom.from.toISOString(), "2026-09-27T03:00:00.000Z", "custom range starts at Sao Paulo midnight");
-assertEqual(custom.to.toISOString(), "2026-09-28T02:59:59.999Z", "custom range ends at Sao Paulo local end-of-day");
+assertEqual(
+  custom.from.toISOString(),
+  "2026-09-27T03:00:00.000Z",
+  "custom range starts at Sao Paulo midnight",
+);
+assertEqual(
+  custom.to.toISOString(),
+  "2026-09-28T02:59:59.999Z",
+  "custom range ends at Sao Paulo local end-of-day",
+);
 
 console.log("C07 analytics timezone smoke PASS");
