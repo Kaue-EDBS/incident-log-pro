@@ -94,6 +94,7 @@ A decisão deve registrar:
 ### Resolução do bloqueio C08 — 27/09/2026
 
 Decisão D-44:
+
 - `criticality = NULL` é estado explícito de **criticidade não definida**;
 - a ausência não bloqueia START;
 - a UX deve mostrar a ausência, sem converter para HIGH/MODERATE;
@@ -110,7 +111,6 @@ Quando resolvido:
 - tratativas antigas continuam vinculadas à criticidade da versão congelada no START;
 - nenhuma alteração retroativa de histórico.
 
-
 ---
 
 # Pendências formais — WAITING_HUMAN_DECISION
@@ -124,6 +124,7 @@ As decisões abaixo não devem ser completadas pela aplicação, por migration o
 **Bloqueia automação do gatilho:** sim.
 
 Pendências preservadas literalmente:
+
 - cenário 2: gatilho contém `X h`;
 - cenário 4: gatilho contém `X min`;
 - cenário 10: limite de lead time/fila não definido numericamente;
@@ -156,6 +157,7 @@ Decidir se um cenário pode possuir mais de uma tratativa `ACTIVE` simultaneamen
 **Fase:** SAFRA-M05.
 
 Definir:
+
 - provider/canal produtivo;
 - se platform admins recebem comunicação operacional e em quais condições.
 
@@ -172,6 +174,7 @@ Definir o período exato usado em métricas, e-mails e análises da Safra corren
 **Fase:** SAFRA-M10.
 
 Após definição do owner, ainda precisa ser decidido:
+
 - quem aprova protocolo;
 - quem aprova SLA;
 - quem aprova criticidade;
@@ -183,7 +186,6 @@ Após definição do owner, ainda precisa ser decidido:
 **Fase:** SAFRA-F05.
 
 Definir periodicidade/horário e corte de dados do ritual de governança semanal.
-
 
 ## GI-SAFRA-009 — Mapeamento formal dos eventos dos SLAs textuais
 
@@ -201,6 +203,7 @@ Os 11 cenários possuem SLA textual preservado, mas a estrutura `scenario_slas` 
 ### Política aprovada D-47
 
 Uma cláusula textual só pode virar `scenario_slas` quando:
+
 - é explicitamente prazo da **tratativa**;
 - possui valor e unidade numéricos;
 - pode usar `TREATMENT_OPENED` como START;
@@ -208,11 +211,13 @@ Uma cláusula textual só pode virar `scenario_slas` quando:
 - não exige criar milestone/evento por interpretação.
 
 Classificação da Matriz v3:
+
 - SAFRA-01 — `tratativa <= 48h` = elegível;
 - SAFRA-05 — `tratativa <= 4h` = elegível;
 - demais cláusulas = não estruturáveis na versão atual sem nova regra/evento.
 
 Regras:
+
 - detecção/alerta/trigger não vira SLA runtime;
 - milestone intermediário não vira END;
 - pós-mortem fica em F03;
@@ -227,6 +232,7 @@ Com isso, a decomposição deixou de ser ambígua para C08. A materialização p
 As issues `GI-SAFRA-001..009` também estão materializadas em `public.governance_issues`.
 
 No banco:
+
 - `OPEN` representa a decisão ainda pendente;
 - resolução exige `RESOLVED` + ator + timestamp + texto de resolução;
 - ausência de decisão nunca é convertida em default.

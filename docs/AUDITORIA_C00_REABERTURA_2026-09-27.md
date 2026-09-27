@@ -21,13 +21,13 @@ A reabertura **não invalida o fechamento histórico do C00**. Ela registra uma 
 
 ### C00 original
 
-| Ação | Resultado da reauditoria |
-|---|---|
-| Preservar baseline e histórico Git | PASS |
-| Remover `.env` do tracking e tratar exposição | PASS |
-| Bloquear acesso `anon` | PASS |
-| Habilitar RLS e remover policies abertas | PASS para contenção P0 |
-| Testar acesso não autorizado | PASS histórico, com cobertura automatizada atual a reforçar |
+| Ação                                          | Resultado da reauditoria                                    |
+| --------------------------------------------- | ----------------------------------------------------------- |
+| Preservar baseline e histórico Git            | PASS                                                        |
+| Remover `.env` do tracking e tratar exposição | PASS                                                        |
+| Bloquear acesso `anon`                        | PASS                                                        |
+| Habilitar RLS e remover policies abertas      | PASS para contenção P0                                      |
+| Testar acesso não autorizado                  | PASS histórico, com cobertura automatizada atual a reforçar |
 
 ### Evidências confirmadas
 

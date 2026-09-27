@@ -19,12 +19,15 @@ Nenhuma decisão material pode ser completada por suposição da LLM.
 ## 2. Regras Safra consolidadas
 
 ### RB-SAFRA-001 — Cenário validado
+
 Somente cenário `VALIDATED/PUBLISHED` pode originar tratativa real.
 
 ### RB-SAFRA-002 — Ativação humana
+
 Nenhum sinal externo cria automaticamente `treatments` no MVP.
 
 ### RB-SAFRA-003 — START
+
 Qualquer usuário autenticado pelo Microsoft Entra ID pode iniciar um protocolo publicado.
 
 O ator do START deve ser persistido pelo backend com timestamp oficial e trilha de auditoria.
@@ -32,11 +35,13 @@ O ator do START deve ser persistido pelo backend com timestamp oficial e trilha 
 O `scenario_owner` não possui exclusividade sobre o START; seu papel é responsabilidade pelo card e execução do protocolo com sua equipe.
 
 ### RB-SAFRA-004 — END
+
 Qualquer usuário autenticado pelo Microsoft Entra ID pode encerrar uma tratativa ativa quando a necessidade que motivou a ativação estiver concluída.
 
 O ator do END e o timestamp oficial devem ser persistidos pelo backend.
 
 ### RB-SAFRA-005 — Execução durante a tratativa
+
 Não existe papel funcional separado de `scenario_updater`.
 
 O Painel Safra não executa nem controla passo a passo o trabalho operacional do protocolo. O `scenario_owner` conduz o protocolo com sua equipe, conforme o procedimento definido para o card.
@@ -44,15 +49,19 @@ O Painel Safra não executa nem controla passo a passo o trabalho operacional do
 O usuário autenticado que ativou ou acompanha o caso pode encerrar a tratativa quando a necessidade estiver concluída.
 
 ### RB-SAFRA-006 — Cancelamento auditável
+
 Tratativa incorreta vira `CANCELLED`; exclusão física é proibida no fluxo normal.
 
 ### RB-SAFRA-007 — Versão congelada
+
 Ao abrir, persistir `scenario_version_id`. Histórico não é recalculado contra versão futura.
 
 ### RB-SAFRA-008 — Área impactada real
+
 Cada tratativa possui conjunto próprio de áreas impactadas.
 
 ### RB-SAFRA-009 — Criticidade do cenário
+
 A criticidade é atributo do **cenário/protocolo**, com os valores `CRITICAL`, `HIGH` e `MODERATE`.
 
 Fontes: Matriz v3, Protocolos v2 e decisões da reunião de 22/09.
@@ -62,18 +71,23 @@ Esta regra não classifica tecnicamente a aplicação Painel Safra. `service_cla
 A lista exata dos quatro cenários `CRITICAL` está registrada como `GI-SAFRA-001`. Não há evidência nominal suficiente para inferir os quatro; classificação permanece dependente de decisão humana formal.
 
 ### RB-SAFRA-010 — Protocolo não é chamado
+
 Não exigir workflow de ticket técnico para cada protocolo.
 
 ### RB-SAFRA-011 — Escalonamento separado
+
 Comitê técnico/negócio/executivo é relação da tratativa, não status.
 
 ### RB-SAFRA-012 — SLA múltiplo
+
 SLA deriva de eventos definidos; duração derivável não vira fonte primária.
 
 ### RB-SAFRA-013 — Fonte sem integração
+
 Ausência de fonte nunca aparece como OK. Usar `NO_SOURCE`, `WAITING_INTEGRATION`, `STALE_DATA` ou `UNKNOWN`.
 
 ### RB-SAFRA-014 — Novo cenário / 12º card
+
 O 12º card é um formulário de proposta, não um protocolo genérico.
 
 Qualquer usuário autenticado pode enviar proposta contendo:
@@ -99,18 +113,23 @@ Fluxo de governança aprovado:
 Jiane participa desse fluxo como candidata a owner e não como governança global.
 
 ### RB-SAFRA-015 — Recorrência
+
 Recorrência é métrica; não promove automaticamente nível de crise.
 
 ### RB-SAFRA-016 — Integridade temporal
+
 Eventos não podem violar sequência temporal sem justificativa administrativa auditada.
 
 ### RB-SAFRA-017 — Idempotência
+
 Duplo clique, retry ou refresh não pode duplicar abertura, passo, encerramento, cancelamento ou notificação.
 
 ### RB-SAFRA-018 — Administração executiva
+
 Bruno Palhão possui visão executiva de analytics sobre todos os cards e métricas, sem recebimento de e-mails operacionais e sem manutenção técnica da plataforma.
 
 ### RB-SAFRA-019 — Analytics por audiência
+
 O Frontend deverá tratar analytics por audiência, com pelo menos três perspectivas a detalhar posteriormente:
 
 - Bruno — todos os cards e métricas;
@@ -120,20 +139,25 @@ O Frontend deverá tratar analytics por audiência, com pelo menos três perspec
 O detalhamento de componentes, filtros, KPIs e visualizações fica reservado à fase de Frontend.
 
 ### RB-SAFRA-020 — Identidade do proponente
+
 No 12º card, nome e e-mail devem vir da sessão Microsoft autenticada e não podem depender de digitação livre.
 
 ## 3. Regras legadas de TI preservadas
 
 ### LEGACY-INC-001
+
 Uma aplicação não pode ter dois incidentes ativos simultaneamente.
 
 ### LEGACY-INC-002
+
 Preservar coerência entre failure_started_at, detected_at, response_started_at e recovered_at.
 
 ### LEGACY-INC-003
+
 MTTD, MTTR, MTBF, downtime e disponibilidade são derivados de timestamps.
 
 ### LEGACY-INC-004
+
 Cronômetro é reconstruído a partir de timestamps persistidos.
 
 ## 4. State machine alvo
@@ -151,12 +175,15 @@ Escalonamento não cria status adicional.
 ## 5. Autoridade
 
 ### Usuário autenticado
+
 Pode visualizar cards e executar START, END e CANCEL conforme regras auditáveis do produto.
 
 ### Scenario owner
+
 É o responsável formal pelo card e pelo protocolo operacional junto ao seu time. Recebe as comunicações do próprio card e responde pela estrutura do procedimento, mas não possui exclusividade sobre START/END/CANCEL.
 
 ### Papéis administrativos
+
 Os subtipos administrativos e suas responsabilidades estão registrados em `docs/DECISOES.md`. A implementação fina de RBAC permanece deferida ao SAFRA-C04.
 
 ## 6. Decisões humanas abertas
@@ -197,21 +224,22 @@ START/END/CANCEL e demais operações críticas devem preferir RPC/função tran
 
 Uma regra só está pronta com fonte, owner, decisão, contrato, exemplos, testes, implementação e evidência.
 
-
 ### RB-SAFRA-021 — Governança global
+
 Jair Silva é o único `safra_governance_admin`.
 
 Jiane Rodrigues não possui governança global. Ela recebe comunicações somente dos cards em que é `scenario_owner`.
 
 ### RB-SAFRA-022 — Resolução de ownership do 12º card
+
 O ownership de uma proposta do 12º card segue a regra de aceite:
 
 - 1 aceite entre Daniel/Renato/Jiane -> ownership automático para quem aceitou;
 - 2 ou mais aceites -> Jair define o owner final;
 - 0 aceites -> Jair decide diretamente ou aciona Bruno para escalonamento executivo.
 
-
 ### RB-SAFRA-023 — Cenário, versão e tratativa
+
 - `scenario` é a identidade estável do tipo de contingência;
 - `scenario_version` é a fotografia imutável do conteúdo vigente do cenário;
 - `treatment` é a ocorrência real criada por START;
@@ -219,6 +247,7 @@ O ownership de uma proposta do 12º card segue a regra de aceite:
 - nova versão não altera tratativa já existente.
 
 ### RB-SAFRA-024 — Impacto qualitativo
+
 Impacto qualitativo descreve consequências/contexto operacional.
 
 - cenário/versão pode registrar impacto esperado/potencial;
@@ -226,6 +255,7 @@ Impacto qualitativo descreve consequências/contexto operacional.
 - impacto qualitativo não redefine criticidade nem escalonamento automaticamente.
 
 ### RB-SAFRA-025 — Impacto quantitativo
+
 Impacto quantitativo é uma medição estruturada com métrica, valor, unidade, fonte e referência temporal.
 
 - valor sem fonte não é confirmado;
@@ -234,8 +264,8 @@ Impacto quantitativo é uma medição estruturada com métrica, valor, unidade, 
 - não existe score agregado ou threshold automático sem regra de negócio aprovada;
 - impacto quantitativo não altera automaticamente criticidade, escalonamento, status ou SLA.
 
-
 ### RB-SAFRA-026 — Criticidade sem inferência
+
 Os quatro cenários `CRITICAL` não podem ser definidos por inferência.
 
 - Matriz v3 sem coluna formal de criticidade;
@@ -244,13 +274,14 @@ Os quatro cenários `CRITICAL` não podem ser definidos por inferência.
 - até resolução de `GI-SAFRA-001`, nenhuma regra produtiva deve assumir a lista dos quatro;
 - C06 deve preservar a pendência no seed/reconciliação.
 
-
 ### RB-SAFRA-027 — Engine de SLA determinística
+
 **Status: IMPLEMENTED**
 
 A engine de SLA é determinística e derivada de eventos/timestamps server-side.
 
 Estados canônicos:
+
 - `ON_TRACK`;
 - `BREACHED`;
 - `COMPLETED_ON_TIME`;
@@ -259,6 +290,7 @@ Estados canônicos:
 - `NOT_APPLICABLE` somente quando uma regra explícita declarar não aplicabilidade.
 
 Regras:
+
 - SLA textual sem `start_event`, `end_event` e alvo estruturado permanece `NOT_MEASURABLE`;
 - ausência do evento inicial => `NOT_MEASURABLE`;
 - evento final exatamente no deadline => `COMPLETED_ON_TIME`;
@@ -271,17 +303,20 @@ Regras:
 - a engine não publica SLAs de cenário por inferência.
 
 Implementação:
+
 - `private.safra_sla_target_interval`;
 - `private.safra_evaluate_sla`;
 - `private.safra_treatment_event_time`;
 - `private.safra_treatment_sla_state`.
 
 ### RB-SAFRA-028 — P1–P4 não publicados por inferência
+
 **Status: IMPLEMENTED**
 
 Os gates de produto `P1`, `P2`, `P3` e `P4` não podem receber `PASS` por conclusão automática, inferência de LLM, nome de commit, conclusão de fase ou interpretação subjetiva.
 
 Contrato:
+
 - estado inicial: `NOT_PUBLISHED`;
 - `PASS` exige `human_approval=true`;
 - `PASS` exige pacote de evidências não vazio;
@@ -289,13 +324,14 @@ Contrato:
 - ausência de evidência mantém o gate não publicado;
 - CI deve falhar se um gate for marcado como `PASS` sem aprovação/evidência.
 
-
 ### RB-SAFRA-029 — Reconciliação 100% da Matriz v3
+
 **Status: IMPLEMENTED**
 
 Todo dado importado da Matriz v3 deve reconciliar integralmente com o estado canônico publicado antes de qualquer avanço de fase.
 
 Contrato:
+
 - 11 cenários canônicos;
 - 18 campos importados por cenário;
 - 198 comparações obrigatórias;
@@ -305,6 +341,7 @@ Contrato:
 - não é permitido alterar simultaneamente o snapshot esperado e o banco para “fazer o teste passar” sem reconhecer formalmente a mudança da fonte.
 
 Campos cobertos:
+
 - number;
 - code;
 - name;
@@ -325,6 +362,7 @@ Campos cobertos:
 - source_sha256.
 
 Além da comparação dos 18 campos importados, o gate valida as representações normalizadas no schema:
+
 - nome;
 - gatilho;
 - acionamento;

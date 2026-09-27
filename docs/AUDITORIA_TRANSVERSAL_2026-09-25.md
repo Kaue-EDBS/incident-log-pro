@@ -12,32 +12,32 @@ A carga canônica possui exatamente 11 cenários oficiais da Matriz v3, sem trat
 
 ## 2. Eixos auditados
 
-| Eixo | Estado | Evidência/observação |
-|---|---|---|
-| Arquitetura | PASS | Lovable Cloud PRIMARY + PostgreSQL/Supabase; GitHub canônico |
-| Schema v2 | PASS | 17 tabelas de domínio presentes |
-| Migrations | PASS | GitHub e PRIMARY reconciliados |
-| RLS | PASS | 17/17 tabelas de domínio com RLS |
-| API direta | PASS | acesso público/anon bloqueado no CI |
-| RBAC | PASS | papéis separados de ownership |
-| Ownership | PASS | 11/11 owners conforme Matriz v3 |
-| Versionamento | PASS | 11 versões v1 PUBLISHED e current_version correto |
-| Criticidade | PASS/PENDÊNCIA DE NEGÓCIO | 11 NULL; GI-SAFRA-001 preservado |
-| Integridade histórica | PASS | append-only/version freeze/sem cascade destrutivo |
-| Integridade temporal | PASS | timestamps server-side e guardas temporais |
-| Idempotência estrutural | PASS | chaves e testes de double submit |
-| Rollback de migration | PASS | workflow generalizado para a migration mais recente |
-| Banco descartável | PASS | rebuild canônico por Supabase local |
-| Performance relacional | PASS | 35/35 FKs do domínio cobertas por índice |
-| Storage | PASS | 0 buckets; não habilitado no MVP atual |
-| Dados fictícios Safra | PASS | 0 treatments |
-| Frontend typecheck | PASS | CI |
-| Frontend build | PASS | CI |
-| Lint legado | TECH_DEBT | erros antigos de Prettier; não funcionais |
-| Tipos Supabase | PASS | schema v2 regenerado no frontend |
-| Supply chain | PASS | patches transitivos seguros aplicados; gate HIGH passou no App Smoke 20 |
-| Backup/restore/RTO/RPO | FUTURA FASE | SAFRA-C09 |
-| UX Safra | FUTURA FASE | frontend ainda preserva legado conforme roadmap |
+| Eixo                    | Estado                    | Evidência/observação                                                    |
+| ----------------------- | ------------------------- | ----------------------------------------------------------------------- |
+| Arquitetura             | PASS                      | Lovable Cloud PRIMARY + PostgreSQL/Supabase; GitHub canônico            |
+| Schema v2               | PASS                      | 17 tabelas de domínio presentes                                         |
+| Migrations              | PASS                      | GitHub e PRIMARY reconciliados                                          |
+| RLS                     | PASS                      | 17/17 tabelas de domínio com RLS                                        |
+| API direta              | PASS                      | acesso público/anon bloqueado no CI                                     |
+| RBAC                    | PASS                      | papéis separados de ownership                                           |
+| Ownership               | PASS                      | 11/11 owners conforme Matriz v3                                         |
+| Versionamento           | PASS                      | 11 versões v1 PUBLISHED e current_version correto                       |
+| Criticidade             | PASS/PENDÊNCIA DE NEGÓCIO | 11 NULL; GI-SAFRA-001 preservado                                        |
+| Integridade histórica   | PASS                      | append-only/version freeze/sem cascade destrutivo                       |
+| Integridade temporal    | PASS                      | timestamps server-side e guardas temporais                              |
+| Idempotência estrutural | PASS                      | chaves e testes de double submit                                        |
+| Rollback de migration   | PASS                      | workflow generalizado para a migration mais recente                     |
+| Banco descartável       | PASS                      | rebuild canônico por Supabase local                                     |
+| Performance relacional  | PASS                      | 35/35 FKs do domínio cobertas por índice                                |
+| Storage                 | PASS                      | 0 buckets; não habilitado no MVP atual                                  |
+| Dados fictícios Safra   | PASS                      | 0 treatments                                                            |
+| Frontend typecheck      | PASS                      | CI                                                                      |
+| Frontend build          | PASS                      | CI                                                                      |
+| Lint legado             | TECH_DEBT                 | erros antigos de Prettier; não funcionais                               |
+| Tipos Supabase          | PASS                      | schema v2 regenerado no frontend                                        |
+| Supply chain            | PASS                      | patches transitivos seguros aplicados; gate HIGH passou no App Smoke 20 |
+| Backup/restore/RTO/RPO  | FUTURA FASE               | SAFRA-C09                                                               |
+| UX Safra                | FUTURA FASE               | frontend ainda preserva legado conforme roadmap                         |
 
 ## 3. Correções aplicadas pela auditoria
 
@@ -84,9 +84,11 @@ A carga canônica possui exatamente 11 cenários oficiais da Matriz v3, sem trat
 ## 6. Dívida técnica não bloqueante
 
 ### Lint/Prettier legado
+
 O código herdado possui grande volume de diferenças de formatação. TypeScript e build passam. A correção deve ser feita em mudança cosmética própria para evitar misturar centenas de linhas de formatação com evolução funcional.
 
 ### Frontend legado
+
 A interface ainda se apresenta como Reliability Monitor. Isso é esperado nesta etapa: o produto Safra ainda não entrou nas fases de redesign/fluxos funcionais.
 
 ## 7. WAITING_HUMAN_DECISION
@@ -94,6 +96,7 @@ A interface ainda se apresenta como Reliability Monitor. Isso é esperado nesta 
 A fonte canônica é `docs/GOVERNANCE_ISSUES.md`.
 
 Pendências:
+
 - GI-SAFRA-001 — quais são os quatro cenários CRITICAL;
 - GI-SAFRA-002 — thresholds dos cenários 2, 4, 10 e 11;
 - GI-SAFRA-003 — fonte oficial do mínimo da curva A do cenário 9;

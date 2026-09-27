@@ -634,19 +634,19 @@ updated_at
 
 A carga canônica virá da Matriz v3, sem redigitação manual.
 
-| # | Cenário | Área | Owner | SLA resumido | Pendência material |
-|---:|---|---|---|---|---|
-| 1 | Insucesso de entrega | Logística | Daniel Garcia | falha <=2h; tratativa <=48h | nenhuma estrutural |
-| 2 | Transportadora fora do ar | Logística | Daniel Garcia | plano B <=4h | definir `X h` |
-| 3 | Atraso (+48h) sem causa | Logística | Daniel Garcia | retorno <=4h | regra de 48h já existe |
-| 4 | Pedido pago não integrado | TI | Jiane Rodrigues | tratativa <=2h | definir `X min` |
-| 5 | Tracking falso | TI | Jiane Rodrigues | correção <=4h | validação físico x sistêmico |
-| 6 | ERP indisponível/travado | TI | Jiane Rodrigues | continuidade <=30min; pós-mortem <=48h | ponte semântica com incidents TI |
-| 7 | Divergência saldo físico x virtual | Logística | Daniel Garcia | correção <=24h | detecção MIXED |
-| 8 | Falha NF-e / bloqueio fiscal | TI | Jiane Rodrigues | liberação <=4h | preservar owner correto da Matriz v3 |
-| 9 | Ruptura estoque curva A | PCP | Renato de Paulo | realocação no dia | fonte oficial do mínimo curva A |
-| 10 | Colapso picking/esteira | Logística | Daniel Garcia | normalizar no turno | limite lead time/fila |
-| 11 | Pico de volume > capacidade | Logística | Daniel Garcia | plano de pico no dia | capacidade/limiar |
+|   # | Cenário                            | Área      | Owner           | SLA resumido                           | Pendência material                   |
+| --: | ---------------------------------- | --------- | --------------- | -------------------------------------- | ------------------------------------ |
+|   1 | Insucesso de entrega               | Logística | Daniel Garcia   | falha <=2h; tratativa <=48h            | nenhuma estrutural                   |
+|   2 | Transportadora fora do ar          | Logística | Daniel Garcia   | plano B <=4h                           | definir `X h`                        |
+|   3 | Atraso (+48h) sem causa            | Logística | Daniel Garcia   | retorno <=4h                           | regra de 48h já existe               |
+|   4 | Pedido pago não integrado          | TI        | Jiane Rodrigues | tratativa <=2h                         | definir `X min`                      |
+|   5 | Tracking falso                     | TI        | Jiane Rodrigues | correção <=4h                          | validação físico x sistêmico         |
+|   6 | ERP indisponível/travado           | TI        | Jiane Rodrigues | continuidade <=30min; pós-mortem <=48h | ponte semântica com incidents TI     |
+|   7 | Divergência saldo físico x virtual | Logística | Daniel Garcia   | correção <=24h                         | detecção MIXED                       |
+|   8 | Falha NF-e / bloqueio fiscal       | TI        | Jiane Rodrigues | liberação <=4h                         | preservar owner correto da Matriz v3 |
+|   9 | Ruptura estoque curva A            | PCP       | Renato de Paulo | realocação no dia                      | fonte oficial do mínimo curva A      |
+|  10 | Colapso picking/esteira            | Logística | Daniel Garcia   | normalizar no turno                    | limite lead time/fila                |
+|  11 | Pico de volume > capacidade        | Logística | Daniel Garcia   | plano de pico no dia                   | capacidade/limiar                    |
 
 Nenhum P1-P4 deve ser publicado por inferência.
 
@@ -656,22 +656,22 @@ Nenhum P1-P4 deve ser publicado por inferência.
 
 Nada nesta seção deve voltar a aparecer como `UNKNOWN` genérico.
 
-| Decisão | Estado | Fase responsável |
-|---|---|---|
-| quatro cenários CRITICAL | GOVERNANCE_ISSUE GI-SAFRA-001 | decisão humana + C06 |
-| threshold cenário 2 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
-| threshold cenário 4 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
-| threshold cenário 10 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
-| threshold cenário 11 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
-| fonte mínima curva A cenário 9 | GOVERNANCE_ISSUE GI-SAFRA-003 | C06/C07 |
-| regra para múltiplas tratativas simultâneas do mesmo cenário | GOVERNANCE_ISSUE GI-SAFRA-004 | M01 |
-| provider/canal de e-mail | GOVERNANCE_ISSUE GI-SAFRA-005 | M05 |
-| comportamento de e-mail dos platform admins | GOVERNANCE_ISSUE GI-SAFRA-005 | M05 |
-| período exato da “Safra corrente” para métricas em e-mail | GOVERNANCE_ISSUE GI-SAFRA-006 | M05/F04 |
-| publicação formal após ownership do 12º card | GOVERNANCE_ISSUE GI-SAFRA-007 | M10 |
-| janela oficial de governança semanal | GOVERNANCE_ISSUE GI-SAFRA-008 | F05 |
-| métricas/thresholds quantitativos específicos | DEFERRED | C06/F04 |
-| estratégia canônica de migrations (Drizzle x supabase/migrations) | DEFERRED | C05 |
+| Decisão                                                           | Estado                        | Fase responsável     |
+| ----------------------------------------------------------------- | ----------------------------- | -------------------- |
+| quatro cenários CRITICAL                                          | GOVERNANCE_ISSUE GI-SAFRA-001 | decisão humana + C06 |
+| threshold cenário 2                                               | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07              |
+| threshold cenário 4                                               | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07              |
+| threshold cenário 10                                              | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07              |
+| threshold cenário 11                                              | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07              |
+| fonte mínima curva A cenário 9                                    | GOVERNANCE_ISSUE GI-SAFRA-003 | C06/C07              |
+| regra para múltiplas tratativas simultâneas do mesmo cenário      | GOVERNANCE_ISSUE GI-SAFRA-004 | M01                  |
+| provider/canal de e-mail                                          | GOVERNANCE_ISSUE GI-SAFRA-005 | M05                  |
+| comportamento de e-mail dos platform admins                       | GOVERNANCE_ISSUE GI-SAFRA-005 | M05                  |
+| período exato da “Safra corrente” para métricas em e-mail         | GOVERNANCE_ISSUE GI-SAFRA-006 | M05/F04              |
+| publicação formal após ownership do 12º card                      | GOVERNANCE_ISSUE GI-SAFRA-007 | M10                  |
+| janela oficial de governança semanal                              | GOVERNANCE_ISSUE GI-SAFRA-008 | F05                  |
+| métricas/thresholds quantitativos específicos                     | DEFERRED                      | C06/F04              |
+| estratégia canônica de migrations (Drizzle x supabase/migrations) | DEFERRED                      | C05                  |
 
 ---
 
@@ -954,6 +954,7 @@ Resultado:
 `docs/GLOSSARIO_DOMINIO.md` v1.1 foi promovido a `READY_FOR_C05`.
 
 Contratos adicionados:
+
 - fonte de verdade e mutabilidade por conceito;
 - cardinalidades;
 - estados canônicos;
@@ -995,6 +996,7 @@ Implementar autenticação corporativa e autorização definitiva conforme o mod
 ### C04.1 — Microsoft Entra ID / SSO — HOMOLOGADO
 
 Implementado no frontend:
+
 - gate global de sessão;
 - login exclusivamente via Lovable Cloud Auth com provider `microsoft`, que estabelece a sessão Supabase;
 - escopo `email`;
@@ -1005,6 +1007,7 @@ Implementado no frontend:
 - nenhum fluxo funcional de senha local foi adicionado.
 
 Homologação concluída em 25/09/2026:
+
 - provider Microsoft configurado via Lovable Cloud Auth;
 - primeiro login corporativo realizado com sucesso;
 - sessão persistida no Supabase Auth;
@@ -1039,18 +1042,21 @@ Implementado no PRIMARY em 25/09/2026:
 - `scenario_owner` indica elegibilidade/responsabilidade, não vínculo com card específico.
 
 Pessoas pré-provisionadas:
+
 - platform admin: Kaue, Amanda, Vinicius, João;
 - governance admin: Jair;
 - executive admin: Bruno;
 - scenario_owner: Daniel, Jiane, Renato.
 
 Validação:
+
 - usuário autenticado Kaue -> `safra_platform_admin = true`;
 - `scenario_owner = false`;
 - nenhuma tabela scenario→owner existe ainda;
 - ownership específico permanece para C05/C06.
 
 Estado do C04:
+
 - `app_metadata.safra_access` foi removido;
 - RLS usa o predicado canônico `safra_is_corporate_user()`;
 - role mapping permanece em tabelas governadas;
@@ -1058,17 +1064,17 @@ Estado do C04:
 
 ### Role mapping alvo
 
-| Ação | Usuário autenticado | Scenario owner | Governance admin | Executive admin | Platform admin |
-|---|---:|---:|---:|---:|---:|
-| ver cards | sim | sim | sim | sim | sim |
-| START | sim | sim | sim | sim* | sim* |
-| END | sim | sim | sim | sim* | sim* |
-| CANCEL com motivo | sim | sim | sim | sim* | sim* |
-| receber comunicação do próprio card | não por default | sim | conforme governança | não | DEFERRED M05 |
-| gerir ownership | não | não | sim | não | suporte técnico, sem decisão de negócio |
-| publicar cenário | não | não | conforme fluxo M10 | não | não por herança |
-| analytics global | não | seus cards | governança | sim | técnico conforme necessidade |
-| manutenção técnica | não | não | não | não | sim |
+| Ação                                | Usuário autenticado | Scenario owner |    Governance admin | Executive admin |                          Platform admin |
+| ----------------------------------- | ------------------: | -------------: | ------------------: | --------------: | --------------------------------------: |
+| ver cards                           |                 sim |            sim |                 sim |             sim |                                     sim |
+| START                               |                 sim |            sim |                 sim |            sim* |                                    sim* |
+| END                                 |                 sim |            sim |                 sim |            sim* |                                    sim* |
+| CANCEL com motivo                   |                 sim |            sim |                 sim |            sim* |                                    sim* |
+| receber comunicação do próprio card |     não por default |            sim | conforme governança |             não |                            DEFERRED M05 |
+| gerir ownership                     |                 não |            não |                 sim |             não | suporte técnico, sem decisão de negócio |
+| publicar cenário                    |                 não |            não |  conforme fluxo M10 |             não |                         não por herança |
+| analytics global                    |                 não |     seus cards |          governança |             sim |            técnico conforme necessidade |
+| manutenção técnica                  |                 não |            não |                 não |             não |                                     sim |
 
 `*` capacidade base de usuário autenticado; papel não é necessário para START/END/CANCEL.
 
@@ -1095,6 +1101,7 @@ Concluído em 25/09/2026:
 - roles continuam em tabelas governadas.
 
 Validação:
+
 - corporativo Azure: acesso permitido;
 - outsider autenticado: zero linhas;
 - anon: sem SELECT/EXECUTE;
@@ -1105,6 +1112,7 @@ Migration canônica versionada em `supabase/migrations/20260925133200_c04_role_m
 ### Testes obrigatórios do C04
 
 Executar ainda no C04:
+
 - anon não lê/escreve;
 - sessão inválida/expirada não produz autorização;
 - usuário autenticado não consegue alterar principals/roles governados;
@@ -1112,6 +1120,7 @@ Executar ainda no C04:
 - acesso direto por REST/RPC obedece à mesma regra-base da UI/server.
 
 Os testes que dependem do domínio real ficam explicitamente deferidos:
+
 - ownership por cenário + separação Jair/Bruno/Jiane/platform admins -> C06.1, após seed dos 11 cenários;
 - START autenticado -> C08.1, após fluxo START existir;
 - END/CANCEL autenticado -> F02.1, após state machine + END + CANCEL existirem.
@@ -1127,6 +1136,7 @@ Framework EBSA aplicado literalmente:
 - **AUDIT-001 / G5:** exige ator, ação, recurso, data, resultado e correlação para ações sensíveis.
 
 Evidências já disponíveis:
+
 - Microsoft Entra ID / SSO homologado;
 - primeiro usuário corporativo criado/autenticado;
 - role mapping governado;
@@ -1138,6 +1148,7 @@ Evidências já disponíveis:
 - REST/RPC/server usam predicado corporativo equivalente.
 
 Evidências ainda faltantes:
+
 - teste formal de troca de papel;
 - teste formal de revogação;
 - cenário de desligamento/sessão antiga;
@@ -1147,6 +1158,7 @@ Evidências ainda faltantes:
 - trilha de auditoria completa com ator + ação + recurso + data + resultado + correlation_id para ações sensíveis.
 
 Resultado:
+
 - `G5 = PARTIAL`;
 - `ID-001 = BLOCKED_EVIDENCE`;
 - `ID-002 = BLOCKED_EVIDENCE`;
@@ -1161,6 +1173,7 @@ Objetivo: usar o ambiente do próprio Lovable Cloud para concluir os controles d
 #### Prioridade 0 — limpeza obrigatória
 
 Antes de qualquer novo teste:
+
 - localizar qualquer grant ativo com `source = C04_ID001_TEMP_TEST`;
 - revogar/remover o grant temporário de teste;
 - comprovar que Kaue permanece apenas com o papel permanente `safra_platform_admin`;
@@ -1199,6 +1212,7 @@ Nenhuma evolução deve continuar enquanto esse estado não estiver confirmado.
 #### Fora do escopo Lovable
 
 Dependências do Microsoft Entra/TI:
+
 - evidência do processo corporativo de recuperação de acesso;
 - política de MFA/Conditional Access dos usuários privilegiados.
 
@@ -1229,6 +1243,7 @@ PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL|PASS
 ```
 
 Somente após essas evidências reavaliar:
+
 - `G5`;
 - `ID-001`;
 - `ID-002`;
@@ -1245,6 +1260,7 @@ SAFRA-C04 = CONCLUIDO
 ```
 
 Fronteira de responsabilidade:
+
 - recuperação de acesso Microsoft = EXTERNAL_CORPORATE_CONTROL;
 - MFA/Conditional Access privilegiado = EXTERNAL_CORPORATE_CONTROL;
 - esses controles não são simulados nem certificados pelo Painel Safra.
@@ -1260,17 +1276,20 @@ Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
 ### C05.0 — Autoridade de migrations e captura do C04 — CONCLUÍDO
 
 Decisão:
+
 - `supabase/migrations` é a fonte canônica de migrations;
 - Drizzle permanece como tooling/ORM auxiliar e não cria uma segunda trilha de schema;
 - migration canônica do C04 criada em:
   `supabase/migrations/20260925133200_c04_role_mapping_and_corporate_rls.sql`.
 
 Estado:
+
 - conteúdo equivalente ao estado live validado do C04;
 - role mapping, predicado corporativo e RLS capturados em código;
 - histórico remoto reconciliado em 25/09/2026; sem drift conhecido de C00/C04/C05.
 
 ### Antes de criar migration
+
 1. autoridade canônica definida: `supabase/migrations`; Drizzle não é fonte de verdade de schema — **CONCLUÍDO**;
 2. reconciliar drift da migration de hardening — **CONCLUÍDO**;
 3. documentar rollback — **CONCLUÍDO** em `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
@@ -1282,6 +1301,7 @@ Migration:
 `supabase/migrations/20260925170000_c05_schema_v2_canonical_base.sql`
 
 Concluído:
+
 - entidades canônicas materializadas no PRIMARY;
 - RBAC existente reutilizado, sem tabela concorrente;
 - RLS deny-by-default;
@@ -1291,6 +1311,7 @@ Concluído:
 - self-tests positivos/negativos executados com rollback integral de fixtures.
 
 Não incluído:
+
 - seed C06;
 - RPCs START/END/CANCEL;
 - decisão de múltiplos ACTIVE;
@@ -1300,12 +1321,14 @@ Não incluído:
 ### C05.2 — Rollback e banco descartável — IMPLEMENTADO
 
 Artefatos:
+
 - `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
 - `supabase/seed.sql` sem dados produtivos;
 - `supabase/tests/database/c05_schema_v2.test.sql`;
 - `.github/workflows/database-disposable-test.yml`.
 
 Contrato:
+
 ```text
 supabase start
 -> supabase db reset --local
@@ -1334,6 +1357,7 @@ A estrutura física já materializada em C05.1 foi validada como contrato de dom
 - governance issues: `governance_issues`.
 
 Regras:
+
 - nenhuma tabela concorrente de roles;
 - ownership explícito e separado de papel administrativo;
 - versionamento preserva fotografia histórica;
@@ -1465,6 +1489,7 @@ Fonte técnica:
 `scenarios -> scenario_owners -> safra_principals -> safra_role_grants`.
 
 Resultado:
+
 - 11/11 cenários com vínculo ativo;
 - exatamente 1 owner ativo por cenário;
 - 3 owners distintos;
@@ -1486,6 +1511,7 @@ C06_1_ACTION_01_HUMAN_VALIDATION = APPROVED
 #### Ação 2 — owner sem herança administrativa e sem fallback silencioso
 
 Resultado:
+
 - 10/10 testes PASS;
 - admin não herda ownership;
 - role `scenario_owner` isolada não substitui vínculo explícito;
@@ -1508,6 +1534,7 @@ Evidência:
 `docs/data-contracts/C06_1_READ_AUTHORIZATION_EVIDENCE.md`.
 
 Resultado revalidado:
+
 - RLS/grants = PASS;
 - App Smoke Run 87 = SUCCESS;
 - Database Disposable Run 125 = SUCCESS;
@@ -1527,15 +1554,18 @@ UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API
 #### Ação 4 — impedir autoatribuição/mutação direta de owner
 
 Critério formalizado a partir do contrato já existente do C06.1:
+
 - usuário comum não pode se autoatribuir owner por payload, REST/Data API ou RPC;
 - vínculo histórico não pode ser reescrito ou apagado;
 - nenhuma superfície pública de mutação de owner pode existir por acidente.
 
 Testes:
+
 - `supabase/tests/database/c06_1_owner_mutation_governance.test.sql`;
 - `.github/scripts/test-safra-direct-api.sh`.
 
 Resultado:
+
 - pgTAP Action 4 = 13/13;
 - `anon` sem INSERT/UPDATE/DELETE em `scenario_owners`;
 - `authenticated` sem INSERT/UPDATE/DELETE em `scenario_owners`;
@@ -1560,6 +1590,7 @@ auditável e preservar histórico temporal.
 #### Gate final do C06.1
 
 PRIMARY:
+
 - 11 cenários / 11 vínculos ativos;
 - exatamente 1 owner por cenário;
 - 0 órfãos;
@@ -1571,6 +1602,7 @@ PRIMARY:
 - GitHub x PRIMARY = 17/17 migrations, drift 0.
 
 CI:
+
 - App Smoke Run 87 / ID `36309242985` = SUCCESS;
 - Database Disposable Run 125 / ID `36309242956` = SUCCESS;
 - rebuild = PASS;
@@ -1598,6 +1630,7 @@ XLSX v3 -> parser v1.0.0 -> staging -> validação -> preview diff
 ```
 
 Resultado:
+
 - 11 registros;
 - 0 erros de validação;
 - 5 warnings convertidos/preservados como governance issues;
@@ -1608,6 +1641,7 @@ Resultado:
 - autoatribuição direta de owner permanece negada.
 
 Critério de saída — **ATENDIDO**:
+
 - Database Disposable Test = PASS;
 - reconciliação integral da Matriz v3 = 198/198, tolerância 0;
 - ownership real persistido = 11/11;
@@ -1678,6 +1712,7 @@ Antes de implementar qualquer tela ou RPC de START, a execução foi pausada par
 4. `GI-SAFRA-009` — decomposição dos SLAs textuais.
 
 Regra do gate:
+
 - nenhuma dessas lacunas pode virar default silencioso;
 - nenhuma UI pode apresentar dado inferido como decisão de negócio;
 - C08 só começa depois de documentado o comportamento seguro do MVP para os quatro itens.
@@ -1685,6 +1720,7 @@ Regra do gate:
 ### Gate pré-C08 — FECHADO
 
 As pendências que interromperam a entrada no C08 foram tratadas assim:
+
 - criticidade ausente = estado explícito, sem default;
 - threshold/fonte ausente = automação NOT_CONFIGURED, START manual permitido;
 - SLA textual = política formal de estruturação; nenhuma inferência;
@@ -1738,6 +1774,7 @@ usuário autenticado
 ### C08.1 — Regressão de autorização do START — IMPLEMENTADO / AUTOMATED PASS
 
 Testar com cenário PUBLISHED real:
+
 - usuário Microsoft corporativo autenticado consegue START;
 - anon/outsider não consegue START;
 - START por não-owner é permitido conforme regra de negócio;
@@ -1747,10 +1784,10 @@ Testar com cenário PUBLISHED real:
 - UI, REST/RPC e server-side produzem decisão equivalente;
 - retry/duplo clique não duplica tratativa.
 
-
 #### Ponto de retomada do próximo chat
 
 O START técnico está pronto:
+
 - migration aplicada no PRIMARY;
 - App Smoke 129 PASS;
 - Database Disposable 167 PASS;
@@ -1761,15 +1798,16 @@ O START técnico está pronto:
 O próximo passo NÃO é redesenhar o backend.
 
 Próxima ação:
+
 ```text
 HOMOLOGAR_START_COM_SESSAO_MICROSOFT_REAL
 ```
 
 Depois da homologação:
+
 - registrar evidências;
 - corrigir somente problemas encontrados;
 - continuar as demais telas do SAFRA-C08.
-
 
 ---
 
@@ -2182,6 +2220,7 @@ CANCEL não deve ser contado automaticamente como SLA cumprido.
 ### F02.1 — Regressão de autorização END/CANCEL
 
 Executar com tratativa ACTIVE real:
+
 - usuário Microsoft corporativo autenticado pode END;
 - usuário Microsoft corporativo autenticado pode CANCEL com motivo;
 - anon/outsider não consegue END/CANCEL;
@@ -2604,6 +2643,7 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 
 9. C08 — UX START;
 10. C09 — backup/restore/capacidade.
+
 ## Bloco 3 — MEIO
 
 11. M01 — state machine;
@@ -2723,49 +2763,49 @@ Só passa quando:
 
 # 21. Mapeamento Framework EBSA x roadmap
 
-| Framework | Fase | Aplicação |
-|---|---|---|
-| I-1 | C00/C02 | trust boundary/secrets |
-| I0/G0 | C00/C01 | ambiente/intenção |
-| G2/G3 | C00/C01 | GitHub-first/docs |
-| G3.25 | C01 | PROJECT_PROFILE |
-| G3.5 | C02 | threat/privacy |
-| G4/G4.5 | C08/M08/M09 | UX/frontend |
-| G5 | C04/C05/M01-M07/F01-F03 | backend/security |
-| G5.25 | C00/C01/F08 | supply chain/governança |
-| G5.5 | C09 | capacity/recovery |
-| G6 | C06/M11 | data contracts |
-| G6.5 | C07 + regras + M11 | rule traceability |
-| G7 | F08 | qualidade integrada |
-| G8 | F08 | candidate release |
-| G9 | N/A | replica=false |
-| G10 | F07 | homologação |
-| G10.5 | F08 | auditoria final |
-| G11 | F09 | operação |
+| Framework | Fase                    | Aplicação               |
+| --------- | ----------------------- | ----------------------- |
+| I-1       | C00/C02                 | trust boundary/secrets  |
+| I0/G0     | C00/C01                 | ambiente/intenção       |
+| G2/G3     | C00/C01                 | GitHub-first/docs       |
+| G3.25     | C01                     | PROJECT_PROFILE         |
+| G3.5      | C02                     | threat/privacy          |
+| G4/G4.5   | C08/M08/M09             | UX/frontend             |
+| G5        | C04/C05/M01-M07/F01-F03 | backend/security        |
+| G5.25     | C00/C01/F08             | supply chain/governança |
+| G5.5      | C09                     | capacity/recovery       |
+| G6        | C06/M11                 | data contracts          |
+| G6.5      | C07 + regras + M11      | rule traceability       |
+| G7        | F08                     | qualidade integrada     |
+| G8        | F08                     | candidate release       |
+| G9        | N/A                     | replica=false           |
+| G10       | F07                     | homologação             |
+| G10.5     | F08                     | auditoria final         |
+| G11       | F09                     | operação                |
 
 ---
 
 # 22. ADRs / decisões arquiteturais
 
-| ADR | Decisão | Estado |
-|---|---|---|
-| ADR-001 | evoluir `incident-log-pro` | APPROVED |
-| ADR-002 | Lovable Cloud PRIMARY; REPLICA=false | APPROVED |
-| ADR-003 | service_class=CRITICO; SLO 99,95%; RTO 30; RPO 5 | APPROVED |
-| ADR-004 | Microsoft Entra ID / SSO | APPROVED |
-| ADR-005 | operações críticas via função/RPC transacional | APPROVED — implementação funcional nas fases próprias |
-| ADR-006 | Geral = visão, não área | APPROVED |
-| ADR-007 | ativação humana no MVP | APPROVED |
-| ADR-008 | OTRS fora do MVP | APPROVED |
-| ADR-009 | integrações uma por ciclo | PROPOSED |
-| ADR-010 | tooling de migrations | APPROVED — supabase/migrations é a autoridade canônica |
-| ADR-011 | scenario criticality != application criticality | APPROVED |
-| ADR-012 | modelo de papéis/responsabilidades | APPROVED |
-| ADR-013 | subtipos administrativos | APPROVED |
-| ADR-014 | 12º card como proposal | APPROVED |
-| ADR-015 | application_criticality=MEDIUM | APPROVED |
-| ADR-016 | retenção | APPROVED |
-| ADR-017 | fechamento C01 | APPROVED |
+| ADR     | Decisão                                          | Estado                                                 |
+| ------- | ------------------------------------------------ | ------------------------------------------------------ |
+| ADR-001 | evoluir `incident-log-pro`                       | APPROVED                                               |
+| ADR-002 | Lovable Cloud PRIMARY; REPLICA=false             | APPROVED                                               |
+| ADR-003 | service_class=CRITICO; SLO 99,95%; RTO 30; RPO 5 | APPROVED                                               |
+| ADR-004 | Microsoft Entra ID / SSO                         | APPROVED                                               |
+| ADR-005 | operações críticas via função/RPC transacional   | APPROVED — implementação funcional nas fases próprias  |
+| ADR-006 | Geral = visão, não área                          | APPROVED                                               |
+| ADR-007 | ativação humana no MVP                           | APPROVED                                               |
+| ADR-008 | OTRS fora do MVP                                 | APPROVED                                               |
+| ADR-009 | integrações uma por ciclo                        | PROPOSED                                               |
+| ADR-010 | tooling de migrations                            | APPROVED — supabase/migrations é a autoridade canônica |
+| ADR-011 | scenario criticality != application criticality  | APPROVED                                               |
+| ADR-012 | modelo de papéis/responsabilidades               | APPROVED                                               |
+| ADR-013 | subtipos administrativos                         | APPROVED                                               |
+| ADR-014 | 12º card como proposal                           | APPROVED                                               |
+| ADR-015 | application_criticality=MEDIUM                   | APPROVED                                               |
+| ADR-016 | retenção                                         | APPROVED                                               |
+| ADR-017 | fechamento C01                                   | APPROVED                                               |
 
 ---
 
@@ -2902,6 +2942,7 @@ NEXT = SAFRA-C06 — Seed canônico da Matriz v3
 ```
 
 C05 fechado com:
+
 - schema v2 e 17 tabelas de domínio;
 - migrations canônicas reconstruíveis do zero;
 - tracking PRIMARY reconciliado com as 10 migrations do GitHub;
@@ -2936,6 +2977,7 @@ XLSX v3
 ```
 
 Regras de entrada:
+
 - não inferir os quatro CRITICAL;
 - preservar `GI-SAFRA-001 = OPEN`;
 - respeitar owners já aprovados;
@@ -2944,11 +2986,11 @@ Regras de entrada:
 - toda mudança de dado canônico deve ser auditável e reproduzível.
 
 Gate esperado:
+
 ```text
 C06 = DATA_CANONICALIZED
 G6 = PASS_C06_SEED
 ```
-
 
 # 29. Conclusão
 
@@ -2980,10 +3022,10 @@ treatments, START (C08.1), END/CANCEL (F02.1) e seed dos 11 cenários (C06.1).
 
 Próximo passo: SAFRA-C05 — Schema v2, migrations e invariantes.
 
-
 ### C04.6 — Auditoria pós-Lovable
 
 Resultado técnico interno:
+
 - TEMP_GRANT_CLEANUP = PASS;
 - ROLE_CHANGE = PASS;
 - ROLE_REVOCATION = PASS;
@@ -2992,10 +3034,12 @@ Resultado técnico interno:
 - RBAC_AUDIT_TRAIL = PASS.
 
 Dependências externas:
+
 - ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL;
 - PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL.
 
 Gates:
+
 ```text
 G5 = PASS
 ID-001 = PASS_APP_SCOPE
@@ -3005,20 +3049,22 @@ AUDIT-001 = PASS
 
 Não avançar o status para C05 por decisão automática; revisão humana permanece necessária.
 
-
 ### C04.7 — Fronteira de responsabilidade Entra — APROVADA
 
 Decisão humana:
+
 - recuperação de acesso Microsoft pertence à TI/Microsoft Entra;
 - bloqueio, MFA e Conditional Access da identidade Microsoft pertencem à TI/Microsoft Entra;
 - o Painel Safra não implementa controles paralelos para esses processos.
 
 Logo:
+
 - `ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL`;
 - `PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL`;
 - esses itens não bloqueiam o encerramento do C04 no escopo da aplicação.
 
 Fechamento:
+
 ```text
 G5 = PASS
 ID-001 = PASS_APP_SCOPE
@@ -3029,7 +3075,6 @@ SAFRA-C04 = CONCLUIDO
 
 Próxima etapa: SAFRA-C05.
 
-
 ### C05.0.1 — Autoridade de migrations e drift — CONCLUÍDO
 
 - `supabase/migrations` é a única fonte canônica de schema/migrations;
@@ -3037,7 +3082,6 @@ Próxima etapa: SAFRA-C05.
 - drift de C00/C04/C05 reconciliado em `supabase_migrations.schema_migrations`;
 - nenhuma DDL foi reaplicada durante o repair;
 - migrations remotas diretas ficam proibidas fora de exceção formal documentada.
-
 
 #### C07 — tolerância temporal documentada — 27/09/2026
 

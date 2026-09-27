@@ -12,7 +12,7 @@ O Painel Safra evolui o repositório existente. Não criar aplicação paralela 
 
 ## 2. Arquitetura atual confirmada
 
-~~~text
+```text
 GitHub <-> Lovable
           |
           v
@@ -33,7 +33,7 @@ Microsoft Entra ID
           |
           v
        auth.uid()
-~~~
+```
 
 Stack de aplicação:
 
@@ -59,10 +59,10 @@ Banco:
 
 Decisão vigente:
 
-~~~text
+```text
 supabase/migrations = ÚNICA FONTE CANÔNICA DE MIGRATIONS
 Drizzle = tooling/ORM auxiliar, sem autoridade de schema/deploy
-~~~
+```
 
 A migration-base do domínio Safra é:
 
@@ -88,12 +88,12 @@ Papéis funcionais:
 
 Regra estrutural:
 
-~~~text
+```text
 PAPEL != OWNERSHIP
 administração != ownership automático
 scenario_owner = elegibilidade funcional
 scenario_owners = vínculo explícito pessoa <-> cenário
-~~~
+```
 
 Não criar `safra_user_roles` concorrente.
 
@@ -104,6 +104,7 @@ Não criar `safra_user_roles` concorrente.
 Representa áreas operacionais reais.
 
 Regras:
+
 - código e nome únicos;
 - `Geral` não é área operacional;
 - pode ser ativada/desativada;
@@ -124,6 +125,7 @@ Relação com cenário é versionada por `scenario_version_systems`, permitindo 
 Identidade estável da contingência.
 
 Contém:
+
 - código;
 - nome;
 - lifecycle;
@@ -135,6 +137,7 @@ Contém:
 Fotografia versionada do conteúdo operacional.
 
 Contém:
+
 - gatilho;
 - detecção;
 - protocolo;
@@ -144,6 +147,7 @@ Contém:
 - estado DRAFT/PUBLISHED/RETIRED.
 
 Regras:
+
 - uma versão publicada não é reescrita;
 - uma versão retired é imutável;
 - apenas uma versão PUBLISHED pode estar corrente por cenário;
@@ -163,6 +167,7 @@ Essas relações pertencem à **versão**, não ao cenário estável, para prese
 `scenario_owners` representa o vínculo explícito entre cenário e principal responsável.
 
 Regras:
+
 - no máximo um owner ativo por cenário;
 - owner ativo precisa ser principal elegível com role `scenario_owner`;
 - troca de owner preserva histórico por `valid_from/valid_to`;
@@ -175,6 +180,7 @@ O START grava snapshot de owner e área responsável na tratativa para impedir r
 `scenario_slas` pertence a `scenario_version`.
 
 Cada SLA define:
+
 - código;
 - rótulo;
 - `start_event`;
@@ -184,6 +190,7 @@ Cada SLA define:
 - regra de aplicabilidade.
 
 Princípios:
+
 - um cenário pode ter múltiplos SLAs;
 - duração é derivada de eventos/timestamps;
 - SLA operacional não é SLO/RTO/RPO da aplicação;
@@ -195,13 +202,14 @@ Princípios:
 
 Estados canônicos:
 
-~~~text
+```text
 ACTIVE
 RESOLVED
 CANCELLED
-~~~
+```
 
 O treatment congela no START:
+
 - `scenario_id`;
 - `scenario_version_id`;
 - `owner_id_at_start`;
@@ -212,10 +220,12 @@ O treatment congela no START:
 - `idempotency_key`.
 
 Relações:
+
 - `treatment_impacted_areas` — áreas efetivamente impactadas;
 - `treatment_impact_measurements` — impacto quantitativo com métrica, valor, unidade, fonte e data.
 
 Regras:
+
 - tratamento encerrado não reabre;
 - CANCEL usa campos próprios e justificativa;
 - END e CANCEL não são delete;
@@ -238,6 +248,7 @@ Eventos canônicos iniciais:
 - `ADMIN_CORRECTION_RECORDED`.
 
 Cada evento registra:
+
 - treatment;
 - tipo;
 - ator;
@@ -254,14 +265,15 @@ Eventos não são editados para corrigir histórico. Correções administrativas
 
 Níveis:
 
-~~~text
+```text
 NONE
 TECHNICAL_CRISIS
 BUSINESS_CRISIS
 EXECUTIVE
-~~~
+```
 
 Regras:
+
 - escalonamento não altera o status do treatment;
 - criticidade de cenário não é escalonamento;
 - no máximo um escalonamento vigente por treatment;
@@ -272,10 +284,12 @@ Regras:
 `notifications_log` registra intenção/entrega de comunicação operacional.
 
 Pode se relacionar a:
+
 - treatment;
 - proposal.
 
 Campos estruturais incluem:
+
 - tipo;
 - destinatário;
 - canal;
@@ -295,6 +309,7 @@ A mesma idempotency key não pode gerar duas entregas lógicas.
 O 12º card persiste em `scenario_proposals`.
 
 A proposta:
+
 - nasce de usuário Microsoft autenticado;
 - preserva snapshot de nome/e-mail;
 - registra título, problema e impacto na Safra;
@@ -310,16 +325,18 @@ A publicação de um novo cenário ocorre somente após o fluxo de governança p
 `governance_issues` registra decisões materiais ainda abertas.
 
 Exemplo vigente:
+
 - `GI-SAFRA-001` — identificação formal dos quatro cenários CRITICAL.
 
 Regra:
+
 - questão aberta não pode ser convertida em default de implementação;
 - resolução exige ator, timestamp e texto de resolução;
 - somente após resolução a decisão pode alimentar nova versão/seed/regra.
 
 ## 5. Relações centrais
 
-~~~text
+```text
 private.safra_principals
         |
         +--> private.safra_role_grants
@@ -349,7 +366,7 @@ scenario_proposals
 governance_issues
         |
         +--> decisões pendentes que NÃO viram default
-~~~
+```
 
 ## 6. Invariantes de arquitetura
 
@@ -369,6 +386,7 @@ governance_issues
 ## 7. Segurança e exposição
 
 As 17 tabelas novas do domínio C05 foram criadas com:
+
 - RLS habilitada;
 - deny-by-default para `anon` e `authenticated`;
 - acesso técnico de `service_role` sem `TRUNCATE`.
@@ -388,6 +406,7 @@ Próximo subpasso do C05:
 - mutações auxiliares auditáveis quando necessárias.
 
 Essas operações devem ser transacionais e concentrar:
+
 - autenticação/autorização;
 - validação de estado;
 - timestamp server-side;
@@ -409,13 +428,14 @@ Ponte futura entre incidentes TI e tratativas Safra só deve ser criada quando h
 
 ## 10. REPLICA, backup e recovery
 
-~~~text
+```text
 replica_enabled = false
-~~~
+```
 
 Não haverá segundo banco sincronizado.
 
 A aplicação permanece com:
+
 - service_class = CRITICO;
 - RTO = 30 minutos;
 - RPO = 5 minutos.
@@ -436,6 +456,7 @@ Backup, restore e recovery testado serão fechados no SAFRA-C09.
 ## 12. Regra de mudança
 
 Mudança material de domínio/arquitetura deve:
+
 1. registrar decisão quando alterar contrato aprovado;
 2. atualizar documentação canônica;
 3. criar migration quando alterar persistência;

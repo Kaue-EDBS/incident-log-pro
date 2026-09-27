@@ -27,6 +27,7 @@ Regra geral:
 O cenário representa **o tipo de situação que pode ocorrer**, não uma ocorrência real.
 
 Exemplos de atributos associados:
+
 - código;
 - nome;
 - área responsável;
@@ -35,6 +36,7 @@ Exemplos de atributos associados:
 - áreas potencialmente impactáveis.
 
 **Não é:**
+
 - uma tratativa;
 - um chamado;
 - um incidente específico;
@@ -50,6 +52,7 @@ Exemplos de atributos associados:
 **Definição:** fotografia versionada e imutável do conteúdo operacional válido de um cenário em determinado período.
 
 Pode conter:
+
 - gatilho;
 - modo de detecção;
 - modo de ativação;
@@ -63,6 +66,7 @@ Pode conter:
 **Efeito operacional:** no START, a tratativa fica vinculada à versão vigente naquele instante por `scenario_version_id`.
 
 **Não é:**
+
 - o cenário em si;
 - um histórico editável;
 - a tratativa.
@@ -78,11 +82,13 @@ O gatilho responde:
 > “Qual condição caracteriza este cenário?”
 
 Exemplos conceituais:
+
 - atraso superior ao limite aprovado;
 - sistema indisponível no período crítico;
 - divergência acima da regra definida.
 
 **Não é:**
+
 - o mecanismo que percebe a condição;
 - o START;
 - uma notificação.
@@ -94,6 +100,7 @@ Exemplos conceituais:
 **Definição:** forma pela qual o gatilho ou sinal relacionado ao cenário é percebido.
 
 Pode ser:
+
 - MANUAL;
 - AUTOMATIC;
 - MIXED.
@@ -105,6 +112,7 @@ A detecção responde:
 **Regra:** detectar não cria tratativa automaticamente no MVP.
 
 **Não é:**
+
 - gatilho;
 - START;
 - protocolo;
@@ -117,6 +125,7 @@ A detecção responde:
 **Definição:** ação humana auditável que ativa formalmente um cenário publicado no Painel Safra e cria uma tratativa.
 
 Efeitos mínimos:
+
 - cria a tratativa;
 - persiste ator;
 - persiste timestamp oficial server-side;
@@ -128,6 +137,7 @@ Efeitos mínimos:
 **Quem pode:** qualquer usuário Microsoft autenticado, conforme regras de autorização vigentes.
 
 **Não é:**
+
 - detecção;
 - gatilho;
 - aprovação de cenário;
@@ -144,6 +154,7 @@ O protocolo pertence ao conhecimento do cenário/versionamento e é executado pe
 **Regra central:** o Painel Safra governa a contingência, mas não executa nem controla checklist passo a passo do protocolo.
 
 **Não é:**
+
 - chamado;
 - tratativa;
 - checklist do Painel;
@@ -158,11 +169,13 @@ O protocolo pertence ao conhecimento do cenário/versionamento e é executado pe
 A tratativa representa **uma ocorrência operacional específica daquele cenário** dentro do Painel.
 
 Estados mínimos:
+
 - ACTIVE;
 - RESOLVED;
 - CANCELLED.
 
 Pode possuir:
+
 - versão congelada;
 - ator de abertura;
 - tempos;
@@ -173,6 +186,7 @@ Pode possuir:
 - END ou CANCEL.
 
 **Não é:**
+
 - cenário;
 - protocolo;
 - proposta;
@@ -185,6 +199,7 @@ Pode possuir:
 **Definição:** pessoa formalmente responsável pelo card/cenário e pela condução do protocolo operacional com sua equipe.
 
 O owner:
+
 - responde pelo conteúdo/procedimento do card;
 - recebe comunicações do próprio card;
 - participa da governança relacionada ao cenário.
@@ -194,6 +209,7 @@ O owner:
 **Regra adicional:** owner não possui exclusividade sobre START, END ou CANCEL.
 
 **Não é:**
+
 - sinônimo de administrador;
 - papel herdado automaticamente por platform admin;
 - usuário que necessariamente executou o START.
@@ -207,6 +223,7 @@ O owner:
 É atributo do catálogo do cenário.
 
 **Não é:**
+
 - área necessariamente impactada em toda ocorrência;
 - owner individual;
 - visão “Geral”.
@@ -231,6 +248,7 @@ Existem dois níveis distintos:
 **Definição:** compromisso temporal do protocolo medido entre eventos definidos.
 
 Cada SLA deve possuir:
+
 - `start_event`;
 - `end_event`;
 - valor-alvo;
@@ -242,6 +260,7 @@ Cada SLA deve possuir:
 **Regra:** um cenário pode ter múltiplos SLAs simultâneos.
 
 **Não é:**
+
 - SLO do software;
 - RTO;
 - RPO;
@@ -255,6 +274,7 @@ Cada SLA deve possuir:
 **Definição:** classificação de severidade do cenário/protocolo para fins de governança e comunicação.
 
 Valores canônicos:
+
 - CRITICAL;
 - HIGH;
 - MODERATE.
@@ -262,6 +282,7 @@ Valores canônicos:
 **Regra:** criticidade é atributo versionado do cenário.
 
 **Não é:**
+
 - `service_class` da aplicação;
 - `application_criticality`;
 - nível de escalonamento;
@@ -274,6 +295,7 @@ Valores canônicos:
 **Definição:** ação humana auditável que encerra uma tratativa ACTIVE porque a necessidade que motivou sua ativação foi concluída.
 
 Efeito principal:
+
 - transição `ACTIVE -> RESOLVED`;
 - persiste ator e timestamp server-side;
 - gera evento de auditoria;
@@ -283,6 +305,7 @@ Efeito principal:
 **Quem pode:** qualquer usuário Microsoft autenticado, conforme regras vigentes.
 
 **Não é:**
+
 - CANCEL;
 - exclusão;
 - garantia automática de que todo SLA foi cumprido.
@@ -294,6 +317,7 @@ Efeito principal:
 **Definição:** ação humana auditável usada quando a tratativa não deve ser considerada resolução válida, por exemplo abertura incorreta, duplicada ou cenário inadequado.
 
 Efeito principal:
+
 - transição `ACTIVE -> CANCELLED`;
 - exige justificativa;
 - preserva histórico;
@@ -303,6 +327,7 @@ Efeito principal:
 **Regra:** CANCEL não equivale a SLA cumprido.
 
 **Não é:**
+
 - END;
 - delete físico;
 - mecanismo para limpar métricas desfavoráveis.
@@ -314,6 +339,7 @@ Efeito principal:
 **Definição:** elevação formal da governança de uma tratativa quando o contexto exige envolvimento técnico, de negócio ou executivo adicional.
 
 Níveis previstos:
+
 - NONE;
 - TECHNICAL_CRISIS;
 - BUSINESS_CRISIS;
@@ -324,6 +350,7 @@ Níveis previstos:
 **Regra:** recorrência sozinha não promove escalonamento automaticamente.
 
 **Não é:**
+
 - criticidade;
 - status;
 - START;
@@ -336,6 +363,7 @@ Níveis previstos:
 **Definição:** análise posterior ao encerramento de uma contingência para registrar causa, aprendizado e ações preventivas quando exigido pela regra do cenário ou pela governança.
 
 Pode possuir:
+
 - owner;
 - prazo;
 - conclusão;
@@ -344,6 +372,7 @@ Pode possuir:
 - SLA próprio.
 
 **Não é:**
+
 - requisito automático de todas as tratativas, salvo decisão de negócio;
 - substituto do END;
 - nota livre sem governança.
@@ -355,6 +384,7 @@ Pode possuir:
 **Definição:** repetição observável de tratativas relacionadas ao mesmo cenário dentro de uma janela de análise.
 
 É usada para:
+
 - analytics;
 - governança semanal;
 - identificação de padrão;
@@ -363,6 +393,7 @@ Pode possuir:
 **Regra:** recorrência é indicador e não promove crise/escalonamento automaticamente.
 
 **Não é:**
+
 - criticidade;
 - breach de SLA;
 - nova categoria de status.
@@ -374,6 +405,7 @@ Pode possuir:
 **Definição:** submissão de um possível novo cenário pelo 12º card para avaliação de governança.
 
 A proposta:
+
 - possui proponente identificado pela sessão Microsoft;
 - registra problema e impacto na Safra;
 - passa por triagem;
@@ -383,6 +415,7 @@ A proposta:
 **Regra:** proposta não é cenário produtivo e não aceita START.
 
 **Não é:**
+
 - cenário publicado;
 - tratativa;
 - protocolo genérico.
@@ -445,21 +478,21 @@ CENÁRIO
 
 ## 4. Termos que não podem ser usados como sinônimos
 
-| Não confundir | Motivo |
-|---|---|
-| cenário × tratativa | tipo conhecido × ocorrência real |
-| cenário × versão | identidade estável × conteúdo vigente |
-| gatilho × detecção | condição × forma de perceber |
-| START × detecção | ativação humana × percepção do sinal |
-| protocolo × tratativa | procedimento × instância real |
-| owner × ator do START | responsável formal × quem executou a ação |
-| área responsável × área impactada | responsabilidade × consequência |
-| SLA × SLO/RTO/RPO | compromisso do protocolo × objetivos técnicos do software |
-| criticidade × escalonamento | classificação do cenário × nível de governança da ocorrência |
-| END × CANCEL | resolução válida × invalidação/encerramento não resolutivo |
-| recorrência × crise | indicador histórico × decisão de escalonamento |
-| proposta × cenário | candidato em governança × entidade publicada |
-| incidente TI × tratativa Safra | domínio legado de confiabilidade × domínio de contingência |
+| Não confundir                     | Motivo                                                       |
+| --------------------------------- | ------------------------------------------------------------ |
+| cenário × tratativa               | tipo conhecido × ocorrência real                             |
+| cenário × versão                  | identidade estável × conteúdo vigente                        |
+| gatilho × detecção                | condição × forma de perceber                                 |
+| START × detecção                  | ativação humana × percepção do sinal                         |
+| protocolo × tratativa             | procedimento × instância real                                |
+| owner × ator do START             | responsável formal × quem executou a ação                    |
+| área responsável × área impactada | responsabilidade × consequência                              |
+| SLA × SLO/RTO/RPO                 | compromisso do protocolo × objetivos técnicos do software    |
+| criticidade × escalonamento       | classificação do cenário × nível de governança da ocorrência |
+| END × CANCEL                      | resolução válida × invalidação/encerramento não resolutivo   |
+| recorrência × crise               | indicador histórico × decisão de escalonamento               |
+| proposta × cenário                | candidato em governança × entidade publicada                 |
+| incidente TI × tratativa Safra    | domínio legado de confiabilidade × domínio de contingência   |
 
 ---
 
@@ -483,7 +516,6 @@ Qualquer mudança material nestas definições deve:
 4. reavaliar migrations/API/UI/testes afetados;
 5. preservar compatibilidade histórica das tratativas já registradas.
 
-
 ---
 
 ## 7. Impacto — formalização do domínio
@@ -505,6 +537,7 @@ TRATATIVA
 **Definição:** descrição textual e contextual das consequências da contingência, sem depender de uma medida numérica.
 
 Pode responder, por exemplo:
+
 - o que foi afetado;
 - como a operação foi afetada;
 - quais áreas foram atingidas;
@@ -553,6 +586,7 @@ medido_em = timestamp
 **Regra:** não inventar zero quando o valor for desconhecido. Usar ausência/null/UNKNOWN conforme contrato da fase de dados.
 
 **Regra:** impacto quantitativo não altera automaticamente:
+
 - criticidade;
 - escalonamento;
 - estado da tratativa;
@@ -563,6 +597,7 @@ Qualquer automação futura baseada em limiar exige regra de negócio própria e
 ### 7.4 O que não será criado no C03
 
 O C03 **não** cria:
+
 - score único de impacto;
 - faixas baixa/média/alta inventadas;
 - pesos;
@@ -598,14 +633,13 @@ Uma tratativa pode possuir zero, uma ou várias medições quantitativas.
 
 ### 7.6 Distinções adicionais congeladas
 
-| Não confundir | Motivo |
-|---|---|
-| impacto qualitativo × impacto quantitativo | descrição contextual × medida estruturada |
-| impacto esperado × impacto observado | expectativa do cenário × efeito real da tratativa |
-| impacto × criticidade | consequência da ocorrência × classificação governada do cenário |
-| impacto × SLA | magnitude do efeito × compromisso temporal |
-| impacto quantitativo desconhecido × zero | ausência de medida × valor medido igual a zero |
-
+| Não confundir                              | Motivo                                                          |
+| ------------------------------------------ | --------------------------------------------------------------- |
+| impacto qualitativo × impacto quantitativo | descrição contextual × medida estruturada                       |
+| impacto esperado × impacto observado       | expectativa do cenário × efeito real da tratativa               |
+| impacto × criticidade                      | consequência da ocorrência × classificação governada do cenário |
+| impacto × SLA                              | magnitude do efeito × compromisso temporal                      |
+| impacto quantitativo desconhecido × zero   | ausência de medida × valor medido igual a zero                  |
 
 ---
 
@@ -615,23 +649,23 @@ Esta seção transforma o glossário em contrato de implementação. O C05 pode 
 
 ### 8.1 Fonte de verdade por conceito
 
-| Conceito | Fonte de verdade | Mutabilidade |
-|---|---|---|
-| identidade do cenário | `scenarios` | estável |
-| conteúdo operacional vigente | `scenario_versions` | nova versão; versão publicada é imutável |
-| owner atual do cenário | `scenario_owners` | temporal, com validade |
-| área responsável atual | `scenarios.responsible_area_id` | governada; histórico operacional deve ser preservado na tratativa |
-| áreas potencialmente impactáveis | relação da `scenario_version` | versionada |
-| sistemas/ferramentas associados | relação da `scenario_version` | versionada |
-| SLAs | `scenario_slas` vinculados à `scenario_version` | versionados |
-| ocorrência real | `treatments` | estado controlado |
-| áreas realmente impactadas | `treatment_impacted_areas` | pertencem à tratativa |
-| impacto qualitativo observado | `treatments.impact_summary` | auditável |
-| impacto quantitativo observado | `treatment_impact_measurements` | append/auditável |
-| eventos operacionais | `treatment_events` | append-only |
-| escalonamento | `treatment_escalations` | entidade separada do status |
-| proposta de novo cenário | `scenario_proposals` | nunca equivale a cenário publicado |
-| decisão aberta de governança | `governance_issues` | permanece explícita até resolução |
+| Conceito                         | Fonte de verdade                                | Mutabilidade                                                      |
+| -------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------- |
+| identidade do cenário            | `scenarios`                                     | estável                                                           |
+| conteúdo operacional vigente     | `scenario_versions`                             | nova versão; versão publicada é imutável                          |
+| owner atual do cenário           | `scenario_owners`                               | temporal, com validade                                            |
+| área responsável atual           | `scenarios.responsible_area_id`                 | governada; histórico operacional deve ser preservado na tratativa |
+| áreas potencialmente impactáveis | relação da `scenario_version`                   | versionada                                                        |
+| sistemas/ferramentas associados  | relação da `scenario_version`                   | versionada                                                        |
+| SLAs                             | `scenario_slas` vinculados à `scenario_version` | versionados                                                       |
+| ocorrência real                  | `treatments`                                    | estado controlado                                                 |
+| áreas realmente impactadas       | `treatment_impacted_areas`                      | pertencem à tratativa                                             |
+| impacto qualitativo observado    | `treatments.impact_summary`                     | auditável                                                         |
+| impacto quantitativo observado   | `treatment_impact_measurements`                 | append/auditável                                                  |
+| eventos operacionais             | `treatment_events`                              | append-only                                                       |
+| escalonamento                    | `treatment_escalations`                         | entidade separada do status                                       |
+| proposta de novo cenário         | `scenario_proposals`                            | nunca equivale a cenário publicado                                |
+| decisão aberta de governança     | `governance_issues`                             | permanece explícita até resolução                                 |
 
 ### 8.2 Cardinalidades canônicas
 
@@ -676,6 +710,7 @@ RETIRED
 ```
 
 Regras:
+
 - apenas `PUBLISHED` pode ser usada em START;
 - no máximo uma versão `PUBLISHED` corrente por cenário;
 - `PUBLISHED` nunca é editada in-place;
@@ -747,16 +782,19 @@ Contrato:
 ### 8.7 Área responsável e áreas impactadas
 
 #### Área responsável
+
 - exatamente uma área responsável corrente por cenário publicado;
 - representa quem responde primariamente pelo cenário;
 - snapshot `responsible_area_id_at_start` preserva o contexto da tratativa.
 
 #### Área potencialmente impactável
+
 - pertence à **versão do cenário**, não à tratativa;
 - relação N:N;
 - informa quem pode ser afetado segundo aquela versão.
 
 #### Área efetivamente impactada
+
 - pertence à tratativa;
 - relação N:N;
 - pode ser subconjunto, conjunto igual ou diferente do potencial previsto;
@@ -795,6 +833,7 @@ Por causa de `GI-SAFRA-001`:
 SLA pertence à versão do cenário.
 
 Cada registro precisa referenciar:
+
 - `scenario_version_id`;
 - `start_event`;
 - `end_event`;
@@ -803,6 +842,7 @@ Cada registro precisa referenciar:
 - aplicabilidade.
 
 Regras:
+
 - timestamps oficiais são a fonte primária;
 - duração é calculada;
 - CANCEL não equivale a SLA cumprido;
@@ -812,13 +852,17 @@ Regras:
 ### 8.11 END e CANCEL — semântica de persistência
 
 #### RESOLVED
+
 Quando `status = RESOLVED`:
+
 - `closed_by` obrigatório;
 - `closed_at` obrigatório e server-side;
 - campos de cancelamento devem permanecer nulos.
 
 #### CANCELLED
+
 Quando `status = CANCELLED`:
+
 - `cancelled_by` obrigatório;
 - `cancelled_at` obrigatório e server-side;
 - `cancellation_reason` obrigatório;
@@ -845,6 +889,7 @@ ADMIN_CORRECTION_RECORDED
 ```
 
 Regras:
+
 - evento possui ator quando houver ação humana;
 - `occurred_at` oficial é server-side;
 - `correlation_id` deve ser persistido para mutations críticas;
@@ -870,6 +915,7 @@ treatment_impact_measurements
 ```
 
 Invariantes:
+
 - se não existe medição, não criar linha fictícia com zero;
 - uma linha de medição exige valor, unidade e referência de fonte suficientes para auditoria;
 - métricas/thresholds específicos continuam deferidos para C06/F04;
@@ -886,6 +932,7 @@ C05 não deve criar status ou tabela de “recorrência” como fonte primária.
 Pós-mortem está no domínio, mas seu workflow pertence ao F03.
 
 C05 não deve presumir:
+
 - que toda tratativa exige pós-mortem;
 - enum/status final do pós-mortem;
 - tabela obrigatória nesta migration inicial.
@@ -903,6 +950,7 @@ Portanto, **C05 não deve criar constraint de unicidade que impeça duas tratati
 `scenario_proposals` é entidade separada.
 
 C05 deve garantir estruturalmente:
+
 - proposta não possui `scenario_id` produtivo por default;
 - proposta não recebe START;
 - conversão/publicação depende do fluxo M10;
@@ -913,6 +961,7 @@ C05 deve garantir estruturalmente:
 `governance_issues` registra pendência material sem preencher default.
 
 Para `GI-SAFRA-001`:
+
 - issue permanece OPEN;
 - seed C06 não define os quatro CRITICAL;
 - resolução futura gera decisão registrada e versão de cenário apropriada.
@@ -920,6 +969,7 @@ Para `GI-SAFRA-001`:
 ### 8.19 Itens explicitamente fora do C05
 
 C05 não deve decidir por conta própria:
+
 - os quatro cenários CRITICAL;
 - thresholds dos cenários 2, 4, 10 e 11;
 - mínimo oficial da curva A;

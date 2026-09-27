@@ -21,10 +21,14 @@ export const Route = createFileRoute("/indicadores")({
       { title: "Indicadores | Reliability Monitor" },
       {
         name: "description",
-        content: "Gráficos de incidentes, MTTR, MTTD e tabela comparativa de disponibilidade por aplicação.",
+        content:
+          "Gráficos de incidentes, MTTR, MTTD e tabela comparativa de disponibilidade por aplicação.",
       },
       { property: "og:title", content: "Indicadores | Reliability Monitor" },
-      { property: "og:description", content: "Compare a confiabilidade das aplicações monitoradas." },
+      {
+        property: "og:description",
+        content: "Compare a confiabilidade das aplicações monitoradas.",
+      },
     ],
   }),
   component: IndicatorsPage,
@@ -133,8 +137,20 @@ function IndicatorsPage() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={overTime}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="date" tickLine={false} axisLine={false} fontSize={11} interval={5} />
-                <YAxis tickLine={false} axisLine={false} fontSize={12} width={36} allowDecimals={false} />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  fontSize={11}
+                  interval={5}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  fontSize={12}
+                  width={36}
+                  allowDecimals={false}
+                />
                 <ReTooltip />
                 <Line
                   type="monotone"

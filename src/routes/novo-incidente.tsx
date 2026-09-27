@@ -258,7 +258,9 @@ function StartSafraTreatment() {
 
       {isError ? (
         <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 p-5">
-          <p className="font-medium text-destructive">Não foi possível carregar o catálogo Safra.</p>
+          <p className="font-medium text-destructive">
+            Não foi possível carregar o catálogo Safra.
+          </p>
           <button
             type="button"
             onClick={() => void refetch()}

@@ -16,12 +16,14 @@ Endpoint governado para a tela Abrir Protocolo. Retorna somente cenários ACTIVE
 ### `public.safra_start_treatment(...)`
 
 Entrada permitida:
+
 - `scenario_id`;
 - `idempotency_key` UUID;
 - resumo do impacto observado;
 - áreas realmente impactadas.
 
 A UI não envia:
+
 - `scenario_version_id`;
 - owner;
 - criticidade;
@@ -53,6 +55,7 @@ Mesmo UUID + payload diferente => `SAFRA_START_IDEMPOTENCY_CONFLICT`.
 ## UX implementada
 
 A rota `/novo-incidente` passou a funcionar como **Abrir Protocolo**:
+
 - catálogo dos cenários;
 - protocolo e gatilho;
 - owner;
@@ -69,6 +72,7 @@ A rota `/novo-incidente` passou a funcionar como **Abrir Protocolo**:
 ## Segurança
 
 Deny-by-default preservado:
+
 - sem SELECT direto de `scenarios` pelo browser;
 - sem INSERT direto de `treatments`;
 - sem INSERT direto de `treatment_events`;
@@ -98,6 +102,7 @@ LOVABLE_RUNTIME = ready
 Durante a implementação, o Database Disposable ficou preso em `supabase start` por limitação/rate limit do pull de containers.
 
 Foram aplicados:
+
 - timeout;
 - cleanup defensivo;
 - retry único;
@@ -111,6 +116,7 @@ Também foi corrigido o plano pgTAP de 22 para 24 testes; os 24 asserts funciona
 ## Limites deliberados
 
 Não resolvidos por este trabalho:
+
 - GI-SAFRA-004 — múltiplos ACTIVE;
 - GI-SAFRA-005 — comunicação produtiva;
 - GI-SAFRA-009 — materialização futura dos SLAs estruturados candidatos;

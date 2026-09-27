@@ -84,10 +84,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Painel Safra | Editora do Brasil" },
-      { name: "description", content: "Gestão dos protocolos operacionais da Safra da Editora do Brasil." },
+      {
+        name: "description",
+        content: "Gestão dos protocolos operacionais da Safra da Editora do Brasil.",
+      },
       { name: "author", content: "Editora do Brasil" },
       { property: "og:title", content: "Painel Safra | Editora do Brasil" },
-      { property: "og:description", content: "Cenários, tratativas, protocolos e SLAs da Safra em um só lugar." },
+      {
+        property: "og:description",
+        content: "Cenários, tratativas, protocolos e SLAs da Safra em um só lugar.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },

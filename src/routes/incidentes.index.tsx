@@ -23,7 +23,10 @@ export const Route = createFileRoute("/incidentes/")({
         content: "Histórico completo de incidentes com downtime, MTTD, MTTR e filtros por período.",
       },
       { property: "og:title", content: "Histórico de Incidentes | Reliability Monitor" },
-      { property: "og:description", content: "Consulte todos os incidentes registrados e seus indicadores." },
+      {
+        property: "og:description",
+        content: "Consulte todos os incidentes registrados e seus indicadores.",
+      },
     ],
   }),
   component: IncidentsPage,

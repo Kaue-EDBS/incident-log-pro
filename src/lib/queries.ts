@@ -87,7 +87,6 @@ export function useUpdateIncident() {
   });
 }
 
-
 export function useSafraStartCatalog() {
   return useQuery({
     queryKey: ["safra-start-catalog"],

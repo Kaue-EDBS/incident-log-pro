@@ -12,7 +12,6 @@ import {
 import { supabase } from "./client";
 import { lovable } from "@/integrations/lovable/index";
 
-
 type AuthContextValue = {
   session: Session | null;
   user: User | null;
@@ -26,7 +25,6 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 // SAFRA-C04: a autorização vem exclusivamente do banco
 // (private.safra_principals + private.safra_role_grants).
 // Nenhum metadado do usuário é fonte de autorização.
-
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -69,7 +67,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut({ scope: "global" });
     window.location.replace("/auth");
   }, []);
-
 
   const value = useMemo<AuthContextValue>(
     () => ({

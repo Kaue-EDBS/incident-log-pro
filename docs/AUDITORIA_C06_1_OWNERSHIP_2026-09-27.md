@@ -64,19 +64,19 @@ Reauditoria no PRIMARY:
 
 Distribuição confirmada:
 
-| Cenário | Owner |
-|---|---|
-| SAFRA-01 | Daniel Garcia |
-| SAFRA-02 | Daniel Garcia |
-| SAFRA-03 | Daniel Garcia |
+| Cenário  | Owner           |
+| -------- | --------------- |
+| SAFRA-01 | Daniel Garcia   |
+| SAFRA-02 | Daniel Garcia   |
+| SAFRA-03 | Daniel Garcia   |
 | SAFRA-04 | Jiane Rodrigues |
 | SAFRA-05 | Jiane Rodrigues |
 | SAFRA-06 | Jiane Rodrigues |
-| SAFRA-07 | Daniel Garcia |
+| SAFRA-07 | Daniel Garcia   |
 | SAFRA-08 | Jiane Rodrigues |
 | SAFRA-09 | Renato de Paulo |
-| SAFRA-10 | Daniel Garcia |
-| SAFRA-11 | Daniel Garcia |
+| SAFRA-10 | Daniel Garcia   |
+| SAFRA-11 | Daniel Garcia   |
 
 Validação humana dos 11 vínculos: **APROVADA**.
 
