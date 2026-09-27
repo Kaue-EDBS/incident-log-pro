@@ -1,8 +1,8 @@
 # STATUS — incident-log-pro / Painel Safra
 
-> Atualizado em: 25/09/2026  
-> Fase atual: **SAFRA-C06 — Seed canônico e validação da Matriz v3**  
-> Escopo atual: consolidar os 11 cenários oficiais no schema v2, validar reconstrução, segurança, paridade e preparar C07 sem inferir decisões de negócio.
+> Atualizado em: 27/09/2026  
+> Fase atual: **SAFRA-C07 — Engine de SLA**  
+> Escopo atual: consolidar e validar a engine determinística de SLA, preservando a proibição de inferir start_event, end_event, thresholds ou gates sem fonte/decisão explícita.
 
 ---
 
@@ -2299,7 +2299,7 @@ P1 = NOT_PUBLISHED
 P2 = NOT_PUBLISHED
 P3 = NOT_PUBLISHED
 P4 = NOT_PUBLISHED
-C07_CI = PENDING
+C07_CI = PASS_RUN_125
 ```
 
 
@@ -2374,7 +2374,7 @@ ADMIN_OWNER_OVERLAP = 0
 
 ## SAFRA-C06.1 — Teste de ownership real — 26/09/2026
 
-Fase atual de validação.
+Fase **CONCLUÍDA** após reauditoria integral em 27/09/2026.
 
 ### Ação 1
 
@@ -2458,3 +2458,96 @@ APP_SMOKE_RUN_85 = SUCCESS
 DATABASE_DISPOSABLE_RUN_123 = SUCCESS
 C06_1_ACTION_03_CI = PASS
 ```
+
+
+---
+
+## Reauditoria integral SAFRA-C06.1 — 27/09/2026
+
+Evidência detalhada:
+`docs/AUDITORIA_C06_1_OWNERSHIP_2026-09-27.md`
+
+### Resultado das quatro ações
+
+1. **Ownership real dos 11 cenários — PASS**
+   - 11 cenários;
+   - 11 vínculos ativos;
+   - exatamente 1 owner ativo por cenário;
+   - 3 owners reais;
+   - 0 órfãos;
+   - 0 role mismatch;
+   - 0 admin/owner overlap;
+   - validação humana = APPROVED.
+
+2. **Sem herança administrativa / sem fallback silencioso — PASS**
+   - pgTAP 10/10;
+   - admin não herda ownership;
+   - role `scenario_owner` não substitui vínculo explícito;
+   - ausência/inelegibilidade de owner bloqueia cenário PUBLISHED.
+
+3. **Coerência UI / REST-RPC / banco — PASS**
+   - App Smoke Run 87 / ID `36309242985` = SUCCESS;
+   - RLS/grants = PASS;
+   - REST anônimo = DENIED;
+   - RPC anônimo = DENIED;
+   - browser sem acesso às fontes privadas de RBAC;
+   - leitura direta do catálogo Safra permanece deny-by-default.
+
+4. **Mutação direta / autoatribuição de owner — PASS**
+   - teste `c06_1_owner_mutation_governance.test.sql` = 13/13 no Database Disposable Run 125;
+   - `authenticated` e `anon` sem INSERT/UPDATE/DELETE em `scenario_owners`;
+   - 0 RPC público de assign/reassign owner;
+   - POST/PATCH direto pela Data API = DENIED;
+   - reescrita de `owner_id` = DENIED;
+   - delete físico de histórico = DENIED.
+
+### PRIMARY revalidado
+
+```text
+CANONICAL_SCENARIOS = 11
+ACTIVE_OWNER_LINKS = 11
+SCENARIOS_WITHOUT_EXACTLY_ONE_OWNER = 0
+DISTINCT_ACTIVE_OWNERS = 3
+ORPHAN_OWNER_LINKS = 0
+OWNER_ROLE_MISMATCH = 0
+ADMIN_OWNER_OVERLAP = 0
+MISSING_ASSIGNMENT_REASON = 0
+BROWSER_OWNER_WRITE_GRANTS = 0
+PUBLIC_OWNER_MUTATION_RPCS = 0
+SCENARIO_OWNERS_RLS = ENABLED
+MIGRATION_DRIFT = 0
+```
+
+### CI final
+
+```text
+APP_SMOKE_RUN_87 = SUCCESS
+DATABASE_DISPOSABLE_RUN_125 = SUCCESS
+MIGRATION_REPLAY = PASS
+PGTAP = PASS
+DIRECT_DATA_API_DENIAL = PASS
+DIRECT_RPC_DENIAL = PASS
+ROLLBACK_LATEST = PASS
+DATABASE_LINT = PASS
+SAFRA-C06.1 = CONCLUIDO
+NEXT_PHASE = SAFRA-C07
+```
+
+### Limite deliberado
+
+A UI/read API governada do catálogo Safra ainda não existe. Portanto, `UI_VS_API_DATASET_PARITY`
+continua não aplicável até essa superfície ser implementada.
+
+Também não existe ainda fluxo produtivo de reatribuição de owner. A ausência é deny-by-default:
+nenhum RPC permissivo foi criado. Quando esse fluxo existir, deverá ser server-side, autorizado,
+auditável e preservar o histórico temporal.
+
+### Handoff
+
+O C06.1 não possui bloqueador remanescente no escopo de ownership/autorização.
+
+A fase corrente passa a ser **SAFRA-C07 — Engine de SLA**.
+
+O mesmo Database Disposable Run 125 também reexecutou com sucesso a bateria C07 já versionada,
+eliminando o estado documental anterior `C07_CI = PENDING`. Isso não antecipa decisões de
+start_event/end_event/thresholds nem publica P1-P4.
