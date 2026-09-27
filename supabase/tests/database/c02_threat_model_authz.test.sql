@@ -240,14 +240,14 @@ select is(
 );
 
 select throws_ok(
-  $
+  $stmt$
     select public.safra_start_treatment(
       (select id from public.scenarios where code='SAFRA-03'),
       '02020202-0000-4000-8000-000000000010'::uuid,
       'different payload with same idempotency key',
       '{}'::uuid[]
     );
-  $,
+  $stmt$,
   '22023',
   'SAFRA_START_IDEMPOTENCY_CONFLICT',
   'same idempotency key with different payload is rejected'
@@ -262,11 +262,11 @@ set status='CANCELLED',
 where start_idempotency_key='02020202-0000-4000-8000-000000000010';
 
 select throws_ok(
-  $
+  $stmt$
     update public.treatments
     set cancellation_reason='rewritten reason intended to mask history'
     where start_idempotency_key='02020202-0000-4000-8000-000000000010';
-  $,
+  $stmt$,
   'P0001',
   'closed treatment row is immutable; record an append-only correction event instead',
   'CANCEL reason/history cannot be rewritten after treatment becomes terminal'
