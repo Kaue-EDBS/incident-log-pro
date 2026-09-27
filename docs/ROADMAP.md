@@ -1666,7 +1666,21 @@ O banco rejeita SLA estruturado incompleto. `target_text` permanece apenas como 
 
 ## SAFRA-C08 — UX do COMEÇO
 
-**Estado: PRONTO PARA INICIAR — gate C07 → C08 aprovado em 27/09/2026.**
+**Estado: PAUSADO ANTES DA UX — gate técnico aprovado, mas GI-SAFRA-001/002/003/009 estão sendo tratados antes de implementar START.**
+
+### Gate pré-C08 — pendências que impediram iniciar a UX
+
+Antes de implementar qualquer tela ou RPC de START, a execução foi pausada para tratar:
+
+1. `GI-SAFRA-001` — criticidade nominal;
+2. `GI-SAFRA-002` — thresholds de ativação dos cenários 2/4/10/11;
+3. `GI-SAFRA-003` — fonte do mínimo curva A do cenário 9;
+4. `GI-SAFRA-009` — decomposição dos SLAs textuais.
+
+Regra do gate:
+- nenhuma dessas lacunas pode virar default silencioso;
+- nenhuma UI pode apresentar dado inferido como decisão de negócio;
+- C08 só começa depois de documentado o comportamento seguro do MVP para os quatro itens.
 
 ### Telas
 
