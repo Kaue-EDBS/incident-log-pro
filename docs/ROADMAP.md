@@ -1118,7 +1118,7 @@ Os testes que dependem do domínio real ficam explicitamente deferidos:
 
 Não marcar esses testes como PASS antes da entidade/mutation existir.
 
-### C04.4 — Gate review G5 / ID-001 / ID-002 / AUDIT-001 — BLOCKED POR EVIDÊNCIA
+### C04.4 — Gate review G5 / ID-001 / ID-002 / AUDIT-001 — CONCLUÍDO NO ESCOPO DA APLICAÇÃO
 
 Framework EBSA aplicado literalmente:
 
@@ -1154,7 +1154,7 @@ Resultado:
 
 Não fechar por inferência.
 
-### C04.5 — Fechamento controlado via Lovable — PLANEJADO
+### C04.5 — Fechamento controlado via Lovable — CONCLUÍDO
 
 Objetivo: usar o ambiente do próprio Lovable Cloud para concluir os controles de identidade/RBAC que ficaram bloqueados pelos conectores externos, sem antecipar C05/C06/C08/F02.
 
@@ -1237,11 +1237,17 @@ Somente após essas evidências reavaliar:
 ### Gate
 
 ```text
-G5 = PARTIAL
-ID-001 = BLOCKED_EVIDENCE
-ID-002 = BLOCKED_EVIDENCE
-AUDIT-001 = BLOCKED_EVIDENCE
+G5 = PASS
+ID-001 = PASS_APP_SCOPE
+ID-002 = PASS_APP_SCOPE
+AUDIT-001 = PASS
+SAFRA-C04 = CONCLUIDO
 ```
+
+Fronteira de responsabilidade:
+- recuperação de acesso Microsoft = EXTERNAL_CORPORATE_CONTROL;
+- MFA/Conditional Access privilegiado = EXTERNAL_CORPORATE_CONTROL;
+- esses controles não são simulados nem certificados pelo Painel Safra.
 
 ---
 
