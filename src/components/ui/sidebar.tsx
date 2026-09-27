@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- shadcn primitive intentionally co-exports helpers with components. */
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -716,8 +717,6 @@ const SidebarMenuSubButton = React.forwardRef<
 });
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton";
 
-// shadcn-style primitive intentionally co-exports helpers/variants with components.
-// eslint-disable-next-line react-refresh/only-export-components
 export {
   Sidebar,
   SidebarContent,
