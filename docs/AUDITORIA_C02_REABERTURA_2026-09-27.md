@@ -108,17 +108,58 @@ Atualizações principais:
 
 ### C02-AUD-04 — ausência de teste concorrente real de START
 
-**Estado:** OPEN  
-**Severidade:** MEDIUM / TESTE
+**Estado:** CLOSED / PASS em 27/09/2026 às 20:12 BRT  
+**Severidade original:** MEDIUM / TESTE
 
-O START usa `pg_advisory_xact_lock`, chave única e retry idempotente, mas a suíte atual comprova retry sequencial e não duas transações concorrentes disputando a mesma chave.
+Foi criado o teste concorrente real:
+
+`.github/scripts/test-safra-start-concurrency.sh`
+
+O teste abre **duas transações simultâneas** contra `public.safra_start_treatment` usando:
+
+- mesmo cenário;
+- mesma identidade corporativa;
+- mesma `start_idempotency_key`;
+- mesmo payload.
+
+Contrato validado:
+
+- as duas chamadas resolvem para o mesmo `treatment_id`;
+- existe exatamente **1** linha em `public.treatments` para a chave;
+- existe exatamente **1** evento `TREATMENT_OPENED`;
+- o lock `pg_advisory_xact_lock` + unique key + lógica idempotente impedem double submit real.
+
+Evidência do Database Disposable `36356284282`:
+
+`PASS C02 concurrent START retry: same treatment cf66bb23-ec8a-4e17-9dc6-c6fce0aa4fe0, one treatment row, one opening event.`
+
+**Conclusão:** concorrência real de START está coberta por regressão automatizada permanente.
 
 ### C02-AUD-05 — conflito de idempotência sem teste explícito
 
-**Estado:** OPEN  
-**Severidade:** MEDIUM / TESTE
+**Estado:** CLOSED / PASS em 27/09/2026 às 20:12 BRT  
+**Severidade original:** MEDIUM / TESTE
 
-A RPC implementa `SAFRA_START_IDEMPOTENCY_CONFLICT` quando a mesma chave chega com payload/ator/cenário divergente, mas não há caso pgTAP específico para esse contrato.
+Foi adicionado teste pgTAP explícito em:
+
+`supabase/tests/database/c02_threat_model_authz.test.sql`
+
+Fluxo validado:
+
+1. START válido cria a tratativa usando uma `start_idempotency_key`;
+2. a mesma chave é reutilizada com payload diferente;
+3. a RPC deve rejeitar com SQLSTATE `22023`;
+4. a mensagem esperada é `SAFRA_START_IDEMPOTENCY_CONFLICT`;
+5. a tratativa original permanece a fonte válida.
+
+A suíte passou no Database Disposable `36356284282`:
+
+- `c02_threat_model_authz.test.sql ... ok`;
+- **26 asserts C02** concluídos;
+- suíte de banco total: **Files=26, Tests=369**;
+- o mesmo teste passou novamente após rollback/rebuild.
+
+**Conclusão:** reutilização conflitante de idempotency key deixou de ser apenas lógica implementada e passou a ter regressão automatizada explícita.
 
 ### C02-AUD-06 — smoke HTTP não cobre toda a superfície Data API
 
