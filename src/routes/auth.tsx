@@ -28,13 +28,22 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const { session, loading, signInWithMicrosoft } = useAuth();
+  const {
+    session,
+    loading,
+    corporateAuthorized,
+    authorizationError,
+    signInWithMicrosoft,
+    signOut,
+  } = useAuth();
   const [signingIn, setSigningIn] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!loading && session) void navigate({ to: "/", replace: true });
-  }, [loading, session, navigate]);
+    if (!loading && session && corporateAuthorized === true) {
+      void navigate({ to: "/", replace: true });
+    }
+  }, [corporateAuthorized, loading, session, navigate]);
 
   const entrar = async () => {
     setErro(null);
@@ -68,15 +77,25 @@ function AuthPage() {
           Entre com sua conta Microsoft para abrir e acompanhar protocolos operacionais da Safra.
         </p>
 
-        {erro ? (
+        {erro || authorizationError ? (
           <div
             role="alert"
             className="mt-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
           >
-            {erro}
+            {erro ?? authorizationError}
           </div>
         ) : null}
 
+        {session && corporateAuthorized === false ? (
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => void signOut()}
+            className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-60"
+          >
+            Sair e usar outra conta
+          </button>
+        ) : (
         <button
           type="button"
           disabled={loading || signingIn}
@@ -86,6 +105,7 @@ function AuthPage() {
           {loading || signingIn ? <Loader2 className="size-4 animate-spin" /> : null}
           Entrar com Microsoft
         </button>
+        )}
       </div>
     </main>
   );
