@@ -51,6 +51,7 @@ require(migration, "closed treatment row is immutable", "terminal treatment immu
 for marker in (
     "invalid corporate session cannot enumerate governed roles",
     "invalid corporate session cannot enumerate RBAC audit rows",
+    "valid corporate platform admin can read governed RBAC audit events",
     "SAFRA_START_IDEMPOTENCY_CONFLICT",
     "END/CANCEL RPCs remain unexposed",
     "CANCEL reason/history cannot be rewritten",
