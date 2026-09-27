@@ -2785,3 +2785,65 @@ Evidência:
 - App Smoke Run 104 = SUCCESS;
 - Database Disposable Run 142 = SUCCESS;
 - rebuild, testes, Data API/RPC negativas, rollback e lint = PASS.
+
+
+---
+
+## C07 — matriz adversarial de bordas e relógio — 27/09/2026
+
+Auditoria consolidada executada após as regras de duração, timezone, CANCEL, END resolvido, múltiplos SLAs e evento ausente.
+
+### Eixos testados
+
+1. borda exata do deadline;
+2. breach imediatamente após a borda;
+3. END exatamente no deadline e após breach;
+4. timezone e DST histórico;
+5. evento necessário ausente;
+6. CANCEL antes/no/depois do deadline;
+7. dois SLAs independentes no mesmo instante;
+8. manipulação de relógio / snapshots históricos.
+
+### Falha encontrada e corrigida
+
+Antes da correção, uma avaliação histórica com `as_of=12:30` podia receber um `END=13:30` e retornar `COMPLETED_LATE`, antecipando um evento futuro.
+
+Correção:
+- migration `20260927113000_c07_historical_snapshot_clock_guard.sql`;
+- END/CANCEL posteriores a `as_of` são invisíveis naquele snapshot;
+- eventos futuros não podem antecipar conclusão, cancelamento ou apagar breach;
+- `anon` e `authenticated` permanecem sem EXECUTE na engine bruta.
+
+### Resultados canônicos
+
+```text
+exact deadline open      = ON_TRACK
+remaining at deadline    = 0
+deadline + 1 ms          = BREACHED
+END at deadline          = COMPLETED_ON_TIME
+END after deadline       = COMPLETED_LATE
+DST elapsed              = 7200 seconds
+missing START            = NOT_MEASURABLE / START_EVENT_MISSING
+CANCEL at deadline       = NOT_MEASURABLE
+SLA 1h @ 13:30           = BREACHED
+SLA 2h @ 13:30           = ON_TRACK
+future END @ as_of 12:30 = ON_TRACK
+future CANCEL @ 12:30    = ON_TRACK
+clock before START       = NOT_MEASURABLE / CLOCK_BEFORE_START
+anon raw engine execute  = DENIED
+auth raw engine execute  = DENIED
+```
+
+### Evidência
+
+- teste: `supabase/tests/database/c07_boundary_adversarial_matrix.test.sql`;
+- 26/26 casos = PASS;
+- App Smoke Run 106 = SUCCESS;
+- Database Disposable Run 144 = SUCCESS;
+- rebuild = PASS;
+- Data API denial = PASS;
+- RPC denial = PASS;
+- rollback = PASS;
+- database lint = PASS;
+- PRIMARY smoke pós-migration = PASS;
+- migration `20260927113000` rastreada.
