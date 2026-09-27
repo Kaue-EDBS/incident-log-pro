@@ -142,10 +142,10 @@ Questão conhecida, registrada e com comportamento seguro/fase responsável **n�
 | fechamento com passo incompleto/NA | DEFERRED_TO_F01 | não impacta START |
 | impacto quantitativo — métricas/thresholds | DEFERRED_TO_F04 | modelo conceitual aprovado; thresholds não inferidos |
 | matriz exata de permissões por papel | IMPLEMENTED_C04 | fonte: `private.safra_principals` + `private.safra_role_grants` e matriz C04 |
-| audiência/domínios corporativos | APPROVED_D48 / C01-AUD_IMPLEMENTATION | `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com` |
+| audiência/domínios corporativos | IMPLEMENTED_C01_AUD | `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com`; verificados no PRIMARY |
 | privacidade/base legal pré-release | SATISFIED_D49 | gate confirmado como atendido em 27/09/2026 |
 
-**Contagem material desconhecida candidata após D-48/D-49: `0`.** A recertificação formal ocorre apenas no fechamento da C01-AUD após testes e verificação no PRIMARY.
+**Contagem material desconhecida recertificada em 27/09/2026: `0`.** Itens abertos remanescentes estão classificados, possuem comportamento seguro aprovado ou fase futura explícita; portanto não contam como UNKNOWN.
 
 ## 5. Precedência
 
@@ -164,7 +164,7 @@ Toda decisão material deve registrar ID, data, contexto, decisão, alternativas
 Não esconder decisão em prompt, commit ou mensagem de chat.
 
 
-## 7. Registro de perfil — SAFRA-C01 / 24-09-2026
+## 7. Registro de perfil histórico — SAFRA-C01 / 24-09-2026
 
 | Tema | Estado registrado |
 |---|---|
@@ -178,7 +178,7 @@ Não esconder decisão em prompt, commit ou mensagem de chat.
 | API | nenhuma API pública; Data API interna existe e é protegida por grants + RLS |
 | Regras de domínio | obrigatórias; 17 regras Safra + 4 regras legadas TI registradas; ativação automática de treatment = false |
 
-Este registro descreve o estado atual e não transforma os itens pendentes em decisões aprovadas.
+Este registro descreve o estado observado em 24/09/2026. Para o estado atual, prevalecem `docs/PROJECT_PROFILE.yaml`, `docs/STATUS.md` e as decisões posteriores.
 
 
 ### ADR-011 — Separação entre criticidade de cenário e criticidade da aplicação
