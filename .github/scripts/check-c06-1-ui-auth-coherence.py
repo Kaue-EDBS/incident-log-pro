@@ -12,7 +12,7 @@ src_text = "\n".join(
 )
 
 checks = {
-    "ui_global_session_gate": "if (!loading && !session && !isAuthRoute)" in root,
+    "ui_global_session_gate": "if (!loading && (!session || corporateAuthorized === false) && !isAuthRoute)" in root,
     "ui_uses_publishable_client": "VITE_SUPABASE_PUBLISHABLE_KEY" in client,
     "ui_does_not_reference_service_role": "SERVICE_ROLE" not in client.upper(),
     "server_uses_canonical_corporate_rpc": "safra_is_corporate_user" in middleware,
