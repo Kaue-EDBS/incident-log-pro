@@ -2983,3 +2983,17 @@ Próxima etapa: SAFRA-C05.
 - drift de C00/C04/C05 reconciliado em `supabase_migrations.schema_migrations`;
 - nenhuma DDL foi reaplicada durante o repair;
 - migrations remotas diretas ficam proibidas fora de exceção formal documentada.
+
+
+#### C07 — tolerância temporal documentada — 27/09/2026
+
+- tolerância zero permanece o padrão;
+- tolerância implícita continua proibida;
+- tolerância temporal documentada implementada em `scenario_slas`;
+- campos: `tolerance_value`, `tolerance_unit`, `tolerance_documentation`;
+- valor positivo, unidade `MINUTE/HOUR/DAY` e documentação não vazia são obrigatórios;
+- configuração parcial => `NOT_MEASURABLE / TOLERANCE_CONFIGURATION_INVALID`;
+- tolerância estende somente o deadline efetivo;
+- migration `20260927120500_c07_documented_tolerance.sql`;
+- PRIMARY 18/18 PASS;
+- SAFRA-C07.1..C07.6 = PASS.
