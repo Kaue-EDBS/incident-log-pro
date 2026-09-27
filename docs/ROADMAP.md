@@ -1452,7 +1452,35 @@ XLSX v3
 
 Reconciliação 100% dos campos importados contra a Matriz v3.
 
-### C06.1 — Regressão RBAC/ownership com cenários reais
+### SAFRA-C06.1 — Teste de ownership real
+
+**Estado: EM VALIDAÇÃO HUMANA.**
+
+#### Ação 1 — testar ownership real dos 11 cenários usando vínculos persistidos no schema v2
+
+Fonte técnica:
+`scenarios -> scenario_owners -> safra_principals -> safra_role_grants`.
+
+Resultado técnico:
+- 11/11 cenários com vínculo ativo;
+- exatamente 1 owner ativo por cenário;
+- 0 vínculos órfãos;
+- 0 duplicidade ativa;
+- 0 owner sem role `scenario_owner`;
+- 0 herança de ownership por papel administrativo;
+- todos os vínculos com `assignment_reason`.
+
+Estado:
+```text
+TECHNICAL_TEST = PASS
+HUMAN_SCENARIO_VALIDATION = WAITING_HUMAN_DECISION
+```
+
+Próximo passo:
+- apresentar os 11 cenários e respectivos owners ao responsável humano;
+- somente após validação humana continuar as demais ações de C06.1.
+
+#### Regressão RBAC/ownership complementar
 
 Executar somente depois que os 11 cenários e seus vínculos de owner estiverem materializados.
 
