@@ -2400,3 +2400,27 @@ C06_1_ACTION_01_HUMAN_VALIDATION = WAITING_HUMAN_DECISION
 ```
 
 Próximo passo: validação humana dos 11 cenários e respectivos owners.
+
+
+### SAFRA-C06.1 — Ação 2 — owner sem herança administrativa / sem fallback
+
+Validação executada no PRIMARY.
+
+Regras comprovadas:
+- owner depende de vínculo explícito ativo em `scenario_owners`;
+- admin não herda ownership;
+- role `scenario_owner` não substitui vínculo de cenário;
+- cenário publicado não aceita ausência de owner;
+- cenário publicado não aceita owner inelegível;
+- nenhuma substituição silenciosa ocorre quando o vínculo falta.
+
+Teste:
+`supabase/tests/database/c06_1_owner_no_inheritance_no_fallback.test.sql`
+
+Resultado:
+```text
+C06_1_ACTION_02 = PASS
+TESTS = 10/10
+ADMIN_ROLE_INHERITANCE = 0
+SILENT_OWNER_FALLBACK = 0
+```
