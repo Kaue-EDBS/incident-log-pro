@@ -105,8 +105,8 @@ select throws_ok(
   end
   $do$;
   $$,
-  '23514',
-  null,
+  'P0001',
+  'published scenario requires exactly one active owner',
   'closing the only owner link is rejected; no silent fallback owner is selected'
 );
 
@@ -149,8 +149,8 @@ select throws_ok(
   end
   $do$;
   $$,
-  '23514',
-  null,
+  'P0001',
+  'published scenario owner must have active scenario_owner role',
   'admin role alone cannot replace explicit eligible scenario owner'
 );
 
