@@ -2734,3 +2734,54 @@ REBUILD = PASS
 ROLLBACK = PASS
 DATABASE_LINT = PASS
 ```
+
+
+---
+
+## C07 — Regras 5 e 6 aprovadas: múltiplos SLAs e evento ausente — 27/09/2026
+
+Decisão humana: **APROVADA**.
+
+### Regra 5 — múltiplos SLAs por cenário/version
+
+Contrato:
+
+```text
+MULTIPLE_SLAS_PER_SCENARIO_VERSION = SUPPORTED
+SLA_IDENTITY = scenario_version_id + code
+SLA_EVALUATION = INDEPENDENT_PER_SLA
+SLA_RESULT_CARDINALITY = ONE_RESULT_PER_CONFIGURED_SLA
+```
+
+Validação:
+- uma mesma `scenario_version` DRAFT recebeu 2 SLAs sintéticos;
+- SLA 1h e SLA 2h coexistiram sem conflito;
+- no mesmo instante, SLA 1h = `BREACHED` e SLA 2h = `ON_TRACK`;
+- código duplicado dentro da mesma versão continua proibido;
+- versão PUBLISHED permanece imutável, portanto novos SLAs exigem nova versão/DRAFT conforme governança.
+
+### Regra 6 — evento necessário ausente
+
+Contrato:
+
+```text
+REQUIRED_START_EVENT_MISSING = NOT_MEASURABLE
+MISSING_EVENT_REASON = START_EVENT_MISSING
+MISSING_RESOLVED_WHILE_ACTIVE_BEFORE_DEADLINE = ON_TRACK
+MISSING_RESOLVED_WHILE_ACTIVE_AFTER_DEADLINE = BREACHED
+EVENT_TIMESTAMP_INFERENCE = FORBIDDEN
+```
+
+Interpretação:
+- se o evento necessário para iniciar a medição não existe, não existe relógio válido;
+- o sistema não inventa timestamp e retorna `NOT_MEASURABLE`;
+- `TREATMENT_RESOLVED` ainda não ocorrido em tratamento ativo não é ausência inválida: significa que o SLA ainda não terminou;
+- antes do prazo ele permanece `ON_TRACK`;
+- após o prazo permanece `BREACHED`.
+
+Evidência:
+- `supabase/tests/database/c07_multi_sla_missing_event_contract.test.sql`;
+- smoke transacional no PRIMARY = PASS com rollback;
+- App Smoke Run 104 = SUCCESS;
+- Database Disposable Run 142 = SUCCESS;
+- rebuild, testes, Data API/RPC negativas, rollback e lint = PASS.
