@@ -2604,3 +2604,54 @@ Validação no PRIMARY:
 - SLA concluído de 90 min = 5400 s;
 - SLA aberto de 45 min = 2700 s;
 - END anterior ao START = NOT_MEASURABLE / END_BEFORE_START.
+
+
+---
+
+## C07 — Regra 2 aprovada: timezone canônico e analytics — 27/09/2026
+
+Decisão humana: **APROVADA após smoke test**.
+
+Contrato:
+
+```text
+CANONICAL_TIMEZONE = UTC
+DATABASE_TIMEZONE = UTC
+TIMESTAMP_TYPE = timestamptz
+ANALYTICS_BUSINESS_TIMEZONE = America/Sao_Paulo
+DURATION_CALCULATION = ABSOLUTE_INSTANTS
+DAILY_HOURLY_BUCKETS = CONVERT_TO_AMERICA_SAO_PAULO_BEFORE_BUCKETING
+FRONTEND_HOST_TIMEZONE_DEPENDENCY = FORBIDDEN
+```
+
+Smoke no PRIMARY:
+- timezone do PostgreSQL = UTC;
+- offsets diferentes representam o mesmo instante;
+- duração é invariável entre UTC e -03:00;
+- 22:30 e 23:30 de São Paulo permanecem no dia local correto;
+- 00:30 passa corretamente ao dia seguinte;
+- histórico com mudança de offset preserva tempo absoluto;
+- timestamps operacionais auditados permanecem `timestamptz`.
+
+Falha encontrada e corrigida:
+- o analytics legado usava timezone do navegador para limites de Hoje/Mês e exibição;
+- corrigido para `America/Sao_Paulo` explícito;
+- inputs `datetime-local` agora convertem São Paulo -> UTC sem depender do host.
+
+Regressão permanente:
+- `supabase/tests/database/c07_timezone_analytics_smoke.test.sql`;
+- `.github/scripts/test-c07-analytics-timezone.ts`;
+- App Smoke executa o frontend em host UTC e Asia/Tokyo.
+
+CI final:
+```text
+APP_SMOKE_RUN_96 = SUCCESS
+C07_ANALYTICS_TZ_UTC_HOST = PASS
+C07_ANALYTICS_TZ_TOKYO_HOST = PASS
+TYPECHECK = PASS
+BUILD = PASS
+DATABASE_DISPOSABLE_RUN_134 = SUCCESS
+C07_TIMEZONE_PGTAP = PASS
+ROLLBACK = PASS
+DATABASE_LINT = PASS
+```
