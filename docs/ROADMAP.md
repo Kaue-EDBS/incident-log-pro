@@ -1474,7 +1474,7 @@ Critério de PASS:
 
 ### C06.02 — Pipeline reproduzível + regressão RBAC/ownership
 
-Estado: **CONCLUÍDO no pipeline; gate CI final em validação**.
+Estado: **CONCLUÍDO — pipeline, reconciliação integral e regressão de ownership validados em CI.**.
 
 Fluxo executado:
 
@@ -1493,10 +1493,12 @@ Resultado:
 - regressão de owner/admin/autorização versionada em pgTAP;
 - autoatribuição direta de owner permanece negada.
 
-Critério de saída:
-- Database Disposable Test com `c06_02_rbac_ownership.test.sql` = PASS;
+Critério de saída — **ATENDIDO**:
+- Database Disposable Test = PASS;
+- reconciliação integral da Matriz v3 = 198/198, tolerância 0;
+- ownership real persistido = 11/11;
 - API direta de `scenario_owners` = negada;
-- após PASS, avançar para C07.
+- C06 liberado para C07.
 
 ---
 
