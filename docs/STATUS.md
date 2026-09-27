@@ -4,7 +4,7 @@
 > Fase atual: **SAFRA-C08 — UX do COMEÇO / START**  
 > Escopo atual: **START end-to-end implementado e promovido ao PRIMARY; próxima ação é homologar a UX com sessão Microsoft corporativa real antes de avançar nas demais telas do C08.**
 
-> Auditoria paralela aberta em 27/09/2026 às 11:26 BRT: **C00-AUD — reauditoria corretiva do SAFRA-C00 em execução**. Foram abertos C00-AUD-01 a C00-AUD-04 para reforço de regressão HTTP do legado, menor privilégio, saneamento de lint/CI e remoção de código morto. Fonte: `docs/AUDITORIA_C00_REABERTURA_2026-09-27.md`. As correções ainda não estão declaradas concluídas.
+> Reauditoria corretiva **C00-AUD concluída em 27/09/2026 às 13:15 BRT**. C00-AUD-01 a C00-AUD-04 foram fechados: regressão HTTP do legado reforçada, menor privilégio restaurado e promovido ao PRIMARY, lint convertido em gate zero-warning e hook legado morto removido. Evidências completas: `docs/AUDITORIA_C00_REABERTURA_2026-09-27.md`.
 
 ---
 
