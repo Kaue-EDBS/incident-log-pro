@@ -1,8 +1,8 @@
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 27/09/2026  
-> Fase atual: **SAFRA-C07 — Engine de SLA**  
-> Escopo atual: consolidar e validar a engine determinística de SLA, preservando a proibição de inferir start_event, end_event, thresholds ou gates sem fonte/decisão explícita.
+> Fase atual: **SAFRA-C08 — UX do COMEÇO / START**  
+> Escopo atual: implementar o START transacional e idempotente sobre cenários PUBLISHED, preservando decisões não resolvidas sem inferência.
 
 ---
 
@@ -2900,3 +2900,49 @@ SAFRA-C07.4 = PASS
 SAFRA-C07.5 = PASS
 SAFRA-C07.6 = PASS
 ```
+
+
+---
+
+## Gate C07 → C08 — 27/09/2026
+
+Resultado: **APROVADO PARA AVANÇAR**.
+
+Evidência técnica:
+- App Smoke Run 112 = SUCCESS;
+- Database Disposable Run 150 = SUCCESS;
+- rebuild completo de migrations = PASS;
+- database tests = PASS;
+- Data API denial = PASS;
+- RPC denial = PASS;
+- rollback da última migration = PASS;
+- database lint = PASS;
+- migration C07.6 rastreada no PRIMARY;
+- tolerância documentada: constraint presente e 0 configurações inválidas;
+- 11 `scenario_versions` reais em estado `PUBLISHED`.
+
+C07:
+```text
+SAFRA-C07.1 = PASS
+SAFRA-C07.2 = PASS
+SAFRA-C07.3 = PASS
+SAFRA-C07.4 = PASS
+SAFRA-C07.5 = PASS
+SAFRA-C07.6 = PASS
+SAFRA-C07 = CONCLUIDO
+NEXT_PHASE = SAFRA-C08
+```
+
+### Governança aberta que NÃO bloqueia o início do C08
+
+- GI-SAFRA-001: criticidade nominal ainda não definida. No START, mostrar ausência explicitamente; não inferir nem permitir override por payload.
+- GI-SAFRA-002/003: thresholds de gatilho ainda abertos. Não inferir.
+- GI-SAFRA-004: múltiplas tratativas ACTIVE permanece decisão de M01. C08 não deve criar unicidade por cenário ACTIVE; idempotência vale para o mesmo comando/retry.
+- GI-SAFRA-005: provider/canal produtivo de notificações é responsabilidade de M05. Não bloquear o núcleo transacional do START.
+- GI-SAFRA-006/008: janelas temporais são fases posteriores.
+- GI-SAFRA-007: publicação do 12º card é M10.
+- GI-SAFRA-009: mapeamento produtivo dos SLAs textuais continua aberto. C08 inicia somente SLAs estruturados existentes; não deve criar/inferir `scenario_slas`.
+
+### Restrição para fechamento completo de P2 / START READY
+
+O C08 pode ser implementado e homologado no núcleo START agora. Porém a publicação completa do gate P2 não deve declarar "SLA produtivo iniciado corretamente" enquanto GI-SAFRA-009 e thresholds relacionados permanecerem sem definição produtiva.
