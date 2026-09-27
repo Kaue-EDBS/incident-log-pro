@@ -168,3 +168,24 @@ C06_1_ACTION_02 = PASS
 ADMIN_ROLE_INHERITANCE = NONE
 SILENT_OWNER_FALLBACK = NONE
 ```
+
+
+### C06.1 — Ação 3
+
+**Registrar evidência de leitura e autorização coerentes entre UI, REST/RPC e banco.**
+
+Resultado:
+- autorização cross-layer = PASS;
+- PRIMARY = 12/12;
+- App Smoke checker = PASS;
+- REST anon = DENIED;
+- RPC anon = DENIED;
+- RLS/grants = PASS;
+- nenhuma leitura direta de cenário/owner na UI;
+- nenhuma paridade de dataset foi inferida antes da existência da read API governada.
+
+```text
+C06_1_ACTION_03 = PASS
+AUTHORIZATION_COHERENCE = PASS
+UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API
+```
