@@ -2396,10 +2396,10 @@ Resultado técnico no PRIMARY:
 
 ```text
 C06_1_ACTION_01_TECHNICAL = PASS
-C06_1_ACTION_01_HUMAN_VALIDATION = WAITING_HUMAN_DECISION
+C06_1_ACTION_01_HUMAN_VALIDATION = APPROVED
 ```
 
-Próximo passo: validação humana dos 11 cenários e respectivos owners.
+Validação humana dos 11 cenários e respectivos owners: **APROVADA**.
 
 
 ### SAFRA-C06.1 — Ação 2 — owner sem herança administrativa / sem fallback
