@@ -73,7 +73,7 @@ identity_and_auth:
   role_source_of_truth: "private.safra_principals + private.safra_role_grants"
   role_mapping_rls_integration: "IMPLEMENTED"
   c04_closeout_execution_environment: "LOVABLE_CLOUD"
-  c04_temp_grant_cleanup_required: true
+  c04_temp_grant_cleanup_required: false
   c04_external_identity_evidence:
     recovery: "EXTERNAL_CORPORATE_CONTROL"
     privileged_mfa: "EXTERNAL_CORPORATE_CONTROL"
