@@ -1644,7 +1644,7 @@ O banco rejeita SLA estruturado incompleto. `target_text` permanece apenas como 
 ### Regras
 
 - duração calculada por timestamps;
-- timezone padronizado;
+- timezone técnico padronizado em UTC; analytics diário/horário usa explicitamente `America/Sao_Paulo` antes do bucket;
 - relógio negativo proibido;
 - CANCEL não equivale a SLA cumprido;
 - END só fecha o SLA quando seu `end_event` for `TREATMENT_RESOLVED`;
