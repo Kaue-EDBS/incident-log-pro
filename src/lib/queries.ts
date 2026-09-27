@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Application, Incident } from "./types";
+import { SafraStartCatalogSchema, SafraStartResultSchema } from "./safra";
 import type { SafraStartCatalogItem, SafraStartResult } from "./safra";
 
 type LegacyIncidentUpdate = Partial<
@@ -85,7 +86,7 @@ export function useSafraStartCatalog() {
     queryFn: async (): Promise<SafraStartCatalogItem[]> => {
       const { data, error } = await supabase.rpc("safra_get_start_catalog");
       if (error) throw error;
-      return (data ?? []) as unknown as SafraStartCatalogItem[];
+      return SafraStartCatalogSchema.parse(data ?? []);
     },
   });
 }
@@ -108,7 +109,7 @@ export function useSafraStartTreatment() {
       });
 
       if (error) throw error;
-      return data as unknown as SafraStartResult;
+      return SafraStartResultSchema.parse(data);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["safra-start-catalog"] });
