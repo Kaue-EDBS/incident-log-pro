@@ -43,7 +43,7 @@ select is(
 
 select is(
   (
-    select count(distinct code)::bigint
+    select count(distinct sl.code)::bigint
     from public.scenario_slas sl
     join public.scenario_versions sv on sv.id=sl.scenario_version_id
     join public.scenarios sc on sc.id=sv.scenario_id
