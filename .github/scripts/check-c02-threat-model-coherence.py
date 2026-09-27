@@ -46,12 +46,14 @@ for abuse_id in (
 require(migration, "public.safra_is_corporate_user()", "RBAC functions must use canonical corporate predicate")
 require(migration, "revoke all on function public.set_updated_at()", "legacy trigger helper revoke")
 require(migration, "revoke all on function public.validate_incident_timestamps()", "legacy timestamp helper revoke")
+require(migration, "closed treatment row is immutable", "terminal treatment immutability guard")
 
 for marker in (
     "invalid corporate session cannot enumerate governed roles",
     "invalid corporate session cannot enumerate RBAC audit rows",
     "SAFRA_START_IDEMPOTENCY_CONFLICT",
     "END/CANCEL RPCs remain unexposed",
+    "CANCEL reason/history cannot be rewritten",
 ):
     require(db_test, marker, "C02 pgTAP regression")
 
