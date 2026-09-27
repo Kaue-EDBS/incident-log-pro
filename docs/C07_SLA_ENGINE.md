@@ -74,3 +74,61 @@ Não antecipa:
 - thresholds ainda não decididos.
 
 Esses itens pertencem às fases C08/M02/M04/M05/F01/F02 conforme roadmap.
+
+
+## Contrato estrutural obrigatório do SLA
+
+A partir de 27/09/2026, todo registro em `public.scenario_slas` deve possuir obrigatoriamente:
+
+```text
+start_event
+end_event
+target_value
+target_unit
+```
+
+Sem qualquer um dos quatro campos, o SLA estruturado não pode existir.
+
+### Semântica
+
+- `start_event`: evento canônico cuja primeira ocorrência inicia o relógio;
+- `end_event`: evento canônico cuja primeira ocorrência encerra a medição;
+- `target_value`: quantidade positiva do alvo temporal;
+- `target_unit`: unidade do alvo, limitada no C07 a `MINUTE`, `HOUR` ou `DAY`.
+
+### Invariantes
+
+- `start_event` e `end_event` são NOT NULL e não podem ser vazios;
+- `start_event <> end_event`;
+- `target_value` é NOT NULL e maior que zero;
+- `target_unit` é NOT NULL e pertence ao conjunto suportado;
+- `target_text` permanece como evidência textual/origem, mas não substitui o modelo estruturado;
+- nenhum SLA é criado a partir de interpretação automática de texto.
+
+### Implementação
+
+Migration:
+`supabase/migrations/20260927094000_c07_require_complete_sla_model.sql`
+
+Teste:
+`supabase/tests/database/c07_sla_model_contract.test.sql`
+
+CI:
+- App Smoke Run 90 = SUCCESS;
+- Database Disposable Run 128 = SUCCESS;
+- rebuild = PASS;
+- pgTAP = PASS;
+- rollback latest = PASS;
+- lint = PASS.
+
+PRIMARY:
+- quatro campos = NOT NULL;
+- RLS = ENABLED;
+- constraints de valor/unidade/eventos = ativas;
+- `scenario_slas` = 0 registros;
+- migration `20260927094000` rastreada.
+
+```text
+C07_SLA_MODEL = PASS
+STRUCTURED_SLA_ROWS_INFERRED = 0
+```
