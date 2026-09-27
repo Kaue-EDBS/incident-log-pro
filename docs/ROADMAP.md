@@ -1666,7 +1666,7 @@ O banco rejeita SLA estruturado incompleto. `target_text` permanece apenas como 
 
 ## SAFRA-C08 — UX do COMEÇO
 
-**Estado: PRONTO PARA INICIAR — gate pré-C08 fechado em 27/09/2026; GI-001/002/003/009 não bloqueiam START.**
+**Estado: EM EXECUÇÃO — START end-to-end implementado e promovido; pendente homologação UX com sessão Microsoft corporativa real antes das demais telas.**
 
 ### Gate pré-C08 — pendências que impediram iniciar a UX
 
@@ -1735,7 +1735,7 @@ usuário autenticado
 - não depender de cor para estado;
 - ação crítica nunca depende só de esconder botão.
 
-### C08.1 — Regressão de autorização do START
+### C08.1 — Regressão de autorização do START — IMPLEMENTADO / AUTOMATED PASS
 
 Testar com cenário PUBLISHED real:
 - usuário Microsoft corporativo autenticado consegue START;
@@ -1746,6 +1746,30 @@ Testar com cenário PUBLISHED real:
 - payload não consegue trocar owner/criticidade/version_id;
 - UI, REST/RPC e server-side produzem decisão equivalente;
 - retry/duplo clique não duplica tratativa.
+
+
+#### Ponto de retomada do próximo chat
+
+O START técnico está pronto:
+- migration aplicada no PRIMARY;
+- App Smoke 129 PASS;
+- Database Disposable 167 PASS;
+- pgTAP C08 24/24 PASS;
+- deny-by-default preservado;
+- Lovable runtime ready no HEAD validado.
+
+O próximo passo NÃO é redesenhar o backend.
+
+Próxima ação:
+```text
+HOMOLOGAR_START_COM_SESSAO_MICROSOFT_REAL
+```
+
+Depois da homologação:
+- registrar evidências;
+- corrigir somente problemas encontrados;
+- continuar as demais telas do SAFRA-C08.
+
 
 ---
 

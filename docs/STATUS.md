@@ -2,7 +2,7 @@
 
 > Atualizado em: 27/09/2026  
 > Fase atual: **SAFRA-C08 — UX do COMEÇO / START**  
-> Escopo atual: implementar START transacional/idempotente com ausência de criticidade/threshold/SLA tratada explicitamente e sem inferência.
+> Escopo atual: **START end-to-end implementado e promovido ao PRIMARY; próxima ação é homologar a UX com sessão Microsoft corporativa real antes de avançar nas demais telas do C08.**
 
 ---
 
@@ -3011,3 +3011,103 @@ PRE_C08_GOVERNANCE_GATE = PASS
 C08_UX_STARTED = false
 NEXT_EXACT_STEP = SAFRA-C08.1
 ```
+
+
+---
+
+## SAFRA-C08.1 — START end-to-end — IMPLEMENTADO — 27/09/2026
+
+O núcleo de START foi implementado da UI ao banco e promovido ao PRIMARY.
+
+### Fluxo implementado
+
+```text
+usuário Microsoft corporativo
+ -> Abrir Protocolo
+ -> catálogo governado dos 11 cenários ACTIVE/PUBLISHED
+ -> selecionar cenário
+ -> revisar protocolo / owner / criticidade / versão
+ -> informar impacto observado
+ -> selecionar áreas realmente impactadas
+ -> confirmação explícita
+ -> RPC safra_start_treatment
+ -> valida sessão corporativa viva
+ -> resolve scenario_version/owner/área no servidor
+ -> cria treatment ACTIVE
+ -> grava TREATMENT_OPENED
+ -> retorna snapshot + estados de SLAs estruturados
+```
+
+### Segurança e integridade
+
+- browser continua sem SELECT direto em `scenarios`;
+- browser continua sem INSERT direto em `treatments` e `treatment_events`;
+- `anon` não executa catálogo nem START;
+- `authenticated` executa somente os RPCs governados;
+- ator vem de `auth.uid()`;
+- timestamps vêm do banco;
+- payload não aceita override de owner, criticidade, version_id ou horário;
+- retry/duplo clique usa UUID de idempotência;
+- áreas impactadas são validadas contra a versão PUBLISHED;
+- criticidade NULL continua explícita;
+- nenhum SLA é inferido a partir de texto.
+
+### Evidência
+
+```text
+FINAL_VALIDATION_HEAD = c0edd12efce96a97bddff952e71546b248f1f695
+MIGRATION = 20260927142000_c08_start_end_to_end.sql
+APP_SMOKE_129 = PASS
+DATABASE_DISPOSABLE_167 = PASS
+C08_PGTAP = 24/24 PASS
+DIRECT_DATA_API_DENIAL = PASS
+DIRECT_RPC_ANON_DENIAL = PASS
+ROLLBACK_REHEARSAL = PASS
+DATABASE_LINT = PASS
+PRIMARY_MIGRATION_TRACKED = true
+PRIMARY_STARTABLE_SCENARIOS = 11
+PRIMARY_TREATMENTS_AFTER_DEPLOY = 0
+LOVABLE_RUNTIME = ready @ c0edd12efce96a97bddff952e71546b248f1f695
+```
+
+### Ponto exato onde paramos
+
+A implementação técnica está concluída e promovida.
+
+Ainda NÃO foi executada uma homologação humana completa no runtime publicado clicando o fluxo com uma sessão Microsoft corporativa real.
+
+```text
+C08_START_IMPLEMENTATION = PASS
+C08_START_AUTOMATED_VALIDATION = PASS
+C08_START_PRIMARY_PROMOTION = PASS
+C08_START_REAL_SESSION_UX_HOMOLOGATION = PENDING
+C08_COMPLETE = false
+```
+
+### Próximo passo exato
+
+`Homologar Abrir Protocolo / START no runtime com uma sessão Microsoft corporativa real`.
+
+Validar:
+1. login corporativo;
+2. carregamento dos 11 cenários;
+3. owner/versão/criticidade exibidos;
+4. seleção de áreas impactadas;
+5. confirmação do START;
+6. criação de uma treatment real controlada;
+7. TREATMENT_OPENED;
+8. relógio exibido;
+9. retry/duplo clique;
+10. leitura pós-START;
+11. mensagem quando não houver SLA estruturado.
+
+Somente depois seguir para as demais telas/UX do C08.
+
+### Pendências deliberadas que permanecem
+
+- GI-SAFRA-001: lista nominal dos quatro CRITICAL ainda não existe; criticidade NULL é não bloqueante;
+- GI-SAFRA-002: thresholds 2/4/10/11 ainda não existem; automação fica NOT_CONFIGURED;
+- GI-SAFRA-003: fonte oficial Curva A ainda não existe; SAFRA-09 permanece manual;
+- GI-SAFRA-004: regra definitiva para múltiplas tratativas ACTIVE;
+- GI-SAFRA-005: provider/canal produtivo de comunicação;
+- GI-SAFRA-009: materialização produtiva dos SLAs candidatos em nova scenario_version.
