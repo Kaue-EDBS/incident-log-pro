@@ -42,6 +42,9 @@ jobs:
       - name: Test direct Data API denial
         run: bash .github/scripts/test-safra-direct-api.sh
 
+      - name: Test direct RPC denial
+        run: bash .github/scripts/test-safra-direct-rpc.sh
+
       - name: Rehearse rollback of latest migration
         run: |
           LATEST_VERSION="$(basename "$(ls supabase/migrations/*.sql | sort | tail -1)" | cut -d_ -f1)"
