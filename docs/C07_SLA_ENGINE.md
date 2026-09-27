@@ -151,3 +151,58 @@ Regras:
 - a UI pode formatar segundos em minutos/horas/dias sem alterar a medida canônica.
 
 Estado: **APPROVED — 27/09/2026**.
+
+
+## Regra aprovada — timezone técnico e timezone de analytics
+
+O sistema separa **instante técnico** de **calendário de negócio**.
+
+### Instante técnico
+
+- banco em `UTC`;
+- armazenamento em `timestamptz`;
+- duração calculada entre instantes absolutos;
+- nenhuma duração depende de timezone visual.
+
+### Calendário de analytics
+
+Para dashboards e filtros por dia/hora:
+
+```text
+ANALYTICS_BUSINESS_TIMEZONE = America/Sao_Paulo
+```
+
+O timestamp UTC deve ser convertido para `America/Sao_Paulo` **antes** de:
+- obter a data;
+- agrupar por hora;
+- definir início/fim de Hoje;
+- definir início do mês;
+- interpretar intervalo customizado informado como data local.
+
+Exemplo crítico:
+
+```text
+2026-09-27 22:30 America/Sao_Paulo
+= 2026-09-28 01:30 UTC
+
+bucket UTC       -> 28/09  (incorreto para analytics de negócio)
+bucket Sao Paulo -> 27/09  (correto)
+```
+
+### Frontend
+
+`src/lib/metrics.ts` possui timezone explícito e não depende mais do timezone do computador.
+
+`datetime-local` é interpretado como horário de São Paulo e convertido a UTC antes da persistência.
+
+### Smoke permanente
+
+- `supabase/tests/database/c07_timezone_analytics_smoke.test.sql`;
+- `.github/scripts/test-c07-analytics-timezone.ts`;
+- CI roda o teste de frontend com `TZ=UTC` e `TZ=Asia/Tokyo`.
+
+Evidência final:
+- App Smoke Run 96 = SUCCESS;
+- Database Disposable Run 134 = SUCCESS.
+
+Estado: **APPROVED — 27/09/2026**.
