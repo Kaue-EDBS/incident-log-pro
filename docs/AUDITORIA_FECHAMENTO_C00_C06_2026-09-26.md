@@ -148,3 +148,23 @@ Estado atual:
 C06_1_ACTION_01_TECHNICAL = PASS
 C06_1_ACTION_01_HUMAN_VALIDATION = WAITING_HUMAN_DECISION
 ```
+
+
+### C06.1 — Ação 2
+
+**Validar owner por cenário sem herança por papel administrativo e sem fallback silencioso.**
+
+Resultado técnico:
+- 10/10 testes PASS;
+- 11 cenários com owner explícito;
+- 0 ownership derivado de papel administrativo;
+- 0 fallback silencioso;
+- ausência do owner explícito bloqueia o cenário publicado;
+- admin sem role `scenario_owner` não pode substituir owner;
+- estado original é restaurado após os testes negativos.
+
+```text
+C06_1_ACTION_02 = PASS
+ADMIN_ROLE_INHERITANCE = NONE
+SILENT_OWNER_FALLBACK = NONE
+```
