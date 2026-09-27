@@ -49,7 +49,9 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 | login funcional | não | sim | sim |
 | RBAC final | não | sim | sim |
 | owner isolation | não | sim | sim |
-| START/END server-side | não | não | sim |
+| START server-side | não | sim — C08 / `safra_start_treatment` | sim |
+| END server-side | não | não — DEFERRED_TO_F01/F02 | sim |
+| CANCEL server-side | não | não — DEFERRED_TO_F01/F02 | sim |
 
 ## 3. Domínio
 
@@ -92,7 +94,8 @@ Antes de remover fluxo legado:
 - schema v2 — CONCLUÍDO;
 - RBAC — CONCLUÍDO no escopo atual;
 - login Microsoft — CONCLUÍDO no escopo da aplicação;
-- RPCs;
+- START RPC — CONCLUÍDO no C08;
+- END/CANCEL RPCs — DEFERRED_TO_F01/F02;
 - timeline;
 - SLA engine;
 - notificações;
