@@ -35,6 +35,9 @@ jobs:
       - name: Product gates P1-P4
         run: python3 .github/scripts/check-product-gates.py
 
+      - name: C06.1 UI/server authorization coherence
+        run: python3 .github/scripts/check-c06-1-ui-auth-coherence.py
+
       - name: Known HIGH dependency floors
         run: python3 .github/scripts/check-known-vulnerable-dependency-floors.py
 
