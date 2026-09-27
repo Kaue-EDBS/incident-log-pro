@@ -6,13 +6,14 @@
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
-**Status:** OPEN  
+**Status:** OPEN — NON_BLOCKING_C08  
 **Tipo:** DOMAIN_DECISION  
 **Owner de governança:** safra_governance_admin  
 **Fase de origem:** SAFRA-C03  
 **Fases afetadas:** C06, M05, F07  
 **Bloqueia C03:** não  
 **Bloqueia classificação produtiva CRITICAL por cenário:** sim  
+**Bloqueia START/C08:** não  
 **Bloqueia notificação específica de CRITICAL para diretoria:** sim, até decisão formal
 
 ### Pergunta
@@ -90,6 +91,17 @@ A decisão deve registrar:
 - efeito sobre notificações e governança;
 - versão a partir da qual a criticidade passa a valer.
 
+### Resolução do bloqueio C08 — 27/09/2026
+
+Decisão D-44:
+- `criticality = NULL` é estado explícito de **criticidade não definida**;
+- a ausência não bloqueia START;
+- a UX deve mostrar a ausência, sem converter para HIGH/MODERATE;
+- comunicação/escalonamento dependente de criticidade não executa sem valor;
+- futura classificação exige decisão humana + nova `scenario_version`.
+
+A pergunta nominal dos quatro CRITICAL continua aberta para enriquecimento futuro, mas **não impede C08**.
+
 ### Regra de implementação futura
 
 Quando resolvido:
@@ -107,8 +119,9 @@ As decisões abaixo não devem ser completadas pela aplicação, por migration o
 
 ## GI-SAFRA-002 — Thresholds ainda abertos dos cenários 2, 4, 10 e 11
 
-**Status:** WAITING_HUMAN_DECISION  
-**Bloqueia:** fechamento completo do SAFRA-C07 para os cenários afetados.
+**Status:** OPEN — AUTOMATION_DEFERRED / NON_BLOCKING_C08  
+**Bloqueia START/C08:** não.  
+**Bloqueia automação do gatilho:** sim.
 
 Pendências preservadas literalmente:
 - cenário 2: gatilho contém `X h`;
@@ -118,12 +131,17 @@ Pendências preservadas literalmente:
 
 Nenhum valor será inferido.
 
+**Regra aprovada D-45:** enquanto o threshold não existir, SAFRA-02/04/10/11 permanecem disponíveis para START manual. O detector automático fica `NOT_CONFIGURED`.
+
 ## GI-SAFRA-003 — Fonte oficial do mínimo da curva A — cenário 9
 
-**Status:** WAITING_HUMAN_DECISION  
-**Bloqueia:** automação objetiva do gatilho/SLA relacionado à ruptura de estoque.
+**Status:** OPEN — AUTOMATION_DEFERRED / NON_BLOCKING_C08  
+**Bloqueia START/C08:** não.  
+**Bloqueia automação objetiva da ruptura:** sim.
 
 É necessário definir qual fonte/regra oficial determina o saldo mínimo de um SKU curva A.
+
+**Regra aprovada D-46:** enquanto a fonte não existir, SAFRA-09 opera por START manual e nenhuma ruptura é classificada automaticamente.
 
 ## GI-SAFRA-004 — Treatments simultâneos do mesmo cenário
 
@@ -169,8 +187,9 @@ Definir periodicidade/horário e corte de dados do ritual de governança semanal
 
 ## GI-SAFRA-009 — Mapeamento formal dos eventos dos SLAs textuais
 
-**Status:** WAITING_HUMAN_DECISION  
-**Fase:** SAFRA-C07/M04.
+**Status:** RESOLVED_FOR_C08 / PRODUCTIVE_VERSIONING_DEFERRED  
+**Fase:** SAFRA-C07/M04.  
+**Bloqueia START/C08:** não.
 
 Os 11 cenários possuem SLA textual preservado, mas a estrutura `scenario_slas` exige definição explícita de:
 
@@ -179,11 +198,29 @@ Os 11 cenários possuem SLA textual preservado, mas a estrutura `scenario_slas` 
 - alvo estruturado;
 - quando um texto representa mais de um relógio.
 
-Até decisão/fonte formal:
-- não criar `scenario_slas` por inferência;
-- manter o texto canônico preservado;
-- a engine retorna `NOT_MEASURABLE` quando faltam eventos/alvo estruturados;
-- qualquer nova configuração deve nascer em nova `scenario_version`.
+### Política aprovada D-47
+
+Uma cláusula textual só pode virar `scenario_slas` quando:
+- é explicitamente prazo da **tratativa**;
+- possui valor e unidade numéricos;
+- pode usar `TREATMENT_OPENED` como START;
+- pode usar `TREATMENT_RESOLVED` como END;
+- não exige criar milestone/evento por interpretação.
+
+Classificação da Matriz v3:
+- SAFRA-01 — `tratativa <= 48h` = elegível;
+- SAFRA-05 — `tratativa <= 4h` = elegível;
+- demais cláusulas = não estruturáveis na versão atual sem nova regra/evento.
+
+Regras:
+- detecção/alerta/trigger não vira SLA runtime;
+- milestone intermediário não vira END;
+- pós-mortem fica em F03;
+- “no dia”, “no turno”, “imediata” e similares não viram duração numérica;
+- versões PUBLISHED não são reescritas;
+- nova estruturação nasce em nova `scenario_version`.
+
+Com isso, a decomposição deixou de ser ambígua para C08. A materialização produtiva dos SLAs elegíveis continua condicionada a nova versão governada.
 
 ### Persistência operacional
 
