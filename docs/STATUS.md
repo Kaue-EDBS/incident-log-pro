@@ -2847,3 +2847,56 @@ auth raw engine execute  = DENIED
 - database lint = PASS;
 - PRIMARY smoke pós-migration = PASS;
 - migration `20260927113000` rastreada.
+
+
+---
+
+## C07 — Regra 7 aprovada: tolerância temporal documentada — 27/09/2026
+
+Decisão humana: **APROVADA**.
+
+Contrato:
+
+```text
+DEFAULT_TOLERANCE = ZERO
+IMPLICIT_TOLERANCE = FORBIDDEN
+
+DOCUMENTED_TOLERANCE_FIELDS =
+  tolerance_value
+  tolerance_unit
+  tolerance_documentation
+
+TOLERANCE_VALUE = POSITIVE_ONLY
+TOLERANCE_UNIT = MINUTE | HOUR | DAY
+TOLERANCE_DOCUMENTATION = REQUIRED
+PARTIAL_TOLERANCE_CONFIG = NOT_MEASURABLE
+INVALID_TOLERANCE_REASON = TOLERANCE_CONFIGURATION_INVALID
+```
+
+Sem tolerância, os três campos ficam NULL e a semântica anterior permanece idêntica.
+
+Com tolerância documentada, somente o deadline efetivo é estendido. START, END e duração real continuam baseados nos timestamps observados.
+
+Exemplo validado:
+- START 12:00;
+- target 1 HOUR;
+- tolerance 5 MINUTE documentada;
+- deadline efetivo = 13:05;
+- 13:05 exato = ON_TRACK;
+- 13:05:00.001 = BREACHED.
+
+Evidência:
+- migration `20260927120500_c07_documented_tolerance.sql`;
+- teste `c07_documented_tolerance.test.sql`;
+- PRIMARY = 18/18 PASS;
+- App Smoke Run 111 = SUCCESS;
+- nenhum SLA produtivo foi inferido/publicado.
+
+```text
+SAFRA-C07.1 = PASS
+SAFRA-C07.2 = PASS
+SAFRA-C07.3 = PASS
+SAFRA-C07.4 = PASS
+SAFRA-C07.5 = PASS
+SAFRA-C07.6 = PASS
+```
