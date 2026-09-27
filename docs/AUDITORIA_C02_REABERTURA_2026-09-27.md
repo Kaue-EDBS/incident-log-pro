@@ -177,10 +177,25 @@ O smoke anônimo atual cobre somente parte das tabelas. O schema Safra possui 17
 
 ### C02-AUD-08 — matriz de paridade desatualizada
 
-**Estado:** OPEN  
-**Severidade:** LOW / DOCUMENTAÇÃO
+**Estado:** CLOSED / PASS em 27/09/2026 às 20:17 BRT  
+**Severidade original:** LOW / DOCUMENTAÇÃO
 
-`docs/MATRIZ_PARIDADE.md` ainda registra `START/END server-side = não`; START já está implementado por RPC governada e precisa ser separado de END/CANCEL.
+A matriz canônica `docs/MATRIZ_PARIDADE.md` foi verificada no `main` e já está reconciliada com o estado funcional atual.
+
+Estado registrado:
+
+| Item | Situação atual |
+|---|---|
+| START server-side | **sim — C08 / `safra_start_treatment`** |
+| END server-side | **não — DEFERRED_TO_F01/F02** |
+| CANCEL server-side | **não — DEFERRED_TO_F01/F02** |
+
+A própria seção de pendências da matriz também registra:
+
+- `START RPC — CONCLUÍDO no C08`;
+- `END/CANCEL RPCs — DEFERRED_TO_F01/F02`.
+
+**Conclusão:** não há mais divergência entre a matriz de paridade e a implementação atual. START está corretamente marcado como server-side; END e CANCEL permanecem explicitamente não implementados.
 
 ### C02-AUD-09 — contratos de abuso futuros para END/CANCEL/12º card
 
