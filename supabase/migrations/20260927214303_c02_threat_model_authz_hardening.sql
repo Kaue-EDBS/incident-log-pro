@@ -90,6 +90,33 @@ grant execute on function public.get_safra_rbac_audit_events(integer) to authent
 revoke all on function public.set_updated_at() from public, anon, authenticated;
 revoke all on function public.validate_incident_timestamps() from public, anon, authenticated;
 
+
+-- A terminal treatment is historical evidence. Any correction after RESOLVED/CANCELLED
+-- must be represented by append-only events, never by rewriting the row.
+create or replace function private.safra_guard_terminal_treatment_immutable()
+returns trigger
+language plpgsql
+set search_path = ''
+as $
+begin
+  if old.status in ('RESOLVED','CANCELLED') then
+    raise exception 'closed treatment row is immutable; record an append-only correction event instead';
+  end if;
+  return new;
+end;
+$;
+
+revoke all on function private.safra_guard_terminal_treatment_immutable()
+from public, anon, authenticated;
+
+drop trigger if exists trg_00_treatments_terminal_immutable on public.treatments;
+create trigger trg_00_treatments_terminal_immutable
+before update on public.treatments
+for each row execute function private.safra_guard_terminal_treatment_immutable();
+
+comment on function private.safra_guard_terminal_treatment_immutable() is
+  'Threat-model control: RESOLVED/CANCELLED treatment rows are immutable; later corrections belong in append-only treatment_events.';
+
 comment on function private.safra_has_role(text) is
   'Governed role lookup. Returns true only for a live canonical corporate session bound to an active principal with an active role grant.';
 
