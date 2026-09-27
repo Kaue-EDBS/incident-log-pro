@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(26);
 
 insert into auth.users(
   id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at
@@ -133,6 +133,41 @@ select is(
   ),
   1::bigint,
   'valid corporate platform admin can read governed RBAC audit events'
+);
+
+
+insert into public.scenario_proposals(
+  proposed_by,
+  proposer_name,
+  proposer_email,
+  title,
+  problem_description,
+  safra_impact_description
+)
+values(
+  '02020202-0000-4000-8000-000000000001'::uuid,
+  'C02 Threat Test',
+  'kaue.pastrello@editoradobrasil.com.br',
+  'TEST-C02-PROPOSAL-12TH-CARD',
+  'Proposal fixture must remain outside the productive scenario catalog.',
+  'Threat-model regression: proposal cannot publish itself as the 12th card.'
+);
+
+select is(
+  (
+    select count(*)::bigint
+    from public.scenarios
+    where code='TEST-C02-PROPOSAL-12TH-CARD'
+       or name='TEST-C02-PROPOSAL-12TH-CARD'
+  ),
+  0::bigint,
+  'scenario proposal cannot create or publish a productive scenario by itself'
+);
+
+select is(
+  jsonb_array_length(public.safra_get_start_catalog()),
+  11,
+  'scenario proposal does not become a 12th START catalog card'
 );
 
 -- Expired token cannot reuse the role binding.
