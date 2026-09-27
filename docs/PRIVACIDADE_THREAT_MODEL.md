@@ -101,23 +101,36 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 
 ### 7.1 Abuse cases canônicos
 
-| ID | Ação de abuso | Resultado obrigatório | Controle atual / fase |
-|---|---|---|---|
-| AB-START-01 | usuário sem sessão corporativa válida tenta START | rejeitar sem criar treatment/evento | `safra_is_corporate_user()` dentro da RPC; C08 |
-| AB-START-02 | retry do mesmo START com mesma chave/payload | devolver a mesma tratativa, sem duplicar evento | idempotency key + advisory lock + digest |
-| AB-START-03 | mesma idempotency key com payload/ator/cenário diferente | rejeitar `SAFRA_START_IDEMPOTENCY_CONFLICT` | RPC START |
-| AB-END-01 | END prematuro, repetido ou em estado terminal | rejeitar; END só parte de ACTIVE e usa horário oficial | guard já existe; command/RPC fica DEFERRED_TO_F01/F02 |
-| AB-CANCEL-01 | CANCEL usado para apagar falha, parar relógio ou esconder histórico | exigir motivo; preservar tratamento/eventos; não contabilizar como sucesso | constraint/guard + engine SLA; command/RPC DEFERRED_TO_F01/F02 |
-| AB-AUTHZ-01 | token expirado, sessão revogada ou domínio externo reutiliza role ligada ao `sub` | role lookup/audit retornam vazio/false e nenhum dado sensível | predicado corporativo também nas funções RBAC; C02-AUD |
-| AB-OWNER-01 | cliente tenta trocar owner, criticidade ou versão de tratativa ativa | bloquear rewrite; nova decisão/versionamento não altera snapshot já aberto | no direct grants + owner history guard + version freeze |
-| AB-API-01 | cliente enumera tabelas pela Data API | 401/403/sem grant; RLS permanece defense-in-depth | smoke cobre superfície Safra inteira |
-| AB-DATA-01 | cliente tenta INSERT/UPDATE/DELETE direto em tabelas Safra | negar por grant/RLS; mutações críticas somente por RPC governada | C05/C08 |
-| AB-LEAK-01 | usuário autenticado tenta extrair RBAC audit/roles sem sessão válida | retornar vazio/false; audit só para admin corporativo válido | C02-AUD |
-| AB-TIME-01 | cliente adultera `opened_at`, timestamps ou relógio de SLA | ignorar input de relógio; usar server clock e campos imutáveis | C05/C07/C08 |
-| AB-VERSION-01 | editar versão publicada/retirada para alterar tratativa ativa | rejeitar edição retroativa; tratamento continua na versão congelada | version guards |
-| AB-RETRY-01 | duas requisições concorrentes disputam a mesma chave START | exatamente uma tratativa e um `TREATMENT_OPENED` | advisory lock + unique key + teste concorrente |
-| AB-SLA-01 | tentar “parar” SLA via CANCEL, evento futuro ou `as_of` manipulado | CANCEL não é sucesso; futuro não reescreve snapshot; raw evaluator não é client-callable | C07 |
-| AB-CARD-01 | publicar 12º card/proposta sem governança | proposta não entra no catálogo produtivo automaticamente | DEFERRED_TO_M10; sem RPC produtiva de publicação nesta fase |
+Cada abuse case deve permanecer rastreável por **ID, pré-condição, ação maliciosa/abusiva, resultado esperado, controle, fase e teste/evidência**.
+
+| ID | Pré-condição | Ação maliciosa / abuso | Resultado esperado | Controle | Fase | Teste / evidência |
+|---|---|---|---|---|---|---|
+| AB-START-01 | usuário tenta acionar cenário sem sessão corporativa canônica válida | chamar START com domínio externo, JWT expirado, sessão revogada/inexistente ou identidade anônima | rejeitar sem criar `treatment`, snapshot ou evento | `safra_is_corporate_user()` dentro da RPC; actor por `auth.uid()`; sessão viva | C08 + C02-AUD | `c01_corporate_domains.test.sql`, `c02_threat_model_authz.test.sql`, `c08_start_end_to_end.test.sql` |
+| AB-START-02 | cenário publicado e sessão válida; uma requisição START já foi processada | repetir o mesmo START com a mesma idempotency key e o mesmo payload | retornar a mesma tratativa; não criar segundo treatment nem segundo `TREATMENT_OPENED` | unique idempotency key + digest + `pg_advisory_xact_lock` + correlation ID | C08 + C02-AUD | retry sequencial em `c08_start_end_to_end.test.sql`; concorrência real em `.github/scripts/test-safra-start-concurrency.sh` |
+| AB-START-03 | existe START associado à idempotency key | reutilizar a mesma chave com payload, cenário, ator ou impacto diferente | rejeitar com `SAFRA_START_IDEMPOTENCY_CONFLICT`; estado original permanece intacto | digest/payload canônico + comparação server-side | C08 + C02-AUD | `c02_threat_model_authz.test.sql` |
+| AB-END-01 | existe tratativa ACTIVE ou já terminal | encerrar prematuramente, encerrar duas vezes ou executar END em estado terminal | END só pode partir de ACTIVE; repetição/terminal deve ser rejeitada; ator e tempo vêm do servidor | terminal-state guard + transição explícita + futuro command/RPC governado | F01/F02 | guard atual em `c05_terminal_state_guards.test.sql`; **contrato futuro obrigatório**: testes positivos/negativos de END antes de liberar RPC |
+| AB-CANCEL-01 | existe tratativa ACTIVE ou terminal | usar CANCEL para apagar falha, parar SLA, esconder histórico, cancelar repetidamente ou sem motivo | exigir motivo; CANCEL apenas de ACTIVE; preservar treatment/eventos; CANCEL não vira sucesso de SLA | constraint de motivo + terminal-state guard + append-only + engine SLA | C05/C07 + F01/F02 | `c05_terminal_state_guards.test.sql`, `c07_nonnegative_clock_cancel_semantics.test.sql`; **contrato futuro obrigatório** para RPC CANCEL |
+| AB-AUTHZ-01 | `sub` pertence a principal com role governada | reutilizar role com domínio externo, sessão revogada/inexistente ou JWT expirado | `safra_has_role=false`, roles vazias e audit sem dados | predicado corporativo canônico também nas funções de RBAC | C02-AUD | `c02_threat_model_authz.test.sql` + verificação direta no PRIMARY |
+| AB-OWNER-01 | cenário/owner já está publicado/vinculado ou há tratativa ativa | trocar owner pelo cliente ou reescrever ownership histórico | mutação direta negada; mudança governada e auditável; tratamento ativo conserva snapshot | sem grants diretos + owner history guard + mapping governado | C05/C06 | `c05_technical_guards.test.sql`, `c06_1_owner_mutation_governance.test.sql`, direct API ownership denial |
+| AB-CRIT-01 | versão de cenário publicada/retirada ou tratativa já aberta | alterar criticidade retroativamente para modificar leitura histórica | rejeitar rewrite da versão; tratamento ativo mantém snapshot/versionamento original | version freeze + sem grants diretos + nova versão para mudança futura | C05/C06 | guards de `scenario_versions` em `c05_technical_guards.test.sql` e testes de version freeze |
+| AB-API-01 | atacante possui somente publishable/anon key ou endpoint conhecido | enumerar tabelas Safra via Data API | `401/403`; nenhum dado devolvido; RLS continua defense-in-depth | revoke de grants + RLS + superfície explícita de smoke | C00/C05 + C02-AUD | `.github/scripts/test-safra-direct-api.sh` cobrindo legado + 17 tabelas Safra |
+| AB-DATA-01 | cliente tenta contornar RPC governada | executar INSERT/UPDATE/DELETE diretamente em tabelas Safra | negar por grants/RLS; mutação crítica continua somente por RPC/command governado | deny-by-default + RLS + RPC transacional | C05/C08 | `c05_technical_guards.test.sql`, direct API mutation denial e testes C08 |
+| AB-LEAK-01 | usuário conhece RPCs de RBAC/auditoria | enumerar roles ou eventos de auditoria sem sessão corporativa válida ou sem papel administrativo | roles vazias/false; audit retorna zero linhas; nenhum e-mail interno é exposto | sessão corporativa canônica + role admin + grants de EXECUTE restritos | C02-AUD/C04 | `c02_threat_model_authz.test.sql`, direct RPC denial |
+| AB-TIME-01 | cliente controla payload ou tenta editar linha persistida | adulterar `opened_at`, timestamps de eventos ou relógio do SLA | ignorar/rejeitar tempo do cliente; usar server clock; sequência inválida bloqueada | timestamps server-side + temporal guards + append-only | C05/C07/C08 | `c05_technical_guards.test.sql`, `c07_boundary_adversarial_matrix.test.sql`, C08 START |
+| AB-VERSION-01 | cenário possui versão publicada/retirada e tratamentos apontam para ela | editar versão antiga para mudar uma tratativa ativa/histórica | rejeitar edição retroativa; treatment permanece ligado ao `scenario_version_id` congelado | version freeze + snapshot de versão no START | C05/C08 | testes de version freeze C05 + snapshot C08 |
+| AB-RETRY-01 | duas transações START simultâneas usam a mesma chave e payload | double submit/retry concorrente tenta duplicar abertura | exatamente um treatment e um `TREATMENT_OPENED`; ambas resolvem para o mesmo treatment | advisory lock + unique key + idempotência server-side | C08 + C02-AUD | `.github/scripts/test-safra-start-concurrency.sh` |
+| AB-SLA-01 | tratamento possui SLA estruturado ou leitura histórica por `as_of` | tentar “parar” SLA via CANCEL, inserir evento futuro ou manipular referência temporal | CANCEL não vira sucesso; evento futuro não reescreve snapshot; relógio inválido vira estado explícito | engine determinística + server clock + historical snapshot guard | C07 | `c07_boundary_adversarial_matrix.test.sql`, `c07_nonnegative_clock_cancel_semantics.test.sql`, `c07_historical_snapshot_clock_guard.test.sql` |
+| AB-CARD-01 | usuário possui sessão válida e acesso ao fluxo de proposta | transformar proposta/12º card em cenário produtivo sem aceite/governança | proposta permanece separada; não entra no catálogo produtivo nem cria scenario automaticamente | proposal separado de scenario + ownership/governança humana + ausência de RPC produtiva de publicação automática | M10 | **contrato futuro obrigatório**: proposta não altera catálogo produtivo; publicação exige fluxo de aprovação; cenário/card só nasce após governança definida |
+
+#### Regra de não antecipação funcional
+
+Os contratos de abuso de **END, CANCEL e 12º card** estão definidos agora para que a implementação futura nas fases responsáveis já nasça testável. Esta reauditoria **não autoriza** criar RPC/command produtivo dessas funcionalidades antes de F01/F02/M10.
+
+Antes de qualquer PASS funcional futuro:
+
+- END deve possuir teste de ACTIVE → RESOLVED, END repetido, END em terminal, ator/timestamp server-side e idempotência;
+- CANCEL deve possuir teste de motivo obrigatório, ACTIVE → CANCELLED, repetição/terminal, preservação de histórico, impacto em SLA e idempotência;
+- 12º card deve possuir teste de separação proposal/scenario, governança de owner, ausência de autopublicação e trilha auditável da decisão.
 
 ### 7.2 Threat → controle → evidência
 
@@ -189,7 +202,7 @@ Mudança de identidade, integração, dados pessoais, retenção, arquivos ou ex
 | ID | Risco residual | Estado atual | Controle/fase restante | Bloqueia recertificação? |
 |---|---|---|---|---|
 | RR-C02-01 | uso indevido de START/END/CANCEL por usuário autenticado | START_CONTROLLED / END_CANCEL_CONTRACT_DEFINED | START C08; END/CANCEL F01/F02 | não, desde que RPC futura cumpra AB-END/AB-CANCEL |
-| RR-C02-02 | role/claim desatualizado ou sessão revogada | CONTROLLED_C02_AUD | canonical predicate também em role lookup/audit | sim até testes/PRIMARY confirmarem |
+| RR-C02-02 | role/claim desatualizado ou sessão revogada | CONTROLLED_VERIFIED_C02_AUD | canonical predicate em role lookup/audit; domínio externo, sessão revogada e JWT expirado verificados em CI + PRIMARY | não |
 | RR-C02-03 | enumeração ou leitura excessiva de dados internos | CONTROLLED_CURRENT_SURFACE | sem grants diretos + RLS + full Data API smoke | não |
 | RR-C02-04 | dado pessoal indevido em texto livre/log/notificação | RESIDUAL_ACCEPTED_WITH_MINIMIZATION | UX C08 + notificações M05 + relatórios F08 | não |
 | RR-C02-05 | duplicidade por retry/concorrência | CONTROLLED_START | unique idempotency + advisory lock + retry/conflict/concurrency tests | não |
