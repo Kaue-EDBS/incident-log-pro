@@ -116,3 +116,12 @@ UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API_EXISTS
 A ausência atual de leitura Safra na UI não é convertida em PASS de paridade de conteúdo. O que esta ação comprova é que **não existe caminho de leitura/autorização mais permissivo em UI, REST/RPC ou banco**.
 
 Quando a read API do Safra for criada, esta action deve ganhar teste de paridade positiva do dataset retornado para cada papel autorizado.
+
+
+### Fechamento CI
+
+```text
+APP_SMOKE_RUN_85 = SUCCESS
+DATABASE_DISPOSABLE_RUN_123 = SUCCESS
+C06_1_ACTION_03_CI = PASS
+```
