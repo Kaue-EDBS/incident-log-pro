@@ -259,18 +259,20 @@ governance:
   destructive_git_history_rewrite_allowed: false
 
 deferred_decisions:
-  four_CRITICAL_scenarios: "GOVERNANCE_ISSUE_GI_SAFRA_001; BLOCKED_UNTIL_HUMAN_DECISION; C06_MUST_NOT_INFER"
-  scenario_2_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
-  scenario_4_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
-  scenario_10_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
-  scenario_11_threshold: "GOVERNANCE_ISSUE_GI_SAFRA_002"
-  scenario_9_curve_A_source: "GOVERNANCE_ISSUE_GI_SAFRA_003"
-  multiple_simultaneous_treatments: "GOVERNANCE_ISSUE_GI_SAFRA_004"
+  four_CRITICAL_scenarios: "GI-SAFRA-001; OPEN_NON_BLOCKING_D44; CRITICALITY_NULL; FUTURE_VERSION_REQUIRED"
+  scenario_2_threshold: "GI-SAFRA-002; OPEN_NON_BLOCKING_D45; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_4_threshold: "GI-SAFRA-002; OPEN_NON_BLOCKING_D45; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_10_threshold: "GI-SAFRA-002; OPEN_NON_BLOCKING_D45; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_11_threshold: "GI-SAFRA-002; OPEN_NON_BLOCKING_D45; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_9_curve_A_source: "GI-SAFRA-003; OPEN_NON_BLOCKING_D46; AUTO_DETECTION_NOT_CONFIGURED"
+  multiple_simultaneous_treatments: "GI-SAFRA-004; DEFERRED_TO_M01; CURRENTLY_ALLOWED"
   incomplete_or_not_applicable_close_policy: "DEFERRED_TO_SAFRA_F01"
-  email_notification_provider_and_channel: "GOVERNANCE_ISSUE_GI_SAFRA_005"
-  formal_new_scenario_approval_flow: "GOVERNANCE_ISSUE_GI_SAFRA_007"
-  weekly_governance_window: "GOVERNANCE_ISSUE_GI_SAFRA_008"
-  quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_C06_F04"
+  email_notification_provider_and_channel: "GI-SAFRA-005; DEFERRED_TO_M05"
+  current_safra_time_window: "GI-SAFRA-006; DEFERRED_TO_F04_M05"
+  formal_new_scenario_approval_flow: "GI-SAFRA-007; DEFERRED_TO_M10"
+  weekly_governance_window: "GI-SAFRA-008; DEFERRED_TO_GOVERNANCE_PHASE"
+  textual_sla_event_mapping: "GI-SAFRA-009; OPEN_NON_BLOCKING_D47"
+  quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_F04"
 
 c01_gate:
   status: "APPROVED"
