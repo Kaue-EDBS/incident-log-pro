@@ -56,3 +56,39 @@ for entry in "${start_rpcs[@]}"; do
   echo "PASS direct anonymous RPC denial: ${rpc_name} -> HTTP ${http_code}"
   rm -f "${body_file}"
 done
+
+
+# C02: every public browser-facing Safra/RBAC RPC must reject anonymous callers.
+declare -a c02_rpcs=(
+  "safra_session_is_live|{}"
+  "get_my_safra_roles|{}"
+  "safra_has_role|{\"requested_role\":\"safra_platform_admin\"}"
+  "get_safra_rbac_audit_events|{\"p_limit\":5}"
+  "safra_log_access_denied|{\"p_resource\":\"c02-smoke\",\"p_reason\":\"anonymous-smoke\"}"
+)
+
+for entry in "${c02_rpcs[@]}"; do
+  rpc_name="${entry%%|*}"
+  data="${entry#*|}"
+  body_file="$(mktemp)"
+  http_code="$(
+    curl --silent --show-error \
+      --output "${body_file}" \
+      --write-out "%{http_code}" \
+      --request POST \
+      --header "apikey: ${PUBLIC_KEY}" \
+      --header "Content-Type: application/json" \
+      --data "${data}" \
+      "${API_BASE}/rest/v1/rpc/${rpc_name}"
+  )"
+
+  if [[ "${http_code}" != "401" && "${http_code}" != "403" && "${http_code}" != "404" ]]; then
+    echo "Direct anonymous RPC unexpectedly succeeded: ${rpc_name} -> HTTP ${http_code}"
+    cat "${body_file}"
+    rm -f "${body_file}"
+    exit 1
+  fi
+
+  echo "PASS direct anonymous RPC denial: ${rpc_name} -> HTTP ${http_code}"
+  rm -f "${body_file}"
+done
