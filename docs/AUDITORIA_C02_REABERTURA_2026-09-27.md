@@ -29,16 +29,40 @@ O fechamento histórico do C02 não é apagado. Esta rodada registra uma nova fo
 
 ### C02-AUD-01 — RPCs de RBAC sem predicado corporativo completo
 
-**Estado:** OPEN  
-**Severidade:** HIGH / AUTHZ
+**Estado:** CLOSED / PASS em 27/09/2026 às 20:04 BRT  
+**Severidade original:** HIGH / AUTHZ
 
-Teste controlado no PRIMARY confirmou que um JWT sintético com `sub` pertencente a principal com role, mas com domínio externo e `session_id` inexistente, produz simultaneamente:
+A correção foi implementada pela migration canônica `20260927214303_c02_threat_model_authz_hardening.sql`, integrada pelo PR #8 e verificada no Lovable Cloud PRIMARY.
 
-- `public.safra_is_corporate_user() = false`;
-- `public.get_my_safra_roles()` retornando role governada;
-- `public.get_safra_rbac_audit_events(5)` retornando registros de auditoria para principal com role administrativa.
+Controles finais:
 
-Conclusão: os RPCs de RBAC precisam exigir o mesmo predicado canônico de sessão corporativa usado pelo fluxo Safra.
+- `private.safra_has_role(text)` exige `public.safra_is_corporate_user()`;
+- `private.get_my_safra_roles()` retorna lista vazia quando o predicado corporativo canônico falha;
+- `public.get_safra_rbac_audit_events(integer)` exige sessão corporativa canônica e role administrativa válida;
+- os wrappers públicos `public.safra_has_role(text)` e `public.get_my_safra_roles()` herdam a decisão das funções privadas governadas;
+- domínio externo não reutiliza role vinculada ao `sub`;
+- sessão revogada/inexistente não reutiliza role vinculada ao `sub`;
+- JWT expirado não reutiliza role vinculada ao `sub`.
+
+Evidência automatizada:
+
+- `supabase/tests/database/c02_threat_model_authz.test.sql`;
+- cenário de domínio externo: PASS;
+- cenário de sessão revogada/inexistente: PASS;
+- cenário de JWT expirado: PASS;
+- cenário positivo de admin corporativo válido: PASS;
+- Database Disposable do head final do PR #8: SUCCESS;
+- App Smoke do head final do PR #8: SUCCESS.
+
+Evidência direta no PRIMARY em 27/09/2026 às 20:04 BRT:
+
+| Cenário | Predicado corporativo | `safra_has_role(platform_admin)` | roles retornadas | audit rows |
+|---|---:|---:|---:|---:|
+| domínio externo | false | false | 0 | 0 |
+| sessão revogada/inexistente | false | false | 0 | 0 |
+| JWT expirado | false | false | 0 | 0 |
+
+**Conclusão:** o bypass originalmente confirmado foi fechado. `AUTHZ-001` deixa de estar bloqueado por C02-AUD-01, mas a recertificação global do C02 continua pendente até a revisão dos demais achados.
 
 ### C02-AUD-02 — abuse cases citados, mas não definidos canonicamente
 
