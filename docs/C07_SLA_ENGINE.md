@@ -404,3 +404,49 @@ PRIMARY_SMOKE = PASS
 ```
 
 Estado: **APPROVED — 27/09/2026**.
+
+
+## Regra aprovada — tolerância temporal documentada
+
+O SLA possui tolerância zero por padrão.
+
+Para habilitar tolerância, a definição versionada deve declarar simultaneamente:
+
+```text
+tolerance_value
+tolerance_unit
+tolerance_documentation
+```
+
+Regras:
+- `tolerance_value > 0`;
+- `tolerance_unit in (MINUTE,HOUR,DAY)`;
+- `tolerance_documentation` obrigatória e não vazia;
+- os três campos NULL => tolerância zero;
+- configuração parcial/inválida => `NOT_MEASURABLE / TOLERANCE_CONFIGURATION_INVALID`;
+- tolerância implícita é proibida.
+
+Cálculo:
+
+```text
+base_deadline =
+  started_at + target_interval
+
+effective_deadline =
+  base_deadline + documented_tolerance_interval
+```
+
+A tolerância não altera:
+- START observado;
+- END observado;
+- elapsed_seconds real;
+- timestamps históricos.
+
+Ela altera somente a fronteira usada para ON_TRACK/BREACHED e COMPLETED_ON_TIME/COMPLETED_LATE.
+
+Evidência:
+- `20260927120500_c07_documented_tolerance.sql`;
+- `c07_documented_tolerance.test.sql`;
+- PRIMARY 18/18 PASS.
+
+Estado: **APPROVED — 27/09/2026**.
