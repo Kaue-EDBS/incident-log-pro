@@ -1454,50 +1454,68 @@ Reconciliação 100% dos campos importados contra a Matriz v3.
 
 ### SAFRA-C06.1 — Teste de ownership real
 
-**Estado: EM VALIDAÇÃO HUMANA.**
+**Estado: CONCLUÍDO — reauditoria integral em 27/09/2026.**
 
-#### Ação 1 — testar ownership real dos 11 cenários usando vínculos persistidos no schema v2
+Evidência canônica:
+`docs/AUDITORIA_C06_1_OWNERSHIP_2026-09-27.md`.
+
+#### Ação 1 — ownership real dos 11 cenários
 
 Fonte técnica:
 `scenarios -> scenario_owners -> safra_principals -> safra_role_grants`.
 
-Resultado técnico:
+Resultado:
 - 11/11 cenários com vínculo ativo;
 - exatamente 1 owner ativo por cenário;
+- 3 owners distintos;
 - 0 vínculos órfãos;
 - 0 duplicidade ativa;
 - 0 owner sem role `scenario_owner`;
-- 0 herança de ownership por papel administrativo;
-- todos os vínculos com `assignment_reason`.
+- 0 overlap com papéis administrativos;
+- `assignment_reason` presente em todos;
+- validação humana cenário a cenário: **APROVADA**.
 
-Estado:
+Teste:
+`supabase/tests/database/c06_02_real_ownership_persistence.test.sql`.
+
 ```text
-TECHNICAL_TEST = PASS
-HUMAN_SCENARIO_VALIDATION = APPROVED
+C06_1_ACTION_01_TECHNICAL = PASS
+C06_1_ACTION_01_HUMAN_VALIDATION = APPROVED
 ```
 
-Validação humana dos 11 cenários e respectivos owners: **APROVADA**.
+#### Ação 2 — owner sem herança administrativa e sem fallback silencioso
+
+Resultado:
+- 10/10 testes PASS;
+- admin não herda ownership;
+- role `scenario_owner` isolada não substitui vínculo explícito;
+- cenário PUBLISHED exige exatamente 1 owner ativo e elegível;
+- ausência de owner não escolhe fallback;
+- owner administrativo inelegível não substitui o vínculo real.
+
+Teste:
+`supabase/tests/database/c06_1_owner_no_inheritance_no_fallback.test.sql`.
+
+```text
+C06_1_ACTION_02 = PASS
+ADMIN_ROLE_INHERITANCE = 0
+SILENT_OWNER_FALLBACK = 0
+```
 
 #### Ação 3 — leitura e autorização coerentes entre UI, REST/RPC e banco
 
-Evidência canônica:
+Evidência:
 `docs/data-contracts/C06_1_READ_AUTHORIZATION_EVIDENCE.md`.
 
-Resultado:
-- PRIMARY pgTAP = 12/12 PASS;
-- App Smoke Run 85 = SUCCESS;
-- Database Disposable Run 123 = SUCCESS;
+Resultado revalidado:
+- RLS/grants = PASS;
+- App Smoke Run 87 = SUCCESS;
+- Database Disposable Run 125 = SUCCESS;
 - REST/Data API anônimo = DENIED;
 - RPC anônimo = DENIED;
-- RLS/grants = PASS;
 - browser sem acesso às tabelas privadas de RBAC;
 - nenhuma leitura direta de `scenarios`/`scenario_owners` pela UI;
 - nenhum RPC público de leitura de scenario/owner nesta fase.
-
-Leitura correta:
-- a coerência de autorização cross-layer está comprovada;
-- a UI Safra ainda não consome os 11 cenários;
-- por isso, paridade positiva de dataset UI x API permanece não aplicável até existir read API governada.
 
 ```text
 C06_1_ACTION_03 = PASS
@@ -1506,25 +1524,67 @@ SAFRA_UI_CATALOG_READ = NOT_IMPLEMENTED_YET
 UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API
 ```
 
-#### Regressão RBAC/ownership complementar
+#### Ação 4 — impedir autoatribuição/mutação direta de owner
 
-Executar somente depois que os 11 cenários e seus vínculos de owner estiverem materializados.
+Critério formalizado a partir do contrato já existente do C06.1:
+- usuário comum não pode se autoatribuir owner por payload, REST/Data API ou RPC;
+- vínculo histórico não pode ser reescrito ou apagado;
+- nenhuma superfície pública de mutação de owner pode existir por acidente.
 
 Testes:
-- Daniel é owner somente dos cenários 1, 2, 3, 7, 10 e 11;
-- Jiane é owner somente dos cenários 4, 5, 6 e 8;
-- Renato é owner somente do cenário 9;
-- Jair mantém governance admin sem herdar ownership;
-- Bruno mantém executive admin sem ownership e sem permissão técnica;
-- Kaue/Amanda/Vinicius/João mantêm platform admin sem ownership automático;
-- usuário autenticado não consegue se autoatribuir owner via payload/REST/RPC;
-- alteração de ownership exige caminho de governança;
-- leitura direta por Data API/RPC preserva o mesmo modelo de autorização.
+- `supabase/tests/database/c06_1_owner_mutation_governance.test.sql`;
+- `.github/scripts/test-safra-direct-api.sh`.
 
-Critério de PASS:
-- todos os testes usam cenários reais do seed;
-- nenhuma role global produz ownership implícito;
-- ownership é demonstrado pelo vínculo explícito scenario↔user.
+Resultado:
+- pgTAP Action 4 = 13/13;
+- `anon` sem INSERT/UPDATE/DELETE em `scenario_owners`;
+- `authenticated` sem INSERT/UPDATE/DELETE em `scenario_owners`;
+- 0 grants de browser nas fontes privadas de RBAC;
+- 0 RPC público de assign/reassign/set/change owner;
+- POST direto em `scenario_owners` = DENIED;
+- PATCH direto em `scenario_owners` = DENIED;
+- alteração de `owner_id` em vínculo existente = DENIED;
+- delete físico de histórico = DENIED.
+
+```text
+C06_1_ACTION_04 = PASS
+DIRECT_OWNER_MUTATION = DENIED
+OWNER_HISTORY_REWRITE = DENIED
+OWNER_HISTORY_DELETE = DENIED
+```
+
+Observação: o fluxo produtivo futuro de reatribuição de owner ainda não existe. Isso é
+deny-by-default e não um atalho. Quando implementado, deverá ser server-side, autorizado,
+auditável e preservar histórico temporal.
+
+#### Gate final do C06.1
+
+PRIMARY:
+- 11 cenários / 11 vínculos ativos;
+- exatamente 1 owner por cenário;
+- 0 órfãos;
+- 0 role mismatch;
+- 0 admin/owner overlap;
+- RLS ativa;
+- browser write grants = 0;
+- public owner mutation RPCs = 0;
+- GitHub x PRIMARY = 17/17 migrations, drift 0.
+
+CI:
+- App Smoke Run 87 / ID `36309242985` = SUCCESS;
+- Database Disposable Run 125 / ID `36309242956` = SUCCESS;
+- rebuild = PASS;
+- pgTAP = PASS;
+- Data API negativa = PASS;
+- RPC negativa = PASS;
+- rollback latest = PASS;
+- lint = PASS.
+
+```text
+SAFRA-C06.1 = CONCLUIDO
+MIGRATION_DRIFT = 0
+NEXT_PHASE = SAFRA-C07
+```
 
 ### C06.02 — Pipeline reproduzível + regressão RBAC/ownership
 
@@ -1560,7 +1620,7 @@ Critério de saída — **ATENDIDO**:
 
 ## SAFRA-C07 — Engine de SLA
 
-**Estado: EM IMPLEMENTAÇÃO — núcleo determinístico aplicado ao PRIMARY; CI final em validação.**
+**Estado: EM VALIDAÇÃO DE FECHAMENTO — núcleo determinístico aplicado ao PRIMARY; CI atual PASS no Run 125.**
 
 ### Princípio
 
