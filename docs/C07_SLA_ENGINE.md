@@ -336,3 +336,71 @@ Evidência final:
 - Database Disposable Run 142 = SUCCESS.
 
 Estado: **APPROVED — 27/09/2026**.
+
+
+## Matriz adversarial aprovada — bordas, DST e manipulação de relógio
+
+Foi criada uma regressão consolidada com 26 casos:
+
+`supabase/tests/database/c07_boundary_adversarial_matrix.test.sql`
+
+### Borda do deadline
+
+A semântica é estrita:
+
+```text
+as_of = deadline        -> ON_TRACK, remaining_seconds=0
+as_of > deadline        -> BREACHED
+END = deadline          -> COMPLETED_ON_TIME
+END > deadline          -> COMPLETED_LATE
+```
+
+Portanto, o breach começa somente **depois** da borda exata.
+
+### Timezone e DST
+
+Os cálculos usam instantes absolutos em `timestamptz`.
+
+Caso histórico validado:
+
+```text
+2018-11-04 00:30 -03
+até
+2018-11-04 03:30 -02
+elapsed real = 7200 s
+```
+
+A mudança de offset não adiciona uma hora artificial à duração.
+
+### Manipulação de relógio
+
+Snapshots históricos respeitam `p_as_of`.
+
+END e CANCEL posteriores ao instante consultado são ignorados naquela avaliação.
+
+```text
+START = 12:00
+as_of = 12:30
+END futuro = 13:30
+
+resultado = ON_TRACK
+```
+
+Antes da migration `20260927113000_c07_historical_snapshot_clock_guard.sql`, esse caso podia retornar `COMPLETED_LATE`. A brecha foi corrigida.
+
+Outras proteções:
+- `as_of < START` => `NOT_MEASURABLE / CLOCK_BEFORE_START`;
+- `as_of IS NULL` => `NOT_MEASURABLE / AS_OF_MISSING`;
+- eventos futuros não apagam breach histórico;
+- `anon` e `authenticated` não possuem EXECUTE na engine bruta.
+
+### Gate final
+
+```text
+BOUNDARY_ADVERSARIAL_TESTS = 26/26 PASS
+APP_SMOKE_RUN_106 = SUCCESS
+DATABASE_DISPOSABLE_RUN_144 = SUCCESS
+PRIMARY_SMOKE = PASS
+```
+
+Estado: **APPROVED — 27/09/2026**.
