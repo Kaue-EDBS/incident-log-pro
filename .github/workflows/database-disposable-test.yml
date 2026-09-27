@@ -40,7 +40,7 @@ jobs:
 
           # Defensive cleanup: GitHub-hosted runners occasionally retain a
           # partially-created local Supabase stack after a Docker/network hiccup.
-          supabase stop --no-backup >/dev/null 2>&1 || true
+          timeout 45s supabase stop --no-backup >/dev/null 2>&1 || true
 
           if start_stack; then
             exit 0
@@ -49,7 +49,7 @@ jobs:
           echo "::warning::First Supabase start attempt failed or timed out. Collecting diagnostics and retrying once."
           docker ps -a || true
           docker network ls || true
-          supabase stop --no-backup || true
+          timeout 45s supabase stop --no-backup || true
           sleep 5
 
           start_stack
