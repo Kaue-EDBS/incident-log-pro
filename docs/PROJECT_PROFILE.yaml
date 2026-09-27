@@ -1,6 +1,6 @@
 schema_version: 3
 updated_at: "2026-09-27"
-status: C01_AUD_IN_EXECUTION
+status: C01_AUD_RECERTIFIED
 
 project:
   name: "Painel Safra"
@@ -39,9 +39,8 @@ architecture:
       - "20260925164600"
       - "20260925164700"
       - "20260925170000"
-    migration_history_repair_status: "RECONCILED_2026-09-25"
-    known_drift:
-      - "20260927204325 pending PRIMARY promotion during C01-AUD"
+    migration_history_repair_status: "RECONCILED_2026-09-27"
+    known_drift: []
 
 service:
   service_class:
@@ -96,7 +95,7 @@ identity_and_auth:
     verified_at: "2026-09-27"
   current_auth_users: 2
   current_bound_active_principals: 2
-  current_users_with_safra_access: 0
+  current_users_with_legacy_safra_access_flag: 0
   anonymous_database_access: false
   temporary_authorization:
     mechanism: "legacy app_metadata.safra_access"
@@ -282,11 +281,19 @@ c01_gate:
   closed_at: "2026-09-24"
 
 c01_reaudit:
-  status: "IN_EXECUTION"
+  status: "APPROVED"
   opened_at: "2026-09-27T17:34:00-03:00"
+  closed_at: "2026-09-27T18:16:00-03:00"
   material_decisions_resolved: true
-  unknown_material_count_candidate: 0
-  recertification_status: "PENDING_TECHNICAL_AND_PRIMARY_VERIFICATION"
+  unknown_material_count: 0
+  recertification_status: "PASS"
+  code_pr: 5
+  code_merge_commit: "ebb6670333837fab78990eafa3c8bd9b2680da7c"
+  primary_migration_verified: "20260927204325_c01_corporate_domains_and_profile_alignment.sql"
+  approved_domains_verified:
+    - "editoradobrasil.com.br"
+    - "editoradobrasil1.onmicrosoft.com"
+  outsider_domain_rejected: true
   audit_document: "docs/AUDITORIA_C01_REABERTURA_2026-09-27.md"
 
 c02_gate:
