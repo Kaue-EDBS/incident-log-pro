@@ -115,9 +115,9 @@ select ok(
 
 
 select private.safra_log_rbac_event(
-  'C02_TEST_EVENT',
-  'C02-AUD',
-  'SUCCESS',
+  'ACCESS_DENIED',
+  'C02-AUD-POSITIVE-REGRESSION',
+  'DENIED',
   null,
   null,
   null,
@@ -128,7 +128,8 @@ select is(
   (
     select count(*)::bigint
     from public.get_safra_rbac_audit_events(100)
-    where action='C02_TEST_EVENT'
+    where action='ACCESS_DENIED'
+      and resource='C02-AUD-POSITIVE-REGRESSION'
   ),
   1::bigint,
   'valid corporate platform admin can read governed RBAC audit events'
