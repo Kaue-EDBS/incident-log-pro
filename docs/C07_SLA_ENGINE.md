@@ -280,3 +280,59 @@ CI:
 - rebuild/rollback/lint = PASS.
 
 Estado: **APPROVED — 27/09/2026**.
+
+
+## Regras aprovadas — múltiplos SLAs e evento ausente
+
+### Múltiplos SLAs
+
+Um cenário pode possuir múltiplos SLAs por versão.
+
+A identidade canônica continua sendo:
+
+```text
+scenario_version_id + sla.code
+```
+
+A função de estado por tratamento faz join com todos os SLAs da versão do tratamento, portanto retorna uma avaliação independente por SLA configurado.
+
+Exemplo validado:
+
+```text
+mesma scenario_version
+SLA-1H -> BREACHED
+SLA-2H -> ON_TRACK
+```
+
+Não há consolidação automática entre esses estados nesta camada.
+
+A proteção de versionamento continua válida: conteúdo de versão `PUBLISHED` é imutável. Para incluir ou alterar SLAs de um cenário publicado, deve-se usar a governança de nova versão, não editar o histórico publicado.
+
+### Evento ausente
+
+A engine não pode inventar timestamps.
+
+Se o evento necessário para iniciar o SLA não foi observado:
+
+```text
+sla_state = NOT_MEASURABLE
+evaluation_reason = START_EVENT_MISSING
+```
+
+A ausência do `TREATMENT_RESOLVED` exige distinção:
+
+- tratamento ativo + antes do deadline -> `ON_TRACK`;
+- tratamento ativo + após o deadline -> `BREACHED`;
+- somente quando `TREATMENT_RESOLVED` ocorrer o SLA pode ir para `COMPLETED_ON_TIME` ou `COMPLETED_LATE`.
+
+Assim, “evento ausente” não significa criar um timestamp substituto, nem encerrar artificialmente o SLA.
+
+Teste permanente:
+`supabase/tests/database/c07_multi_sla_missing_event_contract.test.sql`.
+
+Evidência final:
+- PRIMARY smoke transacional = PASS;
+- App Smoke Run 104 = SUCCESS;
+- Database Disposable Run 142 = SUCCESS.
+
+Estado: **APPROVED — 27/09/2026**.
