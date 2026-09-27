@@ -1666,7 +1666,7 @@ O banco rejeita SLA estruturado incompleto. `target_text` permanece apenas como 
 
 ## SAFRA-C08 — UX do COMEÇO
 
-**Estado: PAUSADO ANTES DA UX — gate técnico aprovado, mas GI-SAFRA-001/002/003/009 estão sendo tratados antes de implementar START.**
+**Estado: PRONTO PARA INICIAR — gate pré-C08 fechado em 27/09/2026; GI-001/002/003/009 não bloqueiam START.**
 
 ### Gate pré-C08 — pendências que impediram iniciar a UX
 
@@ -1681,6 +1681,20 @@ Regra do gate:
 - nenhuma dessas lacunas pode virar default silencioso;
 - nenhuma UI pode apresentar dado inferido como decisão de negócio;
 - C08 só começa depois de documentado o comportamento seguro do MVP para os quatro itens.
+
+### Gate pré-C08 — FECHADO
+
+As pendências que interromperam a entrada no C08 foram tratadas assim:
+- criticidade ausente = estado explícito, sem default;
+- threshold/fonte ausente = automação NOT_CONFIGURED, START manual permitido;
+- SLA textual = política formal de estruturação; nenhuma inferência;
+- nenhuma versão PUBLISHED foi reescrita.
+
+Migration operacional:
+`20260927133000_pre_c08_governance_nonblocking.sql`.
+
+Próximo passo exato:
+`SAFRA-C08.1 — regressão/contrato transacional e autorização do START`.
 
 ### Telas
 
