@@ -1,0 +1,205 @@
+{
+  "date": "2026-09-27",
+  "decision": "D-47",
+  "source": "EDB06 - Matriz Contingencia v3.xlsx",
+  "rule": {
+    "structured_runtime_sla_requires": [
+      "text explicitly describes treatment duration",
+      "numeric target",
+      "explicit time unit",
+      "start_event = TREATMENT_OPENED without inference",
+      "end_event = TREATMENT_RESOLVED without inference"
+    ],
+    "exclusions": [
+      "pre-start detection/trigger thresholds",
+      "intermediate milestones",
+      "calendar windows such as no dia/no turno",
+      "post-mortem",
+      "non-numeric outcomes"
+    ]
+  },
+  "scenarios": [
+    {
+      "code": "SAFRA-01",
+      "clauses": [
+        {
+          "text": "Falha reportada <= 2h",
+          "classification": "PRE_START_DETECTION",
+          "structured": false
+        },
+        {
+          "text": "tratativa <= 48h",
+          "classification": "TREATMENT_RUNTIME",
+          "structured": true,
+          "start_event": "TREATMENT_OPENED",
+          "end_event": "TREATMENT_RESOLVED",
+          "target_value": 48,
+          "target_unit": "HOUR"
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-02",
+      "clauses": [
+        {
+          "text": "Plano B de malha <= 4h",
+          "classification": "INTERMEDIATE_MILESTONE",
+          "structured": false
+        },
+        {
+          "text": "clientes comunicados",
+          "classification": "NON_NUMERIC_OUTCOME",
+          "structured": false
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-03",
+      "clauses": [
+        {
+          "text": "Alerta a partir de 48h",
+          "classification": "PRE_START_TRIGGER",
+          "structured": false
+        },
+        {
+          "text": "retorno da transportadora <= 4h",
+          "classification": "INTERMEDIATE_MILESTONE",
+          "structured": false
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-04",
+      "clauses": [
+        {
+          "text": "Detecção em tempo real",
+          "classification": "PRE_START_DETECTION",
+          "structured": false
+        },
+        {
+          "text": "reprocesso/tratativa <= 2h",
+          "classification": "AMBIGUOUS_COMBINED_MILESTONE_AND_TREATMENT",
+          "structured": false
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-05",
+      "clauses": [
+        {
+          "text": "Correção antes de avisar o cliente",
+          "classification": "ORDERING_CONSTRAINT",
+          "structured": false
+        },
+        {
+          "text": "tratativa <= 4h",
+          "classification": "TREATMENT_RUNTIME",
+          "structured": true,
+          "start_event": "TREATMENT_OPENED",
+          "end_event": "TREATMENT_RESOLVED",
+          "target_value": 4,
+          "target_unit": "HOUR"
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-06",
+      "clauses": [
+        {
+          "text": "Plano de continuidade <= 30 min",
+          "classification": "INTERMEDIATE_MILESTONE",
+          "structured": false
+        },
+        {
+          "text": "pós-mortem <= 48h",
+          "classification": "POST_RESOLUTION",
+          "structured": false
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-07",
+      "clauses": [
+        {
+          "text": "Acerto do saldo <= 24h",
+          "classification": "INTERMEDIATE_MILESTONE",
+          "structured": false
+        },
+        {
+          "text": "reprocesso do pedido no mesmo dia",
+          "classification": "CALENDAR_WINDOW",
+          "structured": false
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-08",
+      "clauses": [
+        {
+          "text": "Liberar a NF <= 4h",
+          "classification": "INTERMEDIATE_MILESTONE",
+          "structured": false
+        },
+        {
+          "text": "sem perder a janela de expedição do dia",
+          "classification": "CALENDAR_WINDOW",
+          "structured": false
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-09",
+      "clauses": [
+        {
+          "text": "Reposição/realocação no dia",
+          "classification": "CALENDAR_WINDOW",
+          "structured": false
+        },
+        {
+          "text": "prazo realinhado com o cliente",
+          "classification": "NON_NUMERIC_OUTCOME",
+          "structured": false
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-10",
+      "clauses": [
+        {
+          "text": "Reforço/realocação imediata",
+          "classification": "NON_NUMERIC_MILESTONE",
+          "structured": false
+        },
+        {
+          "text": "fila normalizada no turno",
+          "classification": "CALENDAR_WINDOW",
+          "structured": false
+        }
+      ]
+    },
+    {
+      "code": "SAFRA-11",
+      "clauses": [
+        {
+          "text": "Plano de pico acionado no dia",
+          "classification": "CALENDAR_WINDOW",
+          "structured": false
+        },
+        {
+          "text": "sem turnos extras não planejados",
+          "classification": "NON_NUMERIC_OUTCOME",
+          "structured": false
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "eligible_runtime_slas": [
+      "SAFRA-01",
+      "SAFRA-05"
+    ],
+    "current_published_versions_are_immutable": true,
+    "productive_seed_in_current_v1": false,
+    "c08_blocker": false
+  }
+}
