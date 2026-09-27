@@ -1620,7 +1620,7 @@ Critério de saída — **ATENDIDO**:
 
 ## SAFRA-C07 — Engine de SLA
 
-**Estado: EM VALIDAÇÃO DE FECHAMENTO — núcleo determinístico aplicado ao PRIMARY; CI atual PASS no Run 125.**
+**Estado: CONCLUÍDO — engine determinística, tolerância documentada e matriz adversarial validadas; App Smoke Run 112 e Database Disposable Run 150 = SUCCESS.**
 
 ### Princípio
 
@@ -1665,6 +1665,8 @@ O banco rejeita SLA estruturado incompleto. `target_text` permanece apenas como 
 ---
 
 ## SAFRA-C08 — UX do COMEÇO
+
+**Estado: PRONTO PARA INICIAR — gate C07 → C08 aprovado em 27/09/2026.**
 
 ### Telas
 
