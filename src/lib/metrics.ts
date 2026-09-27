@@ -33,12 +33,12 @@ function zonedParts(value: Date): ZonedParts {
   );
 
   return {
-    year: Number(parts.year),
-    month: Number(parts.month),
-    day: Number(parts.day),
-    hour: Number(parts.hour),
-    minute: Number(parts.minute),
-    second: Number(parts.second),
+    year: Number(parts["year"]),
+    month: Number(parts["month"]),
+    day: Number(parts["day"]),
+    hour: Number(parts["hour"]),
+    minute: Number(parts["minute"]),
+    second: Number(parts["second"]),
   };
 }
 
