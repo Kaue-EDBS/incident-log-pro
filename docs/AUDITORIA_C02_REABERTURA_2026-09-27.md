@@ -66,17 +66,45 @@ Evidência direta no PRIMARY em 27/09/2026 às 20:04 BRT:
 
 ### C02-AUD-02 — abuse cases citados, mas não definidos canonicamente
 
-**Estado:** OPEN  
-**Severidade:** MEDIUM / MODELAGEM
+**Estado:** CLOSED / PASS em 27/09/2026  
+**Severidade original:** MEDIUM / MODELAGEM
 
-A documentação retrospectiva cita IDs como `AB-API-01`, `AB-DATA-01`, `AB-LEAK-01`, `AB-RETRY-01` e `AB-SLA-01`, porém não há definição canônica rastreável desses casos nos documentos centrais.
+Os abuse cases foram consolidados **na própria fonte canônica** `docs/PRIVACIDADE_THREAT_MODEL.md`, sem criação de documentação paralela.
+
+Cada caso agora possui obrigatoriamente:
+
+- ID;
+- pré-condição;
+- ação maliciosa/abuso;
+- resultado esperado;
+- controle;
+- fase responsável;
+- teste/evidência.
+
+Foram formalizados START, END, CANCEL, autorização/RBAC, owner, criticidade, Data API, mutação direta, vazamento/enumeração, tempo, versionamento, retry/concorrência, SLA e 12º card.
+
+**Conclusão:** os IDs `AB-*` deixaram de ser referências retrospectivas soltas e passaram a ser contratos canônicos rastreáveis.
 
 ### C02-AUD-03 — riscos residuais desatualizados
 
-**Estado:** OPEN  
-**Severidade:** MEDIUM / DOCUMENTAÇÃO
+**Estado:** CLOSED / PASS em 27/09/2026  
+**Severidade original:** MEDIUM / DOCUMENTAÇÃO
 
-A tabela de riscos residuais ainda marca diversos controles como `DEFERRED_CONTROL`, embora C04–C08 já tenham materializado RLS, RBAC, guards temporais, versionamento, START transacional e engine de SLA.
+A seção `Riscos residuais do SAFRA-C02` do `docs/PRIVACIDADE_THREAT_MODEL.md` foi reconciliada com os controles efetivamente materializados em C04–C08.
+
+Atualizações principais:
+
+- START classificado como controlado;
+- autorização/sessão RBAC classificada como `CONTROLLED_VERIFIED_C02_AUD`;
+- Data API tratada como superfície controlada por revoke + RLS + smoke;
+- retry/concorrência ligado a idempotência, unique key e advisory lock;
+- integridade temporal ligada a server clock, append-only e C07;
+- histórico ligado a owner/version guards + snapshot;
+- END/CANCEL permanecem com implementação funcional deferida, mas contrato de ameaça definido;
+- notificações permanecem deferidas a M05;
+- privacidade/base legal permanece fechada por D-49.
+
+**Conclusão:** risco ainda futuro/deferido não é confundido com controle ausente.
 
 ### C02-AUD-04 — ausência de teste concorrente real de START
 
@@ -115,10 +143,25 @@ O smoke anônimo atual cobre somente parte das tabelas. O schema Safra possui 17
 
 ### C02-AUD-09 — contratos de abuso futuros para END/CANCEL/12º card
 
-**Estado:** OPEN / IMPLEMENTAÇÃO FUNCIONAL DEFERIDA  
-**Severidade:** MEDIUM / MODELAGEM
+**Estado:** CLOSED / CONTRACT_DEFINED — IMPLEMENTAÇÃO FUNCIONAL DEFERIDA  
+**Severidade original:** MEDIUM / MODELAGEM
 
-END, CANCEL e 12º card ainda não possuem command/RPC produtivo. Nesta rodada, o threat model e os testes esperados serão formalizados, mas a implementação funcional continuará na fase própria do roadmap.
+Os contratos de abuso foram formalizados no `docs/PRIVACIDADE_THREAT_MODEL.md` sem antecipar implementação funcional.
+
+Contratos registrados:
+
+- `AB-END-01`: END apenas de ACTIVE, repetição/terminal rejeitados, ator e timestamp server-side e idempotência futura obrigatória;
+- `AB-CANCEL-01`: motivo obrigatório, apenas de ACTIVE, sem apagar histórico, sem converter CANCEL em sucesso de SLA e idempotência futura obrigatória;
+- `AB-CARD-01`: proposta permanece separada do cenário produtivo, sem autopublicação e com governança humana obrigatória.
+
+Fases responsáveis:
+
+- END/CANCEL: F01/F02;
+- 12º card/publicação governada: M10.
+
+A fonte canônica também registra os testes que deverão existir antes do PASS funcional dessas fases.
+
+**Conclusão:** o threat model está pronto antes da implementação, sem invadir o roadmap funcional.
 
 ### C02-AUD-10 — imutabilidade de treatment terminal
 
