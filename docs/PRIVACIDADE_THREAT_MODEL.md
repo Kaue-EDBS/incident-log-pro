@@ -80,22 +80,57 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 
 ## 7. Ameaças baseline
 
-| ID | Ameaça | Controle |
+| ID | Ameaça | Controle atual / contrato |
 |---|---|---|
-| T-01 | acesso anônimo | bloqueado no C00 |
-| T-02 | secret no Git | `.env` fora do tracking |
+| T-01 | acesso anônimo | grants mínimos + RLS; smoke HTTP/RPC de negação |
+| T-02 | secret no Git/browser | `.env` fora do tracking + browser recusa `sb_secret_`/service_role |
 | T-03 | elevação de privilégio | RBAC governado no banco; `user_metadata` e flag legado `safra_access` não autorizam |
-| T-04 | usuário autenticado executar START/END/CANCEL de forma indevida | auditoria + backend transacional + C04/C05 |
-| T-05 | elevação de responsabilidade/role pelo cliente | role mapping server-side + C04 |
-| T-06 | cancelamento sem justificativa | CANCELLED + motivo |
-| T-07 | exclusão física | proibida no fluxo normal |
-| T-08 | edição retroativa de versão | snapshot por scenario_version |
-| T-09 | dado pessoal indevido em texto livre | minimização + UX |
-| T-10 | integração cria protocolo | ativação humana |
-| T-11 | retry duplica ação | idempotência |
-| T-12 | ausência de fonte aparece como OK | estados explícitos |
-| T-13 | service role no browser | proibido |
-| T-14 | auditoria manipulável pelo frontend | persistência backend/DB |
+| T-04 | usuário autenticado executar START/END/CANCEL de forma indevida | predicado corporativo canônico + RPC transacional + guards de estado; END/CANCEL ainda sem RPC produtiva |
+| T-05 | elevação de responsabilidade/role pelo cliente | role mapping server-side + vínculo explícito de owner + trilha de RBAC |
+| T-06 | cancelamento sem justificativa ou para mascarar SLA | motivo obrigatório + somente de ACTIVE + CANCEL não conta como sucesso + histórico preservado |
+| T-07 | exclusão física | treatments/ownership/eventos protegidos contra destruição/reescrita |
+| T-08 | edição retroativa de versão | version freeze + treatment congela `scenario_version_id` |
+| T-09 | dado pessoal indevido em texto livre | minimização + finalidade + UX/revisão |
+| T-10 | integração/proposta cria protocolo sem governança | ativação humana; proposal não publica card/cenário automaticamente |
+| T-11 | retry/double submit duplica ação | idempotência + unique key + advisory lock + correlation ID |
+| T-12 | ausência de fonte aparece como OK | estados explícitos `NOT_MEASURABLE`/`NOT_CONFIGURED` e sem inferência |
+| T-13 | service role no browser | proibido + guard de inicialização do client |
+| T-14 | auditoria manipulável ou exfiltrada pelo frontend | persistência DB/server + roles + sessão corporativa canônica |
+| T-15 | token antigo/revogado reutiliza role já vinculada | `auth.sessions` viva + expiração JWT + domínio/provider aprovados também nas funções de RBAC |
+| T-16 | timestamps/eventos futuros alteram leitura histórica | server clock + append-only + engine temporal com `as_of` |
+
+### 7.1 Abuse cases canônicos
+
+| ID | Ação de abuso | Resultado obrigatório | Controle atual / fase |
+|---|---|---|---|
+| AB-START-01 | usuário sem sessão corporativa válida tenta START | rejeitar sem criar treatment/evento | `safra_is_corporate_user()` dentro da RPC; C08 |
+| AB-START-02 | retry do mesmo START com mesma chave/payload | devolver a mesma tratativa, sem duplicar evento | idempotency key + advisory lock + digest |
+| AB-START-03 | mesma idempotency key com payload/ator/cenário diferente | rejeitar `SAFRA_START_IDEMPOTENCY_CONFLICT` | RPC START |
+| AB-END-01 | END prematuro, repetido ou em estado terminal | rejeitar; END só parte de ACTIVE e usa horário oficial | guard já existe; command/RPC fica DEFERRED_TO_F01/F02 |
+| AB-CANCEL-01 | CANCEL usado para apagar falha, parar relógio ou esconder histórico | exigir motivo; preservar tratamento/eventos; não contabilizar como sucesso | constraint/guard + engine SLA; command/RPC DEFERRED_TO_F01/F02 |
+| AB-AUTHZ-01 | token expirado, sessão revogada ou domínio externo reutiliza role ligada ao `sub` | role lookup/audit retornam vazio/false e nenhum dado sensível | predicado corporativo também nas funções RBAC; C02-AUD |
+| AB-OWNER-01 | cliente tenta trocar owner, criticidade ou versão de tratativa ativa | bloquear rewrite; nova decisão/versionamento não altera snapshot já aberto | no direct grants + owner history guard + version freeze |
+| AB-API-01 | cliente enumera tabelas pela Data API | 401/403/sem grant; RLS permanece defense-in-depth | smoke cobre superfície Safra inteira |
+| AB-DATA-01 | cliente tenta INSERT/UPDATE/DELETE direto em tabelas Safra | negar por grant/RLS; mutações críticas somente por RPC governada | C05/C08 |
+| AB-LEAK-01 | usuário autenticado tenta extrair RBAC audit/roles sem sessão válida | retornar vazio/false; audit só para admin corporativo válido | C02-AUD |
+| AB-TIME-01 | cliente adultera `opened_at`, timestamps ou relógio de SLA | ignorar input de relógio; usar server clock e campos imutáveis | C05/C07/C08 |
+| AB-VERSION-01 | editar versão publicada/retirada para alterar tratativa ativa | rejeitar edição retroativa; tratamento continua na versão congelada | version guards |
+| AB-RETRY-01 | duas requisições concorrentes disputam a mesma chave START | exatamente uma tratativa e um `TREATMENT_OPENED` | advisory lock + unique key + teste concorrente |
+| AB-SLA-01 | tentar “parar” SLA via CANCEL, evento futuro ou `as_of` manipulado | CANCEL não é sucesso; futuro não reescreve snapshot; raw evaluator não é client-callable | C07 |
+| AB-CARD-01 | publicar 12º card/proposta sem governança | proposta não entra no catálogo produtivo automaticamente | DEFERRED_TO_M10; sem RPC produtiva de publicação nesta fase |
+
+### 7.2 Threat → controle → evidência
+
+| Classe | Controles | Evidências obrigatórias |
+|---|---|---|
+| autorização | canonical corporate predicate, live session, role mapping, owner mapping | `c01_corporate_domains.test.sql`, `c02_threat_model_authz.test.sql`, direct RPC denial |
+| Data API | revoke grants + RLS deny-by-default | direct API smoke cobrindo legado + 17 tabelas Safra |
+| START/retry | server-side RPC, immutable snapshot, idempotency, advisory lock, correlation ID | C08 pgTAP + C02 conflito de chave + teste concorrente real |
+| histórico/versionamento | guards de versão/owner/treatment + append-only | C05/C06 tests |
+| tempo/SLA | server timestamps + engine de SLA + snapshot histórico | matriz adversarial C07 |
+| END/CANCEL | guard terminal e motivo obrigatório; commands ainda futuros | testes de guard atuais + contrato AB-END/AB-CANCEL antes da RPC futura |
+| proposta/12º card | proposal separado de scenario produtivo | contrato AB-CARD-01; implementação futura M10 |
+| minimização | campos necessários, texto livre governado, sem secrets | privacy review + D-49 |
 
 ## 8. Trust model
 
@@ -149,19 +184,19 @@ Mudança de identidade, integração, dados pessoais, retenção, arquivos ou ex
 - o gate de privacidade/base legal exigido antes do release com usuários reais foi confirmado como atendido em D-49; a política de retenção permanece obrigatória.
 
 
-## 12. Riscos residuais do SAFRA-C02 — 25/09/2026
+## 12. Riscos residuais do SAFRA-C02 — atualização C02-AUD 27/09/2026
 
-| ID | Risco residual | Estado | Fase responsável | Bloqueia C02? |
+| ID | Risco residual | Estado atual | Controle/fase restante | Bloqueia recertificação? |
 |---|---|---|---|---|
-| RR-C02-01 | uso indevido de START/END/CANCEL por usuário autenticado | DEFERRED_CONTROL | C04/C05/F01/F02 | não |
-| RR-C02-02 | role/claim desatualizado em sessão autenticada | DEFERRED_CONTROL | C04 | não |
-| RR-C02-03 | enumeração ou leitura excessiva de dados internos | DEFERRED_CONTROL | C04/F08 | não |
-| RR-C02-04 | dado pessoal indevido em texto livre/log/notificação | DEFERRED_CONTROL | C08/M05/F08 | não |
-| RR-C02-05 | duplicidade por retry/concorrência | DEFERRED_CONTROL | C05 | não |
-| RR-C02-06 | manipulação de estado/timestamp para afetar SLA | DEFERRED_CONTROL | C05/C07/M04/F01/F02 | não |
-| RR-C02-07 | alteração de cenário/owner/criticidade afetando histórico | DEFERRED_CONTROL | C05/C06/M10 | não |
-| RR-C02-08 | destinatário de notificação incorreto ou duplicado | DEFERRED_CONTROL | M05 | não |
-| RR-C02-09 | enquadramento/base legal formal | CLOSED_BY_D49 | governança/privacidade | não — gate confirmado como atendido em 27/09/2026 |
+| RR-C02-01 | uso indevido de START/END/CANCEL por usuário autenticado | START_CONTROLLED / END_CANCEL_CONTRACT_DEFINED | START C08; END/CANCEL F01/F02 | não, desde que RPC futura cumpra AB-END/AB-CANCEL |
+| RR-C02-02 | role/claim desatualizado ou sessão revogada | CONTROLLED_C02_AUD | canonical predicate também em role lookup/audit | sim até testes/PRIMARY confirmarem |
+| RR-C02-03 | enumeração ou leitura excessiva de dados internos | CONTROLLED_CURRENT_SURFACE | sem grants diretos + RLS + full Data API smoke | não |
+| RR-C02-04 | dado pessoal indevido em texto livre/log/notificação | RESIDUAL_ACCEPTED_WITH_MINIMIZATION | UX C08 + notificações M05 + relatórios F08 | não |
+| RR-C02-05 | duplicidade por retry/concorrência | CONTROLLED_START | unique idempotency + advisory lock + retry/conflict/concurrency tests | não |
+| RR-C02-06 | manipulação de estado/timestamp para afetar SLA | CONTROLLED_CURRENT_SURFACE | server clock + immutable events + C07; commands END/CANCEL futuros | não |
+| RR-C02-07 | alteração de cenário/owner/criticidade afetando histórico | CONTROLLED_HISTORY | owner/version guards + snapshot; novas decisões criam nova versão | não |
+| RR-C02-08 | destinatário de notificação incorreto ou duplicado | DEFERRED_TO_M05 | política/provider/dedupe de notificação | não |
+| RR-C02-09 | enquadramento/base legal formal | CLOSED_BY_D49 | governança/privacidade | não |
 
 ### Regra de fechamento
 
@@ -177,11 +212,11 @@ O fechamento do C02 foi reavaliado contra o roadmap e as implementações poster
 | Ação | Estado da especificação C02 | Estado atual da evidência |
 |---|---|---|
 | ameaças de negócio centrais | PASS | ameaças registradas e preservadas |
-| abusos API/dados/retry/SLA | PASS | casos AB-API-01, AB-DATA-01, AB-LEAK-01, AB-RETRY-01 e AB-SLA-01 formalizados |
+| abusos API/dados/retry/SLA | PASS histórico / RECONCILIADO C02-AUD | abuse cases canônicos definidos nas seções 7.1–7.2 e ligados a controles/testes atuais |
 | controles + fase responsável | PASS | todos os controles possuem destino; vários já implementados em C04-C07 |
 | quatro classes de testes | PASS | positivos, negativos, concorrência/retry e limites/bordas derivados |
 | contrato de evidência | PASS | ator, correlation_id, estados, ação, resultado, auditoria, timestamps, notificações e efeitos colaterais definidos |
 | riscos residuais | PASS | riscos explicitados e com owner/fase; não significam default ou inferência |
-| gates C02 | PASS | G3.5, THREAT-001 e AUTHZ-001 encerrados no escopo de modelagem |
+| gates C02 | PASS histórico / RECERTIFICAÇÃO EM EXECUÇÃO | G3.5, THREAT-001 e AUTHZ-001 só voltam a PASS atual após correções, gates e verificação no PRIMARY |
 
 Observação: o C02 aprova modelo de ameaça, abuso e contrato de autorização. A execução integral de todos os testes funcionais permanece distribuída nas fases de implementação previstas no roadmap; isso não reabre o C02.
