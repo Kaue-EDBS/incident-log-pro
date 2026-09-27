@@ -10,7 +10,7 @@ PUBLIC_KEY="${PUBLISHABLE_KEY:-${ANON_KEY:-}}"
 : "${API_BASE:?Supabase local API URL was not exported}"
 : "${PUBLIC_KEY:?Supabase local public API key was not exported}"
 
-tables=(applications incidents scenarios scenario_owners treatments governance_issues)
+tables=(applications incidents operational_areas systems scenarios scenario_versions scenario_owners scenario_version_impacted_areas scenario_version_systems scenario_slas treatments treatment_impacted_areas treatment_impact_measurements treatment_events treatment_escalations scenario_proposals scenario_proposal_owner_responses notifications_log governance_issues)
 
 for table in "${tables[@]}"; do
   body_file="$(mktemp)"
