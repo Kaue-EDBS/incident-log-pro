@@ -44,7 +44,6 @@ Calcular estado de SLA a partir de eventos e timestamps oficiais sem inferir reg
 ## Alvo estruturado
 
 Unidades suportadas no núcleo:
-
 - MINUTE;
 - HOUR;
 - DAY.
@@ -56,7 +55,6 @@ Valor deve ser maior que zero.
 O texto de SLA da Matriz v3 continua preservado como fonte canônica, mas não foi convertido automaticamente em `scenario_slas`.
 
 Motivo:
-
 - start_event/end_event nem sempre estão formalmente definidos;
 - alguns thresholds continuam em WAITING_HUMAN_DECISION;
 - versões v1 já estão PUBLISHED e não podem ser reescritas.
@@ -68,7 +66,6 @@ Quando uma regra for homologada, ela nasce em nova `scenario_version`.
 C07 implementa o motor e suas bordas.
 
 Não antecipa:
-
 - START funcional;
 - END/CANCEL funcional;
 - persistência automática de evento SLA_BREACHED;
@@ -77,6 +74,7 @@ Não antecipa:
 - thresholds ainda não decididos.
 
 Esses itens pertencem às fases C08/M02/M04/M05/F01/F02 conforme roadmap.
+
 
 ## Contrato estrutural obrigatório do SLA
 
@@ -116,7 +114,6 @@ Teste:
 `supabase/tests/database/c07_sla_model_contract.test.sql`
 
 CI:
-
 - App Smoke Run 90 = SUCCESS;
 - Database Disposable Run 128 = SUCCESS;
 - rebuild = PASS;
@@ -125,7 +122,6 @@ CI:
 - lint = PASS.
 
 PRIMARY:
-
 - quatro campos = NOT NULL;
 - RLS = ENABLED;
 - constraints de valor/unidade/eventos = ativas;
@@ -136,6 +132,7 @@ PRIMARY:
 C07_SLA_MODEL = PASS
 STRUCTURED_SLA_ROWS_INFERRED = 0
 ```
+
 
 ## Regra aprovada — duração por timestamps
 
@@ -148,13 +145,13 @@ canonical_duration_unit = seconds
 ```
 
 Regras:
-
 - timestamps oficiais são a única fonte de verdade;
 - duração negativa é inválida;
 - END anterior ao START resulta em `NOT_MEASURABLE`;
 - a UI pode formatar segundos em minutos/horas/dias sem alterar a medida canônica.
 
 Estado: **APPROVED — 27/09/2026**.
+
 
 ## Regra aprovada — timezone técnico e timezone de analytics
 
@@ -176,7 +173,6 @@ ANALYTICS_BUSINESS_TIMEZONE = America/Sao_Paulo
 ```
 
 O timestamp UTC deve ser convertido para `America/Sao_Paulo` **antes** de:
-
 - obter a data;
 - agrupar por hora;
 - definir início/fim de Hoje;
@@ -206,11 +202,11 @@ bucket Sao Paulo -> 27/09  (correto)
 - CI roda o teste de frontend com `TZ=UTC` e `TZ=Asia/Tokyo`.
 
 Evidência final:
-
 - App Smoke Run 96 = SUCCESS;
 - Database Disposable Run 134 = SUCCESS.
 
 Estado: **APPROVED — 27/09/2026**.
+
 
 ## Regra aprovada — relógio não-negativo e semântica de CANCEL
 
@@ -230,7 +226,6 @@ Depois do breach, `remaining_seconds` permanece em zero e o estado comunica a vi
 `CANCEL` não é sinônimo de cumprimento do SLA.
 
 Regras:
-
 - CANCEL antes do prazo => `NOT_MEASURABLE`;
 - CANCEL exatamente no prazo => `NOT_MEASURABLE`;
 - CANCEL depois do prazo => `BREACHED`;
@@ -240,12 +235,12 @@ Regras:
 Somente o `end_event` real pode produzir estado `COMPLETED_*`.
 
 Evidência:
-
 - `supabase/tests/database/c07_clock_cancel_contract.test.sql`;
 - Database Disposable Run 136 = SUCCESS;
 - PRIMARY smoke = PASS.
 
 Estado: **APPROVED — 27/09/2026**.
+
 
 ## Regra aprovada — END somente em TREATMENT_RESOLVED
 
@@ -279,13 +274,13 @@ Teste:
 `supabase/tests/database/c07_resolved_end_only.test.sql`
 
 CI:
-
 - App Smoke Run 101 = SUCCESS;
 - Database Disposable Run 139 = SUCCESS;
 - 11/11 testes da regra = PASS;
 - rebuild/rollback/lint = PASS.
 
 Estado: **APPROVED — 27/09/2026**.
+
 
 ## Regras aprovadas — múltiplos SLAs e evento ausente
 
@@ -336,12 +331,12 @@ Teste permanente:
 `supabase/tests/database/c07_multi_sla_missing_event_contract.test.sql`.
 
 Evidência final:
-
 - PRIMARY smoke transacional = PASS;
 - App Smoke Run 104 = SUCCESS;
 - Database Disposable Run 142 = SUCCESS.
 
 Estado: **APPROVED — 27/09/2026**.
+
 
 ## Matriz adversarial aprovada — bordas, DST e manipulação de relógio
 
@@ -394,7 +389,6 @@ resultado = ON_TRACK
 Antes da migration `20260927113000_c07_historical_snapshot_clock_guard.sql`, esse caso podia retornar `COMPLETED_LATE`. A brecha foi corrigida.
 
 Outras proteções:
-
 - `as_of < START` => `NOT_MEASURABLE / CLOCK_BEFORE_START`;
 - `as_of IS NULL` => `NOT_MEASURABLE / AS_OF_MISSING`;
 - eventos futuros não apagam breach histórico;
@@ -411,6 +405,7 @@ PRIMARY_SMOKE = PASS
 
 Estado: **APPROVED — 27/09/2026**.
 
+
 ## Regra aprovada — tolerância temporal documentada
 
 O SLA possui tolerância zero por padrão.
@@ -424,7 +419,6 @@ tolerance_documentation
 ```
 
 Regras:
-
 - `tolerance_value > 0`;
 - `tolerance_unit in (MINUTE,HOUR,DAY)`;
 - `tolerance_documentation` obrigatória e não vazia;
@@ -443,7 +437,6 @@ effective_deadline =
 ```
 
 A tolerância não altera:
-
 - START observado;
 - END observado;
 - elapsed_seconds real;
@@ -452,7 +445,6 @@ A tolerância não altera:
 Ela altera somente a fronteira usada para ON_TRACK/BREACHED e COMPLETED_ON_TIME/COMPLETED_LATE.
 
 Evidência:
-
 - `20260927120500_c07_documented_tolerance.sql`;
 - `c07_documented_tolerance.test.sql`;
 - PRIMARY 18/18 PASS.

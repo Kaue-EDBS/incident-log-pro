@@ -11,64 +11,62 @@
 
 ## 2. Decisões consolidadas
 
-| ID   | Decisão                                                                                                                                                                           | Status                           |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| D-01 | Evoluir `incident-log-pro`; não criar app paralelo                                                                                                                                | APPROVED                         |
-| D-02 | Preservar `applications/incidents` para TI                                                                                                                                        | APPROVED                         |
-| D-03 | Geral é visão agregadora, não área                                                                                                                                                | APPROVED                         |
-| D-04 | Detecção e ativação são conceitos separados                                                                                                                                       | APPROVED                         |
-| D-05 | Protocolo não é chamado                                                                                                                                                           | APPROVED                         |
-| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações                                                        | APPROVED — decisão vigente       |
-| D-07 | Tratativa errada é CANCELLED; não apagar                                                                                                                                          | APPROVED                         |
-| D-08 | Novo cenário exige governança                                                                                                                                                     | APPROVED                         |
-| D-09 | Criticidade usa CRITICAL/HIGH/MODERATE                                                                                                                                            | APPROVED; lista crítica pendente |
-| D-10 | Recorrência não define crise sozinha                                                                                                                                              | APPROVED                         |
-| D-11 | Comitê é escalonamento, não status                                                                                                                                                | APPROVED                         |
-| D-12 | Lovable Cloud é backend provider e banco é PRIMARY                                                                                                                                | APPROVED                         |
-| D-13 | Stack do PRIMARY é PostgreSQL/Supabase                                                                                                                                            | APPROVED                         |
-| D-14 | Histórico Git publicado não deve ser reescrito                                                                                                                                    | APPROVED                         |
-| D-15 | Acesso `anon` ao banco interno é proibido                                                                                                                                         | APPROVED                         |
-| D-16 | G5 C00 fecha P0; RBAC final fica no C04/C05                                                                                                                                       | APPROVED                         |
-| D-17 | Microsoft Entra ID corporativo via SSO será o provedor de identidade                                                                                                              | APPROVED                         |
-| D-18 | Família administrativa e scenario_owner compõem o modelo de responsabilidade                                                                                                      | SUPERSEDED_BY_D19_D34            |
-| D-19 | safra_admin dividido em plataforma, governança e executivo                                                                                                                        | APPROVED                         |
-| D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico                                                                                                         | APPROVED                         |
-| D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards                                                                                       | APPROVED                         |
-| D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair                                                                                                            | APPROVED                         |
-| D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min                                                                                                           | APPROVED                         |
-| D-24 | Application criticality = MEDIUM                                                                                                                                                  | APPROVED                         |
-| D-25 | replica_enabled = false; backup/restore continua obrigatório                                                                                                                      | APPROVED                         |
-| D-26 | Política de retenção vinculada ao fim formal da Safra, com anonimização/eliminação posterior quando identidade não for necessária                                                 | APPROVED                         |
-| D-27 | Gates G3 e G3.25 fechados; SAFRA-C01 concluído com 0 UNKNOWN material                                                                                                             | APPROVED                         |
-| D-28 | SAFRA-C02 concluído; G3.5, THREAT-001 e AUTHZ-001 = PASS                                                                                                                          | APPROVED                         |
-| D-29 | Vocabulário canônico do domínio congelado em docs/GLOSSARIO_DOMINIO.md                                                                                                            | APPROVED                         |
-| D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático                                                              | APPROVED                         |
-| D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001                                                                                              | APPROVED                         |
-| D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default                                                                 | APPROVED                         |
-| D-33 | Login funcional exclusivamente via Microsoft Entra ID; Lovable Cloud Auth cria sessão Supabase; login local por senha proibido                                                    | APPROVED / HOMOLOGATED           |
-| D-34 | Role mapping governado no banco e ownership específico separado de papéis administrativos                                                                                         | APPROVED / IMPLEMENTED           |
-| D-35 | RLS e autorização server-side usam o mesmo predicado corporativo; safra_access removido                                                                                           | APPROVED / IMPLEMENTED           |
-| D-36 | supabase/migrations é a autoridade canônica; migration C04 capturada e versionada                                                                                                 | APPROVED                         |
-| D-37 | Gates C04 não fecham sem evidência explícita do Manual EBSA; G5 parcial e ID-001/ID-002/AUDIT-001 bloqueados por evidência                                                        | APPROVED                         |
-| D-38 | Fechamento dos gaps restantes de C04 será executado no ambiente Lovable; recuperação e MFA permanecem dependências do Entra/TI                                                    | APPROVED                         |
-| D-39 | Auditoria pós-Lovable confirma controles internos; ID-001/ID-002 permanecem dependentes de evidência externa do Entra/TI                                                          | SUPERSEDED_BY_D40                |
-| D-40 | Recuperação e MFA Microsoft são controles corporativos externos à aplicação; C04 pode fechar no escopo do Painel                                                                  | APPROVED                         |
-| D-41 | Schema v2 canônico materializado no PRIMARY e versionado em supabase/migrations                                                                                                   | APPROVED / IMPLEMENTED           |
-| D-42 | supabase/migrations é a única autoridade de migrations; Drizzle fica sem autoridade de deploy; drift C00/C04/C05 reconciliado                                                     | APPROVED / IMPLEMENTED           |
-| D-43 | Banco descartável padrão = Supabase local via CLI/Docker; rollback pós-C06 = forward fix por padrão                                                                               | APPROVED / IMPLEMENTED           |
-| D-44 | Criticidade ausente nos cenários v1 é estado explícito e não bloqueia START; nenhuma classificação será inferida                                                                  | APPROVED                         |
-| D-45 | Cenários com threshold/fonte de gatilho ausente operam em START manual no MVP; automação permanece desabilitada                                                                   | APPROVED                         |
-| D-46 | Cenário 9 permanece START manual enquanto não existir fonte oficial do mínimo curva A; ruptura automática fica desabilitada                                                       | APPROVED                         |
-| D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | APPROVED                         |
+| ID | Decisão | Status |
+|---|---|---|
+| D-01 | Evoluir `incident-log-pro`; não criar app paralelo | APPROVED |
+| D-02 | Preservar `applications/incidents` para TI | APPROVED |
+| D-03 | Geral é visão agregadora, não área | APPROVED |
+| D-04 | Detecção e ativação são conceitos separados | APPROVED |
+| D-05 | Protocolo não é chamado | APPROVED |
+| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — decisão vigente |
+| D-07 | Tratativa errada é CANCELLED; não apagar | APPROVED |
+| D-08 | Novo cenário exige governança | APPROVED |
+| D-09 | Criticidade usa CRITICAL/HIGH/MODERATE | APPROVED; lista crítica pendente |
+| D-10 | Recorrência não define crise sozinha | APPROVED |
+| D-11 | Comitê é escalonamento, não status | APPROVED |
+| D-12 | Lovable Cloud é backend provider e banco é PRIMARY | APPROVED |
+| D-13 | Stack do PRIMARY é PostgreSQL/Supabase | APPROVED |
+| D-14 | Histórico Git publicado não deve ser reescrito | APPROVED |
+| D-15 | Acesso `anon` ao banco interno é proibido | APPROVED |
+| D-16 | G5 C00 fecha P0; RBAC final fica no C04/C05 | APPROVED |
+| D-17 | Microsoft Entra ID corporativo via SSO será o provedor de identidade | APPROVED |
+| D-18 | Família administrativa e scenario_owner compõem o modelo de responsabilidade | SUPERSEDED_BY_D19_D34 |
+| D-19 | safra_admin dividido em plataforma, governança e executivo | APPROVED |
+| D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico | APPROVED |
+| D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards | APPROVED |
+| D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | APPROVED |
+| D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED |
+| D-24 | Application criticality = MEDIUM | APPROVED |
+| D-25 | replica_enabled = false; backup/restore continua obrigatório | APPROVED |
+| D-26 | Política de retenção vinculada ao fim formal da Safra, com anonimização/eliminação posterior quando identidade não for necessária | APPROVED |
+| D-27 | Gates G3 e G3.25 fechados; SAFRA-C01 concluído com 0 UNKNOWN material | APPROVED |
+| D-28 | SAFRA-C02 concluído; G3.5, THREAT-001 e AUTHZ-001 = PASS | APPROVED |
+| D-29 | Vocabulário canônico do domínio congelado em docs/GLOSSARIO_DOMINIO.md | APPROVED |
+| D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático | APPROVED |
+| D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | APPROVED |
+| D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default | APPROVED |
+| D-33 | Login funcional exclusivamente via Microsoft Entra ID; Lovable Cloud Auth cria sessão Supabase; login local por senha proibido | APPROVED / HOMOLOGATED |
+| D-34 | Role mapping governado no banco e ownership específico separado de papéis administrativos | APPROVED / IMPLEMENTED |
+| D-35 | RLS e autorização server-side usam o mesmo predicado corporativo; safra_access removido | APPROVED / IMPLEMENTED |
+| D-36 | supabase/migrations é a autoridade canônica; migration C04 capturada e versionada | APPROVED |
+| D-37 | Gates C04 não fecham sem evidência explícita do Manual EBSA; G5 parcial e ID-001/ID-002/AUDIT-001 bloqueados por evidência | APPROVED |
+| D-38 | Fechamento dos gaps restantes de C04 será executado no ambiente Lovable; recuperação e MFA permanecem dependências do Entra/TI | APPROVED |
+| D-39 | Auditoria pós-Lovable confirma controles internos; ID-001/ID-002 permanecem dependentes de evidência externa do Entra/TI | SUPERSEDED_BY_D40 |
+| D-40 | Recuperação e MFA Microsoft são controles corporativos externos à aplicação; C04 pode fechar no escopo do Painel | APPROVED |
+| D-41 | Schema v2 canônico materializado no PRIMARY e versionado em supabase/migrations | APPROVED / IMPLEMENTED |
+| D-42 | supabase/migrations é a única autoridade de migrations; Drizzle fica sem autoridade de deploy; drift C00/C04/C05 reconciliado | APPROVED / IMPLEMENTED |
+| D-43 | Banco descartável padrão = Supabase local via CLI/Docker; rollback pós-C06 = forward fix por padrão | APPROVED / IMPLEMENTED |
+| D-44 | Criticidade ausente nos cenários v1 é estado explícito e não bloqueia START; nenhuma classificação será inferida | APPROVED |
+| D-45 | Cenários com threshold/fonte de gatilho ausente operam em START manual no MVP; automação permanece desabilitada | APPROVED |
+| D-46 | Cenário 9 permanece START manual enquanto não existir fonte oficial do mínimo curva A; ruptura automática fica desabilitada | APPROVED |
+| D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | APPROVED |
 
 ## 3. ADRs
 
 ### ADR-001 — Evoluir incident-log-pro
-
 **APPROVED**.
 
 ### ADR-002 — PRIMARY e REPLICA
-
 PRIMARY Lovable Cloud: **APPROVED**.
 REPLICA: **APPROVED = false**.
 
@@ -77,7 +75,6 @@ Não será mantido segundo banco sincronizado.
 Isto não elimina a obrigação de backup, restore e recovery testado. Para `service_class=CRITICO`, a estratégia de recuperação deverá provar RTO 30 min e RPO 5 min.
 
 ### ADR-003 — Service class da aplicação
-
 **APPROVED — 24/09/2026**.
 
 A aplicação Painel Safra foi classificada como:
@@ -92,7 +89,6 @@ RPO = 5 min
 Esta decisão pertence ao Framework EBSA e classifica o próprio software. Não altera nem deriva da criticidade dos cenários Safra.
 
 ### ADR-004 — Identity provider
-
 **APPROVED — 24/09/2026**.
 
 O Painel Safra utilizará **Microsoft Entra ID corporativo via SSO** como provedor de identidade.
@@ -105,27 +101,21 @@ Decisões associadas:
 - configuração de papéis e delegações continua separada no SAFRA-C04.
 
 ### ADR-005 — Operações críticas via RPC transacional
-
 **PROPOSED**.
 
 ### ADR-006 — Geral como visão
-
 **APPROVED**.
 
 ### ADR-007 — Ativação manual no MVP
-
 **APPROVED**.
 
 ### ADR-008 — OTRS fora do MVP
-
 **APPROVED para o MVP**; hipótese futura.
 
 ### ADR-009 — Integrações uma por ciclo
-
 **PROPOSED**.
 
 ### ADR-010 — Tooling de migrations
-
 **APPROVED — 25/09/2026**.
 
 Autoridade canônica: `supabase/migrations`.
@@ -161,24 +151,25 @@ Toda decisão material deve registrar ID, data, contexto, decisão, alternativas
 
 Não esconder decisão em prompt, commit ou mensagem de chat.
 
+
 ## 7. Registro de perfil — SAFRA-C01 / 24-09-2026
 
-| Tema                     | Estado registrado                                                                                                                |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| Service class            | **CRITICO — APPROVED**; SLO 99,95%; RTO 30 min; RPO 5 min                                                                        |
-| Criticidade da aplicação | **MEDIUM — APPROVED**; independente de service_class=CRITICO e da criticidade dos cenários                                       |
-| Auth                     | Microsoft Entra ID corporativo via SSO aprovado; frontend ainda não implementado; 0 usuários Auth                                |
-| Papéis privilegiados     | safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner; service_role permanece técnico/server-side |
-| Dados pessoais           | **sim** — identidade interna, nome, e-mail, papéis, autoria/auditoria e possíveis dados incidentais em texto livre               |
-| Integrações              | nenhuma integração externa ativa no MVP/código atual; futuras entram por ciclo governado                                         |
-| REPLICA                  | **false — APPROVED**; backup/restore continua obrigatório                                                                        |
-| API                      | nenhuma API pública; Data API interna existe e é protegida por grants + RLS                                                      |
-| Regras de domínio        | obrigatórias; 17 regras Safra + 4 regras legadas TI registradas; ativação automática de treatment = false                        |
+| Tema | Estado registrado |
+|---|---|
+| Service class | **CRITICO — APPROVED**; SLO 99,95%; RTO 30 min; RPO 5 min |
+| Criticidade da aplicação | **MEDIUM — APPROVED**; independente de service_class=CRITICO e da criticidade dos cenários |
+| Auth | Microsoft Entra ID corporativo via SSO aprovado; frontend ainda não implementado; 0 usuários Auth |
+| Papéis privilegiados | safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner; service_role permanece técnico/server-side |
+| Dados pessoais | **sim** — identidade interna, nome, e-mail, papéis, autoria/auditoria e possíveis dados incidentais em texto livre |
+| Integrações | nenhuma integração externa ativa no MVP/código atual; futuras entram por ciclo governado |
+| REPLICA | **false — APPROVED**; backup/restore continua obrigatório |
+| API | nenhuma API pública; Data API interna existe e é protegida por grants + RLS |
+| Regras de domínio | obrigatórias; 17 regras Safra + 4 regras legadas TI registradas; ativação automática de treatment = false |
 
 Este registro descreve o estado atual e não transforma os itens pendentes em decisões aprovadas.
 
-### ADR-011 — Separação entre criticidade de cenário e criticidade da aplicação
 
+### ADR-011 — Separação entre criticidade de cenário e criticidade da aplicação
 **APPROVED — 24/09/2026**.
 
 - `CRITICAL/HIGH/MODERATE` pertence ao domínio dos cenários/protocolos e é suportado pelos materiais-mãe;
@@ -186,8 +177,8 @@ Este registro descreve o estado atual e não transforma os itens pendentes em de
 - SLO/RTO/RPO da aplicação não podem ser derivados dos SLAs dos protocolos;
 - a lista dos quatro cenários `CRITICAL` permanece aberta em `GI-SAFRA-001`; não há evidência nominal suficiente para classificá-los por inferência.
 
-### ADR-012 — Modelo de papéis funcionais
 
+### ADR-012 — Modelo de papéis funcionais
 **SUPERSEDED — 25/09/2026 por ADR-013 / ADR-025.**
 
 Papéis aprovados:
@@ -204,16 +195,14 @@ Regras estruturais:
 
 A matriz fina de permissões está **DEFERRED_TO_SAFRA_C04**.
 
-### ADR-013 — Subtipos de safra_admin
 
+### ADR-013 — Subtipos de safra_admin
 **APPROVED — 24/09/2026**.
 
 #### safra_platform_admin
-
 Administração técnica da plataforma.
 
 Membros permanentes:
-
 - kaue.pastrello@editoradobrasil.com.br
 - amanda.bueno@editoradobrasil.com.br
 - vinicius.moraes@editoradobrasil.com.br
@@ -222,15 +211,12 @@ Membros permanentes:
 Amanda, Vinicius e João permanecem com acesso técnico permanente como substitutos de Kaue.
 
 #### safra_governance_admin
-
 Governança funcional de todos os cards e do 12º card.
 
 Membro:
-
 - jair.silva@editoradobrasil.com.br
 
 Responsabilidades:
-
 - supervisionar todos os cards;
 - acessar relatórios;
 - tomar decisões de governança;
@@ -241,15 +227,12 @@ Responsabilidades:
 Jiane Rodrigues não exerce mais governança global. Ela permanece como `scenario_owner` dos cards sob sua responsabilidade e recebe apenas as comunicações desses cards.
 
 #### safra_executive_admin
-
 Visão executiva/analytics.
 
 Membro:
-
 - bruno.palhao@editoradobrasil.com.br
 
 Responsabilidades:
-
 - acesso a analytics de todos os cards e métricas;
 - não recebe e-mails operacionais;
 - não realiza manutenção técnica da plataforma.
@@ -257,13 +240,11 @@ Responsabilidades:
 A composição final do analytics será decidida posteriormente em regras de negócio e Frontend.
 
 ### ADR-014 — 12º card como proposta de novo cenário
-
 **APPROVED — 24/09/2026**.
 
 Qualquer usuário autenticado poderá abrir o formulário do 12º card.
 
 Campos:
-
 - nome — preenchido automaticamente pela identidade Microsoft;
 - e-mail — preenchido automaticamente pela identidade Microsoft;
 - título — texto livre;
@@ -284,8 +265,8 @@ A submissão não cria protocolo produtivo automaticamente. O fluxo aprovado é:
 
 Jiane participa desse fluxo como candidata a owner, não como governança global.
 
-### ADR-015 — Application criticality
 
+### ADR-015 — Application criticality
 **APPROVED — 24/09/2026**.
 
 ```text
@@ -301,8 +282,8 @@ Ela é independente de:
 
 A combinação `service_class=CRITICO` + `application_criticality=MEDIUM` é uma decisão explícita do projeto.
 
-### ADR-016 — Política de retenção
 
+### ADR-016 — Política de retenção
 **APPROVED — 24/09/2026**.
 
 Regra:
@@ -312,8 +293,8 @@ Regra:
 - histórico operacional e métricas podem ser preservados para comparação entre Safras quando não dependerem de identificação pessoal;
 - retenção indefinida de identidade não é o padrão do projeto.
 
-### ADR-017 — Fechamento do SAFRA-C01
 
+### ADR-017 — Fechamento do SAFRA-C01
 **APPROVED — 24/09/2026**.
 
 Resultado:
@@ -327,8 +308,8 @@ SAFRA-C01 = CONCLUIDO
 
 Pendências de fases posteriores não foram apagadas. Elas foram classificadas como `DEFERRED_TO_<fase>` e deverão ser retomadas nos respectivos gates.
 
-### ADR-018 — Fechamento do SAFRA-C02
 
+### ADR-018 — Fechamento do SAFRA-C02
 **APPROVED — 25/09/2026**.
 
 Resultado:
@@ -342,16 +323,16 @@ AUTHZ-001 = PASS
 
 O fechamento aprova o threat model, os controles requeridos, os testes derivados e a classificação de riscos residuais. Não antecipa a implementação de RLS/RBAC/RPCs/constraints, que permanece nas fases definidas pelo roadmap.
 
-### ADR-019 — Vocabulário canônico do domínio
 
+### ADR-019 — Vocabulário canônico do domínio
 **APPROVED — 25/09/2026**.
 
 `docs/GLOSSARIO_DOMINIO.md` passa a ser a fonte canônica para os termos funcionais do Painel Safra.
 
 As distinções cenário/versão/tratativa, gatilho/detecção, protocolo/tratativa, owner/ator da ação, área responsável/impactada, SLA/SLO-RTO-RPO, criticidade/escalonamento e END/CANCEL não podem ser redefinidas silenciosamente.
 
-### ADR-020 — Cenário, versão, tratativa e impacto
 
+### ADR-020 — Cenário, versão, tratativa e impacto
 **APPROVED — 25/09/2026**.
 
 - cenário identifica o tipo de contingência;
@@ -364,8 +345,8 @@ As distinções cenário/versão/tratativa, gatilho/detecção, protocolo/tratat
 - impacto desconhecido não é zero;
 - não existe score agregado, faixas ou thresholds automáticos sem regra de negócio aprovada.
 
-### ADR-021 — Quatro CRITICAL somente com evidência suficiente
 
+### ADR-021 — Quatro CRITICAL somente com evidência suficiente
 **APPROVED — 25/09/2026**.
 
 A revisão das fontes não identificou nominalmente, com evidência suficiente, os quatro cenários que devem receber `CRITICAL`.
@@ -375,20 +356,18 @@ A revisão das fontes não identificou nominalmente, com evidência suficiente, 
 - Protocolos v2: preliminar; uso textual de “crítico” não equivale à classificação formal.
 
 Decisão:
-
 - não inferir a lista;
 - registrar `GI-SAFRA-001`;
 - manter classificação produtiva pendente de decisão humana formal;
 - quando decidida, aplicar por nova `scenario_version`, sem alterar histórico.
 
-### ADR-022 — Handoff do domínio para C05
 
+### ADR-022 — Handoff do domínio para C05
 **APPROVED — 25/09/2026**.
 
 O `docs/GLOSSARIO_DOMINIO.md` v1.1 é o contrato semântico de entrada do SAFRA-C05.
 
 Decisões derivadas para preservar histórico:
-
 - START congela `scenario_version_id`;
 - tratativa persiste `owner_id_at_start` e `responsible_area_id_at_start`;
 - áreas potencialmente impactáveis e sistemas associados são relações da versão;
@@ -398,8 +377,8 @@ Decisões derivadas para preservar histórico:
 
 Alteração dessas fronteiras exige retorno ao domínio antes de migration.
 
-### ADR-023 — Microsoft Entra ID como único login funcional
 
+### ADR-023 — Microsoft Entra ID como único login funcional
 **APPROVED / CODE_IMPLEMENTED — 25/09/2026**.
 
 Fluxo alvo:
@@ -414,7 +393,6 @@ Microsoft Entra ID
 ```
 
 Regras:
-
 - não existe login local por senha no produto;
 - frontend oferece apenas entrada Microsoft;
 - backend Auth deve ter Email/Password desabilitado antes da homologação;
@@ -423,8 +401,8 @@ Regras:
 
 Homologação concluída em 25/09/2026. O provider Microsoft foi configurado via Lovable Cloud Auth e houve autenticação corporativa real bem-sucedida; a identidade resultante foi registrada no Supabase Auth com provider `azure` e `last_sign_in_at` preenchido.
 
-### ADR-024 — Homologação runtime do Microsoft SSO
 
+### ADR-024 — Homologação runtime do Microsoft SSO
 **APPROVED / HOMOLOGATED — 25/09/2026**.
 
 A implementação efetiva utiliza:
@@ -439,7 +417,6 @@ Microsoft Entra ID
 ```
 
 Evidências:
-
 - commit de configuração do provider Microsoft: `68f72ea69cd20d02f88633191b57922cfc710350`;
 - usuário real autenticado;
 - `auth.users.last_sign_in_at` preenchido;
@@ -448,24 +425,21 @@ Evidências:
 
 A decisão de produto continua: não oferecer login local por senha.
 
-### ADR-025 — Role mapping sem herança automática de ownership
 
+### ADR-025 — Role mapping sem herança automática de ownership
 **APPROVED / IMPLEMENTED — 25/09/2026**.
 
 Fonte de verdade:
-
 - `private.safra_principals`;
 - `private.safra_role_grants`.
 
 Papéis:
-
 - `safra_platform_admin`;
 - `safra_governance_admin`;
 - `safra_executive_admin`;
 - `scenario_owner`.
 
 Regras:
-
 - autorização não usa `user_metadata`;
 - grants são governados no banco;
 - usuário é ligado ao principal por e-mail corporativo e `auth.uid()`;
@@ -477,8 +451,8 @@ Implementação privilegiada permanece em schema privado; funções públicas de
 
 RLS definitivo ainda será migrado do gate temporário `safra_access` para este modelo no próximo passo do C04.
 
-### ADR-026 — Predicado canônico de autorização corporativa
 
+### ADR-026 — Predicado canônico de autorização corporativa
 **APPROVED / IMPLEMENTED — 25/09/2026**.
 
 Predicado base canônico:
@@ -491,7 +465,6 @@ AND e-mail corporativo @editoradobrasil.com.br
 ```
 
 Aplicação:
-
 - RLS da Data API;
 - chamadas REST diretas;
 - RPC;
@@ -499,7 +472,6 @@ Aplicação:
 - UI indiretamente via Supabase/Data API.
 
 Regras:
-
 - `user_metadata` não é fonte de autorização;
 - `app_metadata` é usado apenas para sinal controlado pelo backend, como provider de identidade;
 - papéis permanecem em tabelas governadas privadas;
@@ -508,15 +480,14 @@ Regras:
 
 A mudança live deverá ser reconciliada com migration canônica no SAFRA-C05.
 
-### ADR-027 — Captura canônica da migration C04
 
+### ADR-027 — Captura canônica da migration C04
 **APPROVED — 25/09/2026**.
 
 Migration:
 `20260925133200_c04_role_mapping_and_corporate_rls.sql`.
 
 Ela captura o estado C04 já validado no PRIMARY:
-
 - role mapping;
 - identidade corporativa;
 - RLS;
@@ -526,17 +497,15 @@ Ela captura o estado C04 já validado no PRIMARY:
 
 O artefato está fechado em Git. A sincronização do histórico interno do Supabase permanece pendente de migration repair suportado e não deve ser simulada por INSERT manual na tabela interna.
 
-### ADR-028 — Fechamento do C04 via ambiente Lovable
 
+### ADR-028 — Fechamento do C04 via ambiente Lovable
 **APPROVED — 25/09/2026**.
 
 Motivo:
-
 - os conectores externos permitiram parte das operações de banco, mas bloquearam mutações necessárias para troca/revogação controlada de roles;
 - o Lovable Cloud é o backend PRIMARY do projeto e é o ambiente adequado para concluir esses testes com contexto integral do produto.
 
 Escopo:
-
 - limpar `C04_ID001_TEMP_TEST`;
 - validar troca e revogação de roles;
 - validar sessão ativa por `session_id`;
@@ -544,7 +513,6 @@ Escopo:
 - classificar contas de serviço como N/A no MVP quando aplicável.
 
 Fora do escopo:
-
 - recuperação de acesso e MFA são evidências do Microsoft Entra/TI;
 - domínio scenarios/treatments continua nas fases já previstas;
 - START/END/CANCEL continuam C08.1/F02.1.
@@ -552,11 +520,9 @@ Fora do escopo:
 GitHub e `supabase/migrations` permanecem os registros duráveis das mudanças.
 
 ### ADR-029 — Autorização exclusivamente governada pelo banco e vinculada à sessão viva
-
 **APPROVED — 25/09/2026**.
 
 Decisão:
-
 - `public.safra_is_corporate_user()` passa a exigir, além da identidade corporativa Entra e do JWT não expirado, que o claim `session_id` exista em `auth.sessions` para o mesmo usuário;
 - a claim `app_metadata.safra_access` foi descontinuada como mecanismo de acesso, e o server function que a concedia foi removido do frontend;
 - o logout passa a ser global, encerrando a sessão no servidor.
@@ -564,7 +530,6 @@ Decisão:
 Motivo: revogação e desligamento precisam valer imediatamente, sem depender do conteúdo local do token.
 
 ### ADR-030 — Trilha de auditoria RBAC append-only (AUDIT-001)
-
 **APPROVED — 25/09/2026**.
 
 Decisão: toda concessão, troca, revogação e remoção de grant governado gera evento em
@@ -575,19 +540,17 @@ registradas por `public.safra_log_access_denied`, com autoria e horário resolvi
 Secrets e tokens nunca são registrados.
 
 ### ADR-031 — Contas de serviço fora de escopo no MVP
-
 **APPROVED — 25/09/2026**.
 
 `SERVICE_ACCOUNT_SCOPE = NOT_APPLICABLE_MVP`. Não existe identidade funcional de serviço
 no Painel Safra. O `service_role` é credencial técnica de backend e não é usuário funcional.
 A criação de qualquer conta de integração reabre ID-001.
 
-### ADR-032 — Fechamento interno não equivale a fechamento externo
 
+### ADR-032 — Fechamento interno não equivale a fechamento externo
 **APPROVED — 25/09/2026**.
 
 A auditoria independente confirmou os controles internos do C04:
-
 - troca/revogação de role;
 - sessão viva/revogada;
 - auditoria RBAC;
@@ -595,25 +558,22 @@ A auditoria independente confirmou os controles internos do C04:
 - ausência de conta de serviço funcional no MVP.
 
 Entretanto:
-
 - ID-001 permanece dependente de evidência do processo corporativo de recuperação de acesso;
 - ID-002 permanece dependente de evidência de MFA/Conditional Access dos privilegiados no Microsoft Entra;
 - AUDIT-001 está aprovado no escopo de RBAC do C04.
 
 As migrations geradas pelo ambiente Lovable foram espelhadas para `supabase/migrations`; esta continua sendo a fonte canônica.
 
-### ADR-033 — Recuperação e MFA como controles corporativos externos
 
+### ADR-033 — Recuperação e MFA como controles corporativos externos
 **APPROVED — 25/09/2026**.
 
 Decisão:
-
 - recuperação de acesso da identidade Microsoft é tratada pela TI diretamente com a Microsoft/Entra;
 - bloqueio de conta, MFA e Conditional Access também pertencem à governança corporativa de identidade da TI/Microsoft Entra;
 - o Painel Safra não replica, substitui ou administra esses controles.
 
 Consequência:
-
 - `ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL`;
 - `PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL`;
 - ambos ficam fora da Definition of Done da aplicação para C04;
@@ -621,15 +581,14 @@ Consequência:
 
 Com os controles internos aprovados, SAFRA-C04 é considerado concluído no escopo do produto.
 
-### ADR-034 — Schema v2 canônico
 
+### ADR-034 — Schema v2 canônico
 **APPROVED / IMPLEMENTED — 25/09/2026**.
 
 Fonte canônica:
 `supabase/migrations/20260925170000_c05_schema_v2_canonical_base.sql`.
 
 Decisões:
-
 - o domínio Safra passa a ter schema próprio separado do legado de incidentes TI;
 - `private.safra_principals` e `private.safra_role_grants` permanecem a fonte de identidade/responsabilidade global;
 - não existe `safra_user_roles` concorrente;
@@ -640,30 +599,26 @@ Decisões:
 - histórico usa FK RESTRICT e estruturas append-only em vez de cascata destrutiva.
 
 Rollback:
-
 - antes de dados produtivos, schema pode ser removido por migration explícita;
 - após C06, correções são forward-only e não devem apagar histórico.
 
-### ADR-035 — Autoridade única de migrations e repair do tracking
 
+### ADR-035 — Autoridade única de migrations e repair do tracking
 **APPROVED / IMPLEMENTED — 25/09/2026**.
 
 Decisão:
-
 - `supabase/migrations` é a única fonte canônica para alterações de schema;
 - Drizzle permanece somente como ORM/tooling auxiliar;
 - `drizzle/migrations` não deve ser usada como trilha de deploy;
 - mudanças futuras no PRIMARY devem partir de migration versionada, evitando edição remota ad hoc.
 
 Repair:
-
 - o estado live foi verificado antes da reconciliação;
 - C00, C04 e C05 já estavam aplicados no PRIMARY;
 - como `supabase migration repair` não estava disponível pelos conectores, foi realizado repair equivalente apenas em `supabase_migrations.schema_migrations`;
 - nenhuma DDL foi reaplicada ou revertida.
 
 Versões reconciliadas:
-
 - 20260924212155;
 - 20260925133200;
 - 20260925164500;
@@ -675,12 +630,11 @@ Versões reconciliadas:
 
 Estado final: GitHub e PRIMARY registram as mesmas 10 migrations canônicas. As duas últimas já estavam fisicamente aplicadas no PRIMARY; o repair apenas registrou seu tracking, sem reexecutar DDL.
 
-### ADR-036 — Rollback e banco descartável
 
+### ADR-036 — Rollback e banco descartável
 **APPROVED / IMPLEMENTED — 25/09/2026**.
 
 Decisão:
-
 - PRIMARY nunca é ambiente descartável;
 - o ambiente descartável padrão é Supabase local via CLI/Docker;
 - migrations canônicas são reconstruídas com `supabase db reset --local`;
@@ -691,18 +645,16 @@ Decisão:
 - backup/restore/RTO/RPO permanecem no C09.
 
 Artefatos:
-
 - `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
 - `supabase/seed.sql`;
 - `supabase/tests/database/c05_schema_v2.test.sql`;
 - `.github/workflows/database-disposable-test.yml`.
 
-### ADR-037 — Fechamento do SAFRA-C05
 
+### ADR-037 — Fechamento do SAFRA-C05
 **APPROVED / CLOSED — 25/09/2026**.
 
 Escopo encerrado:
-
 - schema v2 materializado;
 - 17 tabelas de domínio com RLS;
 - FKs e constraints estruturais;
@@ -721,11 +673,9 @@ Escopo encerrado:
 - tracking de migrations reconciliado com GitHub.
 
 Evidência principal:
-
 - GitHub Actions Run 27 / ID `36189333481` = SUCCESS.
 
 Decisão de fase:
-
 ```text
 SAFRA-C05 = CONCLUIDO
 C05_TECHNICAL_VALIDATION = PASS
@@ -734,19 +684,17 @@ NEXT_PHASE = SAFRA-C06
 ```
 
 Limites preservados:
-
 - testes funcionais de START permanecem em C08;
 - testes funcionais de END/CANCEL permanecem em F01/F02;
 - múltiplos treatments ACTIVE por cenário continua decisão M01;
 - notificações produtivas permanecem M05;
 - criticidade dos quatro cenários permanece em GI-SAFRA-001.
 
-### ADR-038 — Engine de SLA determinística e privada
 
+### ADR-038 — Engine de SLA determinística e privada
 **APPROVED / IMPLEMENTED — 25/09/2026**.
 
 Decisão:
-
 - o cálculo de SLA é derivado de timestamps/eventos server-side;
 - a engine não escolhe `start_event`, `end_event` ou threshold por inferência;
 - funções de avaliação permanecem em schema `private`;
@@ -759,12 +707,10 @@ Estados:
 `ON_TRACK`, `BREACHED`, `COMPLETED_ON_TIME`, `COMPLETED_LATE`, `NOT_MEASURABLE`, `NOT_APPLICABLE`.
 
 Regra de borda:
-
 - instante exato do deadline ainda é on-time;
 - breach começa apenas após o deadline.
 
 ### ADR-039 — P1–P4 nunca recebem PASS por inferência
-
 **APPROVED / IMPLEMENTED — 25/09/2026**.
 
 `P1 DOMAIN READY`, `P2 START READY`, `P3 IN-FLIGHT READY` e `P4 CLOSE READY` são gates de produto, não prioridades de cenário.
@@ -775,13 +721,11 @@ Fonte canônica:
 `docs/product-gates/P1_P4.json`.
 
 Para publicar PASS:
-
 - aprovação humana explícita;
 - evidência concreta para cada critério obrigatório do gate;
 - todos os critérios do roadmap daquele gate precisam estar comprovados.
 
 Não contam como evidência suficiente:
-
 - conclusão automática de fase;
 - nome de commit;
 - interpretação da LLM;
@@ -789,14 +733,13 @@ Não contam como evidência suficiente:
 
 O CI bloqueia PASS sem essas condições.
 
-### ADR-040 — Reconciliação integral da Matriz v3
 
+### ADR-040 — Reconciliação integral da Matriz v3
 **APPROVED / IMPLEMENTED — 26/09/2026**.
 
 A Matriz v3 somente é considerada reconciliada quando todos os campos importados correspondem integralmente ao estado canônico.
 
 Gate:
-
 ```text
 11 registros
 x 18 campos importados
@@ -806,7 +749,6 @@ TOLERANCE = 0
 ```
 
 Proteções:
-
 - hash SHA256 da XLSX;
 - hash SHA256 do staging;
 - exatamente 18 campos canônicos por registro;
@@ -816,14 +758,13 @@ Proteções:
 
 Qualquer alteração futura na fonte exige novo pipeline de staging/diff/aprovação. Não existe reconciliação parcial silenciosa.
 
-### ADR-041 — Reconciliação retrospectiva do C03
 
+### ADR-041 — Reconciliação retrospectiva do C03
 **APPROVED — 26/09/2026**.
 
 A auditoria do SAFRA-C03 confirmou que o glossário e o schema v2 preservam as fronteiras semânticas aprovadas.
 
 Correções documentais:
-
 - D-06 foi atualizado para a decisão vigente: qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner não possui exclusividade;
 - ADR-012 foi marcado como SUPERSEDED pelo refinamento posterior dos papéis administrativos;
 - a decomposição vigente de papéis permanece em safra_platform_admin, safra_governance_admin, safra_executive_admin e scenario_owner;
@@ -832,14 +773,13 @@ Correções documentais:
 
 A correção preserva histórico e elimina definições concorrentes sem reescrever decisões publicadas silenciosamente.
 
-### ADR-042 — Gate pré-C08 para dados de negócio ausentes
 
+### ADR-042 — Gate pré-C08 para dados de negócio ausentes
 **APPROVED — 27/09/2026**.
 
 A ausência de criticidade nominal, thresholds de gatilho, fonte curva A e decomposição completa de SLA textual **não bloqueia START manual**.
 
 Princípios:
-
 - ausência não vira default;
 - automação dependente de dado ausente permanece desligada;
 - START manual continua permitido para cenário PUBLISHED;
@@ -847,11 +787,9 @@ Princípios:
 - nenhuma versão PUBLISHED é reescrita retroativamente.
 
 ### D-44 / GI-SAFRA-001 — criticidade ausente é estado explícito no MVP
-
 **APPROVED — 27/09/2026**.
 
 Decisão:
-
 - as 11 `scenario_version v1` permanecem com `criticality = NULL`;
 - `NULL` significa **criticidade não definida**, não HIGH/MODERATE;
 - criticidade não é requisito para START;
@@ -862,13 +800,11 @@ Decisão:
 A decisão não identifica artificialmente os quatro CRITICAL. Ela remove a criticidade ausente como bloqueio de START.
 
 ### D-45 / GI-SAFRA-002 — thresholds ausentes tornam gatilho manual no MVP
-
 **APPROVED — 27/09/2026**.
 
 Aplica-se a SAFRA-02, SAFRA-04, SAFRA-10 e SAFRA-11.
 
 Enquanto o threshold numérico não existir em fonte aprovada:
-
 - detector automático do gatilho fica **NOT_CONFIGURED**;
 - nenhum `X h`, `X min`, limite de fila ou capacidade é inferido;
 - cenário continua elegível para START manual por usuário autenticado;
@@ -876,11 +812,9 @@ Enquanto o threshold numérico não existir em fonte aprovada:
 - futura automação exige threshold versionado e fonte explícita.
 
 ### D-46 / GI-SAFRA-003 — cenário 9 manual até fonte oficial do mínimo curva A
-
 **APPROVED — 27/09/2026**.
 
 Enquanto não existir fonte/regra oficial do saldo mínimo:
-
 - nenhuma ruptura é classificada automaticamente;
 - nenhum mínimo é calculado ou inventado pelo Painel;
 - SAFRA-09 continua disponível para START manual;
@@ -888,11 +822,9 @@ Enquanto não existir fonte/regra oficial do saldo mínimo:
 - futura automação exige fonte oficial + regra versionada.
 
 ### D-47 / GI-SAFRA-009 — política formal de estruturação dos SLAs textuais
-
 **APPROVED — 27/09/2026**.
 
 Uma cláusula textual só é elegível a `scenario_slas` quando cumprir **todos** os critérios:
-
 1. descreve explicitamente prazo da **tratativa**, não detecção, gatilho, milestone intermediário, janela operacional ou pós-mortem;
 2. possui alvo numérico explícito;
 3. possui unidade temporal explícita;
@@ -901,13 +833,11 @@ Uma cláusula textual só é elegível a `scenario_slas` quando cumprir **todos*
 6. a estruturação não exige criar evento novo por interpretação.
 
 Classificação canônica da Matriz v3:
-
 - **SAFRA-01 — “tratativa ≤ 48h”**: elegível;
 - **SAFRA-05 — “tratativa ≤ 4h”**: elegível;
 - demais cláusulas: não estruturáveis na versão atual sem evento/regra adicional.
 
 Regras complementares:
-
 - thresholds de detecção permanecem gatilho, não SLA runtime;
 - milestones intermediários não são convertidos em END;
 - pós-mortem pertence a F03;

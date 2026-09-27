@@ -194,7 +194,10 @@
     }
   ],
   "summary": {
-    "eligible_runtime_slas": ["SAFRA-01", "SAFRA-05"],
+    "eligible_runtime_slas": [
+      "SAFRA-01",
+      "SAFRA-05"
+    ],
     "current_published_versions_are_immutable": true,
     "productive_seed_in_current_v1": false,
     "c08_blocker": false

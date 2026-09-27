@@ -22,7 +22,6 @@ Microsoft session
 ```
 
 Nenhuma camada pode:
-
 - usar service_role no browser;
 - usar user_metadata como autorização;
 - liberar cenário/owner apenas porque a UI esconde ou mostra algo;
@@ -31,21 +30,21 @@ Nenhuma camada pode:
 
 ## Matriz de evidência
 
-| Camada            | Evidência                                                                              | Resultado                         |
-| ----------------- | -------------------------------------------------------------------------------------- | --------------------------------- |
-| UI                | `AuthedShell` redireciona sessão ausente para `/auth`                                  | PASS                              |
-| UI                | browser usa somente publishable key                                                    | PASS                              |
-| UI                | service_role não aparece no client browser                                             | PASS                              |
-| UI                | não há leitura direta de `scenarios` ou `scenario_owners`                              | PASS / deny-by-default preservado |
-| UI                | não há autorização por `user_metadata`                                                 | PASS                              |
-| Server middleware | Bearer é validado e `safra_is_corporate_user()` é consultado                           | PASS                              |
-| REST/Data API     | anon sem SELECT em catálogo/ownership Safra                                            | PASS                              |
-| REST/Data API     | authenticated sem SELECT direto enquanto não existe read API governada                 | PASS                              |
-| REST/Data API     | RLS habilitada nas 5 tabelas de catálogo/ownership auditadas                           | PASS                              |
-| RPC               | anon sem EXECUTE em `safra_is_corporate_user`, `get_my_safra_roles`, `safra_has_role`  | PASS                              |
-| RPC               | authenticated executa somente os predicados governados previstos                       | PASS                              |
-| RPC               | nenhum RPC público de leitura de scenario/owner existe nesta fase                      | PASS / superfície mínima          |
-| Banco             | `private.safra_principals` e `private.safra_role_grants` sem grants para browser roles | PASS                              |
+| Camada | Evidência | Resultado |
+|---|---|---|
+| UI | `AuthedShell` redireciona sessão ausente para `/auth` | PASS |
+| UI | browser usa somente publishable key | PASS |
+| UI | service_role não aparece no client browser | PASS |
+| UI | não há leitura direta de `scenarios` ou `scenario_owners` | PASS / deny-by-default preservado |
+| UI | não há autorização por `user_metadata` | PASS |
+| Server middleware | Bearer é validado e `safra_is_corporate_user()` é consultado | PASS |
+| REST/Data API | anon sem SELECT em catálogo/ownership Safra | PASS |
+| REST/Data API | authenticated sem SELECT direto enquanto não existe read API governada | PASS |
+| REST/Data API | RLS habilitada nas 5 tabelas de catálogo/ownership auditadas | PASS |
+| RPC | anon sem EXECUTE em `safra_is_corporate_user`, `get_my_safra_roles`, `safra_has_role` | PASS |
+| RPC | authenticated executa somente os predicados governados previstos | PASS |
+| RPC | nenhum RPC público de leitura de scenario/owner existe nesta fase | PASS / superfície mínima |
+| Banco | `private.safra_principals` e `private.safra_role_grants` sem grants para browser roles | PASS |
 
 ## Testes permanentes
 
@@ -54,13 +53,11 @@ Nenhuma camada pode:
 `supabase/tests/database/c06_1_read_authorization_coherence.test.sql`
 
 PRIMARY:
-
 ```text
 12/12 PASS
 ```
 
 Valida:
-
 - RLS;
 - grants;
 - ausência de policy silenciosa de leitura;
@@ -73,13 +70,11 @@ Valida:
 `.github/scripts/check-c06-1-ui-auth-coherence.py`
 
 App Smoke Run 83 e Run 85:
-
 ```text
 PASS
 ```
 
 O checker bloqueia regressões como:
-
 - remoção do gate global de sessão;
 - service_role no browser;
 - ausência do predicado corporativo no middleware;
@@ -91,7 +86,6 @@ O checker bloqueia regressões como:
 `.github/scripts/test-safra-direct-api.sh`
 
 Database Disposable Run 123:
-
 ```text
 PASS
 ```
@@ -101,7 +95,6 @@ PASS
 `.github/scripts/test-safra-direct-rpc.sh`
 
 Database Disposable Run 123:
-
 ```text
 PASS
 ```
@@ -123,6 +116,7 @@ UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API_EXISTS
 A ausência atual de leitura Safra na UI não é convertida em PASS de paridade de conteúdo. O que esta ação comprova é que **não existe caminho de leitura/autorização mais permissivo em UI, REST/RPC ou banco**.
 
 Quando a read API do Safra for criada, esta action deve ganhar teste de paridade positiva do dataset retornado para cada papel autorizado.
+
 
 ### Fechamento CI
 

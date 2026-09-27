@@ -20,13 +20,11 @@ C08_REAL_SESSION_UX_HOMOLOGATION = PENDING
 ## O que já existe
 
 Backend:
-
 - `public.safra_get_start_catalog()`;
 - `public.safra_start_treatment(uuid,uuid,text,uuid[])`;
 - migration `20260927142000_c08_start_end_to_end.sql`.
 
 Frontend:
-
 - `/novo-incidente` = Abrir Protocolo;
 - catálogo Safra;
 - snapshot de owner/versão/criticidade;
@@ -74,13 +72,11 @@ Frontend:
 ## Pendências abertas
 
 ### Não bloqueantes
-
 - GI-SAFRA-001 — quatro CRITICAL ainda sem lista nominal;
 - GI-SAFRA-002 — thresholds SAFRA-02/04/10/11;
 - GI-SAFRA-003 — fonte mínima Curva A SAFRA-09.
 
 ### Futuras
-
 - GI-SAFRA-004 — política de múltiplas tratativas ACTIVE;
 - GI-SAFRA-005 — notificações/provider;
 - GI-SAFRA-009 — materialização de SLA em nova version.
@@ -93,7 +89,6 @@ COM UMA SESSÃO MICROSOFT CORPORATIVA REAL
 ```
 
 Checklist da homologação:
-
 1. autenticação;
 2. catálogo com 11 cenários;
 3. seleção de cenário;

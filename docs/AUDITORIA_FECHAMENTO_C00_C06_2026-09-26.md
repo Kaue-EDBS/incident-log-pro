@@ -7,7 +7,6 @@ Data: 26/09/2026
 Registrar de forma consolidada as auditorias retrospectivas executadas antes do avanço funcional do Painel Safra.
 
 Regra aplicada:
-
 - pendência corrigível sem decisão humana -> corrigida imediatamente;
 - decisão de negócio não inferível -> WAITING_HUMAN_DECISION / governance_issues;
 - item de fase futura -> permanece vinculado à fase correta;
@@ -15,14 +14,14 @@ Regra aplicada:
 
 ## Resultado consolidado
 
-| Fase | Escopo auditado                                          | Resultado               |
-| ---- | -------------------------------------------------------- | ----------------------- |
-| C00  | Baseline e contenção P0 — 5 ações                        | 5/5 PASS 100%           |
-| C01  | Documentação canônica e PROJECT_PROFILE — 5 ações        | 5/5 PASS 100%           |
-| C02  | Threat model e abuso de negócio — 7 ações                | 7/7 PASS 100%           |
-| C03  | Glossário e modelo de domínio — 5 ações                  | 5/5 PASS 100%           |
-| C04  | Identidade, RBAC e RLS — 7 ações, somente escopo próprio | 7/7 PASS 100% APP_SCOPE |
-| C06  | Seed canônico da Matriz v3 — 6 ações                     | 6/6 PASS 100%           |
+| Fase | Escopo auditado | Resultado |
+|---|---|---|
+| C00 | Baseline e contenção P0 — 5 ações | 5/5 PASS 100% |
+| C01 | Documentação canônica e PROJECT_PROFILE — 5 ações | 5/5 PASS 100% |
+| C02 | Threat model e abuso de negócio — 7 ações | 7/7 PASS 100% |
+| C03 | Glossário e modelo de domínio — 5 ações | 5/5 PASS 100% |
+| C04 | Identidade, RBAC e RLS — 7 ações, somente escopo próprio | 7/7 PASS 100% APP_SCOPE |
+| C06 | Seed canônico da Matriz v3 — 6 ações | 6/6 PASS 100% |
 
 ## C00 — Baseline e contenção P0
 
@@ -33,7 +32,6 @@ Regra aplicada:
 5. regressão de segurança legacy applications/incidents — PASS.
 
 Correção durante auditoria:
-
 - criado `supabase/tests/database/c00_security_regression.test.sql`;
 - PRIMARY 12/12;
 - Database Disposable Run 102 = SUCCESS.
@@ -47,7 +45,6 @@ Correção durante auditoria:
 5. gates G3/G3.25 — PASS.
 
 Correções:
-
 - PROJECT_PROFILE sincronizado com C04-C07;
 - final_rbac atualizado para IMPLEMENTED;
 - estados antigos de governance reconciliados.
@@ -63,7 +60,6 @@ Correções:
 7. gates G3.5/THREAT-001/AUTHZ-001 — PASS.
 
 Correção:
-
 - threat model reconciliado com RBAC/Entra já implementados.
 
 ## C03 — Glossário e modelo de domínio
@@ -75,7 +71,6 @@ Correção:
 5. ausência de definições concorrentes — PASS.
 
 Correção:
-
 - decisões antigas conflitantes foram marcadas como superseded sem apagar histórico.
 
 ## C04 — Identidade, RBAC e RLS
@@ -91,7 +86,6 @@ Escopo limitado ao próprio C04.
 7. gates G5/ID-001/ID-002/AUDIT-001 — PASS APP_SCOPE.
 
 Evidência de self-test atual:
-
 - BASELINE = PASS;
 - ROLE_CHANGE = PASS;
 - ROLE_REVOCATION = PASS;
@@ -102,7 +96,6 @@ Evidência de self-test atual:
 - RBAC_AUDIT_TRAIL = PASS.
 
 Fronteira externa:
-
 - recuperação Microsoft = EXTERNAL_CORPORATE_CONTROL;
 - MFA/Conditional Access = EXTERNAL_CORPORATE_CONTROL.
 
@@ -116,7 +109,6 @@ Fronteira externa:
 6. não inferência de criticidade/SLA/thresholds/P1-P4 — PASS.
 
 Evidências:
-
 - Database Run 98 = SUCCESS;
 - Database Run 101 = SUCCESS;
 - `MATRIX_V3_RECONCILIATION = 198/198`;
@@ -140,7 +132,6 @@ public.scenarios
 ```
 
 Critério:
-
 - exatamente 11 cenários;
 - exatamente 11 vínculos ativos;
 - 1 owner ativo por cenário;
@@ -158,12 +149,12 @@ C06_1_ACTION_01_TECHNICAL = PASS
 C06_1_ACTION_01_HUMAN_VALIDATION = APPROVED
 ```
 
+
 ### C06.1 — Ação 2
 
 **Validar owner por cenário sem herança por papel administrativo e sem fallback silencioso.**
 
 Resultado técnico:
-
 - 10/10 testes PASS;
 - 11 cenários com owner explícito;
 - 0 ownership derivado de papel administrativo;
@@ -178,12 +169,12 @@ ADMIN_ROLE_INHERITANCE = NONE
 SILENT_OWNER_FALLBACK = NONE
 ```
 
+
 ### C06.1 — Ação 3
 
 **Registrar evidência de leitura e autorização coerentes entre UI, REST/RPC e banco.**
 
 Resultado:
-
 - autorização cross-layer = PASS;
 - PRIMARY = 12/12;
 - App Smoke checker = PASS;
@@ -198,6 +189,7 @@ C06_1_ACTION_03 = PASS
 AUTHORIZATION_COHERENCE = PASS
 UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API
 ```
+
 
 ---
 

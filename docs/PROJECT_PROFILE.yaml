@@ -289,6 +289,7 @@ c04_gate:
   authorization_source: "private.safra_principals + private.safra_role_grants"
   user_metadata_as_authorization: false
 
+
 c05_schema_v2:
   status: "CANONICAL_BASE_IMPLEMENTED"
   migration: "20260925170000_c05_schema_v2_canonical_base.sql"
@@ -307,6 +308,7 @@ c05_schema_v2:
   seed_11_scenarios: "PASS_C06_01_RECONCILED_198_OF_198"
   start_end_cancel_rpcs: "NOT_STARTED"
 
+
 disposable_database:
   status: "IMPLEMENTED"
   engine: "SUPABASE_LOCAL_DOCKER"
@@ -319,6 +321,7 @@ disposable_database:
   ci_workflow: ".github/workflows/database-disposable-test.yml"
   rollback_document: "docs/ROLLBACK_E_BANCO_DESCARTAVEL.md"
   rollback_after_c06: "FORWARD_FIX_DEFAULT"
+
 
 jair_runtime_access:
   corporate_email: "jair.silva@editoradobrasil.com.br"

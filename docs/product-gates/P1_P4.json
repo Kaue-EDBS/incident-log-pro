@@ -1,7 +1,11 @@
 {
   "schema_version": "1.1.0",
   "rule": "P1-P4 may never be published as PASS by inference.",
-  "allowed_status": ["NOT_PUBLISHED", "WAITING_HUMAN_DECISION", "PASS"],
+  "allowed_status": [
+    "NOT_PUBLISHED",
+    "WAITING_HUMAN_DECISION",
+    "PASS"
+  ],
   "gates": {
     "P1": {
       "name": "DOMAIN_READY",

@@ -32,7 +32,6 @@ Versão:
 `1.0.0`
 
 Responsabilidades:
-
 - validar cabeçalhos;
 - identificar os 11 cenários;
 - reconstruir as cinco linhas de protocolo por cenário;
@@ -61,7 +60,6 @@ Todos em `docs/data-contracts/`.
 A publicação não segue se houver erro estrutural.
 
 Warnings de governance issues podem permanecer somente quando:
-
 - estão formalmente registrados;
 - o parser preserva o texto original;
 - nenhum valor é inferido.
@@ -69,12 +67,10 @@ Warnings de governance issues podem permanecer somente quando:
 ### Preview diff
 
 `NO_DIFF`:
-
 - replay pode seguir com aprovação humana;
 - nenhuma nova migration de negócio é necessária se a migration canônica já estiver aplicada.
 
 `DIFF_REQUIRES_HUMAN_REVIEW`:
-
 - processo para;
 - nenhuma seed/migration é aplicada automaticamente;
 - o operador precisa aprovar cada mudança material.
@@ -92,7 +88,6 @@ Teste:
 `supabase/tests/database/c06_02_rbac_ownership.test.sql`
 
 Valida:
-
 - owner exato dos 11 cenários;
 - Jair sem ownership;
 - Bruno sem ownership;
