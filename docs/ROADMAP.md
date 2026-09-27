@@ -1645,8 +1645,8 @@ O banco rejeita SLA estruturado incompleto. `target_text` permanece apenas como 
 
 - duração calculada por timestamps;
 - timezone técnico padronizado em UTC; analytics diário/horário usa explicitamente `America/Sao_Paulo` antes do bucket;
-- relógio negativo proibido;
-- CANCEL não equivale a SLA cumprido;
+- relógio negativo proibido; `remaining_seconds` é limitado a zero após o deadline e relógio anterior ao START é `NOT_MEASURABLE`;
+- CANCEL não equivale a SLA cumprido: antes/no deadline = `NOT_MEASURABLE`; após o deadline = `BREACHED`; nunca `COMPLETED_*`;
 - END só fecha o SLA quando seu `end_event` for `TREATMENT_RESOLVED`;
 - múltiplos SLAs podem coexistir no mesmo cenário;
 - evento ausente => SLA não mensurável, não “OK”.
