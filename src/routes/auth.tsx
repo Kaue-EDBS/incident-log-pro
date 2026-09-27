@@ -96,15 +96,15 @@ function AuthPage() {
             Sair e usar outra conta
           </button>
         ) : (
-        <button
-          type="button"
-          disabled={loading || signingIn}
-          onClick={() => void entrar()}
-          className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-60"
-        >
-          {loading || signingIn ? <Loader2 className="size-4 animate-spin" /> : null}
-          Entrar com Microsoft
-        </button>
+          <button
+            type="button"
+            disabled={loading || signingIn}
+            onClick={() => void entrar()}
+            className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-60"
+          >
+            {loading || signingIn ? <Loader2 className="size-4 animate-spin" /> : null}
+            Entrar com Microsoft
+          </button>
         )}
       </div>
     </main>
