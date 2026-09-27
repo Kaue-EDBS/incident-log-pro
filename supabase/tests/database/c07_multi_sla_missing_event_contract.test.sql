@@ -2,12 +2,24 @@ begin;
 create extension if not exists pgtap with schema extensions;
 select plan(10);
 
+insert into public.scenarios(code,name,lifecycle_status,responsible_area_id)
+select 'TEST-C07-MULTI-SLA','Synthetic multi-SLA scenario','ACTIVE',id
+from public.operational_areas
+order by code
+limit 1;
+
+insert into public.scenario_versions(
+  scenario_id,version_no,status,trigger_description,source_reference
+)
+select id,1,'DRAFT','Synthetic test trigger','C07 multi-SLA pgTAP'
+from public.scenarios
+where code='TEST-C07-MULTI-SLA';
+
 with v as (
   select sv.id
   from public.scenario_versions sv
   join public.scenarios sc on sc.id=sv.scenario_id
-  where sc.code='SAFRA-01' and sv.version_no=1
-  limit 1
+  where sc.code='TEST-C07-MULTI-SLA' and sv.version_no=1
 )
 insert into public.scenario_slas(
   scenario_version_id,code,label,start_event,end_event,target_value,target_unit,target_text
@@ -22,7 +34,7 @@ select is(
     from public.scenario_slas sl
     join public.scenario_versions sv on sv.id=sl.scenario_version_id
     join public.scenarios sc on sc.id=sv.scenario_id
-    where sc.code='SAFRA-01'
+    where sc.code='TEST-C07-MULTI-SLA'
       and sl.code in ('TEST-SLA-1H','TEST-SLA-2H')
   ),
   2::bigint,
@@ -35,7 +47,7 @@ select is(
     from public.scenario_slas sl
     join public.scenario_versions sv on sv.id=sl.scenario_version_id
     join public.scenarios sc on sc.id=sv.scenario_id
-    where sc.code='SAFRA-01'
+    where sc.code='TEST-C07-MULTI-SLA'
       and sl.code in ('TEST-SLA-1H','TEST-SLA-2H')
   ),
   2::bigint,
@@ -108,7 +120,7 @@ select throws_ok(
       select sv.id
       from public.scenario_versions sv
       join public.scenarios sc on sc.id=sv.scenario_id
-      where sc.code='SAFRA-01' and sv.version_no=1
+      where sc.code='TEST-C07-MULTI-SLA' and sv.version_no=1
       limit 1
     )
     insert into public.scenario_slas(
