@@ -134,21 +134,21 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function AuthedShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { session, loading } = useAuth();
+  const { session, loading, corporateAuthorized } = useAuth();
   const navigate = useNavigate();
   const isAuthRoute = pathname === "/auth";
 
   useEffect(() => {
-    if (!loading && !session && !isAuthRoute) {
+    if (!loading && (!session || corporateAuthorized === false) && !isAuthRoute) {
       void navigate({ to: "/auth", replace: true });
     }
-  }, [loading, session, isAuthRoute, navigate]);
+  }, [corporateAuthorized, loading, session, isAuthRoute, navigate]);
 
   if (isAuthRoute) {
     return <Outlet />;
   }
 
-  if (loading || !session) {
+  if (loading || !session || corporateAuthorized !== true) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-4">
         <div className="text-center">
