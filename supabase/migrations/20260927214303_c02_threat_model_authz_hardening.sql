@@ -97,14 +97,14 @@ create or replace function private.safra_guard_terminal_treatment_immutable()
 returns trigger
 language plpgsql
 set search_path = ''
-as $
+as $function$
 begin
   if old.status in ('RESOLVED','CANCELLED') then
     raise exception 'closed treatment row is immutable; record an append-only correction event instead';
   end if;
   return new;
 end;
-$;
+$function$;
 
 revoke all on function private.safra_guard_terminal_treatment_immutable()
 from public, anon, authenticated;
