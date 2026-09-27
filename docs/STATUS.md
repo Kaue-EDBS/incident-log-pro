@@ -8,7 +8,7 @@
 
 > Reauditoria corretiva **C01-AUD concluída e recertificada em 27/09/2026 às 18:16 BRT**. PROJECT_PROFILE, documentação canônica, domínios corporativos, privacidade, inventário de decisões e fronteiras de runtime foram reconciliados. `unknown_material_count = 0` foi recertificado. Evidências: `docs/AUDITORIA_C01_REABERTURA_2026-09-27.md`.
 
-> Reauditoria corretiva **C02-AUD aberta em 27/09/2026 às 18:37 BRT**. Foram identificadas 9 pendências em threat model, autorização, cobertura de testes, superfície Data API/RPC e documentação. O principal achado é um bypass de sessão corporativa nos RPCs de RBAC; `AUTHZ-001` histórico permanece preservado, mas **não está recertificado** nesta nova fotografia. Alterações autorizadas e em execução. Fonte: `docs/AUDITORIA_C02_REABERTURA_2026-09-27.md`.
+> Reauditoria corretiva **C02-AUD aberta em 27/09/2026 às 18:37 BRT**. Foram identificadas 10 pendências em threat model, autorização, cobertura de testes, superfície Data API/RPC e documentação. O principal achado é um bypass de sessão corporativa nos RPCs de RBAC; `AUTHZ-001` histórico permanece preservado, mas **não está recertificado** nesta nova fotografia. Alterações autorizadas e em execução. Fonte: `docs/AUDITORIA_C02_REABERTURA_2026-09-27.md`.
 
 > Snapshot runtime recertificado no fechamento da C01-AUD: Lovable publicado tecnicamente com endpoint acessível, audiência funcional **INTERNAL**, Microsoft/Azure + sessão viva + domínio corporativo aprovado. PRIMARY observado com **2 usuários Auth corporativos**, **2 principals ativos vinculados**, **9 grants funcionais ativos**, **0 grants anon nas estruturas centrais** e **0 policies públicas `USING (true)`**.
 
