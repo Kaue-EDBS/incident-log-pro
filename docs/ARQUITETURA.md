@@ -1,8 +1,8 @@
 # ARQUITETURA — Painel Safra
 
 > Documento canônico de arquitetura.
-> Atualizado em: 25/09/2026
-> Estado: **SAFRA-C05 em execução — schema v2 materializado; domínio canônico consolidado**
+> Atualizado em: 27/09/2026
+> Estado: **SAFRA-C08 em execução — START end-to-end implementado; C01-AUD reconciliando documentação e domínios corporativos**
 
 ## 1. Objetivo
 
@@ -53,7 +53,8 @@ Banco:
 - RLS habilitada;
 - `anon` sem acesso aos dados internos;
 - autenticação corporativa Microsoft homologada;
-- autorização interna governada pelo banco.
+- acesso funcional restrito a `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com`;
+- autorização interna governada pelo banco, com sessão viva e RBAC separado de domínio/ownership.
 
 ## 3. Autoridade de migrations
 
@@ -379,15 +380,14 @@ Para tabelas expostas pela Data API, grants e RLS são controles distintos e amb
 
 ## 8. Operações críticas
 
-Próximo subpasso do C05:
+Estado atual:
 
-- `start_treatment`;
-- `resolve_treatment`;
-- `cancel_treatment`;
-- `change_escalation`;
-- mutações auxiliares auditáveis quando necessárias.
+- START está implementado no C08 por `public.safra_start_treatment(...)` e catálogo governado `public.safra_get_start_catalog()`;
+- END/CANCEL permanecem para as fases de fechamento correspondentes e não devem ser antecipados;
+- escalonamento e mutações auxiliares continuam sujeitos às fases próprias;
+- o browser não recebe acesso direto às tabelas Safra para substituir RPCs governadas.
 
-Essas operações devem ser transacionais e concentrar:
+As operações críticas implementadas/devem ser implementadas de forma transacional e concentrar:
 - autenticação/autorização;
 - validação de estado;
 - timestamp server-side;
