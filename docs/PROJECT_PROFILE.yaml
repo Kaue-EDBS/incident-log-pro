@@ -312,10 +312,12 @@ c02_reaudit:
   current_recertification:
     g3_5: "PENDING"
     threat_001: "PENDING"
-    authz_001: "BLOCKED_BY_C02_AUD_01"
-  open_findings: 10
+    authz_001: "PENDING_FULL_C02_RECERTIFICATION"
+  open_findings: 9
   highest_severity: "HIGH_AUTHZ"
-  primary_finding: "RBAC public RPCs do not consistently enforce canonical corporate live-session predicate"
+  closed_findings:
+    c02_aud_01: "PASS_2026-09-27T20:04:00-03:00"
+  primary_finding: "C02-AUD-01 closed; remaining findings continue under fragmented review"
   audit_document: "docs/AUDITORIA_C02_REABERTURA_2026-09-27.md"
 
 c04_gate:
