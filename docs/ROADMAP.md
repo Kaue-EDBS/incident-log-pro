@@ -1473,12 +1473,38 @@ Resultado técnico:
 Estado:
 ```text
 TECHNICAL_TEST = PASS
-HUMAN_SCENARIO_VALIDATION = WAITING_HUMAN_DECISION
+HUMAN_SCENARIO_VALIDATION = APPROVED
 ```
 
-Próximo passo:
-- apresentar os 11 cenários e respectivos owners ao responsável humano;
-- somente após validação humana continuar as demais ações de C06.1.
+Validação humana dos 11 cenários e respectivos owners: **APROVADA**.
+
+#### Ação 3 — leitura e autorização coerentes entre UI, REST/RPC e banco
+
+Evidência canônica:
+`docs/data-contracts/C06_1_READ_AUTHORIZATION_EVIDENCE.md`.
+
+Resultado:
+- PRIMARY pgTAP = 12/12 PASS;
+- App Smoke Run 85 = SUCCESS;
+- Database Disposable Run 123 = SUCCESS;
+- REST/Data API anônimo = DENIED;
+- RPC anônimo = DENIED;
+- RLS/grants = PASS;
+- browser sem acesso às tabelas privadas de RBAC;
+- nenhuma leitura direta de `scenarios`/`scenario_owners` pela UI;
+- nenhum RPC público de leitura de scenario/owner nesta fase.
+
+Leitura correta:
+- a coerência de autorização cross-layer está comprovada;
+- a UI Safra ainda não consome os 11 cenários;
+- por isso, paridade positiva de dataset UI x API permanece não aplicável até existir read API governada.
+
+```text
+C06_1_ACTION_03 = PASS
+AUTHORIZATION_COHERENCE = PASS
+SAFRA_UI_CATALOG_READ = NOT_IMPLEMENTED_YET
+UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API
+```
 
 #### Regressão RBAC/ownership complementar
 
