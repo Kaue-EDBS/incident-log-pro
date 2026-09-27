@@ -133,21 +133,17 @@ select is(
   'C07.5 clock before start is rejected'
 );
 
--- SAFRA-C07.6 — estado atual: tolerancia implicita proibida, suporte documentado ainda ausente
+-- SAFRA-C07.6 — tolerancia somente quando documentada
 select is(
   (
     select count(*)::bigint
     from information_schema.columns
     where table_schema='public'
       and table_name='scenario_slas'
-      and (
-        lower(column_name) like '%tolerance%'
-        or lower(column_name) like '%grace%'
-        or lower(column_name) like '%buffer%'
-      )
+      and column_name in ('tolerance_value','tolerance_unit','tolerance_documentation')
   ),
-  0::bigint,
-  'C07.6 no persisted implicit tolerance/grace/buffer fields exist'
+  3::bigint,
+  'C07.6 documented tolerance contract is explicit'
 );
 
 select is(
