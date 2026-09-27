@@ -15,7 +15,7 @@ tables=(applications incidents operational_areas systems scenarios scenario_vers
 for table in "${tables[@]}"; do
   body_file="$(mktemp)"
   http_code="$(
-    curl --silent --show-error       --output "${body_file}"       --write-out "%{http_code}"       --header "apikey: ${PUBLIC_KEY}"       "${API_BASE}/rest/v1/${table}?select=id&limit=1"
+    curl --silent --show-error       --output "${body_file}"       --write-out "%{http_code}"       --header "apikey: ${PUBLIC_KEY}"       "${API_BASE}/rest/v1/${table}?select=*&limit=1"
   )"
 
   if [[ "${http_code}" != "401" && "${http_code}" != "403" ]]; then
