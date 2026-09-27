@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(23);
+select plan(24);
 
 insert into auth.users(
   id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at
@@ -111,6 +111,27 @@ select ok(
 select ok(
   'safra_platform_admin' = any(public.get_my_safra_roles()),
   'valid corporate live session can enumerate its governed roles'
+);
+
+
+select private.safra_log_rbac_event(
+  'C02_TEST_EVENT',
+  'C02-AUD',
+  'SUCCESS',
+  null,
+  null,
+  null,
+  jsonb_build_object('purpose','positive audit RPC regression')
+);
+
+select is(
+  (
+    select count(*)::bigint
+    from public.get_safra_rbac_audit_events(100)
+    where action='C02_TEST_EVENT'
+  ),
+  1::bigint,
+  'valid corporate platform admin can read governed RBAC audit events'
 );
 
 -- Expired token cannot reuse the role binding.
