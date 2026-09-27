@@ -2655,3 +2655,43 @@ C07_TIMEZONE_PGTAP = PASS
 ROLLBACK = PASS
 DATABASE_LINT = PASS
 ```
+
+
+---
+
+## C07 — Regra 3 aprovada: relógio não-negativo e CANCEL sem sucesso — 27/09/2026
+
+Decisão humana: **APROVADA**.
+
+Contrato:
+
+```text
+NEGATIVE_CLOCK = FORBIDDEN
+REMAINING_SECONDS_MIN = 0
+ELAPSED_SECONDS_MIN = 0
+CANCEL_AS_SUCCESS = FORBIDDEN
+CANCEL_BEFORE_OR_AT_DEADLINE = NOT_MEASURABLE
+CANCEL_AFTER_DEADLINE = BREACHED
+END_BEFORE_START = NOT_MEASURABLE
+CLOCK_BEFORE_START = NOT_MEASURABLE
+```
+
+Implementação:
+- migration `20260927102500_c07_nonnegative_clock_cancel_semantics.sql`;
+- teste `c07_clock_cancel_contract.test.sql`.
+
+Validação:
+- App Smoke Run 98 = SUCCESS;
+- Database Disposable Run 136 = SUCCESS;
+- 13/13 testes da nova regra = PASS;
+- rebuild = PASS;
+- rollback = PASS;
+- lint = PASS.
+
+Smoke PRIMARY:
+- breach em 13:30 para deadline 13:00 => `remaining_seconds = 0`;
+- CANCEL 12:30 => `NOT_MEASURABLE`;
+- CANCEL 13:00 exato => `NOT_MEASURABLE`;
+- CANCEL 13:30 => `BREACHED`, `remaining_seconds = 0`;
+- END antes do START => `NOT_MEASURABLE`;
+- relógio antes do START => `NOT_MEASURABLE`.
