@@ -69,15 +69,19 @@ select ok(
   'database enforces at most one explicit active owner per scenario'
 );
 
-select like(
-  pg_get_functiondef('private.safra_validate_published_scenario()'::regprocedure),
-  '%published scenario requires exactly one active owner%',
+select ok(
+  position(
+    'published scenario requires exactly one active owner'
+    in pg_get_functiondef('private.safra_validate_published_scenario()'::regprocedure)
+  ) > 0,
   'published scenario validator rejects missing owner instead of falling back'
 );
 
-select like(
-  pg_get_functiondef('private.safra_validate_published_scenario()'::regprocedure),
-  '%published scenario owner must have active scenario_owner role%',
+select ok(
+  position(
+    'published scenario owner must have active scenario_owner role'
+    in pg_get_functiondef('private.safra_validate_published_scenario()'::regprocedure)
+  ) > 0,
   'published scenario validator rejects ineligible owner instead of falling back'
 );
 
