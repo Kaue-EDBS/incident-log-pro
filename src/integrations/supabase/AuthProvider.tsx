@@ -74,9 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCorporateAuthorized(null);
     setAuthorizationError(null);
 
-    void supabase
-      .rpc("safra_is_corporate_user")
-      .then(({ data, error }) => {
+    void (async () => {
+      try {
+        const { data, error } = await supabase.rpc("safra_is_corporate_user");
         if (cancelled) return;
 
         if (error || data !== true) {
@@ -88,10 +88,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         setCorporateAuthorized(true);
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setAuthorizationLoading(false);
-      });
+      }
+    })();
 
     return () => {
       cancelled = true;
