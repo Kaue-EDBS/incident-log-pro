@@ -132,3 +132,22 @@ PRIMARY:
 C07_SLA_MODEL = PASS
 STRUCTURED_SLA_ROWS_INFERRED = 0
 ```
+
+
+## Regra aprovada — duração por timestamps
+
+A duração de SLA não é recebida pronta do client e não é persistida como fonte paralela.
+
+```text
+closed_duration = end_timestamp - start_timestamp
+open_duration = server_as_of - start_timestamp
+canonical_duration_unit = seconds
+```
+
+Regras:
+- timestamps oficiais são a única fonte de verdade;
+- duração negativa é inválida;
+- END anterior ao START resulta em `NOT_MEASURABLE`;
+- a UI pode formatar segundos em minutos/horas/dias sem alterar a medida canônica.
+
+Estado: **APPROVED — 27/09/2026**.
