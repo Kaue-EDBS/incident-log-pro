@@ -60,6 +60,8 @@
 | D-45 | Cenários com threshold/fonte de gatilho ausente operam em START manual no MVP; automação permanece desabilitada | APPROVED |
 | D-46 | Cenário 9 permanece START manual enquanto não existir fonte oficial do mínimo curva A; ruptura automática fica desabilitada | APPROVED |
 | D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | APPROVED |
+| D-48 | Painel Safra é de audiência interna e aceita identidade Microsoft corporativa apenas dos domínios editoradobrasil.com.br e editoradobrasil1.onmicrosoft.com | APPROVED |
+| D-49 | Gate de privacidade/base legal exigido antes de usuários reais foi validado e está atendido | APPROVED / SATISFIED |
 
 ## 3. ADRs
 
@@ -846,3 +848,27 @@ Regras complementares:
 - configuração estruturada futura nasce em nova `scenario_version`.
 
 Com essa política, GI-SAFRA-009 deixa de bloquear C08: START inicia somente os SLAs estruturados existentes na versão; ausência de SLA estruturado é válida e não gera inferência.
+
+
+### D-48 — audiência interna e domínios corporativos permitidos
+**APPROVED — 27/09/2026**.
+
+O Painel Safra é de audiência funcional exclusivamente interna.
+
+Domínios Microsoft corporativos permitidos:
+- `editoradobrasil.com.br`;
+- `editoradobrasil1.onmicrosoft.com`.
+
+A publicação técnica do endpoint não equivale a acesso funcional público. A aplicação deve exigir identidade Microsoft corporativa pertencente a um dos domínios aprovados. Domínio corporativo não substitui RBAC, role grant ou ownership.
+
+A implementação técnica desta decisão será reconciliada na rodada C01-AUD aberta em 27/09/2026.
+
+### D-49 — gate de privacidade/base legal atendido
+**APPROVED / SATISFIED — 27/09/2026**.
+
+Foi confirmado que o enquadramento/base legal e a validação de privacidade previstos antes da liberação para usuários reais já foram realizados.
+
+Consequências:
+- a pendência `DEFERRED_TO_PRIVACY_OWNER_BEFORE_REAL_USER_RELEASE` deve ser encerrada documentalmente;
+- continuam vigentes minimização, retenção, anonimização/eliminação posterior e as restrições de dados sensíveis;
+- esta decisão não altera a política de retenção aprovada.
