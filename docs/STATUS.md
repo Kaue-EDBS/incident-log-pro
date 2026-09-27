@@ -1,8 +1,8 @@
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 27/09/2026  
-> Fase atual: **SAFRA-C08 — UX do COMEÇO / START**  
-> Escopo atual: implementar o START transacional e idempotente sobre cenários PUBLISHED, preservando decisões não resolvidas sem inferência.
+> Fase atual: **GATE PRÉ-C08 — resolver GI-SAFRA-001, 002, 003 e 009 antes da UX do START**  
+> Escopo atual: remover bloqueios de governança do START sem inventar criticidade, thresholds, fonte de estoque ou SLA estruturado.
 
 ---
 
@@ -2946,3 +2946,32 @@ NEXT_PHASE = SAFRA-C08
 ### Restrição para fechamento completo de P2 / START READY
 
 O C08 pode ser implementado e homologado no núcleo START agora. Porém a publicação completa do gate P2 não deve declarar "SLA produtivo iniciado corretamente" enquanto GI-SAFRA-009 e thresholds relacionados permanecerem sem definição produtiva.
+
+
+---
+
+## PAUSA FORMAL ANTES DO C08 / UX — 27/09/2026
+
+Embora o gate técnico C07 → C08 esteja verde, a execução foi **interrompida antes de iniciar a UX/START** para tratar quatro pendências de governança que poderiam induzir comportamento falso na interface:
+
+- **GI-SAFRA-001** — criticidade nominal dos 11 cenários;
+- **GI-SAFRA-002** — thresholds ausentes dos cenários 2, 4, 10 e 11;
+- **GI-SAFRA-003** — fonte oficial do mínimo da curva A no cenário 9;
+- **GI-SAFRA-009** — mapeamento formal dos SLAs textuais para relógios estruturados.
+
+Motivo da pausa:
+- C08 precisa exibir criticidade vigente sem inventá-la;
+- START não pode prometer automação de gatilho que não possui threshold;
+- cenário 9 não pode classificar ruptura automaticamente sem fonte oficial;
+- START não pode iniciar SLA estruturado derivado apenas de texto ambíguo.
+
+Estado:
+```text
+C07_TECHNICAL_GATE = PASS
+C08_UX_STARTED = false
+PRE_C08_GOVERNANCE_GATE = IN_PROGRESS
+BLOCKERS = GI-001,GI-002,GI-003,GI-009
+```
+
+Próximo passo após este gate:
+`SAFRA-C08.1 — contrato transacional e autorização do START`.
