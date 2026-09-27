@@ -56,6 +56,10 @@
 | D-41 | Schema v2 canônico materializado no PRIMARY e versionado em supabase/migrations | APPROVED / IMPLEMENTED |
 | D-42 | supabase/migrations é a única autoridade de migrations; Drizzle fica sem autoridade de deploy; drift C00/C04/C05 reconciliado | APPROVED / IMPLEMENTED |
 | D-43 | Banco descartável padrão = Supabase local via CLI/Docker; rollback pós-C06 = forward fix por padrão | APPROVED / IMPLEMENTED |
+| D-44 | Criticidade ausente nos cenários v1 é estado explícito e não bloqueia START; nenhuma classificação será inferida | APPROVED |
+| D-45 | Cenários com threshold/fonte de gatilho ausente operam em START manual no MVP; automação permanece desabilitada | APPROVED |
+| D-46 | Cenário 9 permanece START manual enquanto não existir fonte oficial do mínimo curva A; ruptura automática fica desabilitada | APPROVED |
+| D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | APPROVED |
 
 ## 3. ADRs
 
@@ -768,3 +772,77 @@ Correções documentais:
 - scenario_owners continua sendo o vínculo explícito de ownership.
 
 A correção preserva histórico e elimina definições concorrentes sem reescrever decisões publicadas silenciosamente.
+
+
+### ADR-042 — Gate pré-C08 para dados de negócio ausentes
+**APPROVED — 27/09/2026**.
+
+A ausência de criticidade nominal, thresholds de gatilho, fonte curva A e decomposição completa de SLA textual **não bloqueia START manual**.
+
+Princípios:
+- ausência não vira default;
+- automação dependente de dado ausente permanece desligada;
+- START manual continua permitido para cenário PUBLISHED;
+- UI deve exibir ausência de configuração de forma explícita;
+- nenhuma versão PUBLISHED é reescrita retroativamente.
+
+### D-44 / GI-SAFRA-001 — criticidade ausente é estado explícito no MVP
+**APPROVED — 27/09/2026**.
+
+Decisão:
+- as 11 `scenario_version v1` permanecem com `criticality = NULL`;
+- `NULL` significa **criticidade não definida**, não HIGH/MODERATE;
+- criticidade não é requisito para START;
+- C08 deve exibir “Criticidade não definida”;
+- regras de comunicação/escalonamento baseadas em criticidade não executam quando a criticidade está ausente;
+- futura classificação exige decisão humana e **nova scenario_version**.
+
+A decisão não identifica artificialmente os quatro CRITICAL. Ela remove a criticidade ausente como bloqueio de START.
+
+### D-45 / GI-SAFRA-002 — thresholds ausentes tornam gatilho manual no MVP
+**APPROVED — 27/09/2026**.
+
+Aplica-se a SAFRA-02, SAFRA-04, SAFRA-10 e SAFRA-11.
+
+Enquanto o threshold numérico não existir em fonte aprovada:
+- detector automático do gatilho fica **NOT_CONFIGURED**;
+- nenhum `X h`, `X min`, limite de fila ou capacidade é inferido;
+- cenário continua elegível para START manual por usuário autenticado;
+- a frase original da Matriz v3 permanece como evidência;
+- futura automação exige threshold versionado e fonte explícita.
+
+### D-46 / GI-SAFRA-003 — cenário 9 manual até fonte oficial do mínimo curva A
+**APPROVED — 27/09/2026**.
+
+Enquanto não existir fonte/regra oficial do saldo mínimo:
+- nenhuma ruptura é classificada automaticamente;
+- nenhum mínimo é calculado ou inventado pelo Painel;
+- SAFRA-09 continua disponível para START manual;
+- UI deve sinalizar que a detecção automática está não configurada;
+- futura automação exige fonte oficial + regra versionada.
+
+### D-47 / GI-SAFRA-009 — política formal de estruturação dos SLAs textuais
+**APPROVED — 27/09/2026**.
+
+Uma cláusula textual só é elegível a `scenario_slas` quando cumprir **todos** os critérios:
+1. descreve explicitamente prazo da **tratativa**, não detecção, gatilho, milestone intermediário, janela operacional ou pós-mortem;
+2. possui alvo numérico explícito;
+3. possui unidade temporal explícita;
+4. o relógio pode iniciar em `TREATMENT_OPENED`;
+5. o relógio pode terminar em `TREATMENT_RESOLVED`;
+6. a estruturação não exige criar evento novo por interpretação.
+
+Classificação canônica da Matriz v3:
+- **SAFRA-01 — “tratativa ≤ 48h”**: elegível;
+- **SAFRA-05 — “tratativa ≤ 4h”**: elegível;
+- demais cláusulas: não estruturáveis na versão atual sem evento/regra adicional.
+
+Regras complementares:
+- thresholds de detecção permanecem gatilho, não SLA runtime;
+- milestones intermediários não são convertidos em END;
+- pós-mortem pertence a F03;
+- expressões como “no dia”, “no turno”, “imediata” ou apenas resultado esperado não viram duração numérica;
+- versões PUBLISHED atuais não são reescritas;
+- configuração estruturada futura nasce em nova `scenario_version`.
+
+Com essa política, GI-SAFRA-009 deixa de bloquear C08: START inicia somente os SLAs estruturados existentes na versão; ausência de SLA estruturado é válida e não gera inferência.
