@@ -4,8 +4,9 @@
 **Bloco:** SAFRA-C02 — Threat model e abuso de negócio  
 **Data de abertura da rodada corretiva:** 27/09/2026  
 **Horário:** 18:37 BRT  
-**Estado:** EM EXECUÇÃO  
-**Natureza:** reauditoria de ameaças, autorização, integridade temporal, duplicidade, controles e testes contra o estado atual do código e do Lovable Cloud PRIMARY
+**Estado:** CONCLUÍDA / RECERTIFICADA  
+**Natureza:** reauditoria de ameaças, autorização, integridade temporal, duplicidade, controles e testes contra o estado atual do código e do Lovable Cloud PRIMARY  
+**Fechamento documental:** 28/09/2026 às 05:47 BRT
 
 ---
 
@@ -163,17 +164,53 @@ A suíte passou no Database Disposable `36356284282`:
 
 ### C02-AUD-06 — smoke HTTP não cobre toda a superfície Data API
 
-**Estado:** OPEN  
-**Severidade:** MEDIUM / AUTHZ TEST
+**Estado:** CLOSED / PASS — validado tecnicamente em 27/09/2026 e fechado documentalmente em 28/09/2026 às 05:47 BRT  
+**Severidade original:** MEDIUM / AUTHZ TEST
 
-O smoke anônimo atual cobre somente parte das tabelas. O schema Safra possui 17 tabelas centrais com RLS/deny-by-default e a cobertura HTTP deve ser ampliada para detectar regressões de grant/exposição.
+A cobertura HTTP anônima foi ampliada em `.github/scripts/test-safra-direct-api.sh` para:
+
+- as 17 tabelas centrais do domínio Safra;
+- `applications` e `incidents` legadas.
+
+O smoke usa `select=*` para funcionar também em tabelas de junção sem coluna `id`, mantendo o critério forte de segurança: qualquer resposta diferente de `401/403` reprova o pipeline.
+
+Evidência do Database Disposable `36356284282`:
+
+- todas as tabelas testadas retornaram `HTTP 401`;
+- nenhuma resposta 2xx foi aceita;
+- `c02_threat_model_authz.test.sql` passou junto da mesma rodada.
+
+Verificação direta no Lovable Cloud PRIMARY:
+
+- RLS ativa nas 17 tabelas centrais;
+- `anon`: sem SELECT/INSERT/UPDATE/DELETE;
+- `authenticated`: sem SELECT/INSERT/UPDATE/DELETE direto nas 17 tabelas.
+
+**Conclusão:** a superfície Data API está coberta por regressão HTTP e por verificação de grants/RLS no PRIMARY.
 
 ### C02-AUD-07 — EXECUTE legado desnecessário em trigger functions
 
-**Estado:** OPEN  
-**Severidade:** LOW / HARDENING
+**Estado:** CLOSED / PASS — validado tecnicamente em 27/09/2026 e fechado documentalmente em 28/09/2026 às 05:47 BRT  
+**Severidade original:** LOW / HARDENING
 
-`public.set_updated_at()` e `public.validate_incident_timestamps()` ainda aparecem executáveis por `anon`/`authenticated`. São trigger functions e não foi observada exploração prática, mas o privilégio é desnecessário e deve ser revogado explicitamente.
+A migration canônica `20260927214303_c02_threat_model_authz_hardening.sql` revogou explicitamente `EXECUTE` de:
+
+- `public.set_updated_at()`;
+- `public.validate_incident_timestamps()`.
+
+Papéis removidos:
+
+- `PUBLIC`;
+- `anon`;
+- `authenticated`.
+
+Evidências:
+
+- asserts específicos em `supabase/tests/database/c02_threat_model_authz.test.sql`;
+- Database Disposable `36356284282`: SUCCESS;
+- verificação direta no PRIMARY: `anon_execute=false` e `authenticated_execute=false` para ambas as funções.
+
+**Conclusão:** os trigger helpers legados permanecem utilizáveis internamente por triggers, mas deixaram de ser superfície invocável por browser roles.
 
 ### C02-AUD-08 — matriz de paridade desatualizada
 
@@ -221,12 +258,37 @@ A fonte canônica também registra os testes que deverão existir antes do PASS 
 
 ### C02-AUD-10 — imutabilidade de treatment terminal
 
-**Estado:** OPEN  
-**Severidade:** HIGH / INTEGRIDADE HISTÓRICA
+**Estado:** CLOSED / PASS — validado tecnicamente em 27/09/2026 e fechado documentalmente em 28/09/2026 às 05:47 BRT  
+**Severidade original:** HIGH / INTEGRIDADE HISTÓRICA
 
-Durante a execução foi identificado que o status terminal já era protegido, porém uma linha `RESOLVED`/`CANCELLED` ainda poderia ter campos históricos reescritos por caminho privilegiado sem mudar o status, por exemplo `cancellation_reason` ou timestamps de fechamento.
+A migration `20260927214303_c02_threat_model_authz_hardening.sql` adicionou o trigger:
 
-**Direção corretiva:** tornar qualquer UPDATE posterior ao estado terminal inválido; correções posteriores devem ser representadas exclusivamente por evento append-only (`ADMIN_CORRECTION_RECORDED`/evento governado), preservando a evidência original.
+`trg_00_treatments_terminal_immutable`
+
+com a função privada:
+
+`private.safra_guard_terminal_treatment_immutable()`
+
+Contrato final:
+
+- se o estado anterior é `RESOLVED` ou `CANCELLED`, **qualquer UPDATE posterior é rejeitado**;
+- correções futuras devem ser representadas por evento append-only governado, nunca pela reescrita da evidência terminal.
+
+Evidência automatizada:
+
+- `c02_threat_model_authz.test.sql` tenta reescrever `cancellation_reason` depois de CANCEL;
+- resultado esperado: erro `closed treatment row is immutable; record an append-only correction event instead`;
+- Database Disposable `36356284282`: SUCCESS;
+- suíte total: **Files=26, Tests=369**.
+
+Evidência direta no PRIMARY, com transação e rollback:
+
+- tratamento criado e levado a `CANCELLED`;
+- tentativa de trocar o motivo foi bloqueada;
+- erro observado: `closed treatment row is immutable; record an append-only correction event instead`;
+- `cancellation_reason` original permaneceu intacto.
+
+**Conclusão:** a evidência terminal deixou de ser apenas status-protected e passou a ser row-immutable.
 
 ## 4. Controles já confirmados na abertura
 
@@ -278,4 +340,6 @@ A reauditoria somente poderá ser marcada como concluída quando:
 - os gates `G3.5`, `THREAT-001` e `AUTHZ-001` puderem ser recertificados por evidência atual;
 - documentação e `PROJECT_PROFILE` refletirem o estado real.
 
-> **C02 permanece historicamente fechado; C02-AUD está EM EXECUÇÃO e não está recertificado.**
+> **C02 permanece historicamente fechado; C02-AUD foi CONCLUÍDA / RECERTIFICADA em 28/09/2026 às 05:47 BRT.**
+
+Resultado atual: `G3.5 = PASS`, `THREAT-001 = PASS`, `AUTHZ-001 = PASS`. Não restou achado corretivo aberto dentro do escopo C02-AUD.
