@@ -1455,6 +1455,24 @@ HYGIENE_IMPROVEMENTS = 2
 NEXT = BLOCK_B
 ```
 
+
+
+#### C05-AUD Bloco B — EXECUTADO em 28/09/2026 às 09:37 BRT
+
+Resultados:
+
+- **C05-AUD-02 CLOSED/PASS_PRIMARY** — `c05_version_freeze_behavior.test.sql`, 10/10 PASS;
+- **C05-AUD-03 CLOSED/PASS_RUNTIME_AND_DISPOSABLE_GATE** — concorrência real END x CANCEL validada nas duas ordens e script permanente adicionado ao Database Disposable;
+- **C05-AUD-05 IMPLEMENTED/AWAITING_DISPOSABLE_RUNTIME** — smoke HTTP autenticado criado e integrado ao Database Disposable; não foi executado nesta sessão por ausência de stack local/rede, sem usar credenciais de produção como atalho.
+
+```text
+OPEN_FINDINGS = 2
+HYGIENE_IMPROVEMENTS = 2
+
+NEXT_STRUCTURAL_BLOCK = C05-HYG-02 + C05-HYG-03
+FINAL_RUNTIME_GATES = C05-AUD-05 + C05-AUD-04
+```
+
 ### C05.0 — Autoridade de migrations e captura do C04 — CONCLUÍDO
 
 Decisão:
