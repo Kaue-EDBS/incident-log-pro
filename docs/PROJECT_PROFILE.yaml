@@ -107,8 +107,12 @@ identity_and_auth:
 
 c04_reaudit:
   opened_at: "2026-09-28T07:15:00-03:00"
-  status: "IN_EXECUTION"
+  status: "IMPROVEMENTS_AUTHORIZED_QUEUED_ITEM_3"
   branch: "audit/c04-identity-rbac-rls-2026-09-28"
+  queue_position: 3
+  execution_order: "AFTER_C02_PR10_AND_C03_AUD"
+  improvements_authorized_at: "2026-09-28T07:42:49-03:00"
+  allow_incremental_findings: true
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-09-28.md"
   base_branch: "audit/c03-corrections-2026-09-28"
   open_findings: 3
