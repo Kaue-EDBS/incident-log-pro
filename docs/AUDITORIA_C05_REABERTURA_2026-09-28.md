@@ -255,7 +255,7 @@ OPEN_FINDINGS = 6
   C05-AUD-05 authenticated direct-API HTTP smoke
   C05-AUD-06 positive-RLS contract interpretation
 
-HYGIENE_IMPROVEMENTS = 3
+HYGIENE_IMPROVEMENTS = 2
   C05-HYG-01 Drizzle residual tooling
   C05-HYG-02 five FK support indexes
   C05-HYG-03 duplicate updated_at/clock responsibility
@@ -425,3 +425,99 @@ HYGIENE_IMPROVEMENTS = 3
 | C05-AUD-06 | CLOSED / DECISION_A |
 
 A C05-AUD permanece aberta até tratamento ou decisão explícita sobre os 4 gaps técnicos e 3 melhorias de higiene.
+
+
+## 13. Bloco A — autoridade única de migrations
+
+**Executado em:** 28/09/2026 às 09:23 BRT  
+**Escopo:** C05-HYG-01  
+**Estado:** **CLOSED / PASS**
+
+### 13.1 Diagnóstico confirmado
+
+A auditoria confirmou que Drizzle não possuía uso real em runtime, build ou CI:
+
+- nenhum script de `package.json` usa Drizzle;
+- nenhum workflow usa Drizzle;
+- nenhuma referência de código a `drizzle-kit`, `drizzle-orm` ou `LOVABLE_DB_MIGRATION_URL`;
+- `drizzle/schema.ts` estava vazio;
+- os quatro snapshots Drizzle continham 0 tabelas, 0 enums, 0 schemas e 0 views;
+- `supabase/migrations` já era a autoridade documental e operacional.
+
+### 13.2 Limpeza executada
+
+Removidos da branch:
+
+- `drizzle.config.ts`;
+- `drizzle/schema.ts`;
+- `drizzle/migrations/meta/0000_snapshot.json`;
+- `drizzle/migrations/meta/0001_snapshot.json`;
+- `drizzle/migrations/meta/0002_snapshot.json`;
+- `drizzle/migrations/meta/0003_snapshot.json`;
+- `drizzle/migrations/meta/_journal.json`.
+
+Dependências diretas removidas de `package.json` e do manifesto raiz de `bun.lock`:
+
+- `drizzle-kit`;
+- `drizzle-orm`;
+- `postgres`.
+
+A remoção de `postgres` foi feita porque não existe import/uso direto no projeto e sua presença estava associada somente ao tooling Drizzle removido.
+
+### 13.3 Gate permanente
+
+Criado:
+
+`.github/scripts/check-c05-migration-authority.py`
+
+Contrato do gate:
+
+- `supabase/migrations` precisa existir;
+- precisa haver pelo menos uma migration SQL canônica;
+- `drizzle.config.*` é proibido;
+- diretório `drizzle/` é proibido;
+- `drizzle-kit` e `drizzle-orm` como dependências diretas são proibidos;
+- scripts de package não podem invocar Drizzle.
+
+O gate foi incluído em:
+
+- `.github/workflows/app-smoke-test.yml`;
+- `.github/workflows/database-disposable-test.yml`.
+
+### 13.4 Verificação
+
+Fotografia da branch após limpeza:
+
+```text
+package drizzle-kit = absent
+package drizzle-orm = absent
+package postgres = absent
+
+bun.lock root drizzle-kit = absent
+bun.lock root drizzle-orm = absent
+bun.lock root postgres = absent
+
+drizzle paths = 0
+supabase migrations = 29
+migration authority gate = present
+```
+
+PRIMARY permanece inalterado por este bloco:
+
+```text
+supabase_migrations.schema_migrations = 29
+latest = 20260928090910
+```
+
+Nenhuma DDL foi executada no PRIMARY no Bloco A.
+
+### 13.5 Decisão arquitetural consolidada
+
+```text
+MIGRATION_AUTHORITY = supabase/migrations
+DRIZZLE_MIGRATION_AUTHORITY = FORBIDDEN
+SECOND_SCHEMA_TRACK = FORBIDDEN_WITHOUT_EXPLICIT_ADR
+C05-HYG-01 = CLOSED/PASS
+```
+
+O CI executável do head final continua sujeito ao gate normal da fila/GitHub Actions; a verificação estrutural desta branch passou pela inspeção direta acima.
