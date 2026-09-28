@@ -43,21 +43,43 @@ A reauditoria confirmou:
 
 ### C03-AUD-01 — rota Safra com nomenclatura de incidente
 
-**Estado:** OPEN / ALTERAÇÃO AUTORIZADA  
-**Severidade:** MEDIUM / SEMÂNTICA
+**Estado:** IMPLEMENTED / PENDING_CI em 28/09/2026 às 06:22 BRT  
+**Severidade original:** MEDIUM / SEMÂNTICA
 
-A experiência atual de START é corretamente uma criação de tratativa Safra, porém a rota e o arquivo ainda usam o nome legado:
+A rota canônica do START foi migrada para:
 
-`/novo-incidente`
+`/tratativas/nova`
 
-O próprio componente se chama `StartSafraTreatment` e a UX mostra `Abrir Protocolo`.
+Implementação:
 
-**Direção aprovada:**
+- fluxo START movido para `src/routes/tratativas.nova.tsx`;
+- `/novo-incidente` preservado somente como redirect de compatibilidade para `/tratativas/nova`;
+- `AppLayout` aponta exclusivamente para a rota canônica nova;
+- rótulo de UX `Abrir Protocolo` foi preservado;
+- o domínio continua registrando START como criação de `treatment`, nunca como `incident`;
+- `routeTree.gen.ts` foi reconciliado com a nova rota.
 
-- mover o destino canônico para `/tratativas/nova`;
-- manter `/novo-incidente` temporariamente como redirect de compatibilidade;
-- preservar `Abrir Protocolo` como rótulo permitido de UX para START;
-- não renomear tratativa Safra para incidente.
+Foi criado o gate permanente:
+
+`.github/scripts/check-c03-route-coherence.py`
+
+O gate reprova se:
+
+- a rota canônica deixar de existir;
+- o redirect legado deixar de apontar para `/tratativas/nova`;
+- a navegação voltar a apontar para `/novo-incidente`;
+- houver referência funcional ao path legado fora do redirect/arquivo gerado;
+- o route tree perder ou duplicar a rota canônica.
+
+Validação estática da branch:
+
+- rota canônica presente: PASS;
+- redirect legado presente: PASS;
+- referências de `AppLayout` à rota nova: 2;
+- referências de `AppLayout` à rota antiga: 0;
+- registros tipados de `/tratativas/nova` no route tree: 3 mapas + 1 FileRoutesByPath.
+
+**Pendência restante deste item:** executar App Smoke/typecheck/build/lint quando a franquia do GitHub Actions voltar a estar disponível. Até lá, a correção está implementada, mas o fechamento formal permanece dependente do CI.
 
 ### C03-AUD-02 — fronteira visual Safra × Reliability Monitor legado
 
