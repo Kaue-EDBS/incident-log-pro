@@ -1,0 +1,271 @@
+# AUDITORIA C05 — SCHEMA V2, MIGRATIONS E INVARIANTES
+
+**Projeto:** `Kaue-EDBS/incident-log-pro`  
+**Bloco:** SAFRA-C05 — Schema v2, migrations e invariantes  
+**Abertura:** 28/09/2026 às 08:56 BRT  
+**Branch exclusiva:** `audit/c05-schema-v2-migrations-invariants-2026-09-28`  
+**Base:** C04-AUD empilhada + Lovable Cloud PRIMARY  
+**Estado:** AUDITORIA ABERTA / ACHADOS AGUARDANDO DECISÃO  
+**Regra:** o fechamento histórico do C05 é preservado; esta C05-AUD é uma reauditoria posterior e não altera produção sem decisão explícita.
+
+## 1. Escopo assimilado
+
+1. Definir a autoridade canônica das migrations, escolher entre `supabase/migrations` e Drizzle, reconciliar drift e documentar rollback.
+2. Validar o schema v2: áreas, sistemas, papéis, cenários, versões, owners, áreas impactadas e SLAs.
+3. Validar estruturas transacionais/governança: tratativas, eventos, escalonamentos, notificações, propostas e `governance_issues`.
+4. Validar invariantes relacionais/estado: FKs, status governados, CANCEL com motivo e END/CANCEL somente de ACTIVE.
+5. Validar integridade histórica/temporal: freeze de `scenario_version_id`, imutabilidade de versão publicada, timestamps server-side e ausência de cascade destrutivo.
+6. Validar concorrência/duplicidade: idempotência, `correlation_id`, constraints temporais e views com RLS/security invoker.
+7. Validar migrations/schema em banco descartável: constraints positivas/negativas, double submit, concorrência END x CANCEL, version freeze, rollback, API direta e RLS positiva/negativa.
+
+## 2. Autoridade de migrations e drift
+
+### Resultado
+
+**PASS estrutural.**
+
+- `supabase/migrations` está documentado como fonte canônica em `PROJECT_PROFILE`, `ROADMAP` e `ROLLBACK_E_BANCO_DESCARTAVEL.md`;
+- Drizzle não possui autoridade de deploy;
+- branch possui **28** migrations Supabase;
+- PRIMARY registra **28** migrations;
+- diferenças Git-only: **0**;
+- diferenças PRIMARY-only: **0**;
+- correspondência de versões: **exata**.
+
+Drizzle atual:
+
+- `drizzle/schema.ts` está intencionalmente vazio;
+- snapshots 0000..0003 contêm 0 tabelas, 0 enums, 0 schemas e 0 views;
+- não há migration SQL ativa sob `drizzle/migrations`;
+- `drizzle.config.ts` e dependências Drizzle permanecem no repositório.
+
+**Observação de higiene C05-HYG-01:** o tooling Drizzle residual não produz drift hoje, mas mantém uma segunda aparência de mecanismo de migration. Decidir entre remover os artefatos residuais ou criar um gate explícito que impeça Drizzle de ganhar autoridade por acidente.
+
+## 3. Schema v2 e estruturas
+
+### Resultado
+
+**PASS.**
+
+PRIMARY:
+
+- 17/17 tabelas públicas do domínio Safra presentes;
+- 17/17 com RLS;
+- 2/2 tabelas privadas de papéis presentes: `safra_principals`, `safra_role_grants`;
+- 8/8 entidades core: áreas, sistemas, cenários, versões, owners, relações de áreas/sistemas e SLAs;
+- 7/7 estruturas transacionais/governança: treatments, events, escalations, notifications, proposals/responses e governance issues;
+- 2/2 estruturas de impacto real.
+
+Integridade relacional:
+
+- **36 FKs** no domínio;
+- **0 FKs com ON DELETE CASCADE**;
+- **55 CHECK constraints**;
+- **12 UNIQUE constraints** além de índices únicos parciais.
+
+## 4. Invariantes de estado
+
+### PASS
+
+- `scenarios.lifecycle_status` governado;
+- `scenario_versions.status` governado;
+- `scenario_versions.criticality` governada quando não nula;
+- `treatments.status` governado;
+- `treatment_events.event_type` governado;
+- `treatment_escalations.level` governado;
+- `scenario_proposal_owner_responses.response` governado;
+- `governance_issues.status` governado;
+- CANCEL exige motivo não vazio;
+- state fields de ACTIVE/RESOLVED/CANCELLED são mutuamente consistentes;
+- END/CANCEL sequencial só pode partir de ACTIVE;
+- treatment terminal não reabre.
+
+### C05-AUD-01 — status de notificação não governado
+
+**Estado:** OPEN / SCHEMA GAP  
+**Severidade:** MEDIUM  
+**Decisão humana necessária:** SIM
+
+`notifications_log.delivery_status` possui apenas:
+
+`CHECK (btrim(delivery_status) <> '')`
+
+Teste adversarial reversível no PRIMARY comprovou que:
+
+`delivery_status = 'TOTALLY_INVALID_STATUS'`
+
+é aceito pelo banco.
+
+Isso diverge do requisito de status governados. É necessário definir o vocabulário permitido antes da correção (por exemplo, quais estados de entrega são canônicos).
+
+## 5. Integridade histórica e temporal
+
+### Resultado
+
+**PASS no comportamento atual.**
+
+PRIMARY confirmado por teste reversível:
+
+- conteúdo de versão PUBLISHED não pode ser alterado;
+- filhos de versão PUBLISHED (áreas/sistemas/SLA) não podem ser alterados;
+- `treatments.scenario_version_id` é snapshot imutável;
+- CANCEL sem motivo é rejeitado;
+- END de ACTIVE para RESOLVED funciona com `closed_at` server-side;
+- tentativa posterior de CANCEL em tratativa terminal é rejeitada;
+- nenhum teste deixou fixture persistida.
+
+Controles existentes:
+
+- server clock para scenario version;
+- server clock para treatment;
+- eventos append-only;
+- impact measurements append-only;
+- freeze de conteúdo filho;
+- ausência de cascade destrutivo;
+- constraints temporais de validade/open/close/cancel/notification/governance.
+
+### C05-AUD-02 — version freeze sem regressão comportamental permanente C05
+
+**Estado:** OPEN / TEST GAP  
+**Severidade:** MEDIUM  
+**Decisão humana necessária:** NÃO
+
+O comportamento passou no PRIMARY e existe evidência histórica no STATUS, porém a suíte C05 permanente atualmente verifica principalmente **existência de triggers**, não tenta modificar uma versão PUBLISHED e confirmar a rejeição.
+
+Proposta: adicionar pgTAP negativo permanente para versão publicada + filhos + snapshot de treatment.
+
+## 6. Concorrência, duplicidade e correlation
+
+### PASS parcial
+
+- START possui idempotência estrutural;
+- `treatments.start_idempotency_key` é UNIQUE;
+- `notifications_log.idempotency_key` é UNIQUE;
+- `treatment_events` possui unicidade por treatment/event/idempotency quando a chave existe;
+- `correlation_id` é NOT NULL nas estruturas críticas;
+- há teste concorrente real para START (`test-safra-start-concurrency.sh`);
+- constraints temporais/índices de uma relação ativa existem para owner, áreas impactadas e escalonamento;
+- não existem views públicas/privadas hoje; requisito de `security_invoker` é **N/A nesta fotografia**.
+
+### C05-AUD-03 — concorrência END x CANCEL não é testada
+
+**Estado:** OPEN / CONCURRENCY TEST GAP  
+**Severidade:** HIGH  
+**Decisão humana necessária:** NÃO
+
+Não existe teste com duas transações reais competindo pelo mesmo treatment, uma tentando END e outra CANCEL.
+
+Os guards sequenciais estão corretos, mas isso não substitui a prova de concorrência exigida pelo próprio escopo C05.
+
+Como END/CANCEL RPCs ainda não existem, o teste deve ser feito agora no **nível de persistência** em banco descartável; o teste RPC deve ser repetido quando F01/F02 implementar as mutações.
+
+## 7. Banco descartável, rollback, API direta e RLS
+
+Suítes atuais executadas contra o PRIMARY em transação:
+
+- `c05_schema_v2.test.sql` -> **23/23 PASS**;
+- `c05_technical_guards.test.sql` -> **7/7 PASS**.
+
+Database Disposable reconstrói migrations do zero e roda pgTAP, lint, START concorrente e smokes de API/RPC.
+
+### C05-AUD-04 — rollback verifica tracking, não restauração estrutural
+
+**Estado:** OPEN / TEST GAP  
+**Severidade:** MEDIUM  
+**Decisão humana necessária:** NÃO
+
+`latest_migration_rollback.test.sql` valida apenas que a versão mais recente saiu de `supabase_migrations.schema_migrations`.
+
+Não há assert genérico/manifesto comprovando que os objetos alterados pela migration voltaram ao estado anterior.
+
+A documentação de rollback está correta: migration já publicada em produção deve receber forward-fix. O gap é de **ensaio local**, não da política operacional.
+
+### C05-AUD-05 — direct API autenticada não é exercitada por HTTP
+
+**Estado:** OPEN / TEST GAP  
+**Severidade:** MEDIUM  
+**Decisão humana necessária:** NÃO
+
+`test-safra-direct-api.sh` usa apenas a publishable/anon key e prova negação anônima.
+
+Há prova SQL de que `authenticated` não possui grants diretos e de que RLS oculta linhas quando grants são temporariamente adicionados, mas não existe um smoke HTTP com token de usuário autenticado tentando acessar diretamente as tabelas.
+
+### C05-AUD-06 — significado de “RLS positiva” no desenho RPC-only
+
+**Estado:** WAITING_HUMAN_DECISION / TEST CONTRACT  
+**Severidade:** MEDIUM  
+**Decisão humana necessária:** SIM
+
+Hoje o browser possui **0 CRUD direto** nas tabelas Safra e há **0 policies públicas**; acesso positivo acontece por RPC governada.
+
+Logo, “RLS positiva” não existe como caminho produtivo de tabela.
+
+Decidir uma das duas interpretações:
+
+A. considerar a autorização positiva por RPC como o lado positivo do contrato e manter RLS/tabela apenas como deny-by-default;  
+B. exigir uma policy positiva de tabela apenas para satisfazer o teste — opção que ampliaria a superfície Data API e contradiz o hardening atual.
+
+Recomendação técnica da auditoria: **A**.
+
+## 8. Higiene estrutural
+
+### C05-HYG-02 — cinco FKs sem índice de suporte pelo lado filho
+
+**Estado:** IMPROVEMENT  
+**Severidade:** LOW/MEDIUM PERFORMANCE
+
+FKs sem índice cujo prefixo começa pelas colunas FK:
+
+- `governance_issues.resolved_by`;
+- `scenario_proposal_owner_responses.candidate_owner_id`;
+- `scenario_version_impacted_areas.operational_area_id`;
+- `scenario_version_systems.system_id`;
+- `treatment_impacted_areas.operational_area_id`.
+
+Não afeta integridade, mas pode aumentar scans/locks em joins e tentativas de update/delete nos pais.
+
+### C05-HYG-03 — clocks/updated_at redundantes
+
+**Estado:** IMPROVEMENT  
+**Severidade:** LOW
+
+- `scenario_versions.updated_at` é tocado tanto pelo server-clock quanto pelo guard de update;
+- `treatments.updated_at` é tocado tanto pelo server-clock quanto por `safra_touch_updated_at`.
+
+Não foi encontrada falha funcional, mas há duplicidade de responsabilidade entre triggers.
+
+## 9. Resultado consolidado
+
+```text
+MIGRATION_AUTHORITY = PASS
+MIGRATION_HISTORY_28_OF_28 = PASS
+SCHEMA_V2 = PASS
+TRANSACTIONAL_GOVERNANCE_SCHEMA = PASS
+FK_CASCADE_DESTRUCTIVE = 0
+HISTORICAL_FREEZE_RUNTIME = PASS
+SERVER_TIMESTAMPS = PASS
+START_IDEMPOTENCY_CONCURRENCY = PASS_BY_EXISTING_TEST
+PUBLIC_VIEWS = 0 / N_A
+
+OPEN_FINDINGS = 6
+  C05-AUD-01 notification status vocabulary
+  C05-AUD-02 permanent version-freeze regression
+  C05-AUD-03 END x CANCEL real concurrency
+  C05-AUD-04 structural rollback proof
+  C05-AUD-05 authenticated direct-API HTTP smoke
+  C05-AUD-06 positive-RLS contract interpretation
+
+HYGIENE_IMPROVEMENTS = 3
+  C05-HYG-01 Drizzle residual tooling
+  C05-HYG-02 five FK support indexes
+  C05-HYG-03 duplicate updated_at/clock responsibility
+
+C05_AUD = OPEN / AWAITING_DECISIONS
+```
+
+## 10. Decisões necessárias antes de corrigir
+
+1. Definir o vocabulário canônico de `notifications_log.delivery_status`.
+2. Confirmar que “RLS positiva” será interpretada como **autorização positiva via RPC governada**, mantendo tabelas deny-by-default, em vez de criar policy positiva direta.
+
+Os demais achados podem ser corrigidos tecnicamente sem nova decisão de negócio, após autorização.
