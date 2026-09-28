@@ -18,6 +18,8 @@
 
 > **C04-AUD Bloco B concluído em 28/09/2026 às 08:15 BRT.** PREV-01 a PREV-04 foram convertidos em regressões permanentes em `supabase/tests/database/c04_preventive_identity_authority.test.sql` e executados no Lovable Cloud PRIMARY com **22/22 PASS** e rollback integral. Binding altera apenas `user_id`; matriz de 9 papéis permanece exata; 11 ownerships continuam explícitos (Daniel 6, Jiane 4, Renato 1); PAPEL != OWNERSHIP; START mantém assinatura única sem owner/role/version/actor/criticality/timestamp do client e browser sem grants de escalada. Restam apenas **PREV-05 e PREV-06** no Bloco C antes do CI final.
 
+> **C04-AUD Bloco C concluído em 28/09/2026 às 08:36 BRT.** PREV-05 e PREV-06 estão implementados. Contrato `C04_AUTHORIZATION_SURFACE.json`, gate estático `check-c04-authorization-surface.py` ligado ao App Smoke e gate pgTAP `c04_authorization_surface_gate.test.sql` concluído no PRIMARY com **12/12 PASS**. A varredura da branch cobriu **74 arquivos TS/TSX**, encontrou exatamente 3 RPCs aprovadas e zero `.from(...)` direto. PRIMARY: 19 relações públicas, RLS em todas as tabelas, 0 policies, 0 CRUD direto para `anon/authenticated`, 0 EXECUTE público para `anon`. **Blocos A+B+C concluídos; 0 melhorias preventivas restantes; C04-AUD aguarda somente CI final + reconciliação da fila para recertificação formal.**
+
 ---
 
 ## 1. Baseline registrada
