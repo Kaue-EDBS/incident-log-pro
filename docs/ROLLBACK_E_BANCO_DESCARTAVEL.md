@@ -190,3 +190,30 @@ MIGRATION_VERSIONED
 + ROLLBACK/FORWARD_FIX_PLAN
 + DOCS_UPDATED
 ```
+
+
+## 13. Prova estrutural C05-AUD
+
+A partir de 28/09/2026, o rollback local não é considerado comprovado apenas porque a versão desapareceu de `supabase_migrations.schema_migrations`.
+
+Para a migration C05 atual `20260928095246_c05_fk_indexes_and_clock_ownership.sql`, o Database Disposable executa:
+
+```text
+migration down --local --last 1
+  -> c05_block_c_structural_rollback.test.sql
+  -> valida estado estrutural anterior
+  -> db reset --local
+  -> pgTAP completo
+```
+
+O teste estrutural verifica ausência dos 5 índices introduzidos, restauração das responsabilidades anteriores de clock e preservação das tabelas históricas.
+
+Se uma migration futura substituir `20260928095246` como latest, o workflow deve falhar até que o contrato de rollback seja conscientemente atualizado.
+
+A regra de PRIMARY permanece inalterada:
+
+```text
+rollback físico = somente ambiente descartável
+migration publicada no PRIMARY = forward-fix por nova migration
+histórico produtivo = nunca reescrito/destruído para simular rollback
+```
