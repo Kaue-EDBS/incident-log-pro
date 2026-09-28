@@ -10,6 +10,8 @@
 
 > Reauditoria corretiva **C02-AUD concluída e recertificada em 28/09/2026 às 05:47 BRT**. C02-AUD-01 a C02-AUD-10 foram fechados ou formalmente contratados/deferidos conforme a fase responsável. A superfície Data API foi ampliada e testada, EXECUTE legado foi removido, treatments terminais tornaram-se imutáveis, e os gates atuais foram recertificados: **G3.5 = PASS, THREAT-001 = PASS, AUTHZ-001 = PASS**. Evidências: `docs/AUDITORIA_C02_REABERTURA_2026-09-27.md`.
 
+> **Pendência operacional apenas:** o **PR #10** ainda não foi mesclado porque a franquia de **2.000 minutos do GitHub Actions foi esgotada**. A auditoria C02-AUD permanece concluída; o merge documental será retomado em **02/10/2026 às 10:00 BRT**, quando os checks deverão ser reexecutados.
+
 > Snapshot runtime recertificado no fechamento da C01-AUD: Lovable publicado tecnicamente com endpoint acessível, audiência funcional **INTERNAL**, Microsoft/Azure + sessão viva + domínio corporativo aprovado. PRIMARY observado com **2 usuários Auth corporativos**, **2 principals ativos vinculados**, **9 grants funcionais ativos**, **0 grants anon nas estruturas centrais** e **0 policies públicas `USING (true)`**.
 
 ---
