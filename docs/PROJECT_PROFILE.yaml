@@ -1,5 +1,5 @@
 schema_version: 3
-updated_at: "2026-09-27"
+updated_at: "2026-09-28"
 status: C01_AUD_RECERTIFIED
 
 project:
@@ -107,7 +107,7 @@ identity_and_auth:
 
 c04_reaudit:
   opened_at: "2026-09-28T07:15:00-03:00"
-  status: "IMPROVEMENTS_AUTHORIZED_QUEUED_ITEM_3"
+  status: "BLOCK_A_COMPLETE_PREVENTIVE_IMPROVEMENTS_QUEUED_ITEM_3"
   branch: "audit/c04-identity-rbac-rls-2026-09-28"
   queue_position: 3
   execution_order: "AFTER_C02_PR10_AND_C03_AUD"
@@ -115,23 +115,34 @@ c04_reaudit:
   allow_incremental_findings: true
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-09-28.md"
   base_branch: "audit/c03-corrections-2026-09-28"
-  open_findings: 3
+  open_findings: 0
   findings:
     c04_aud_01: "PASS_ANON_DENY"
-    c04_aud_02: "OPEN_EXPIRED_MUTATION_ZERO_EFFECT_TEST"
-    c04_aud_03: "PARTIAL_START_PASS_END_CANCEL_DEFERRED"
+    c04_aud_02: "PASS_EXPIRED_JWT_START_ZERO_EFFECT_PRIMARY"
+    c04_aud_03: "PASS_START_CURRENT_END_CANCEL_DEFERRED_AND_UNEXPOSED"
     c04_aud_04: "PASS_NO_PAYLOAD_PRIVILEGE_ESCALATION"
     c04_aud_05: "PASS_ROLE_MAPPING_RUNTIME_PARTIAL"
     c04_aud_06: "PASS_NO_PLATFORM_ADMIN_OWNERSHIP"
-    c04_aud_07: "OPEN_LEGACY_REST_READ_SURFACE"
+    c04_aud_07: "PASS_LEGACY_REST_SURFACE_RETIRED_PRIMARY"
   primary_observations:
     public_tables_rls_enabled: true
     anon_crud_grants: 0
-    applications_authenticated_select: true
-    incidents_authenticated_select: true
+    applications_authenticated_select: false
+    incidents_authenticated_select: false
     applications_rows: 3
     incidents_rows: 15
-  recertification_status: "PENDING_CORRECTIONS_AND_CI"
+    legacy_applications_incidents_policy_count: 0
+    block_a_migration: "20260928075934_c04_reaudit_legacy_surface_hardening"
+    block_a_primary_verified_at: "2026-09-28T08:01:19-03:00"
+  preventive_improvements_pending: 6
+  preventive_improvements:
+    - "PREV-01_BINDING_PRINCIPAL_AUTH_USER"
+    - "PREV-02_ROLE_MATRIX_REGRESSION"
+    - "PREV-03_ROLE_NOT_OWNERSHIP_INVARIANT"
+    - "PREV-04_PAYLOAD_PRIVILEGE_ESCALATION_ADVERSARIAL"
+    - "PREV-05_UI_REST_RPC_GRANTS_RLS_COHERENCE_GATE"
+    - "PREV-06_ANON_DENY_BY_DEFAULT_GATE"
+  recertification_status: "PENDING_PREVENTIVE_IMPROVEMENTS_AND_FINAL_CI"
 
 
 privileged_roles:
@@ -151,8 +162,12 @@ privileged_roles:
     base_authenticated_user:
       can_view_cards: true
       can_start: true
-      can_end: true
-      can_cancel: true
+      can_end: false
+      can_cancel: false
+      future_authorization:
+        end: "APPROVED_FOR_BASE_AUTHENTICATED_USER_DEFERRED_TO_F01"
+        cancel: "APPROVED_FOR_BASE_AUTHENTICATED_USER_DEFERRED_TO_F02"
+      note: "END/CANCEL are approved future business rules but are not current executable capabilities."
     assignment_model: "NON_HIERARCHICAL"
     inheritance: false
     note: "Microsoft-authenticated users are base actors. Responsibility roles add technical, governance, executive or card-owner duties."
