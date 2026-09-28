@@ -10,16 +10,16 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 |---|---|---|---|
 | React/TanStack/Vite | funcional | fundação web | KEEP |
 | layout responsivo | funcional | base da nova UX | REUSE |
-| applications | funcional | confiabilidade TI | KEEP |
-| incidents | funcional | TI; não representa todo Safra | KEEP |
-| abertura de incidente | funcional | START de treatment | REDESIGN |
+| applications | legado sem adoção | persistência temporária, sem UI | PARK |
+| incidents | legado sem adoção | persistência temporária, sem UI | PARK |
+| abertura de incidente | removida do frontend | START de treatment em `/tratativas/nova` | REMOVE |
 | cronômetro persistente | funcional | relógios/SLA | REUSE |
 | timestamps | funcional | eventos temporais | REUSE |
-| MTTD/MTTR/MTBF | funcional | indicadores TI | KEEP |
-| downtime/disponibilidade | funcional | métricas TI | KEEP |
-| histórico | funcional | histórico auditável Safra | REDESIGN |
-| indicadores | funcional | torre corporativa | REDESIGN |
-| filtros | funcional | cenário/área/status/criticidade | REDESIGN |
+| MTTD/MTTR/MTBF | removidos do runtime | não são métricas canônicas Safra | REMOVE |
+| downtime/disponibilidade | removidos do runtime | eventual analytics Safra terá contrato próprio | REMOVE |
+| histórico Reliability | removido do frontend | histórico auditável Safra será construído sobre treatments/events | REDESIGN |
+| indicadores Reliability | removidos do frontend | analytics Safra terá contrato próprio | REDESIGN |
+| filtros Reliability | removidos do frontend | filtros Safra serão reconstruídos no domínio correto | REDESIGN |
 | dados demo XPTO/ABC/SEP | seed | não representar operação real | PARK |
 | RLS antiga aberta | insegura | removida | REMOVE |
 | RLS C00 safra_access | transitória | RBAC final | REDESIGN |
@@ -79,14 +79,14 @@ Operational Area
 
 ## 4. Critério de migração
 
-Antes de remover fluxo legado:
+Critério vigente após C03-AUD-03:
 
-1. identificar consumidor;
-2. confirmar equivalência;
-3. migrar dados/regras;
-4. testar;
-5. obter evidência;
-6. desativar somente depois.
+1. o Reliability nunca teve adoção operacional real;
+2. frontend, hooks e componentes legados podem ser removidos sem preservar uma experiência paralela;
+3. contratos úteis e neutros só são reaproveitados quando possuem destino Safra explícito;
+4. persistência legada permanece estacionada até migration própria de retirada;
+5. nenhuma tabela é apagada apenas porque sua UI deixou de existir;
+6. remoção física exige validação de dados, rollback e gates de banco.
 
 ## 5. Pendências de paridade
 
