@@ -211,7 +211,7 @@ Recomendação técnica da auditoria: **A**.
 
 ### C05-HYG-02 — cinco FKs sem índice de suporte pelo lado filho
 
-**Estado:** IMPROVEMENT  
+**Estado:** CLOSED / PASS_PRIMARY  
 **Severidade:** LOW/MEDIUM PERFORMANCE
 
 FKs sem índice cujo prefixo começa pelas colunas FK:
@@ -226,7 +226,7 @@ Não afeta integridade, mas pode aumentar scans/locks em joins e tentativas de u
 
 ### C05-HYG-03 — clocks/updated_at redundantes
 
-**Estado:** IMPROVEMENT  
+**Estado:** CLOSED / PASS_PRIMARY  
 **Severidade:** LOW
 
 - `scenario_versions.updated_at` é tocado tanto pelo server-clock quanto pelo guard de update;
@@ -694,3 +694,101 @@ HYGIENE_IMPROVEMENTS = 2
 
 Próximo bloco estrutural: C05-HYG-02 + C05-HYG-03.  
 O fechamento final ainda precisará executar o smoke HTTP autenticado e o rollback estrutural no banco descartável.
+
+
+## 15. Bloco C — índices FK e autoridade única de relógio
+
+**Executado em:** 28/09/2026 às 09:58 BRT  
+**Escopo:** C05-HYG-02 e C05-HYG-03  
+**Estado:** **CONCLUÍDO / PASS_PRIMARY**
+
+Migration canônica:
+
+`supabase/migrations/20260928095246_c05_fk_indexes_and_clock_ownership.sql`
+
+Regressão permanente:
+
+`supabase/tests/database/c05_schema_hygiene_block_c.test.sql`
+
+### 15.1 C05-HYG-02 — índices de suporte para FKs
+
+Foram adicionados exatamente cinco índices B-tree:
+
+- `idx_governance_issues_resolved_by`;
+- `idx_scenario_proposal_owner_responses_candidate_owner_id`;
+- `idx_scenario_version_impacted_areas_operational_area_id`;
+- `idx_scenario_version_systems_system_id`;
+- `idx_treatment_impacted_areas_operational_area_id`.
+
+Objetivo:
+
+- reduzir scans em joins/consultas pelos lados filhos;
+- reduzir custo de verificações relacionadas a update/delete nos pais;
+- evitar locks desnecessariamente longos por ausência de índice auxiliar.
+
+Nenhum índice existente foi removido.
+
+**C05-HYG-02 = CLOSED / PASS_PRIMARY**
+
+### 15.2 C05-HYG-03 — responsabilidade única de updated_at
+
+Decisão técnica consolidada:
+
+```text
+GUARD = valida regra de domínio
+SERVER_CLOCK = escreve timestamps
+```
+
+Aplicado:
+
+- `private.safra_guard_scenario_version_update()` deixou de escrever `updated_at`;
+- `trg_00_scenario_versions_server_clock` permanece como autoridade de relógio da versão;
+- `trg_treatments_updated_at` foi removido;
+- `trg_00_treatments_server_clock` permanece como autoridade única de relógio da tratativa;
+- `private.safra_touch_updated_at()` foi preservada porque continua necessária em `operational_areas`, `systems`, `scenarios` e `governance_issues`.
+
+### 15.3 Evidência
+
+Ensaio reversível pré-promoção:
+
+```text
+6/6 PASS
+```
+
+Após a promoção, a primeira execução do pgTAP acusou 5 falhas devido a escaping incorreto nos próprios asserts de índice. A estrutura de banco estava correta. O teste foi corrigido para comparar `indexdef` exato e reexecutado.
+
+Resultado final:
+
+```text
+c05_schema_hygiene_block_c = 12/12 PASS
+c05_version_freeze_behavior = 10/10 PASS
+c05_notification_delivery_state_machine = 10/10 PASS
+c05_schema_v2 = 23/23 PASS
+c05_technical_guards = 7/7 PASS
+```
+
+PRIMARY após promoção:
+
+```text
+migration_count = 30
+latest_migration = 20260928095246
+c05_fk_support_indexes = 5
+duplicate_treatment_touch_trigger = 0
+residual_blockc_user = 0
+residual_blockc_treatment = 0
+residual_blockc_version = 0
+```
+
+**C05-HYG-03 = CLOSED / PASS_PRIMARY**
+
+### 15.4 Saldo após o Bloco C
+
+```text
+OPEN_FINDINGS = 2
+HYGIENE_IMPROVEMENTS = 0
+
+C05-AUD-04 = OPEN / STRUCTURAL_ROLLBACK_PROOF
+C05-AUD-05 = IMPLEMENTED / AWAITING_DISPOSABLE_RUNTIME
+```
+
+Não restam melhorias de higiene abertas na C05-AUD.
