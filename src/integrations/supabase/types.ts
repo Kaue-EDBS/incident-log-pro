@@ -917,6 +917,7 @@ export type Database = {
           target_role: string
         }[]
       }
+      safra_get_start_catalog: { Args: never; Returns: Json }
       safra_has_role: { Args: { requested_role: string }; Returns: boolean }
       safra_is_corporate_user: { Args: never; Returns: boolean }
       safra_log_access_denied: {
@@ -924,13 +925,12 @@ export type Database = {
         Returns: string
       }
       safra_session_is_live: { Args: never; Returns: boolean }
-      safra_get_start_catalog: { Args: never; Returns: Json }
       safra_start_treatment: {
         Args: {
-          p_scenario_id: string
           p_idempotency_key: string
-          p_impact_summary?: string | null
+          p_impact_summary?: string
           p_impacted_area_ids?: string[]
+          p_scenario_id: string
         }
         Returns: Json
       }
