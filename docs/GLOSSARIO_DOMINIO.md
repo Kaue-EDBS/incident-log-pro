@@ -2,7 +2,7 @@
 
 **Versão:** 1.2  
 **Data:** 28/09/2026  
-**Status:** CANÔNICO — SAFRA-C03 / PÓS-C05–C08 / C03-AUD EM EXECUÇÃO  
+**Status:** CANÔNICO — SAFRA-C03 / PÓS-C05–C08 / C03-AUD IMPLEMENTADA — AGUARDANDO CI  
 **Última revalidação:** 28/09/2026 às 06:54 BRT  
 **Implementação de referência:** C05 schema v2; C06 catálogo/seed; C07 contratos temporais; C08 START end-to-end  
 **Autoridade:** este documento congela o vocabulário funcional do Painel Safra. Alteração material exige decisão registrada.
@@ -16,6 +16,8 @@
 > **C03-AUD-03 implementada em 28/09/2026:** o frontend/runtime do Reliability foi removido em vez de reorganizado. Hooks Safra agora vivem em `src/lib/safra-queries.ts`; utilitários temporais compartilhados permanecem em `src/lib/analytics-time.ts`. As tabelas legadas `applications`/`incidents` continuam apenas como persistência histórica até decisão/migration própria de retirada.
 
 > **C03-AUD-04 implementada em 28/09/2026 às 06:54 BRT:** metadados promovidos para versão 1.2 pós-C05–C08. A antiga seção `READY_FOR_C05` foi convertida em registro do contrato materializado no C05; linguagem futura foi reconciliada com o schema vigente sem alterar nenhuma regra de negócio.
+
+> **Estado consolidado em 28/09/2026 às 07:00 BRT:** C03-AUD-01, 02 e 03 estão implementadas; C03-AUD-04 está CLOSED/PASS. A auditoria não possui mais pendência funcional, documental ou de domínio. A única pendência é executar os gates de CI quando a cota do GitHub Actions estiver disponível; somente então o C03-AUD será recertificado formalmente.
 
 ## 1. Objetivo
 
