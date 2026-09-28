@@ -6,7 +6,7 @@ import { useAuth } from "@/integrations/supabase/AuthProvider";
 
 const NAV = [
   { to: "/", label: "Visão Geral", icon: LayoutGrid },
-  { to: "/novo-incidente", label: "Abrir Protocolo", icon: PlusCircle },
+  { to: "/tratativas/nova", label: "Abrir Protocolo", icon: PlusCircle },
   { to: "/incidentes", label: "Incidentes", icon: ShieldAlert },
   { to: "/aplicacoes", label: "Aplicações", icon: Server },
   { to: "/indicadores", label: "Indicadores", icon: BarChart3 },
@@ -69,7 +69,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <span className="text-sm font-semibold">Painel Safra</span>
         </div>
         <Link
-          to="/novo-incidente"
+          to="/tratativas/nova"
           className="rounded-lg bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground"
         >
           Abrir protocolo
