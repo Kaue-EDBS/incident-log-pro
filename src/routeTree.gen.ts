@@ -66,8 +66,6 @@ export interface FileRoutesByFullPath {
   '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/tratativas/nova': typeof TratativasNovaRoute
-  '/tratativas/nova': typeof TratativasNovaRoute
-  '/tratativas/nova': typeof TratativasNovaRoute
   '/incidentes/$id': typeof IncidentesIdRoute
   '/incidentes/': typeof IncidentesIndexRoute
 }
@@ -77,6 +75,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
+  '/tratativas/nova': typeof TratativasNovaRoute
   '/incidentes/$id': typeof IncidentesIdRoute
   '/incidentes': typeof IncidentesIndexRoute
 }
@@ -87,6 +86,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
+  '/tratativas/nova': typeof TratativasNovaRoute
   '/incidentes/$id': typeof IncidentesIdRoute
   '/incidentes/': typeof IncidentesIndexRoute
 }
