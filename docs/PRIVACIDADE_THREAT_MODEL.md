@@ -203,10 +203,10 @@ Mudança de identidade, integração, dados pessoais, retenção, arquivos ou ex
 |---|---|---|---|---|
 | RR-C02-01 | uso indevido de START/END/CANCEL por usuário autenticado | START_CONTROLLED / END_CANCEL_CONTRACT_DEFINED | START C08; END/CANCEL F01/F02 | não, desde que RPC futura cumpra AB-END/AB-CANCEL |
 | RR-C02-02 | role/claim desatualizado ou sessão revogada | CONTROLLED_VERIFIED_C02_AUD | canonical predicate em role lookup/audit; domínio externo, sessão revogada e JWT expirado verificados em CI + PRIMARY | não |
-| RR-C02-03 | enumeração ou leitura excessiva de dados internos | CONTROLLED_CURRENT_SURFACE | sem grants diretos + RLS + full Data API smoke | não |
+| RR-C02-03 | enumeração ou leitura excessiva de dados internos | CONTROLLED_VERIFIED_C02_AUD | sem grants diretos + RLS + full Data API smoke cobrindo a superfície atual; PRIMARY verificado | não |
 | RR-C02-04 | dado pessoal indevido em texto livre/log/notificação | RESIDUAL_ACCEPTED_WITH_MINIMIZATION | UX C08 + notificações M05 + relatórios F08 | não |
 | RR-C02-05 | duplicidade por retry/concorrência | CONTROLLED_START | unique idempotency + advisory lock + retry/conflict/concurrency tests | não |
-| RR-C02-06 | manipulação de estado/timestamp para afetar SLA | CONTROLLED_CURRENT_SURFACE | server clock + immutable events + C07; commands END/CANCEL futuros | não |
+| RR-C02-06 | manipulação de estado/timestamp para afetar SLA ou reescrever evidência terminal | CONTROLLED_VERIFIED_C02_AUD | server clock + immutable events + treatment terminal row immutable + C07; commands END/CANCEL futuros | não |
 | RR-C02-07 | alteração de cenário/owner/criticidade afetando histórico | CONTROLLED_HISTORY | owner/version guards + snapshot; novas decisões criam nova versão | não |
 | RR-C02-08 | destinatário de notificação incorreto ou duplicado | DEFERRED_TO_M05 | política/provider/dedupe de notificação | não |
 | RR-C02-09 | enquadramento/base legal formal | CLOSED_BY_D49 | governança/privacidade | não |
@@ -230,6 +230,10 @@ O fechamento do C02 foi reavaliado contra o roadmap e as implementações poster
 | quatro classes de testes | PASS | positivos, negativos, concorrência/retry e limites/bordas derivados |
 | contrato de evidência | PASS | ator, correlation_id, estados, ação, resultado, auditoria, timestamps, notificações e efeitos colaterais definidos |
 | riscos residuais | PASS | riscos explicitados e com owner/fase; não significam default ou inferência |
-| gates C02 | PASS histórico / RECERTIFICAÇÃO EM EXECUÇÃO | G3.5, THREAT-001 e AUTHZ-001 só voltam a PASS atual após correções, gates e verificação no PRIMARY |
+| gates C02 | PASS histórico / RECERTIFICADO EM 28/09/2026 | G3.5 = PASS; THREAT-001 = PASS; AUTHZ-001 = PASS após correções, CI e verificação no PRIMARY |
 
 Observação: o C02 aprova modelo de ameaça, abuso e contrato de autorização. A execução integral de todos os testes funcionais permanece distribuída nas fases de implementação previstas no roadmap; isso não reabre o C02.
+
+### Recertificação C02-AUD — 28/09/2026
+
+A reauditoria corretiva foi encerrada após o fechamento de C02-AUD-01 a C02-AUD-10. Evidências principais: full Data API denial smoke, canonical session/RBAC hardening, concorrência real do START, conflito de idempotência, EXECUTE legado revogado, version/history guards e imutabilidade de treatment terminal verificada no PRIMARY. `G3.5`, `THREAT-001` e `AUTHZ-001` estão recertificados como PASS.
