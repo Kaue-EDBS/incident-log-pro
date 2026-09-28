@@ -14,6 +14,7 @@ import { Route as AplicacoesRouteImport } from './routes/aplicacoes'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndicadoresRouteImport } from './routes/indicadores'
 import { Route as NovoIncidenteRouteImport } from './routes/novo-incidente'
+import { Route as TratativasNovaRouteImport } from './routes/tratativas.nova'
 import { Route as IncidentesIndexRouteImport } from './routes/incidentes.index'
 import { Route as IncidentesIdRouteImport } from './routes/incidentes.$id'
 
@@ -42,6 +43,11 @@ const NovoIncidenteRoute = NovoIncidenteRouteImport.update({
   path: '/novo-incidente',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TratativasNovaRoute = TratativasNovaRouteImport.update({
+  id: '/tratativas/nova',
+  path: '/tratativas/nova',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IncidentesIndexRoute = IncidentesIndexRouteImport.update({
   id: '/incidentes/',
   path: '/incidentes/',
@@ -59,6 +65,9 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
+  '/tratativas/nova': typeof TratativasNovaRoute
+  '/tratativas/nova': typeof TratativasNovaRoute
+  '/tratativas/nova': typeof TratativasNovaRoute
   '/incidentes/$id': typeof IncidentesIdRoute
   '/incidentes/': typeof IncidentesIndexRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/indicadores'
     | '/novo-incidente'
+    | '/tratativas/nova'
     | '/incidentes/$id'
     | '/incidentes/'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/indicadores'
     | '/novo-incidente'
+    | '/tratativas/nova'
     | '/incidentes/$id'
     | '/incidentes'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/indicadores'
     | '/novo-incidente'
+    | '/tratativas/nova'
     | '/incidentes/$id'
     | '/incidentes/'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   IndicadoresRoute: typeof IndicadoresRoute
   NovoIncidenteRoute: typeof NovoIncidenteRoute
+  TratativasNovaRoute: typeof TratativasNovaRoute
   IncidentesIdRoute: typeof IncidentesIdRoute
   IncidentesIndexRoute: typeof IncidentesIndexRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NovoIncidenteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tratativas/nova': {
+      id: '/tratativas/nova'
+      path: '/tratativas/nova'
+      fullPath: '/tratativas/nova'
+      preLoaderRoute: typeof TratativasNovaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/incidentes/': {
       id: '/incidentes/'
       path: '/incidentes'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   IndicadoresRoute: IndicadoresRoute,
   NovoIncidenteRoute: NovoIncidenteRoute,
+  TratativasNovaRoute: TratativasNovaRoute,
   IncidentesIdRoute: IncidentesIdRoute,
   IncidentesIndexRoute: IncidentesIndexRoute,
 }
