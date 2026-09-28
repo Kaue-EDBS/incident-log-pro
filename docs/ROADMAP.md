@@ -2,7 +2,7 @@
 
 **Versão:** 2.2  
 **Data:** 27/09/2026  
-**Status:** roadmap consolidado em execução — SAFRA-C08 em andamento; C01-AUD concluída e recertificada  
+**Status:** roadmap consolidado em execução — SAFRA-C08 em andamento; C01-AUD e C02-AUD concluídas e recertificadas  
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Produto-alvo:** Painel Safra — Torre de Governança de Contingências  
 **Regra de execução:** GitHub-first; não reescrever histórico publicado; documentação viva ao fim de cada etapa.
@@ -895,6 +895,10 @@ AUTHZ-001 = PASS
 ```
 
 **Fechamento em 25/09/2026:** riscos residuais classificados, sem bloqueador material sem destino. Implementação dos controles permanece nas fases responsáveis.
+
+### Reauditoria C02-AUD — CONCLUÍDA / RECERTIFICADA em 28/09/2026
+
+A reauditoria posterior a C04–C08 fechou C02-AUD-01 a C02-AUD-10, reconciliou abuse cases, autorização, Data API/RPC, idempotência, concorrência, matriz de paridade e integridade histórica. Gates atuais: `G3.5 = PASS`, `THREAT-001 = PASS`, `AUTHZ-001 = PASS`. END/CANCEL permanecem não implementados e governados por contrato futuro em F01/F02.
 
 ---
 
