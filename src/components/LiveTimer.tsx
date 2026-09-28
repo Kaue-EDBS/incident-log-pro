@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { formatDuration } from "@/lib/metrics";
+import { formatDuration } from "@/lib/analytics-time";
 import { cn } from "@/lib/utils";
 
-/** Cronômetro reconstruído sempre como agora - detected_at (o banco é a fonte da verdade). */
+/** Cronômetro reconstruído sempre como agora - timestamp persistido (o banco é a fonte da verdade). */
 export function LiveTimer({ since, className }: { since: string; className?: string }) {
   const [now, setNow] = useState(() => Date.now());
 
