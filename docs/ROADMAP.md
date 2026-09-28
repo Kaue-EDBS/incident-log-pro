@@ -1058,6 +1058,32 @@ Próximo escopo da C04-AUD no ITEM 3:
 
 O ITEM 3 deve apenas reexecutar o Bloco A como smoke; não reabrir suas decisões sem nova evidência.
 
+
+
+#### Bloco B — CONCLUÍDO em 28/09/2026 às 08:15 BRT
+
+PREV-01..PREV-04 foram implementados como regressões permanentes no arquivo:
+
+`supabase/tests/database/c04_preventive_identity_authority.test.sql`
+
+Resultado no PRIMARY:
+
+- pgTAP **22/22 PASS**;
+- binding `principal -> auth.user` sem mutação de role/ownership;
+- matriz exata dos 9 principals governados;
+- 11/11 ownerships explícitos e elegíveis;
+- `PAPEL != OWNERSHIP` recertificado;
+- START com única assinatura governada e sem parâmetros de autoridade;
+- browser sem grants diretos para alterar principals, roles, owners ou versions;
+- rollback deixou zero fixtures sintéticas.
+
+Próximo escopo — **Bloco C**:
+
+1. PREV-05 — gate UI x REST/Data API x RPC x grants x RLS;
+2. PREV-06 — anon deny-by-default como gate permanente.
+
+Depois do Bloco C: App Smoke + Database Disposable no head final e recertificação C04-AUD.
+
 ### Objetivo
 
 Implementar autenticação corporativa e autorização definitiva conforme o modelo aprovado.
