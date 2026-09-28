@@ -343,3 +343,17 @@ A reauditoria somente poderá ser marcada como concluída quando:
 > **C02 permanece historicamente fechado; C02-AUD foi CONCLUÍDA / RECERTIFICADA em 28/09/2026 às 05:47 BRT.**
 
 Resultado atual: `G3.5 = PASS`, `THREAT-001 = PASS`, `AUTHZ-001 = PASS`. Não restou achado corretivo aberto dentro do escopo C02-AUD.
+
+### Pendência operacional pós-auditoria
+
+A auditoria está **tecnicamente concluída e recertificada**. O único item ainda não finalizado é o merge documental do **PR #10** em `main`.
+
+Motivo operacional registrado em 28/09/2026:
+
+- a conta/organização atingiu a franquia de **2.000 minutos do GitHub Actions**;
+- App Smoke e Database Disposable do PR #10 deixam de iniciar runner/steps por indisponibilidade de cota;
+- isso não reabre nenhum achado C02-AUD nem invalida as evidências técnicas já aprovadas no PR #8 e no PRIMARY;
+- o PR #10 deverá ser retomado em **02/10/2026 às 10:00 BRT** para reexecutar os checks e concluir o merge documental.
+
+**Estado:** `AUDIT_COMPLETE / DOCUMENTATION_MERGE_PENDING_ACTIONS_QUOTA`.
+
