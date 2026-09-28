@@ -444,7 +444,7 @@ jair_runtime_access:
 
 c05_reaudit:
   opened_at: "2026-09-28T08:56:11-03:00"
-  status: "OPEN_TECHNICAL_GAPS_REMAIN"
+  status: "TECHNICAL_SCOPE_COMPLETE_PENDING_FINAL_CI"
   branch: "audit/c05-schema-v2-migrations-invariants-2026-09-28"
   base_branch: "audit/c04-identity-rbac-rls-2026-09-28"
   audit_document: "docs/AUDITORIA_C05_REABERTURA_2026-09-28.md"
@@ -456,7 +456,7 @@ c05_reaudit:
   schema_v2_rls_tables: 17
   foreign_keys: 36
   destructive_cascade_foreign_keys: 0
-  open_findings: 2
+  open_findings: 0
   hygiene_improvements: 0
   decisions_closed:
     c05_aud_01:
@@ -473,8 +473,9 @@ c05_reaudit:
       positive_authorization: "GOVERNED_RPC"
       direct_table_access: "DENY_BY_DEFAULT"
       positive_table_rls_policy_required: false
-  remaining_findings:
-    - "C05-AUD-04_STRUCTURAL_ROLLBACK_PROOF"
+  remaining_findings: []
+  runtime_gates_pending:
+    - "C05-AUD-04_STRUCTURAL_ROLLBACK_RUNTIME"
     - "C05-AUD-05_AUTHENTICATED_DIRECT_API_HTTP_RUNTIME"
   block_b_invariants:
     executed_at: "2026-09-28T09:37:51-03:00"
@@ -526,4 +527,12 @@ c05_reaudit:
     end_from_active: "PASS"
     terminal_rewrite_blocked: "PASS"
     notification_invalid_delivery_status_rejected: false
+  technical_closeout:
+    completed_at: "2026-09-28T10:05:08-03:00"
+    implementation_findings_open: 0
+    hygiene_improvements_open: 0
+    runtime_gates_pending: 2
+    structural_rollback_test: "supabase/rollback-tests/c05_block_c_structural_rollback.test.sql"
+    authenticated_http_test: ".github/scripts/test-c05-authenticated-direct-api.sh"
+    recertification_status: "PENDING_DATABASE_DISPOSABLE_FINAL_CI"
   decisions_required: []
