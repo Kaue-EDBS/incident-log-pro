@@ -1384,6 +1384,24 @@ Fronteira de responsabilidade:
 
 ## SAFRA-C05 — Schema v2, migrations e invariantes
 
+### C05-AUD — reauditoria aberta em 28/09/2026 às 08:56 BRT
+
+Branch exclusiva: `audit/c05-schema-v2-migrations-invariants-2026-09-28`.
+
+O fechamento histórico do C05 permanece preservado. A reauditoria atual confirmou a base estrutural, mas encontrou 6 lacunas de governança/teste e 3 itens de higiene. Nenhuma correção foi aplicada nesta etapa.
+
+Achados canônicos e decisões: `docs/AUDITORIA_C05_REABERTURA_2026-09-28.md`.
+
+Estado:
+
+```text
+C05_AUD = OPEN / AWAITING_DECISIONS
+OPEN_FINDINGS = 6
+HYGIENE_IMPROVEMENTS = 3
+```
+
+
+
 ### Objetivo
 
 Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
