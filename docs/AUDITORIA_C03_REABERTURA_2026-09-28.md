@@ -83,36 +83,45 @@ Validação estática da branch:
 
 ### C03-AUD-02 — fronteira visual Safra × Reliability Monitor legado
 
-**Estado:** OPEN / ALTERAÇÃO AUTORIZADA  
-**Severidade:** MEDIUM-HIGH / UX E DOMÍNIO
+**Estado:** IMPLEMENTED / PENDING_CI em 28/09/2026 às 06:27 BRT  
+**Severidade original:** MEDIUM-HIGH / UX E DOMÍNIO
 
-A navegação atual do Painel Safra ainda mistura:
+A navegação foi separada visualmente em duas fronteiras explícitas, sem criar telas Safra inexistentes.
 
-- fluxo Safra novo;
-- incidentes TI;
-- aplicações TI;
-- indicadores TI;
-- visão geral do Reliability Monitor.
-
-Isso pode fazer `Incidente TI` parecer sinônimo de `Tratativa Safra`, embora o schema esteja correto.
-
-**Direção aprovada:**
-
-Separar visualmente a navegação em duas fronteiras explícitas:
+Estado atual:
 
 ```text
 SAFRA
-- Visão Safra
-- Abrir Protocolo
-- Tratativas
+- Abrir Protocolo  -> /tratativas/nova
 
 RELIABILITY / LEGADO TI
-- Incidentes TI
-- Aplicações TI
-- Indicadores TI
+- Visão Geral TI   -> /
+- Incidentes TI    -> /incidentes
+- Aplicações TI    -> /aplicacoes
+- Indicadores TI   -> /indicadores
 ```
 
-O legado permanece preservado até fase própria de retirada/migração.
+Regras aplicadas:
+
+- `Incidente TI` não é apresentado como sinônimo de `Tratativa Safra`;
+- a raiz `/` permanece identificada como visão do Reliability/Legado TI enquanto não existir dashboard Safra próprio;
+- nenhum link artificial de `Visão Safra` ou `Tratativas` foi criado antes de sua implementação funcional;
+- desktop usa agrupamento visual com títulos de domínio;
+- mobile mostra a fronteira ativa no cabeçalho e identifica cada item como `Safra` ou `TI`;
+- o legado permanece acessível, porém explicitamente rotulado como legado técnico.
+
+Foi criado o gate permanente:
+
+`.github/scripts/check-c03-domain-boundary.py`
+
+O gate reprova se:
+
+- os grupos `SAFRA_NAV` e `LEGACY_TI_NAV` forem removidos;
+- os rótulos TI voltarem a ficar ambíguos;
+- o START deixar de apontar para `/tratativas/nova`;
+- o mobile deixar de informar a fronteira Safra × TI.
+
+**Pendência restante deste item:** App Smoke/typecheck/build/lint quando a franquia do GitHub Actions estiver novamente disponível. Até lá, a correção está implementada e protegida por gate estático versionado.
 
 ### C03-AUD-03 — hooks de dois domínios no mesmo módulo
 
