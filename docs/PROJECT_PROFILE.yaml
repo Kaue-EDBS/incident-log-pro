@@ -441,3 +441,31 @@ jair_runtime_access:
   role: "safra_governance_admin"
   last_sign_in_at_utc: "2026-09-25T18:05:38.625392Z"
   verified_at: "2026-09-25"
+
+c05_reaudit:
+  opened_at: "2026-09-28T08:56:11-03:00"
+  status: "OPEN_AWAITING_DECISIONS"
+  branch: "audit/c05-schema-v2-migrations-invariants-2026-09-28"
+  base_branch: "audit/c04-identity-rbac-rls-2026-09-28"
+  audit_document: "docs/AUDITORIA_C05_REABERTURA_2026-09-28.md"
+  migration_authority: "SUPABASE_MIGRATIONS_CANONICAL"
+  migration_repo_count: 28
+  migration_primary_count: 28
+  migration_version_drift: 0
+  schema_v2_tables: 17
+  schema_v2_rls_tables: 17
+  foreign_keys: 36
+  destructive_cascade_foreign_keys: 0
+  open_findings: 6
+  hygiene_improvements: 3
+  runtime_probe:
+    published_version_freeze: "PASS"
+    published_version_child_freeze: "PASS"
+    treatment_version_snapshot_immutable: "PASS"
+    cancel_reason_required: "PASS"
+    end_from_active: "PASS"
+    terminal_rewrite_blocked: "PASS"
+    notification_invalid_delivery_status_rejected: false
+  decisions_required:
+    - "CANONICAL_NOTIFICATION_DELIVERY_STATUS_VOCABULARY"
+    - "RLS_POSITIVE_MEANS_GOVERNED_RPC_IN_RPC_ONLY_ARCHITECTURE"
