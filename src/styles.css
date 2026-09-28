@@ -161,11 +161,3 @@
   }
 }
 
-@keyframes pulse-ring {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--destructive) 40%, transparent); }
-  50% { box-shadow: 0 0 0 10px color-mix(in oklch, var(--destructive) 0%, transparent); }
-}
-
-@utility pulse-incident {
-  animation: pulse-ring 2s ease-out infinite;
-}
