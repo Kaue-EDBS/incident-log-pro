@@ -307,3 +307,122 @@ Antes do merge da C04:
 ### 8.3 Regra para novos achados
 
 Novos achados detectados antes da execução podem ser adicionados a esta branch e a este backlog **somente quando pertencerem ao escopo Identidade/RBAC/RLS**. Mudanças de domínio, SLA, UX funcional, END/CANCEL ou outras fases devem continuar em seus blocos próprios do roadmap.
+
+
+## 9. Bloco A — execução corretiva
+
+**Executado em:** 28/09/2026 às 08:01 BRT  
+**Escopo autorizado:** C04-AUD-02, C04-AUD-03 e C04-AUD-07  
+**Branch:** `audit/c04-identity-rbac-rls-2026-09-28`  
+**PRIMARY:** Lovable Cloud / PostgreSQL-Supabase
+
+### 9.1 C04-AUD-02 — JWT expirado -> START negado -> zero efeito
+
+Teste reversível executado no PRIMARY com uma sessão corporativa real como referência de identidade e `exp` forçado para o passado dentro de transação controlada.
+
+Resultado observado:
+
+```text
+safra_is_corporate_user() = false
+SQLSTATE = 42501
+erro = SAFRA_START_FORBIDDEN
+treatments antes = 0
+treatments depois = 0
+treatment_events antes = 0
+treatment_events depois = 0
+RESULT = PASS
+```
+
+O teste permanente foi versionado em:
+
+`supabase/tests/database/c04_reaudit_identity_rbac_rls.test.sql`
+
+**Estado:** CLOSED / PASS.
+
+### 9.2 C04-AUD-03 — START atual; END/CANCEL deferidos
+
+A auditoria confirmou novamente que:
+
+- START está implementado e governado por `public.safra_start_treatment`;
+- `safra_end_treatment` não existe;
+- `safra_cancel_treatment` não existe;
+- a ausência é deliberada e permanece vinculada às fases F01/F02;
+- nenhuma implementação funcional de END/CANCEL foi antecipada nesta onda.
+
+A semântica do `PROJECT_PROFILE` foi corrigida para separar capacidade atual de regra futura aprovada:
+
+- `can_start = true`;
+- `can_end = false` no estado atual;
+- `can_cancel = false` no estado atual;
+- autorização futura de END/CANCEL permanece documentada como regra aprovada, ainda não implementada.
+
+O pgTAP C04 também passa a falhar caso END/CANCEL apareçam prematuramente.
+
+**Estado:** CLOSED / PASS_DOCUMENTAL_AND_SURFACE.
+
+### 9.3 C04-AUD-07 — retirada do REST legacy de applications/incidents
+
+Foi criada a migration canônica:
+
+`supabase/migrations/20260928075934_c04_reaudit_legacy_surface_hardening.sql`
+
+A migration:
+
+- revoga todos os privilégios de `anon` e `authenticated` em `public.applications`;
+- revoga todos os privilégios de `anon` e `authenticated` em `public.incidents`;
+- remove `safra_c04_applications_select`;
+- remove `safra_c04_incidents_select`;
+- remove `safra_c04_incidents_insert`;
+- remove `safra_c04_incidents_update`;
+- preserva as tabelas e seus dados;
+- preserva RLS;
+- preserva acesso confiável de `service_role`.
+
+Antes da promoção, a migration foi simulada integralmente no PRIMARY dentro de `BEGIN/ROLLBACK`. Todos os asserts passaram.
+
+Depois disso, o mesmo SQL versionado foi promovido ao PRIMARY e a migration foi registrada em `supabase_migrations.schema_migrations`.
+
+Validação pós-promoção:
+
+```text
+authenticated SELECT applications = false
+authenticated SELECT incidents = false
+legacy policies applications/incidents = 0
+service_role read applications = true
+service_role read incidents = true
+migration 20260928075934 tracked = true
+```
+
+O teste permanente `c04_reaudit_identity_rbac_rls.test.sql` foi executado contra o PRIMARY após a promoção.
+
+**Estado:** CLOSED / PASS_PRIMARY.
+
+### 9.4 Resultado do Bloco A
+
+```text
+C04-AUD-02 = CLOSED/PASS
+C04-AUD-03 = CLOSED/PASS
+C04-AUD-07 = CLOSED/PASS
+OPEN_MATERIAL_FINDINGS = 0
+BLOCK_A = COMPLETE
+C04_AUD_RECERTIFICATION = PENDING_PREVENTIVE_IMPROVEMENTS_AND_FINAL_CI
+```
+
+---
+
+## 10. Melhorias preventivas planejadas — 6 itens
+
+Estas melhorias **não são defeitos abertos**. Elas formam a próxima camada de proteção contra regressão e ficam reservadas para o ITEM 3 da fila.
+
+| ID | Melhoria preventiva | Objetivo | Estado |
+|---|---|---|---|
+| PREV-01 | Teste automático de binding `principal -> auth.user` | Garantir primeiro login Microsoft correto para Bruno, Jiane, Daniel e Renato, sem alterar role/ownership | QUEUED |
+| PREV-02 | Matriz completa de papéis como regressão | Fixar Jair=governance, Bruno=executive/analytics, Jiane/Daniel/Renato=owners e platform admins=técnicos | QUEUED |
+| PREV-03 | Invariante permanente `PAPEL != OWNERSHIP` | Impedir qualquer herança automática de ownership por papel administrativo | QUEUED |
+| PREV-04 | Teste adversarial de privilege escalation | Rejeitar/neutralizar tentativas de enviar owner, role, version, user_id, authority ou clocks pelo client | QUEUED |
+| PREV-05 | Gate UI x REST x RPC x grants x RLS | Detectar automaticamente divergência entre superfície visível e superfície de API | QUEUED |
+| PREV-06 | `anon` deny-by-default como gate permanente | Tornar CRUD/EXECUTE anônimo negado uma condição obrigatória de recertificação | QUEUED |
+
+### Regra de execução das preventivas
+
+As seis melhorias acima permanecem no **ITEM 3** da fila. O Bloco A não deve ser reexecutado nessa etapa, salvo como smoke de recertificação. O ITEM 3 deve implementar PREV-01..PREV-06, rodar App Smoke + Database Disposable no head final e então recertificar a C04-AUD.
