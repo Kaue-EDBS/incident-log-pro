@@ -33,25 +33,17 @@ select ok(
   'status/timestamp consistency constraint exists'
 );
 
-create temporary table c05_notification_ids(
-  queued_to_sent uuid,
-  queued_to_failed uuid
-) on commit drop;
-
 insert into public.notifications_log(
-  notification_type,recipient_email,delivery_status,idempotency_key,correlation_id
+  id,notification_type,recipient_email,delivery_status,idempotency_key,correlation_id
 )
 values(
+  '05050505-9000-4000-8000-000000000001'::uuid,
   'C05_TEST_SENT',
   'c05-test@example.invalid',
   'QUEUED',
-  'c05-test-sent-'||gen_random_uuid()::text,
-  gen_random_uuid()
-)
-returning id into temporary table c05_sent_returning;
-
-insert into c05_notification_ids(queued_to_sent)
-select id from c05_sent_returning;
+  'c05-test-sent-05050505-9000-4000-8000-000000000001',
+  '05050505-9000-4000-8000-000000000011'::uuid
+);
 
 select ok(
   (
@@ -62,14 +54,14 @@ select ok(
        and queued_at is not null
        and created_at is not null
     from public.notifications_log
-    where id=(select queued_to_sent from c05_notification_ids)
+    where id='05050505-9000-4000-8000-000000000001'::uuid
   ),
   'new notification starts QUEUED with server timestamps and no terminal fields'
 );
 
 update public.notifications_log
 set delivery_status='SENT'
-where id=(select queued_to_sent from c05_notification_ids);
+where id='05050505-9000-4000-8000-000000000001'::uuid;
 
 select ok(
   (
@@ -78,7 +70,7 @@ select ok(
        and failed_at is null
        and failure_reason is null
     from public.notifications_log
-    where id=(select queued_to_sent from c05_notification_ids)
+    where id='05050505-9000-4000-8000-000000000001'::uuid
   ),
   'QUEUED can transition to SENT with server-generated sent_at'
 );
@@ -88,7 +80,7 @@ select throws_ok(
     update public.notifications_log
        set delivery_status='FAILED',
            failure_reason='must remain terminal'
-     where id=(select queued_to_sent from c05_notification_ids)
+     where id='05050505-9000-4000-8000-000000000001'::uuid
   $$,
   'P0001',
   'terminal notification status is immutable',
@@ -104,8 +96,8 @@ select throws_ok(
       'C05_TEST_INVALID',
       'c05-test@example.invalid',
       'TOTALLY_INVALID_STATUS',
-      'c05-test-invalid-'||gen_random_uuid()::text,
-      gen_random_uuid()
+      'c05-test-invalid-05050505-9000-4000-8000-000000000099',
+      '05050505-9000-4000-8000-000000000099'::uuid
     )
   $$,
   'P0001',
@@ -114,26 +106,23 @@ select throws_ok(
 );
 
 insert into public.notifications_log(
-  notification_type,recipient_email,delivery_status,idempotency_key,correlation_id
+  id,notification_type,recipient_email,delivery_status,idempotency_key,correlation_id
 )
 values(
+  '05050505-9000-4000-8000-000000000002'::uuid,
   'C05_TEST_FAILED',
   'c05-test@example.invalid',
   'QUEUED',
-  'c05-test-failed-'||gen_random_uuid()::text,
-  gen_random_uuid()
-)
-returning id into temporary table c05_failed_returning;
-
-insert into c05_notification_ids(queued_to_failed)
-select id from c05_failed_returning;
+  'c05-test-failed-05050505-9000-4000-8000-000000000002',
+  '05050505-9000-4000-8000-000000000012'::uuid
+);
 
 select throws_ok(
   $$
     update public.notifications_log
        set delivery_status='FAILED',
            failure_reason=null
-     where id=(select queued_to_failed from c05_notification_ids)
+     where id='05050505-9000-4000-8000-000000000002'::uuid
   $$,
   'P0001',
   'FAILED notification requires failure_reason',
@@ -143,7 +132,7 @@ select throws_ok(
 update public.notifications_log
 set delivery_status='FAILED',
     failure_reason='provider rejected'
-where id=(select queued_to_failed from c05_notification_ids);
+where id='05050505-9000-4000-8000-000000000002'::uuid;
 
 select ok(
   (
@@ -152,7 +141,7 @@ select ok(
        and failed_at is not null
        and failure_reason='provider rejected'
     from public.notifications_log
-    where id=(select queued_to_failed from c05_notification_ids)
+    where id='05050505-9000-4000-8000-000000000002'::uuid
   ),
   'QUEUED can transition to FAILED with server-generated failed_at and preserved reason'
 );
