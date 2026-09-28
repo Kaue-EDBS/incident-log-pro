@@ -56,6 +56,9 @@ jobs:
       - name: C03 route/domain coherence
         run: python3 .github/scripts/check-c03-route-coherence.py
 
+      - name: C03 Safra vs legacy TI boundary
+        run: python3 .github/scripts/check-c03-domain-boundary.py
+
       - name: Known HIGH dependency floors
         run: python3 .github/scripts/check-known-vulnerable-dependency-floors.py
 
