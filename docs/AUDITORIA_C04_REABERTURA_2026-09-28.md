@@ -416,13 +416,130 @@ Estas melhorias **não são defeitos abertos**. Elas formam a próxima camada de
 
 | ID | Melhoria preventiva | Objetivo | Estado |
 |---|---|---|---|
-| PREV-01 | Teste automático de binding `principal -> auth.user` | Garantir primeiro login Microsoft correto para Bruno, Jiane, Daniel e Renato, sem alterar role/ownership | QUEUED |
-| PREV-02 | Matriz completa de papéis como regressão | Fixar Jair=governance, Bruno=executive/analytics, Jiane/Daniel/Renato=owners e platform admins=técnicos | QUEUED |
-| PREV-03 | Invariante permanente `PAPEL != OWNERSHIP` | Impedir qualquer herança automática de ownership por papel administrativo | QUEUED |
-| PREV-04 | Teste adversarial de privilege escalation | Rejeitar/neutralizar tentativas de enviar owner, role, version, user_id, authority ou clocks pelo client | QUEUED |
+| PREV-01 | Teste automático de binding `principal -> auth.user` | Garantir primeiro login Microsoft correto para Bruno, Jiane, Daniel e Renato, sem alterar role/ownership | **DONE / PASS** |
+| PREV-02 | Matriz completa de papéis como regressão | Fixar Jair=governance, Bruno=executive/analytics, Jiane/Daniel/Renato=owners e platform admins=técnicos | **DONE / PASS** |
+| PREV-03 | Invariante permanente `PAPEL != OWNERSHIP` | Impedir qualquer herança automática de ownership por papel administrativo | **DONE / PASS** |
+| PREV-04 | Teste adversarial de privilege escalation | Rejeitar/neutralizar tentativas de enviar owner, role, version, user_id, authority ou clocks pelo client | **DONE / PASS** |
 | PREV-05 | Gate UI x REST x RPC x grants x RLS | Detectar automaticamente divergência entre superfície visível e superfície de API | QUEUED |
 | PREV-06 | `anon` deny-by-default como gate permanente | Tornar CRUD/EXECUTE anônimo negado uma condição obrigatória de recertificação | QUEUED |
 
 ### Regra de execução das preventivas
 
 As seis melhorias acima permanecem no **ITEM 3** da fila. O Bloco A não deve ser reexecutado nessa etapa, salvo como smoke de recertificação. O ITEM 3 deve implementar PREV-01..PREV-06, rodar App Smoke + Database Disposable no head final e então recertificar a C04-AUD.
+
+
+## 11. Bloco B — identidade e autoridade preventiva
+
+**Executado em:** 28/09/2026 às 08:15 BRT  
+**Escopo:** PREV-01, PREV-02, PREV-03 e PREV-04  
+**Branch:** `audit/c04-identity-rbac-rls-2026-09-28`  
+**Resultado:** **22/22 PASS no PRIMARY**, com rollback integral
+
+Arquivo permanente criado:
+
+`supabase/tests/database/c04_preventive_identity_authority.test.sql`
+
+### 11.1 PREV-01 — binding `principal -> auth.user`
+
+Foi criado um principal sintético pré-provisionado dentro de transação controlada, com role governada, seguido da criação de um `auth.user` Microsoft/Azure com o mesmo e-mail corporativo.
+
+Comprovado:
+
+- o trigger `trg_bind_safra_principal_from_auth_user` vinculou apenas `user_id`;
+- role pré-existente permaneceu inalterada;
+- nenhum ownership foi criado ou reescrito;
+- nenhum grant adicional foi criado;
+- o trigger permanece instalado em `auth.users`.
+
+Também foi validado no PRIMARY que Bruno, Jiane, Daniel e Renato continuam com principals ativos, roles/ownership corretos e sem `auth.user` real no momento da auditoria. Isso confirma que o primeiro login futuro utilizará o mesmo mecanismo já testado, sem necessidade de criar contas fictícias permanentes.
+
+**Estado:** DONE / PASS.
+
+### 11.2 PREV-02 — matriz de papéis
+
+A regressão fixa explicitamente a matriz atual:
+
+- Kaue, Amanda, Vinicius e João -> `safra_platform_admin`;
+- Jair -> `safra_governance_admin`;
+- Bruno -> `safra_executive_admin`;
+- Daniel, Jiane e Renato -> `scenario_owner`.
+
+O teste exige exatamente **9 grants ativos para os 9 principals governados**, sem role extra silenciosa.
+
+Checks adicionais:
+
+- Bruno possui somente `safra_executive_admin`;
+- Jair possui somente `safra_governance_admin`.
+
+A capacidade futura de analytics de Bruno continua fora do escopo funcional atual; o que foi recertificado aqui é a autoridade RBAC.
+
+**Estado:** DONE / PASS.
+
+### 11.3 PREV-03 — PAPEL != OWNERSHIP
+
+A suíte agora exige permanentemente:
+
+- platform/governance/executive admins com zero ownership por herança;
+- nenhum principal administrativo com `scenario_owner` silencioso;
+- 11/11 cenários com vínculo explícito ativo;
+- 11/11 owners com role `scenario_owner` independente;
+- Daniel = 6 cards;
+- Jiane = 4 cards;
+- Renato = 1 card.
+
+Resultado pós-teste no PRIMARY:
+
+```text
+active_owner_links = 11
+active_roles_nine_principals = 9
+```
+
+**Estado:** DONE / PASS.
+
+### 11.4 PREV-04 — privilege escalation
+
+O ambiente bloqueou um ensaio de chamada sintética mais agressiva antes de alcançar o banco; nenhuma tentativa de contorno foi realizada.
+
+A fronteira foi então recertificada por controles seguros e permanentes:
+
+- existe apenas **1 overload** de `safra_start_treatment`;
+- assinatura exata:
+  `p_scenario_id, p_idempotency_key, p_impact_summary, p_impacted_area_ids`;
+- não existem parâmetros para owner, role, version, actor, criticality ou timestamp;
+- `authenticated` não pode UPDATE principals;
+- `authenticated` não pode INSERT/UPDATE role grants;
+- `authenticated` não pode INSERT/UPDATE scenario_owners;
+- `authenticated` não pode UPDATE scenario_versions;
+- função START continua derivando ator de `auth.uid()`;
+- owner/version continuam resolvidos do estado server-side do cenário;
+- a regressão funcional C08 já preserva snapshots server-side.
+
+**Estado:** DONE / PASS.
+
+### 11.5 Integridade pós-teste
+
+Após o `ROLLBACK`:
+
+```text
+synthetic_auth_users = 0
+synthetic_principals = 0
+synthetic_role_grants = 0
+active_owner_links = 11
+active_roles_nine_principals = 9
+```
+
+Nenhuma fixture sintética permaneceu no PRIMARY.
+
+### 11.6 Resultado do Bloco B
+
+```text
+PREV-01 = DONE/PASS
+PREV-02 = DONE/PASS
+PREV-03 = DONE/PASS
+PREV-04 = DONE/PASS
+BLOCK_B = COMPLETE
+PREVENTIVE_IMPROVEMENTS_REMAINING = 2
+NEXT = BLOCK_C_PREV_05_PREV_06
+```
+
+A C04-AUD continua sem achados materiais abertos. A recertificação final depende apenas de PREV-05, PREV-06 e CI final.
