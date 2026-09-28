@@ -457,7 +457,7 @@ c05_reaudit:
   foreign_keys: 36
   destructive_cascade_foreign_keys: 0
   open_findings: 2
-  hygiene_improvements: 2
+  hygiene_improvements: 0
   decisions_closed:
     c05_aud_01:
       status: "CLOSED_PASS_PRIMARY"
@@ -504,11 +504,20 @@ c05_reaudit:
     migration_authority_gate: ".github/scripts/check-c05-migration-authority.py"
     app_smoke_gate: true
     database_disposable_gate: true
-    repo_migration_count: 29
-    primary_migration_count: 29
-  remaining_hygiene:
-    - "C05-HYG-02_FK_SUPPORT_INDEXES"
-    - "C05-HYG-03_DUPLICATE_UPDATED_AT_TRIGGER_RESPONSIBILITY"
+    repo_migration_count: 30
+    primary_migration_count: 30
+  remaining_hygiene: []
+  block_c_schema_hygiene:
+    completed_at: "2026-09-28T09:58:29-03:00"
+    status: "CLOSED_PASS_PRIMARY"
+    migration: "20260928095246_c05_fk_indexes_and_clock_ownership.sql"
+    test: "supabase/tests/database/c05_schema_hygiene_block_c.test.sql"
+    test_result: "12/12_PASS"
+    fk_support_indexes_added: 5
+    scenario_version_clock_authority: "trg_00_scenario_versions_server_clock"
+    treatment_clock_authority: "trg_00_treatments_server_clock"
+    duplicate_treatment_touch_trigger_present: false
+    residual_fixtures: 0
   runtime_probe:
     published_version_freeze: "PASS"
     published_version_child_freeze: "PASS"
