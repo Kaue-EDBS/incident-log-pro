@@ -107,7 +107,7 @@ identity_and_auth:
 
 c04_reaudit:
   opened_at: "2026-09-28T07:15:00-03:00"
-  status: "BLOCK_A_B_COMPLETE_BLOCK_C_QUEUED_ITEM_3"
+  status: "TECHNICAL_SCOPE_COMPLETE_PENDING_FINAL_CI_ITEM_3"
   branch: "audit/c04-identity-rbac-rls-2026-09-28"
   queue_position: 3
   execution_order: "AFTER_C02_PR10_AND_C03_AUD"
@@ -134,16 +134,33 @@ c04_reaudit:
     legacy_applications_incidents_policy_count: 0
     block_a_migration: "20260928075934_c04_reaudit_legacy_surface_hardening"
     block_a_primary_verified_at: "2026-09-28T08:01:19-03:00"
-  preventive_improvements_pending: 2
+  preventive_improvements_pending: 0
   preventive_improvements_completed:
     - "PREV-01_BINDING_PRINCIPAL_AUTH_USER"
     - "PREV-02_ROLE_MATRIX_REGRESSION"
     - "PREV-03_ROLE_NOT_OWNERSHIP_INVARIANT"
     - "PREV-04_PAYLOAD_PRIVILEGE_ESCALATION_ADVERSARIAL"
-  preventive_improvements_pending_items:
+  preventive_improvements_completed_block_c:
     - "PREV-05_UI_REST_RPC_GRANTS_RLS_COHERENCE_GATE"
     - "PREV-06_ANON_DENY_BY_DEFAULT_GATE"
-  recertification_status: "PENDING_BLOCK_C_PREV_05_PREV_06_AND_FINAL_CI"
+  block_c:
+    completed_at: "2026-09-28T08:36:36-03:00"
+    static_source_files_scanned: 74
+    observed_ui_rpcs:
+      - "safra_get_start_catalog"
+      - "safra_is_corporate_user"
+      - "safra_start_treatment"
+    observed_ui_direct_tables: 0
+    primary_pgtap: "12/12_PASS"
+    public_relations: 19
+    public_policies: 0
+    anon_crud_grants: 0
+    anon_public_function_execute: 0
+    authenticated_direct_crud_grants: 0
+    contract: "docs/data-contracts/C04_AUTHORIZATION_SURFACE.json"
+    source_gate: ".github/scripts/check-c04-authorization-surface.py"
+    database_gate: "supabase/tests/database/c04_authorization_surface_gate.test.sql"
+  recertification_status: "PENDING_FINAL_CI_AND_QUEUE_RECONCILIATION"
 
 
 privileged_roles:
