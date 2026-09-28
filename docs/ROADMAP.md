@@ -1473,6 +1473,37 @@ NEXT_STRUCTURAL_BLOCK = C05-HYG-02 + C05-HYG-03
 FINAL_RUNTIME_GATES = C05-AUD-05 + C05-AUD-04
 ```
 
+
+
+#### C05-AUD Bloco C — CONCLUÍDO em 28/09/2026 às 09:58 BRT
+
+Fechado:
+
+- **C05-HYG-02 CLOSED/PASS_PRIMARY** — 5 índices FK de suporte adicionados;
+- **C05-HYG-03 CLOSED/PASS_PRIMARY** — server-clock passou a ser autoridade única de `updated_at` em `scenario_versions` e `treatments`.
+
+Migration:
+
+`20260928095246_c05_fk_indexes_and_clock_ownership.sql`
+
+Regressão:
+
+`c05_schema_hygiene_block_c.test.sql` -> **12/12 PASS**
+
+Regressões preservadas:
+
+- version freeze -> 10/10 PASS;
+- notification state machine -> 10/10 PASS;
+- schema v2 -> 23/23 PASS;
+- technical guards -> 7/7 PASS.
+
+```text
+OPEN_FINDINGS = 2
+HYGIENE_IMPROVEMENTS = 0
+
+NEXT = C05-AUD-04 + C05-AUD-05_RUNTIME
+```
+
 ### C05.0 — Autoridade de migrations e captura do C04 — CONCLUÍDO
 
 Decisão:
