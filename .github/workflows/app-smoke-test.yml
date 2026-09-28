@@ -53,6 +53,9 @@ jobs:
       - name: C02 threat-model coherence
         run: python3 .github/scripts/check-c02-threat-model-coherence.py
 
+      - name: C03 route/domain coherence
+        run: python3 .github/scripts/check-c03-route-coherence.py
+
       - name: Known HIGH dependency floors
         run: python3 .github/scripts/check-known-vulnerable-dependency-floors.py
 
