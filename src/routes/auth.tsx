@@ -41,7 +41,7 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && session && corporateAuthorized === true) {
-      void navigate({ to: "/", replace: true });
+      void navigate({ to: "/tratativas/nova", replace: true });
     }
   }, [corporateAuthorized, loading, session, navigate]);
 
