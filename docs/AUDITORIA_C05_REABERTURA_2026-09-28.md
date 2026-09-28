@@ -269,3 +269,159 @@ C05_AUD = OPEN / AWAITING_DECISIONS
 2. Confirmar que “RLS positiva” será interpretada como **autorização positiva via RPC governada**, mantendo tabelas deny-by-default, em vez de criar policy positiva direta.
 
 Os demais achados podem ser corrigidos tecnicamente sem nova decisão de negócio, após autorização.
+
+
+## 11. Decisões aprovadas e execução
+
+**Registrado em:** 28/09/2026 às 09:12 BRT
+
+### 11.1 Decisão 1 — vocabulário canônico de notificações
+
+**Decisão aprovada:** usar somente:
+
+- `QUEUED`;
+- `SENT`;
+- `FAILED`.
+
+Máquina de estados aprovada:
+
+```text
+QUEUED -> SENT
+QUEUED -> FAILED
+SENT = terminal
+FAILED = terminal
+```
+
+Regras de consistência:
+
+```text
+QUEUED
+  sent_at = null
+  failed_at = null
+  failure_reason = null
+
+SENT
+  sent_at != null
+  failed_at = null
+  failure_reason = null
+
+FAILED
+  sent_at = null
+  failed_at != null
+  failure_reason != null / non-blank
+```
+
+Também foi decidido que toda notificação **nasce QUEUED**.
+
+#### Implementação
+
+Migration canônica:
+
+`supabase/migrations/20260928090910_c05_notification_delivery_state_machine.sql`
+
+A migration:
+
+- remove o check permissivo `notifications_status_not_blank`;
+- cria `notifications_delivery_status_check`;
+- cria `notifications_delivery_state_fields_check`;
+- endurece `private.safra_notification_server_clock()`;
+- obriga INSERT inicial como QUEUED;
+- permite apenas QUEUED -> SENT ou QUEUED -> FAILED;
+- torna SENT/FAILED terminais;
+- gera `sent_at` e `failed_at` no banco;
+- exige `failure_reason` em FAILED;
+- preserva `queued_at` e `created_at` server-side.
+
+#### Evidência
+
+Ensaio reversível pré-promoção:
+
+```text
+7/7 PASS
+```
+
+Regressão permanente:
+
+`supabase/tests/database/c05_notification_delivery_state_machine.test.sql`
+
+Resultado no PRIMARY após promoção:
+
+```text
+c05_notification_delivery_state_machine = 10/10 PASS
+c05_schema_v2 = 23/23 PASS
+c05_technical_guards = 7/7 PASS
+notifications_log residual rows = 0
+migration_count = 29
+```
+
+**C05-AUD-01 = CLOSED / PASS_PRIMARY**
+
+---
+
+### 11.2 Decisão 2 — interpretação de “RLS positiva”
+
+**Decisão aprovada: OPÇÃO A.**
+
+Contrato:
+
+```text
+ACESSO POSITIVO = RPC GOVERNADA
+ACESSO DIRETO À TABELA = DENY-BY-DEFAULT
+RLS DE TABELA = DEFESA NEGATIVA / DEFENSE-IN-DEPTH
+```
+
+Não será criada policy positiva de tabela apenas para satisfazer um teste.
+
+Motivo:
+
+- a arquitetura atual é RPC-only para a superfície funcional Safra;
+- `authenticated` possui 0 CRUD direto;
+- criar policy positiva reabriria Data API sem necessidade funcional;
+- o caminho positivo já é exercitado por RPC autenticada;
+- o caminho negativo continua coberto por grants + RLS + smoke de Data API.
+
+Portanto, para C05:
+
+- **RLS negativa** = usuário/anon não acessa tabela diretamente;
+- **autorização positiva** = usuário corporativo válido executa RPC governada;
+- views futuras, se surgirem, deverão usar `security_invoker` ou permanecer não expostas.
+
+**C05-AUD-06 = CLOSED / DECISION_A**
+
+---
+
+## 12. Estado atualizado das pendências
+
+Após as duas decisões acima:
+
+```text
+OPEN_FINDINGS = 4
+CLOSED_THIS_ROUND = 2
+HYGIENE_IMPROVEMENTS = 3
+```
+
+### Pendências ainda abertas
+
+| ID | Pendência | Tipo | Severidade | Decisão humana |
+|---|---|---|---|---|
+| C05-AUD-02 | adicionar regressão comportamental permanente de version freeze + filhos + snapshot | Test gap | MEDIUM | NÃO |
+| C05-AUD-03 | criar concorrência real END x CANCEL em duas transações | Concurrency test gap | HIGH | NÃO |
+| C05-AUD-04 | fortalecer rollback para provar restauração estrutural, não apenas tracking | Rollback test gap | MEDIUM | NÃO |
+| C05-AUD-05 | criar smoke HTTP autenticado para tentativa direta de Data API | API test gap | MEDIUM | NÃO |
+
+### Melhorias de higiene ainda abertas
+
+| ID | Melhoria | Impacto |
+|---|---|---|
+| C05-HYG-01 | remover ou bloquear tooling Drizzle residual para evitar falsa segunda autoridade | Governança / manutenção |
+| C05-HYG-02 | adicionar índices de suporte para 5 FKs hoje não cobertas pelo prefixo de índice | Performance / locks |
+| C05-HYG-03 | reduzir responsabilidade duplicada de `updated_at` em triggers | Clareza / manutenção |
+
+### Itens fechados nesta rodada
+
+| ID | Estado |
+|---|---|
+| C05-AUD-01 | CLOSED / PASS_PRIMARY |
+| C05-AUD-06 | CLOSED / DECISION_A |
+
+A C05-AUD permanece aberta até tratamento ou decisão explícita sobre os 4 gaps técnicos e 3 melhorias de higiene.
