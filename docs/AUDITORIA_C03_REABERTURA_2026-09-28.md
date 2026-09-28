@@ -125,23 +125,62 @@ O gate permanente `.github/scripts/check-c03-domain-boundary.py` foi ajustado pa
 
 **Pendência restante deste item:** App Smoke/typecheck/build/lint quando a franquia do GitHub Actions estiver novamente disponível. Até lá, a correção está implementada e o entendimento de produto ficou alinhado ao processo real de migração.
 
-### C03-AUD-03 — hooks de dois domínios no mesmo módulo
+### C03-AUD-03 — remoção do legado Reliability da camada de aplicação
 
-**Estado:** OPEN / ALTERAÇÃO AUTORIZADA  
-**Severidade:** LOW / HIGIENE TÉCNICA
+**Estado:** IMPLEMENTED / PENDING_CI em 28/09/2026  
+**Severidade original:** LOW / HIGIENE TÉCNICA
 
-`src/lib/queries.ts` mistura hoje queries do Reliability Monitor e do domínio Safra.
+A decisão foi refinada após confirmar que o Reliability Monitor nunca teve adoção operacional real. Em vez de separar hooks legacy × Safra e perpetuar dois domínios na aplicação, o legado foi removido da camada de frontend/runtime.
 
-**Direção aprovada:**
+#### Removido
 
-Separar fronteiras de código, preferencialmente em:
+Rotas:
 
-- `src/lib/legacy-incident-queries.ts`;
-- `src/lib/safra-queries.ts`;
+- `src/routes/incidentes.index.tsx`;
+- `src/routes/incidentes.$id.tsx`;
+- `src/routes/aplicacoes.tsx`;
+- `src/routes/indicadores.tsx`.
 
-ou estrutura equivalente que preserve a distinção explícita entre os dois domínios.
+Hooks/queries e tipos legados:
 
-Não alterar comportamento funcional durante a separação.
+- `src/lib/queries.ts`;
+- `src/lib/types.ts`;
+- `src/lib/metrics.ts`.
+
+Componentes exclusivos do Reliability:
+
+- `src/components/Filters.tsx`;
+- `src/components/MetricCard.tsx`;
+- `src/components/StatusBadge.tsx`.
+
+Estilo morto:
+
+- `pulse-incident` e respectivo `@keyframes pulse-ring`.
+
+#### Preservado e reorganizado
+
+- hooks Safra movidos para `src/lib/safra-queries.ts`;
+- utilitários neutros de timezone/timer preservados em `src/lib/analytics-time.ts`;
+- `LiveTimer` foi desacoplado de `metrics.ts`;
+- teste C07 de timezone foi redirecionado para `analytics-time.ts`;
+- `routeTree.gen.ts` não registra mais `/incidentes`, `/aplicacoes` ou `/indicadores`.
+
+#### Fora do escopo desta remoção
+
+As tabelas `public.applications` e `public.incidents`, migrations históricas, tipos gerados do Supabase e testes de segurança dessas tabelas **não foram apagados**. A remoção física de persistência exige etapa própria e migration explícita.
+
+Também permanece no manifesto a dependência `recharts`, agora sem import ativo. Ela será removida em manutenção de dependências com lockfile/CI disponível; não bloqueia esta limpeza funcional.
+
+#### Gate de regressão
+
+`.github/scripts/check-c03-domain-boundary.py` agora reprova se:
+
+- qualquer rota/componente/módulo frontend Reliability removido reaparecer;
+- o `routeTree` voltar a expor rotas antigas;
+- START voltar a depender de `queries.ts`;
+- `LiveTimer` ou o teste C07 voltarem a depender de `metrics.ts`.
+
+**Pendência restante deste item:** executar App Smoke/typecheck/build/lint quando a franquia do GitHub Actions voltar a estar disponível.
 
 ### C03-AUD-04 — glossário canônico com metadados e linguagem pré-C05
 
@@ -191,7 +230,7 @@ C03-AUD somente poderá ser encerrada quando:
 - a rota canônica de START usar nomenclatura de tratativa;
 - o redirect legado estiver explícito e testado;
 - a navegação expor somente o Painel Safra, mantendo o Reliability apenas como base técnica transitória não navegável;
-- hooks/queries estiverem separados por domínio;
+- o frontend/runtime não contiver mais hooks, rotas ou componentes Reliability sem uso;
 - `docs/GLOSSARIO_DOMINIO.md` refletir o estado pós-C05–C08;
 - não existir entidade ou campo C05 com definição concorrente;
 - `Geral` continuar ausente de `operational_areas`;
