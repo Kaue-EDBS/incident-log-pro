@@ -126,7 +126,7 @@ Controles existentes:
 
 ### C05-AUD-02 — version freeze sem regressão comportamental permanente C05
 
-**Estado:** OPEN / TEST GAP  
+**Estado:** CLOSED / PASS_PRIMARY  
 **Severidade:** MEDIUM  
 **Decisão humana necessária:** NÃO
 
@@ -149,7 +149,7 @@ Proposta: adicionar pgTAP negativo permanente para versão publicada + filhos + 
 
 ### C05-AUD-03 — concorrência END x CANCEL não é testada
 
-**Estado:** OPEN / CONCURRENCY TEST GAP  
+**Estado:** CLOSED / PASS_RUNTIME_AND_DISPOSABLE_GATE  
 **Severidade:** HIGH  
 **Decisão humana necessária:** NÃO
 
@@ -182,7 +182,7 @@ A documentação de rollback está correta: migration já publicada em produçã
 
 ### C05-AUD-05 — direct API autenticada não é exercitada por HTTP
 
-**Estado:** OPEN / TEST GAP  
+**Estado:** IMPLEMENTED / AWAITING_DISPOSABLE_RUNTIME  
 **Severidade:** MEDIUM  
 **Decisão humana necessária:** NÃO
 
@@ -395,25 +395,22 @@ Portanto, para C05:
 Após as duas decisões acima:
 
 ```text
-OPEN_FINDINGS = 4
-CLOSED_THIS_ROUND = 2
-HYGIENE_IMPROVEMENTS = 3
+OPEN_FINDINGS = 2
+CLOSED_THIS_ROUND = 4
+HYGIENE_IMPROVEMENTS = 2
 ```
 
 ### Pendências ainda abertas
 
 | ID | Pendência | Tipo | Severidade | Decisão humana |
 |---|---|---|---|---|
-| C05-AUD-02 | adicionar regressão comportamental permanente de version freeze + filhos + snapshot | Test gap | MEDIUM | NÃO |
-| C05-AUD-03 | criar concorrência real END x CANCEL em duas transações | Concurrency test gap | HIGH | NÃO |
 | C05-AUD-04 | fortalecer rollback para provar restauração estrutural, não apenas tracking | Rollback test gap | MEDIUM | NÃO |
-| C05-AUD-05 | criar smoke HTTP autenticado para tentativa direta de Data API | API test gap | MEDIUM | NÃO |
+| C05-AUD-05 | executar no banco descartável o smoke HTTP autenticado já implementado | API runtime evidence | MEDIUM | NÃO |
 
 ### Melhorias de higiene ainda abertas
 
 | ID | Melhoria | Impacto |
 |---|---|---|
-| C05-HYG-01 | remover ou bloquear tooling Drizzle residual para evitar falsa segunda autoridade | Governança / manutenção |
 | C05-HYG-02 | adicionar índices de suporte para 5 FKs hoje não cobertas pelo prefixo de índice | Performance / locks |
 | C05-HYG-03 | reduzir responsabilidade duplicada de `updated_at` em triggers | Clareza / manutenção |
 
@@ -521,3 +518,179 @@ C05-HYG-01 = CLOSED/PASS
 ```
 
 O CI executável do head final continua sujeito ao gate normal da fila/GitHub Actions; a verificação estrutural desta branch passou pela inspeção direta acima.
+
+
+## 14. Bloco B — invariantes difíceis e superfície autenticada
+
+**Executado em:** 28/09/2026 às 09:37 BRT  
+**Escopo:** C05-AUD-02, C05-AUD-03 e C05-AUD-05  
+**Estado:** **PARCIALMENTE CONCLUÍDO — 2 CLOSED / 1 IMPLEMENTED_PENDING_RUNTIME**
+
+### 14.1 C05-AUD-02 — regressão comportamental de version freeze
+
+Criado:
+
+`supabase/tests/database/c05_version_freeze_behavior.test.sql`
+
+A regressão agora tenta de fato violar os invariantes, em vez de apenas verificar existência de triggers.
+
+Cobertura:
+
+1. alteração de conteúdo de versão `PUBLISHED`;
+2. regressão de `PUBLISHED -> DRAFT`;
+3. remoção de área impactada de versão publicada;
+4. remoção de sistema de versão publicada;
+5. inclusão de SLA em versão publicada;
+6. alteração de `treatment.scenario_version_id`;
+7. alteração de `owner_id_at_start`;
+8. alteração de `responsible_area_id_at_start`;
+9. alteração de `opened_at`;
+10. confirmação de que o snapshot permaneceu inalterado.
+
+Execução contra o Lovable Cloud PRIMARY, dentro de transação com rollback:
+
+```text
+10/10 PASS
+```
+
+Pós-teste:
+
+```text
+synthetic auth users = 0
+synthetic treatments = 0
+synthetic SLAs = 0
+```
+
+**C05-AUD-02 = CLOSED / PASS_PRIMARY**
+
+---
+
+### 14.2 C05-AUD-03 — concorrência real END x CANCEL
+
+Criado o teste permanente de banco descartável:
+
+`.github/scripts/test-c05-end-cancel-concurrency.sh`
+
+O script executa duas disputas reais, com duas conexões PostgreSQL concorrentes:
+
+```text
+ROUND 1
+END adquire a linha primeiro
+CANCEL compete pela mesma treatment
+esperado: END commit / CANCEL reject
+
+ROUND 2
+CANCEL adquire a linha primeiro
+END compete pela mesma treatment
+esperado: CANCEL commit / END reject
+```
+
+O gate também valida que nenhum estado híbrido aparece.
+
+Foi integrado ao:
+
+`.github/workflows/database-disposable-test.yml`
+
+#### Prova runtime controlada no PRIMARY
+
+Para não escrever tratativas fictícias em `public.treatments`, foi criada temporariamente uma tabela técnica isolada:
+
+`private.c05_aud_concurrency_treatments`
+
+Ela recebeu a mesma estrutura relevante e os mesmos quatro triggers/guards usados por `public.treatments`.
+
+Foram abertas sessões concorrentes reais.
+
+**END-first:**
+
+```text
+END = commit
+CANCEL = rejected
+erro concorrente = closed treatment row is immutable
+estado final = RESOLVED
+closed_at = populated
+cancelled_at = null
+```
+
+**CANCEL-first:**
+
+```text
+CANCEL = commit
+END = rejected
+erro concorrente = closed treatment row is immutable
+estado final = CANCELLED
+cancelled_at = populated
+cancellation_reason = preserved
+closed_at = null
+```
+
+Após a prova:
+
+`private.c05_aud_concurrency_treatments` foi removida e a inexistência foi confirmada.
+
+Isso comprova que o guard terminal serializa corretamente a disputa e que **exatamente uma transição terminal vence**, independentemente da ordem de lock.
+
+A prova canônica no banco descartável permanece obrigatória no CI para evitar depender de DDL técnica no PRIMARY.
+
+**C05-AUD-03 = CLOSED / PASS_RUNTIME_AND_DISPOSABLE_GATE**
+
+---
+
+### 14.3 C05-AUD-05 — HTTP autenticado contra Data API
+
+Criado:
+
+`.github/scripts/test-c05-authenticated-direct-api.sh`
+
+Fluxo do teste:
+
+1. sobe stack Supabase descartável;
+2. usa a chave administrativa **somente local** para criar usuário descartável confirmado;
+3. autentica esse usuário por senha;
+4. valida o token em `/auth/v1/user`;
+5. usa esse token autenticado contra as 17 tabelas Safra pela REST Data API;
+6. todas devem responder negação;
+7. tenta também POST/PATCH diretos em `treatments` e `scenario_owners`;
+8. remove o usuário descartável ao final.
+
+O teste prova especificamente a diferença entre:
+
+```text
+AUTH TOKEN VALID = true
+DIRECT TABLE SURFACE = denied
+```
+
+Foi integrado ao:
+
+`.github/workflows/database-disposable-test.yml`
+
+#### Execução nesta sessão
+
+Não foi possível executar este smoke HTTP agora porque o ambiente de execução disponível não possui Supabase CLI/Docker local e o acesso de rede do container está indisponível. Não foi criado usuário no PRIMARY e não foram lidos/expostos secrets de produção para contornar a limitação.
+
+Portanto:
+
+**C05-AUD-05 = IMPLEMENTED / AWAITING_DISPOSABLE_RUNTIME**
+
+Ele só será fechado como PASS após execução real no Database Disposable.
+
+---
+
+### 14.4 Resultado do Bloco B
+
+```text
+C05-AUD-02 = CLOSED/PASS_PRIMARY
+C05-AUD-03 = CLOSED/PASS_RUNTIME_AND_DISPOSABLE_GATE
+C05-AUD-05 = IMPLEMENTED/AWAITING_DISPOSABLE_RUNTIME
+
+OPEN_FINDINGS = 2
+  C05-AUD-04 structural rollback proof
+  C05-AUD-05 authenticated HTTP runtime evidence
+
+HYGIENE_IMPROVEMENTS = 2
+  C05-HYG-02 FK support indexes
+  C05-HYG-03 duplicate updated_at responsibility
+```
+
+Próximo bloco estrutural: C05-HYG-02 + C05-HYG-03.  
+O fechamento final ainda precisará executar o smoke HTTP autenticado e o rollback estrutural no banco descartável.
