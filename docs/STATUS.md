@@ -1634,6 +1634,8 @@ Próxima fase canônica: **SAFRA-C05 — Schema v2, migrations e invariantes**.
 
 ---
 
+> **C05-AUD — Schema v2, migrations e invariantes aberta em 28/09/2026 às 08:56 BRT.** Branch exclusiva: `audit/c05-schema-v2-migrations-invariants-2026-09-28`. O C05 histórico permanece preservado. Auditoria atual confirmou 28/28 migrations Git=PRIMARY, schema v2 17/17, 36 FKs, 0 cascade destrutivo e guards históricos funcionando. Foram abertos **6 achados**: status de notificação não governado; ausência de regressão permanente de version freeze; ausência de concorrência real END x CANCEL; rollback que valida apenas tracking; ausência de smoke HTTP autenticado da Data API; e definição pendente de “RLS positiva” no desenho RPC-only. Há ainda 3 melhorias de higiene (Drizzle residual, 5 FKs sem índice de suporte e triggers redundantes de updated_at). Fonte: `docs/AUDITORIA_C05_REABERTURA_2026-09-28.md`.
+
 ## SAFRA-C05 — schema v2 canônico materializado — 25/09/2026
 
 Migration canônica:
