@@ -1004,6 +1004,36 @@ Nenhuma entidade de C05 pode possuir nome ambíguo ou duas definições concorre
 
 ## SAFRA-C04 — Identidade, RBAC e RLS
 
+### C04-AUD — reauditoria corretiva / onda de melhorias — AUTORIZADA
+
+Em **28/09/2026 às 07:42 BRT**, foi autorizado executar as melhorias identificadas pela C04-AUD em branch exclusiva:
+
+`audit/c04-identity-rbac-rls-2026-09-28`
+
+Governança desta onda:
+
+- o SAFRA-C04 histórico continua preservado como concluído;
+- a C04-AUD é uma reauditoria corretiva posterior a C05–C08 e à limpeza C03;
+- nenhuma correção C04 entra diretamente em C03 ou em `main`;
+- a branch C04 pode receber novos achados estritamente de Identidade/RBAC/RLS antes de sua execução;
+- a C04-AUD ocupa o **ITEM 3 da fila programada**, após C02/PR #10 e C03-AUD;
+- a execução só começa quando os itens anteriores estiverem concluídos conforme seus próprios gates.
+
+Backlog autorizado da onda:
+
+1. retirar a superfície REST legacy de `applications/incidents`;
+2. reconciliar/remover policies legacy correspondentes;
+3. provar JWT expirado -> mutation negada -> zero efeito;
+4. manter END/CANCEL deferidos e provar ausência de exposição prematura;
+5. testar binding corporativo dos principals ainda sem `auth.user`;
+6. endurecer matriz Jair/Bruno/Jiane/Daniel/Renato/platform admins;
+7. preservar `PAPEL != OWNERSHIP` como regressão obrigatória;
+8. preservar proteção contra privilege escalation via payload;
+9. criar gate UI x REST/Data API x RPC x grants x RLS;
+10. recertificar deny-by-default de `anon`.
+
+Fonte detalhada: `docs/AUDITORIA_C04_REABERTURA_2026-09-28.md`.
+
 ### Objetivo
 
 Implementar autenticação corporativa e autorização definitiva conforme o modelo aprovado.
