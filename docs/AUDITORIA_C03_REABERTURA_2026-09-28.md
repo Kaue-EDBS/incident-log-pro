@@ -184,26 +184,36 @@ Também permanece no manifesto a dependência `recharts`, agora sem import ativo
 
 ### C03-AUD-04 — glossário canônico com metadados e linguagem pré-C05
 
-**Estado:** OPEN / ALTERAÇÃO AUTORIZADA  
-**Severidade:** LOW / DOCUMENTAÇÃO
+**Estado:** CLOSED / PASS em 28/09/2026 às 06:54 BRT  
+**Severidade original:** LOW / DOCUMENTAÇÃO
 
-O cabeçalho atual ainda registra:
+`docs/GLOSSARIO_DOMINIO.md` foi promovido para refletir o estado real pós-C05–C08, sem alterar regras de negócio.
 
-- versão 1.1;
-- data 25/09/2026;
-- `READY_FOR_C05`.
+Metadados atuais:
 
-Além disso, trechos de handoff ainda usam linguagem futura (`C05 deve criar`) para estruturas que já existem no PRIMARY.
+- versão: `1.2`;
+- data: `28/09/2026`;
+- status: `CANÔNICO — SAFRA-C03 / PÓS-C05–C08 / C03-AUD EM EXECUÇÃO`;
+- última revalidação: `28/09/2026 às 06:54 BRT`;
+- implementação de referência: C05 schema v2, C06 catálogo/seed, C07 contratos temporais e C08 START end-to-end.
 
-**Direção aprovada:**
+Reconciliação textual executada:
 
-Atualizar `docs/GLOSSARIO_DOMINIO.md` sem alterar regras de negócio:
+- removido `READY_FOR_C05` do status canônico;
+- a seção `Contrato de handoff para SAFRA-C05` passou a registrar o contrato físico já materializado;
+- expressões como `C05 deve criar` foram convertidas para estado implementado;
+- `scenario_version_impacted_areas`, `scenario_version_systems`, `treatment_impact_measurements` e demais estruturas passaram a ser descritas como materializadas quando já existem;
+- o checklist de entrada no C05 foi preservado como invariantes históricos do domínio;
+- decisões ainda deferidas continuam deferidas, sem serem transformadas em defaults.
 
-- registrar esta reauditoria;
-- distinguir `CONTRATO DEFINIDO NO C03` de `IMPLEMENTADO EM C05+`;
-- atualizar metadados;
-- manter o glossário como autoridade única do vocabulário;
-- eliminar formulações que possam sugerir que estruturas já existentes ainda são apenas propostas.
+Validação documental:
+
+- `C05 deve`: 0 ocorrências;
+- `deve criar`: 0 ocorrências;
+- heading antigo `Contrato de handoff para SAFRA-C05`: 0 ocorrências;
+- heading antigo `Checklist de aceite para entrada no C05`: 0 ocorrências.
+
+**Conclusão:** o glossário continua sendo a autoridade canônica do vocabulário, agora alinhado ao sistema efetivamente implementado.
 
 ## 5. Regras que não serão alteradas nesta rodada
 
