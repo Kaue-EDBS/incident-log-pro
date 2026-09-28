@@ -1638,6 +1638,8 @@ Próxima fase canônica: **SAFRA-C05 — Schema v2, migrations e invariantes**.
 
 > **C05-AUD decisões executadas em 28/09/2026 às 09:12 BRT.** C05-AUD-01 foi fechado com os estados canônicos `QUEUED/SENT/FAILED`, máquina `QUEUED -> SENT|FAILED`, estados terminais e timestamps server-side. Migration `20260928090910_c05_notification_delivery_state_machine.sql` promovida ao PRIMARY; regressão nova **10/10 PASS** e suítes C05 existentes **23/23 + 7/7 PASS**. C05-AUD-06 foi fechado com a **Opção A**: autorização positiva por RPC governada; tabelas Safra permanecem deny-by-default sem policy positiva de Data API. Restam **4 pendências técnicas** (version freeze regression, END x CANCEL concorrente, rollback estrutural, HTTP authenticated direct API) e **3 melhorias de higiene** (Drizzle residual, 5 índices FK, triggers redundantes).
 
+> **C05-AUD Bloco A concluído em 28/09/2026 às 09:23 BRT.** C05-HYG-01 foi fechado: Drizzle não tinha uso runtime/build/CI; config, schema e snapshots foram removidos; `drizzle-kit`, `drizzle-orm` e `postgres` saíram das dependências diretas e do manifesto raiz do `bun.lock`. Criado `.github/scripts/check-c05-migration-authority.py`, executado por App Smoke e Database Disposable, para impedir segunda trilha de migrations. Branch: 29 migrations canônicas em `supabase/migrations`; PRIMARY: 29 migrations, sem DDL desta etapa. Restam **4 pendências técnicas + 2 melhorias de higiene**.
+
 ## SAFRA-C05 — schema v2 canônico materializado — 25/09/2026
 
 Migration canônica:
