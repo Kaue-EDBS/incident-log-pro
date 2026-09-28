@@ -9,6 +9,8 @@
 
 > **C03-AUD-01 implementada em 28/09/2026:** o destino canônico de START passa a ser `/tratativas/nova`; `/novo-incidente` existe apenas como redirect temporário de compatibilidade. Validação CI permanece pendente pela indisponibilidade de minutos do GitHub Actions.
 
+> **C03-AUD-02 implementada em 28/09/2026:** a interface separa explicitamente `SAFRA` de `RELIABILITY / LEGADO TI`. A raiz e as telas de incidentes/aplicações/indicadores permanecem identificadas como TI até sua migração; `Incidente TI` continua distinto de `Tratativa Safra`.
+
 ## 1. Objetivo
 
 Evitar que frontend, banco, documentação, testes e usuários usem palavras diferentes para conceitos distintos.
