@@ -38,6 +38,10 @@ jobs:
       - name: C06.1 UI/server authorization coherence
         run: python3 .github/scripts/check-c06-1-ui-auth-coherence.py
 
+      - name: C04 authorization surface coherence
+        run: python3 .github/scripts/check-c04-authorization-surface.py
+
+
       - name: C07 analytics timezone contract - UTC host
         run: TZ=UTC bun .github/scripts/test-c07-analytics-timezone.ts
 
