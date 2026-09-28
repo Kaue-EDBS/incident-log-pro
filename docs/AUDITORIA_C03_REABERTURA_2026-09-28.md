@@ -4,7 +4,7 @@
 **Bloco:** SAFRA-C03 — Glossário e modelo de domínio  
 **Data de abertura:** 28/09/2026  
 **Horário:** 06:13 BRT  
-**Estado:** EM EXECUÇÃO  
+**Estado:** IMPLEMENTADA / AGUARDANDO SOMENTE CI PARA RECERTIFICAÇÃO  
 **Natureza:** reauditoria de vocabulário, fronteiras de domínio, schema, hooks, rotas e interface contra o estado atual do Painel Safra
 
 ---
@@ -14,6 +14,8 @@
 Revalidar o glossário e o modelo de domínio após a implementação de C05–C08, garantindo que documentação, banco, types, hooks, RPCs, rotas e interface usem os mesmos conceitos sem sinônimos concorrentes.
 
 O fechamento histórico do C03 é preservado. Esta rodada registra uma nova fotografia do sistema já evoluído.
+
+> **Status operacional em 28/09/2026 às 07:00 BRT:** todas as correções aprovadas desta reauditoria foram implementadas. Não há decisão funcional, de domínio ou de código pendente dentro do C03-AUD. Restam somente os gates automáticos de CI — App Smoke/typecheck/build/lint e Database Disposable — bloqueados temporariamente pela cota de GitHub Actions. A recertificação formal ocorrerá quando esses checks puderem ser executados.
 
 ## 2. Escopo obrigatório
 
@@ -112,8 +114,8 @@ Regras aplicadas:
 - a raiz `/` agora redireciona para `/tratativas/nova`;
 - após autenticação corporativa, o usuário também aterrissa diretamente em `/tratativas/nova`;
 - links de recuperação/home do shell apontam para o fluxo Safra;
-- as rotas antigas continuam preservadas no código por enquanto, mas não fazem parte da navegação funcional;
-- a retirada definitiva do código antigo será feita por etapa própria, sem misturar com esta correção de domínio.
+- naquele momento as rotas antigas haviam sido apenas retiradas da navegação; posteriormente, o C03-AUD-03 removeu integralmente essas rotas, hooks e componentes do frontend/runtime;
+- permanecem apenas `public.applications` e `public.incidents` como persistência histórica estacionada no banco, fora da experiência de produto.
 
 O gate permanente `.github/scripts/check-c03-domain-boundary.py` foi ajustado para reprovar se:
 
@@ -121,7 +123,7 @@ O gate permanente `.github/scripts/check-c03-domain-boundary.py` foi ajustado pa
 - Reliability/Legado TI voltar a aparecer na navegação;
 - rotas antigas voltarem a ser expostas pelo `AppLayout`;
 - `/` ou o pós-login deixarem de levar ao fluxo Safra;
-- o código transitório antigo for removido antes da migração controlada correspondente.
+- a persistência histórica no banco for confundida com funcionalidade ativa do produto.
 
 **Pendência restante deste item:** App Smoke/typecheck/build/lint quando a franquia do GitHub Actions estiver novamente disponível. Até lá, a correção está implementada e o entendimento de produto ficou alinhado ao processo real de migração.
 
@@ -247,4 +249,4 @@ C03-AUD somente poderá ser encerrada quando:
 - impacto e criticidade continuarem sem inferência indevida;
 - App Smoke/typecheck/build/lint puderem ser reexecutados quando a cota do GitHub Actions estiver disponível.
 
-> **C03 permanece historicamente fechado; C03-AUD está EM EXECUÇÃO e ainda não foi recertificado.**
+> **C03 permanece historicamente fechado; C03-AUD está IMPLEMENTADA e aguarda somente CI para recertificação formal. Não há pendência funcional ou de domínio aberta.**
