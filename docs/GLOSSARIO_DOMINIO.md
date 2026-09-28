@@ -1,8 +1,10 @@
 # GLOSSÁRIO DE DOMÍNIO — Painel Safra
 
-**Versão:** 1.1  
-**Data:** 25/09/2026  
-**Status:** CANÔNICO — SAFRA-C03 / READY_FOR_C05  
+**Versão:** 1.2  
+**Data:** 28/09/2026  
+**Status:** CANÔNICO — SAFRA-C03 / PÓS-C05–C08 / C03-AUD EM EXECUÇÃO  
+**Última revalidação:** 28/09/2026 às 06:54 BRT  
+**Implementação de referência:** C05 schema v2; C06 catálogo/seed; C07 contratos temporais; C08 START end-to-end  
 **Autoridade:** este documento congela o vocabulário funcional do Painel Safra. Alteração material exige decisão registrada.
 
 > **C03-AUD aberta em 28/09/2026 às 06:13 BRT.** A autoridade conceitual deste glossário permanece válida durante a reauditoria. Foram autorizadas correções de nomenclatura de rota, retirada da identidade Reliability da UX durante sua transformação progressiva em Painel Safra, separação de hooks por domínio técnico e atualização dos metadados/estado pós-C05–C08. Fonte de acompanhamento: `docs/AUDITORIA_C03_REABERTURA_2026-09-28.md`.
@@ -12,6 +14,8 @@
 > **C03-AUD-02 refinada em 28/09/2026 às 06:34 BRT:** `Painel Safra` é a única identidade de produto visível. O antigo Reliability Monitor nunca teve adoção operacional e permanece apenas como base técnica transitória a ser absorvida gradualmente; suas rotas não aparecem na navegação funcional. Isso não transforma `incident` legado em sinônimo de `treatment`: a distinção técnica continua válida durante a migração.
 
 > **C03-AUD-03 implementada em 28/09/2026:** o frontend/runtime do Reliability foi removido em vez de reorganizado. Hooks Safra agora vivem em `src/lib/safra-queries.ts`; utilitários temporais compartilhados permanecem em `src/lib/analytics-time.ts`. As tabelas legadas `applications`/`incidents` continuam apenas como persistência histórica até decisão/migration própria de retirada.
+
+> **C03-AUD-04 implementada em 28/09/2026 às 06:54 BRT:** metadados promovidos para versão 1.2 pós-C05–C08. A antiga seção `READY_FOR_C05` foi convertida em registro do contrato materializado no C05; linguagem futura foi reconciliada com o schema vigente sem alterar nenhuma regra de negócio.
 
 ## 1. Objetivo
 
@@ -580,9 +584,9 @@ O C03 **não** cria:
 
 Esses itens só podem existir quando houver fonte de negócio e decisão explícita.
 
-### 7.5 Modelo conceitual recomendado
+### 7.5 Modelo conceitual implementado e extensível
 
-[DERIVADO — desenho para implementação futura em C05/F04]
+[IMPLEMENTADO EM C05 — extensível em F04 sem alterar a distinção qualitativo × quantitativo]
 
 ```text
 treatments
@@ -617,9 +621,9 @@ Uma tratativa pode possuir zero, uma ou várias medições quantitativas.
 
 ---
 
-## 8. Contrato de handoff para SAFRA-C05
+## 8. Contrato físico derivado do C03 — materializado no SAFRA-C05
 
-Esta seção transforma o glossário em contrato de implementação. O C05 pode decidir detalhes físicos de PostgreSQL, índices, tipos e estratégia de migration, mas não pode alterar estas fronteiras sem nova decisão de domínio.
+Esta seção preserva o contrato de domínio que orientou o SAFRA-C05 e registra como ele foi materializado. Os detalhes físicos já implementados podem evoluir por migrations futuras, mas estas fronteiras não podem ser alteradas sem nova decisão de domínio.
 
 ### 8.1 Fonte de verdade por conceito
 
@@ -664,7 +668,7 @@ Para um cenário publicado, deve existir **exatamente um owner ativo** no instan
 
 #### Cenário — catálogo
 
-[DERIVADO — contrato técnico para C05]
+[IMPLEMENTADO EM C05 — contrato técnico vigente]
 
 ```text
 ACTIVE
@@ -675,7 +679,7 @@ INACTIVE
 
 #### Versão de cenário
 
-[DERIVADO — contrato técnico para C05]
+[IMPLEMENTADO EM C05 — contrato técnico vigente]
 
 ```text
 DRAFT
@@ -724,7 +728,7 @@ O client não escolhe uma versão histórica. O backend resolve a versão corren
 
 A tratativa deve preservar contexto suficiente para não depender de relações futuras mutáveis.
 
-[DERIVADO — requisito de auditabilidade para C05]
+[IMPLEMENTADO EM C05 — requisito de auditabilidade vigente]
 
 Persistir no START:
 
@@ -770,13 +774,13 @@ Contrato:
 - pode ser subconjunto, conjunto igual ou diferente do potencial previsto;
 - não deve reescrever a versão do cenário.
 
-Para C05, usar relação versionada, preferencialmente nomeada `scenario_version_impacted_areas`, evitando o nome ambíguo `scenario_impacted_areas`.
+Implementado em C05 como relação versionada `scenario_version_impacted_areas`; o nome ambíguo `scenario_impacted_areas` não faz parte do modelo canônico.
 
 ### 8.8 Sistemas/ferramentas associados
 
 Ferramentas de detecção, origem, apoio ou monitoramento podem mudar entre versões.
 
-Para C05, a relação deve ser versionada, preferencialmente `scenario_version_systems`.
+Implementado em C05 como relação versionada `scenario_version_systems`.
 
 Uma tratativa histórica não deve passar a mostrar uma ferramenta nova apenas porque a versão atual do cenário mudou.
 
@@ -860,7 +864,7 @@ Regras:
 
 ### 8.13 Impacto quantitativo — contrato físico mínimo
 
-C05 deve criar estrutura capaz de receber medições futuras sem inventar métricas de negócio.
+C05 materializou `treatment_impact_measurements` para receber medições quantitativas sem inventar métricas de negócio.
 
 ```text
 treatment_impact_measurements
@@ -887,16 +891,16 @@ Invariantes:
 
 Recorrência é **métrica derivada**, não entidade transacional obrigatória.
 
-C05 não deve criar status ou tabela de “recorrência” como fonte primária. Ela será calculada a partir de tratativas por cenário e janela temporal definida posteriormente.
+C05 não criou status ou tabela de `recorrência` como fonte primária. A recorrência permanece métrica derivada de tratativas por cenário e janela temporal definida posteriormente.
 
 ### 8.15 Pós-mortem
 
 Pós-mortem está no domínio, mas seu workflow pertence ao F03.
 
-C05 não deve presumir:
+C05 não materializou como regra:
 - que toda tratativa exige pós-mortem;
 - enum/status final do pós-mortem;
-- tabela obrigatória nesta migration inicial.
+- tabela obrigatória de pós-mortem.
 
 Quando formalizado, deve referenciar a tratativa original e não alterar seu END.
 
@@ -904,17 +908,17 @@ Quando formalizado, deve referenciar a tratativa original e não alterar seu END
 
 A regra ainda está deferida para M01.
 
-Portanto, **C05 não deve criar constraint de unicidade que impeça duas tratativas ACTIVE do mesmo cenário** até existir decisão formal.
+Portanto, **C05 não criou constraint de unicidade que impeça duas tratativas ACTIVE do mesmo cenário**; a decisão permanece deferida para M01.
 
 ### 8.17 Proposta de cenário
 
 `scenario_proposals` é entidade separada.
 
-C05 deve garantir estruturalmente:
+C05 materializou estruturalmente que:
 - proposta não possui `scenario_id` produtivo por default;
 - proposta não recebe START;
 - conversão/publicação depende do fluxo M10;
-- enum completo do lifecycle da proposta pode permanecer deferido a M10, sem inventar estados finais agora.
+- o lifecycle completo da proposta permanece deferido a M10, sem estados finais inventados.
 
 ### 8.18 Governance issue
 
@@ -925,9 +929,9 @@ Para `GI-SAFRA-001`:
 - seed C06 não define os quatro CRITICAL;
 - resolução futura gera decisão registrada e versão de cenário apropriada.
 
-### 8.19 Itens explicitamente fora do C05
+### 8.19 Itens que permaneceram explicitamente fora do C05
 
-C05 não deve decidir por conta própria:
+C05 não decidiu por conta própria:
 - os quatro cenários CRITICAL;
 - thresholds dos cenários 2, 4, 10 e 11;
 - mínimo oficial da curva A;
@@ -937,9 +941,9 @@ C05 não deve decidir por conta própria:
 - provider/canal de e-mail;
 - janela semanal de governança.
 
-### 8.20 Checklist de aceite para entrada no C05
+### 8.20 Checklist histórico de aceite do C05 — preservado como invariantes
 
-Antes de escrever migration, o implementador deve conseguir responder sem interpretação:
+O checklist usado para aceitar a implementação do C05 permanece como teste conceitual do modelo:
 
 - qual entidade representa identidade do cenário? → `scenarios`;
 - qual entidade guarda conteúdo mutável? → `scenario_versions`;
@@ -957,4 +961,4 @@ Antes de escrever migration, o implementador deve conseguir responder sem interp
 - proposta é cenário? → não;
 - versão publicada pode ser UPDATE in-place? → não.
 
-Se qualquer resposta acima for implementada de forma diferente, a mudança precisa voltar ao domínio antes de ser codificada.
+Se qualquer evolução futura responder de forma diferente, a mudança precisa voltar ao domínio antes de ser codificada.
