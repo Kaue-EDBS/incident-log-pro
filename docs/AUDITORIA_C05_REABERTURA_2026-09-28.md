@@ -170,7 +170,7 @@ Database Disposable reconstrói migrations do zero e roda pgTAP, lint, START con
 
 ### C05-AUD-04 — rollback verifica tracking, não restauração estrutural
 
-**Estado:** OPEN / TEST GAP  
+**Estado:** IMPLEMENTED / AWAITING_DISPOSABLE_RUNTIME  
 **Severidade:** MEDIUM  
 **Decisão humana necessária:** NÃO
 
@@ -792,3 +792,115 @@ C05-AUD-05 = IMPLEMENTED / AWAITING_DISPOSABLE_RUNTIME
 ```
 
 Não restam melhorias de higiene abertas na C05-AUD.
+
+
+## 16. Fechamento técnico da C05-AUD
+
+**Registrado em:** 28/09/2026 às 10:05 BRT  
+**Estado:** **ESCOPO TÉCNICO CONCLUÍDO / RECERTIFICAÇÃO FINAL PENDENTE DE CI**
+
+### 16.1 C05-AUD-04 — rollback estrutural
+
+Criado:
+
+`supabase/rollback-tests/c05_block_c_structural_rollback.test.sql`
+
+A prova de rollback deixou de verificar apenas a tabela de histórico.
+
+Após o `migration down --local --last 1` da migration `20260928095246`, o Database Disposable agora deve comprovar **9 invariantes estruturais**:
+
+1. a migration `20260928095246` saiu de `schema_migrations`;
+2. os cinco índices do Bloco C não existem mais;
+3. `trg_treatments_updated_at` voltou ao estado anterior;
+4. `safra_guard_scenario_version_update()` voltou a escrever o relógio como no schema anterior;
+5. server-clock de `scenario_versions` continua presente;
+6. server-clock de `treatments` continua presente;
+7. `governance_issues` continua existindo;
+8. `treatments` continua existindo;
+9. `scenario_versions` continua existindo.
+
+O workflow foi endurecido para exigir que a migration mais recente seja exatamente `20260928095246` enquanto este contrato de rollback estiver ativo. Se uma migration futura virar a latest, o gate falha pedindo atualização explícita do contrato em vez de executar um rollback estrutural obsoleto.
+
+Depois da prova de rollback, o workflow:
+
+```text
+supabase db reset --local
+supabase test db
+```
+
+reconstrói o estado canônico completo e prova novamente o caminho forward.
+
+**C05-AUD-04 = IMPLEMENTED / AWAITING_DISPOSABLE_RUNTIME**
+
+### 16.2 C05-AUD-05 — authenticated direct Data API
+
+O gate já criado:
+
+`.github/scripts/test-c05-authenticated-direct-api.sh`
+
+permanece integrado ao Database Disposable.
+
+Critério final:
+
+```text
+disposable authenticated user = valid token
+17 Safra table reads via REST = denied
+direct POST treatments = denied
+direct POST scenario_owners = denied
+direct PATCH treatments = denied
+disposable user cleanup = executed
+```
+
+A implementação está completa. A evidência HTTP final depende da stack local Supabase, que não está disponível no ambiente de execução desta sessão.
+
+**C05-AUD-05 = IMPLEMENTED / AWAITING_DISPOSABLE_RUNTIME**
+
+### 16.3 Estado final da implementação
+
+```text
+C05-AUD-01 = CLOSED/PASS_PRIMARY
+C05-AUD-02 = CLOSED/PASS_PRIMARY
+C05-AUD-03 = CLOSED/PASS_RUNTIME_AND_DISPOSABLE_GATE
+C05-AUD-04 = IMPLEMENTED/AWAITING_DISPOSABLE_RUNTIME
+C05-AUD-05 = IMPLEMENTED/AWAITING_DISPOSABLE_RUNTIME
+C05-AUD-06 = CLOSED/DECISION_A
+
+C05-HYG-01 = CLOSED/PASS
+C05-HYG-02 = CLOSED/PASS_PRIMARY
+C05-HYG-03 = CLOSED/PASS_PRIMARY
+
+OPEN_IMPLEMENTATION_FINDINGS = 0
+HYGIENE_IMPROVEMENTS = 0
+RUNTIME_GATES_PENDING = 2
+
+C05_AUD_TECHNICAL_SCOPE = COMPLETE
+C05_AUD_RECERTIFICATION = PENDING_DATABASE_DISPOSABLE_FINAL_CI
+```
+
+### 16.4 Condição para recertificação formal
+
+A C05-AUD só deve mudar para **RECERTIFICADA** quando o head final executar com sucesso:
+
+1. App Smoke;
+2. Database Disposable;
+3. pgTAP completo;
+4. START concurrency;
+5. END x CANCEL concurrency;
+6. anon direct API/RPC;
+7. authenticated direct API;
+8. C05 structural rollback 9/9;
+9. reset forward completo;
+10. db lint.
+
+Até lá, nenhuma nova correção técnica está aberta, mas o merge não deve ser tratado como recertificado.
+
+### 16.5 Handoff para a próxima auditoria
+
+A próxima auditoria pode ser iniciada em branch própria empilhada sobre esta C05-AUD.
+
+Não reabrir C05 sem:
+
+- falha de um dos dois gates pendentes;
+- novo drift Git x PRIMARY;
+- nova migration que exija atualização do contrato de rollback;
+- evidência nova de violação das invariantes.
