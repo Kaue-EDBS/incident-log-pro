@@ -456,7 +456,7 @@ c05_reaudit:
   schema_v2_rls_tables: 17
   foreign_keys: 36
   destructive_cascade_foreign_keys: 0
-  open_findings: 4
+  open_findings: 2
   hygiene_improvements: 2
   decisions_closed:
     c05_aud_01:
@@ -474,10 +474,26 @@ c05_reaudit:
       direct_table_access: "DENY_BY_DEFAULT"
       positive_table_rls_policy_required: false
   remaining_findings:
-    - "C05-AUD-02_VERSION_FREEZE_REGRESSION"
-    - "C05-AUD-03_END_CANCEL_REAL_CONCURRENCY"
     - "C05-AUD-04_STRUCTURAL_ROLLBACK_PROOF"
-    - "C05-AUD-05_AUTHENTICATED_DIRECT_API_HTTP_SMOKE"
+    - "C05-AUD-05_AUTHENTICATED_DIRECT_API_HTTP_RUNTIME"
+  block_b_invariants:
+    executed_at: "2026-09-28T09:37:51-03:00"
+    c05_aud_02:
+      status: "CLOSED_PASS_PRIMARY"
+      test: "supabase/tests/database/c05_version_freeze_behavior.test.sql"
+      primary_result: "10/10_PASS"
+      residual_fixtures: 0
+    c05_aud_03:
+      status: "CLOSED_PASS_RUNTIME_AND_DISPOSABLE_GATE"
+      disposable_test: ".github/scripts/test-c05-end-cancel-concurrency.sh"
+      end_first: "RESOLVED_END_WINS_CANCEL_REJECTED"
+      cancel_first: "CANCELLED_CANCEL_WINS_END_REJECTED"
+      primary_isolated_test_table_cleaned: true
+    c05_aud_05:
+      status: "IMPLEMENTED_AWAITING_DISPOSABLE_RUNTIME"
+      test: ".github/scripts/test-c05-authenticated-direct-api.sh"
+      workflow: ".github/workflows/database-disposable-test.yml"
+      production_user_created: false
   block_a_migration_authority:
     completed_at: "2026-09-28T09:23:17-03:00"
     c05_hyg_01: "CLOSED_PASS"
