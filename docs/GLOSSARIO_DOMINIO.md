@@ -11,6 +11,8 @@
 
 > **C03-AUD-02 refinada em 28/09/2026 às 06:34 BRT:** `Painel Safra` é a única identidade de produto visível. O antigo Reliability Monitor nunca teve adoção operacional e permanece apenas como base técnica transitória a ser absorvida gradualmente; suas rotas não aparecem na navegação funcional. Isso não transforma `incident` legado em sinônimo de `treatment`: a distinção técnica continua válida durante a migração.
 
+> **C03-AUD-03 implementada em 28/09/2026:** o frontend/runtime do Reliability foi removido em vez de reorganizado. Hooks Safra agora vivem em `src/lib/safra-queries.ts`; utilitários temporais compartilhados permanecem em `src/lib/analytics-time.ts`. As tabelas legadas `applications`/`incidents` continuam apenas como persistência histórica até decisão/migration própria de retirada.
+
 ## 1. Objetivo
 
 Evitar que frontend, banco, documentação, testes e usuários usem palavras diferentes para conceitos distintos.
