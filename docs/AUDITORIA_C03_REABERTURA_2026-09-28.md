@@ -81,47 +81,49 @@ Validação estática da branch:
 
 **Pendência restante deste item:** executar App Smoke/typecheck/build/lint quando a franquia do GitHub Actions voltar a estar disponível. Até lá, a correção está implementada, mas o fechamento formal permanece dependente do CI.
 
-### C03-AUD-02 — fronteira visual Safra × Reliability Monitor legado
+### C03-AUD-02 — identidade única do Painel Safra durante a migração do Reliability
 
-**Estado:** IMPLEMENTED / PENDING_CI em 28/09/2026 às 06:27 BRT  
+**Estado:** IMPLEMENTED / PENDING_CI — refinado em 28/09/2026 às 06:34 BRT  
 **Severidade original:** MEDIUM-HIGH / UX E DOMÍNIO
 
-A navegação foi separada visualmente em duas fronteiras explícitas, sem criar telas Safra inexistentes.
+A decisão de domínio foi refinada: **Reliability Monitor não é um segundo produto nem uma área funcional paralela**. Ele é somente a base técnica anterior que está sendo transformada, passo a passo, no Painel Safra e nunca teve adoção operacional real.
+
+Portanto, a UX não deve ensinar ao usuário uma separação "Safra × Reliability".
 
 Estado atual:
 
 ```text
-SAFRA
-- Abrir Protocolo  -> /tratativas/nova
+PRODUTO VISÍVEL
+Painel Safra
+└── Operação Safra
+    └── Abrir Protocolo -> /tratativas/nova
 
-RELIABILITY / LEGADO TI
-- Visão Geral TI   -> /
-- Incidentes TI    -> /incidentes
-- Aplicações TI    -> /aplicacoes
-- Indicadores TI   -> /indicadores
+BASE TÉCNICA TRANSITÓRIA — NÃO EXPOSTA NA NAVEGAÇÃO
+- /incidentes
+- /aplicacoes
+- /indicadores
+- código/queries/metrics do antigo Reliability Monitor
 ```
 
 Regras aplicadas:
 
-- `Incidente TI` não é apresentado como sinônimo de `Tratativa Safra`;
-- a raiz `/` permanece identificada como visão do Reliability/Legado TI enquanto não existir dashboard Safra próprio;
-- nenhum link artificial de `Visão Safra` ou `Tratativas` foi criado antes de sua implementação funcional;
-- desktop usa agrupamento visual com títulos de domínio;
-- mobile mostra a fronteira ativa no cabeçalho e identifica cada item como `Safra` ou `TI`;
-- o legado permanece acessível, porém explicitamente rotulado como legado técnico.
+- `Painel Safra` é a única identidade de produto apresentada ao usuário;
+- referências visuais a `Reliability`, `Legado TI`, `Incidentes TI`, `Aplicações TI` e `Indicadores TI` foram removidas do `AppLayout`;
+- a raiz `/` agora redireciona para `/tratativas/nova`;
+- após autenticação corporativa, o usuário também aterrissa diretamente em `/tratativas/nova`;
+- links de recuperação/home do shell apontam para o fluxo Safra;
+- as rotas antigas continuam preservadas no código por enquanto, mas não fazem parte da navegação funcional;
+- a retirada definitiva do código antigo será feita por etapa própria, sem misturar com esta correção de domínio.
 
-Foi criado o gate permanente:
+O gate permanente `.github/scripts/check-c03-domain-boundary.py` foi ajustado para reprovar se:
 
-`.github/scripts/check-c03-domain-boundary.py`
+- a identidade `Painel Safra` desaparecer;
+- Reliability/Legado TI voltar a aparecer na navegação;
+- rotas antigas voltarem a ser expostas pelo `AppLayout`;
+- `/` ou o pós-login deixarem de levar ao fluxo Safra;
+- o código transitório antigo for removido antes da migração controlada correspondente.
 
-O gate reprova se:
-
-- os grupos `SAFRA_NAV` e `LEGACY_TI_NAV` forem removidos;
-- os rótulos TI voltarem a ficar ambíguos;
-- o START deixar de apontar para `/tratativas/nova`;
-- o mobile deixar de informar a fronteira Safra × TI.
-
-**Pendência restante deste item:** App Smoke/typecheck/build/lint quando a franquia do GitHub Actions estiver novamente disponível. Até lá, a correção está implementada e protegida por gate estático versionado.
+**Pendência restante deste item:** App Smoke/typecheck/build/lint quando a franquia do GitHub Actions estiver novamente disponível. Até lá, a correção está implementada e o entendimento de produto ficou alinhado ao processo real de migração.
 
 ### C03-AUD-03 — hooks de dois domínios no mesmo módulo
 
@@ -188,7 +190,7 @@ C03-AUD somente poderá ser encerrada quando:
 
 - a rota canônica de START usar nomenclatura de tratativa;
 - o redirect legado estiver explícito e testado;
-- a navegação separar Safra e Reliability/Legado TI;
+- a navegação expor somente o Painel Safra, mantendo o Reliability apenas como base técnica transitória não navegável;
 - hooks/queries estiverem separados por domínio;
 - `docs/GLOSSARIO_DOMINIO.md` refletir o estado pós-C05–C08;
 - não existir entidade ou campo C05 com definição concorrente;
