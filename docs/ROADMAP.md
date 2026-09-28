@@ -1406,6 +1406,31 @@ HYGIENE_IMPROVEMENTS = 3
 
 Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
 
+
+
+#### C05-AUD — decisões de 28/09/2026 às 09:12 BRT
+
+Fechado:
+
+1. **C05-AUD-01** — notificações agora usam `QUEUED/SENT/FAILED`, com máquina `QUEUED -> SENT|FAILED`, terminais imutáveis e timestamps server-side. Migration `20260928090910_c05_notification_delivery_state_machine.sql`; regressão 10/10 PASS.
+2. **C05-AUD-06** — adotada **Opção A**: autorização positiva ocorre por RPC governada; tabelas permanecem deny-by-default; não criar policy positiva apenas para teste.
+
+Restam:
+
+- C05-AUD-02 — version freeze regression;
+- C05-AUD-03 — END x CANCEL concurrency;
+- C05-AUD-04 — structural rollback proof;
+- C05-AUD-05 — authenticated direct API HTTP smoke;
+- C05-HYG-01 — Drizzle residual;
+- C05-HYG-02 — cinco índices FK;
+- C05-HYG-03 — redundância de updated_at.
+
+```text
+OPEN_FINDINGS = 4
+HYGIENE_IMPROVEMENTS = 3
+C05_AUD = OPEN / TECHNICAL_GAPS_REMAIN
+```
+
 ### C05.0 — Autoridade de migrations e captura do C04 — CONCLUÍDO
 
 Decisão:
