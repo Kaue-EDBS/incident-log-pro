@@ -1084,6 +1084,41 @@ Próximo escopo — **Bloco C**:
 
 Depois do Bloco C: App Smoke + Database Disposable no head final e recertificação C04-AUD.
 
+
+
+#### Bloco C — CONCLUÍDO em 28/09/2026 às 08:36 BRT
+
+PREV-05 e PREV-06 concluídos:
+
+- contrato canônico: `docs/data-contracts/C04_AUTHORIZATION_SURFACE.json`;
+- gate de fonte: `.github/scripts/check-c04-authorization-surface.py`;
+- App Smoke passa a executar o gate C04;
+- gate de banco: `supabase/tests/database/c04_authorization_surface_gate.test.sql`;
+- PRIMARY: **12/12 PASS**;
+- 74 arquivos TS/TSX varridos;
+- exatamente 3 RPCs de aplicação aprovadas;
+- zero acesso `.from(...)` direto;
+- 19 relações públicas inventariadas;
+- RLS em todas as tabelas;
+- zero policies públicas;
+- zero CRUD de `anon`;
+- zero CRUD direto de `authenticated`;
+- zero EXECUTE de `anon`;
+- smoke RPC anônimo ampliado para cobrir as 10 funções públicas inventariadas.
+
+Resultado:
+
+```text
+BLOCK_A = COMPLETE
+BLOCK_B = COMPLETE
+BLOCK_C = COMPLETE
+OPEN_MATERIAL_FINDINGS = 0
+PREVENTIVE_IMPROVEMENTS_REMAINING = 0
+NEXT = FINAL_CI_AND_RECERTIFICATION
+```
+
+A posição 3 da fila não deve criar novas mudanças funcionais por padrão. Sua função agora é reconciliar a branch após C02/C03, reexecutar os controles como smoke, obter App Smoke + Database Disposable verdes no head final, reverificar PRIMARY, recertificar C04-AUD e então permitir merge.
+
 ### Objetivo
 
 Implementar autenticação corporativa e autorização definitiva conforme o modelo aprovado.
