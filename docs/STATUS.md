@@ -12,6 +12,8 @@
 
 > Snapshot runtime recertificado no fechamento da C01-AUD: Lovable publicado tecnicamente com endpoint acessível, audiência funcional **INTERNAL**, Microsoft/Azure + sessão viva + domínio corporativo aprovado. PRIMARY observado com **2 usuários Auth corporativos**, **2 principals ativos vinculados**, **9 grants funcionais ativos**, **0 grants anon nas estruturas centrais** e **0 policies públicas `USING (true)`**.
 
+> **C04-AUD — Identidade, RBAC e RLS aberta em 28/09/2026 às 07:15 BRT** sobre a branch `audit/c04-identity-rbac-rls-2026-09-28`, empilhada sobre a C03-AUD. Resultado inicial: anon bloqueado; role mapping Jair/Bruno/Jiane coerente; platform admin sem ownership; START protegido. Pendências abertas: regressão explícita de mutation sob JWT expirado, reconciliação documental de END/CANCEL ainda deferidos e retirada do SELECT REST legado de `applications/incidents`. Fonte: `docs/AUDITORIA_C04_REABERTURA_2026-09-28.md`.
+
 ---
 
 ## 1. Baseline registrada
