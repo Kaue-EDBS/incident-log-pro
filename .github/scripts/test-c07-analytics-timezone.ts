@@ -4,7 +4,7 @@ import {
   formatDateTime,
   resolveRange,
   toLocalInput,
-} from "../../src/lib/metrics";
+} from "../../src/lib/analytics-time";
 
 function assertEqual(actual: unknown, expected: unknown, label: string) {
   if (actual !== expected) {
