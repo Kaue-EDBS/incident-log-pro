@@ -127,7 +127,7 @@ O gate permanente `.github/scripts/check-c03-domain-boundary.py` foi ajustado pa
 
 ### C03-AUD-03 — remoção do legado Reliability da camada de aplicação
 
-**Estado:** IMPLEMENTED / PENDING_CI em 28/09/2026  
+**Estado:** IMPLEMENTED / PENDING_CI em 28/09/2026 às 06:49 BRT  
 **Severidade original:** LOW / HIGIENE TÉCNICA
 
 A decisão foi refinada após confirmar que o Reliability Monitor nunca teve adoção operacional real. Em vez de separar hooks legacy × Safra e perpetuar dois domínios na aplicação, o legado foi removido da camada de frontend/runtime.
