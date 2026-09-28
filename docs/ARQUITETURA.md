@@ -42,7 +42,6 @@ Stack de aplicação:
 - TypeScript;
 - Vite;
 - Tailwind;
-- Recharts.
 
 Banco:
 
@@ -399,13 +398,22 @@ As operações críticas implementadas/devem ser implementadas de forma transaci
 
 Operações críticas não devem depender de `.insert()`/`.update()` genérico no navegador.
 
-## 9. Legado TI
+## 9. Base técnica legada do Reliability
 
-`applications` e `incidents` continuam preservados como domínio legado de confiabilidade de TI.
+O Reliability Monitor nunca teve adoção operacional real e não é tratado como produto paralelo ao Painel Safra.
 
-Eles não são substitutos de `scenarios`/`treatments`.
+No C03-AUD-03, sua camada de aplicação foi retirada:
 
-Ponte futura entre incidentes TI e tratativas Safra só deve ser criada quando houver regra explícita de integração.
+- rotas `/incidentes`, `/aplicacoes` e `/indicadores`;
+- hooks e tipos de `Incident/Application`;
+- métricas MTTD/MTTR/MTBF/downtime do runtime legado;
+- componentes de UI exclusivos do Reliability.
+
+O Painel Safra é a única identidade funcional do produto.
+
+Por segurança de migração, `public.applications` e `public.incidents` continuam temporariamente no PRIMARY, juntamente com migrations históricas e tipos gerados correspondentes. Isso representa **persistência legada estacionada**, não funcionalidade de produto.
+
+A retirada física dessas tabelas exige migration própria, confirmação de dados a preservar e validação de segurança/rollback. Não criar ponte `incident -> treatment` sem nova regra explícita de domínio.
 
 ## 10. REPLICA, backup e recovery
 
