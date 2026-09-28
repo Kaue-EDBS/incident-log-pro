@@ -22,6 +22,10 @@ jobs:
       - name: Matrix v3 reconciliation contract
         run: python3 .github/scripts/check-matrix-v3-reconciliation-contract.py
 
+      - name: C05 migration authority
+        run: python3 .github/scripts/check-c05-migration-authority.py
+
+
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
         with:
