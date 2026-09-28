@@ -1636,6 +1636,8 @@ Próxima fase canônica: **SAFRA-C05 — Schema v2, migrations e invariantes**.
 
 > **C05-AUD — Schema v2, migrations e invariantes aberta em 28/09/2026 às 08:56 BRT.** Branch exclusiva: `audit/c05-schema-v2-migrations-invariants-2026-09-28`. O C05 histórico permanece preservado. Auditoria atual confirmou 28/28 migrations Git=PRIMARY, schema v2 17/17, 36 FKs, 0 cascade destrutivo e guards históricos funcionando. Foram abertos **6 achados**: status de notificação não governado; ausência de regressão permanente de version freeze; ausência de concorrência real END x CANCEL; rollback que valida apenas tracking; ausência de smoke HTTP autenticado da Data API; e definição pendente de “RLS positiva” no desenho RPC-only. Há ainda 3 melhorias de higiene (Drizzle residual, 5 FKs sem índice de suporte e triggers redundantes de updated_at). Fonte: `docs/AUDITORIA_C05_REABERTURA_2026-09-28.md`.
 
+> **C05-AUD decisões executadas em 28/09/2026 às 09:12 BRT.** C05-AUD-01 foi fechado com os estados canônicos `QUEUED/SENT/FAILED`, máquina `QUEUED -> SENT|FAILED`, estados terminais e timestamps server-side. Migration `20260928090910_c05_notification_delivery_state_machine.sql` promovida ao PRIMARY; regressão nova **10/10 PASS** e suítes C05 existentes **23/23 + 7/7 PASS**. C05-AUD-06 foi fechado com a **Opção A**: autorização positiva por RPC governada; tabelas Safra permanecem deny-by-default sem policy positiva de Data API. Restam **4 pendências técnicas** (version freeze regression, END x CANCEL concorrente, rollback estrutural, HTTP authenticated direct API) e **3 melhorias de higiene** (Drizzle residual, 5 índices FK, triggers redundantes).
+
 ## SAFRA-C05 — schema v2 canônico materializado — 25/09/2026
 
 Migration canônica:
