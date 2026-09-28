@@ -19,33 +19,33 @@ select is(
   'all five C05 FK support indexes exist'
 );
 
-select matches(
+select is(
   (select indexdef from pg_indexes where schemaname='public' and indexname='idx_governance_issues_resolved_by'),
-  '\\(resolved_by\\)',
+  'CREATE INDEX idx_governance_issues_resolved_by ON public.governance_issues USING btree (resolved_by)',
   'governance_issues.resolved_by has a direct support index'
 );
 
-select matches(
+select is(
   (select indexdef from pg_indexes where schemaname='public' and indexname='idx_scenario_proposal_owner_responses_candidate_owner_id'),
-  '\\(candidate_owner_id\\)',
+  'CREATE INDEX idx_scenario_proposal_owner_responses_candidate_owner_id ON public.scenario_proposal_owner_responses USING btree (candidate_owner_id)',
   'proposal candidate_owner_id has a direct support index'
 );
 
-select matches(
+select is(
   (select indexdef from pg_indexes where schemaname='public' and indexname='idx_scenario_version_impacted_areas_operational_area_id'),
-  '\\(operational_area_id\\)',
+  'CREATE INDEX idx_scenario_version_impacted_areas_operational_area_id ON public.scenario_version_impacted_areas USING btree (operational_area_id)',
   'scenario version impacted area FK has a direct support index'
 );
 
-select matches(
+select is(
   (select indexdef from pg_indexes where schemaname='public' and indexname='idx_scenario_version_systems_system_id'),
-  '\\(system_id\\)',
+  'CREATE INDEX idx_scenario_version_systems_system_id ON public.scenario_version_systems USING btree (system_id)',
   'scenario version system FK has a direct support index'
 );
 
-select matches(
+select is(
   (select indexdef from pg_indexes where schemaname='public' and indexname='idx_treatment_impacted_areas_operational_area_id'),
-  '\\(operational_area_id\\)',
+  'CREATE INDEX idx_treatment_impacted_areas_operational_area_id ON public.treatment_impacted_areas USING btree (operational_area_id)',
   'treatment impacted area FK has a direct support index'
 );
 
