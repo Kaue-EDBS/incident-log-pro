@@ -79,13 +79,24 @@ jobs:
       - name: Test direct RPC denial
         run: bash .github/scripts/test-safra-direct-rpc.sh
 
-      - name: Rehearse rollback of latest migration
+      - name: Rehearse structural rollback of C05 latest migration
         run: |
+          set -euo pipefail
           LATEST_VERSION="$(basename "$(ls supabase/migrations/*.sql | sort | tail -1)" | cut -d_ -f1)"
+          if [[ "${LATEST_VERSION}" != "20260928095246" ]]; then
+            echo "Expected C05 structural rollback target 20260928095246, found ${LATEST_VERSION}."
+            echo "Update the C05 rollback contract before changing the latest migration."
+            exit 1
+          fi
+
           printf 'y\n' | supabase migration down --local --last 1
-          sed "s/__LATEST_VERSION__/${LATEST_VERSION}/g"             supabase/rollback-tests/latest_migration_rollback.test.sql             > supabase/tests/database/__latest_rollback.test.sql
-          supabase test db supabase/tests/database/__latest_rollback.test.sql
-          rm supabase/tests/database/__latest_rollback.test.sql
+
+          cp supabase/rollback-tests/c05_block_c_structural_rollback.test.sql \
+             supabase/tests/database/__c05_structural_rollback.test.sql
+          supabase test db supabase/tests/database/__c05_structural_rollback.test.sql
+          rm supabase/tests/database/__c05_structural_rollback.test.sql
+
+          # Rebuild the canonical current state and prove the forward path again.
           supabase db reset --local
           supabase test db
 
