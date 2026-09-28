@@ -25,7 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { useSafraStartCatalog, useSafraStartTreatment } from "@/lib/queries";
+import { useSafraStartCatalog, useSafraStartTreatment } from "@/lib/safra-queries";
 import type { SafraStartResult } from "@/lib/safra";
 import { cn } from "@/lib/utils";
 
