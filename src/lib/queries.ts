@@ -104,7 +104,7 @@ export function useSafraStartTreatment() {
       const { data, error } = await supabase.rpc("safra_start_treatment", {
         p_scenario_id: input.scenarioId,
         p_idempotency_key: input.idempotencyKey,
-        p_impact_summary: input.impactSummary,
+        ...(input.impactSummary != null ? { p_impact_summary: input.impactSummary } : {}),
         p_impacted_area_ids: input.impactedAreaIds,
       });
 
