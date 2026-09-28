@@ -10,32 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AplicacoesRouteImport } from './routes/aplicacoes'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as IndicadoresRouteImport } from './routes/indicadores'
 import { Route as NovoIncidenteRouteImport } from './routes/novo-incidente'
 import { Route as TratativasNovaRouteImport } from './routes/tratativas.nova'
-import { Route as IncidentesIndexRouteImport } from './routes/incidentes.index'
-import { Route as IncidentesIdRouteImport } from './routes/incidentes.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AplicacoesRoute = AplicacoesRouteImport.update({
-  id: '/aplicacoes',
-  path: '/aplicacoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndicadoresRoute = IndicadoresRouteImport.update({
-  id: '/indicadores',
-  path: '/indicadores',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NovoIncidenteRoute = NovoIncidenteRouteImport.update({
@@ -48,90 +34,39 @@ const TratativasNovaRoute = TratativasNovaRouteImport.update({
   path: '/tratativas/nova',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IncidentesIndexRoute = IncidentesIndexRouteImport.update({
-  id: '/incidentes/',
-  path: '/incidentes/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IncidentesIdRoute = IncidentesIdRouteImport.update({
-  id: '/incidentes/$id',
-  path: '/incidentes/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/aplicacoes': typeof AplicacoesRoute
   '/auth': typeof AuthRoute
-  '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/tratativas/nova': typeof TratativasNovaRoute
-  '/incidentes/$id': typeof IncidentesIdRoute
-  '/incidentes/': typeof IncidentesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/aplicacoes': typeof AplicacoesRoute
   '/auth': typeof AuthRoute
-  '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/tratativas/nova': typeof TratativasNovaRoute
-  '/incidentes/$id': typeof IncidentesIdRoute
-  '/incidentes': typeof IncidentesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/aplicacoes': typeof AplicacoesRoute
   '/auth': typeof AuthRoute
-  '/indicadores': typeof IndicadoresRoute
   '/novo-incidente': typeof NovoIncidenteRoute
   '/tratativas/nova': typeof TratativasNovaRoute
-  '/incidentes/$id': typeof IncidentesIdRoute
-  '/incidentes/': typeof IncidentesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/aplicacoes'
-    | '/auth'
-    | '/indicadores'
-    | '/novo-incidente'
-    | '/tratativas/nova'
-    | '/incidentes/$id'
-    | '/incidentes/'
+  fullPaths: '/' | '/auth' | '/novo-incidente' | '/tratativas/nova'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/aplicacoes'
-    | '/auth'
-    | '/indicadores'
-    | '/novo-incidente'
-    | '/tratativas/nova'
-    | '/incidentes/$id'
-    | '/incidentes'
-  id:
-    | '__root__'
-    | '/'
-    | '/aplicacoes'
-    | '/auth'
-    | '/indicadores'
-    | '/novo-incidente'
-    | '/tratativas/nova'
-    | '/incidentes/$id'
-    | '/incidentes/'
+  to: '/' | '/auth' | '/novo-incidente' | '/tratativas/nova'
+  id: '__root__' | '/' | '/auth' | '/novo-incidente' | '/tratativas/nova'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AplicacoesRoute: typeof AplicacoesRoute
   AuthRoute: typeof AuthRoute
-  IndicadoresRoute: typeof IndicadoresRoute
   NovoIncidenteRoute: typeof NovoIncidenteRoute
   TratativasNovaRoute: typeof TratativasNovaRoute
-  IncidentesIdRoute: typeof IncidentesIdRoute
-  IncidentesIndexRoute: typeof IncidentesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -143,25 +78,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/aplicacoes': {
-      id: '/aplicacoes'
-      path: '/aplicacoes'
-      fullPath: '/aplicacoes'
-      preLoaderRoute: typeof AplicacoesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/indicadores': {
-      id: '/indicadores'
-      path: '/indicadores'
-      fullPath: '/indicadores'
-      preLoaderRoute: typeof IndicadoresRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/novo-incidente': {
@@ -178,32 +99,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TratativasNovaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/incidentes/': {
-      id: '/incidentes/'
-      path: '/incidentes'
-      fullPath: '/incidentes/'
-      preLoaderRoute: typeof IncidentesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/incidentes/$id': {
-      id: '/incidentes/$id'
-      path: '/incidentes/$id'
-      fullPath: '/incidentes/$id'
-      preLoaderRoute: typeof IncidentesIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AplicacoesRoute: AplicacoesRoute,
   AuthRoute: AuthRoute,
-  IndicadoresRoute: IndicadoresRoute,
   NovoIncidenteRoute: NovoIncidenteRoute,
   TratativasNovaRoute: TratativasNovaRoute,
-  IncidentesIdRoute: IncidentesIdRoute,
-  IncidentesIndexRoute: IncidentesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
