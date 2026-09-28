@@ -105,6 +105,31 @@ identity_and_auth:
     status: "IMPLEMENTED"
     closed_phase: "SAFRA-C04"
 
+c04_reaudit:
+  opened_at: "2026-09-28T07:15:00-03:00"
+  status: "IN_EXECUTION"
+  branch: "audit/c04-identity-rbac-rls-2026-09-28"
+  audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-09-28.md"
+  base_branch: "audit/c03-corrections-2026-09-28"
+  open_findings: 3
+  findings:
+    c04_aud_01: "PASS_ANON_DENY"
+    c04_aud_02: "OPEN_EXPIRED_MUTATION_ZERO_EFFECT_TEST"
+    c04_aud_03: "PARTIAL_START_PASS_END_CANCEL_DEFERRED"
+    c04_aud_04: "PASS_NO_PAYLOAD_PRIVILEGE_ESCALATION"
+    c04_aud_05: "PASS_ROLE_MAPPING_RUNTIME_PARTIAL"
+    c04_aud_06: "PASS_NO_PLATFORM_ADMIN_OWNERSHIP"
+    c04_aud_07: "OPEN_LEGACY_REST_READ_SURFACE"
+  primary_observations:
+    public_tables_rls_enabled: true
+    anon_crud_grants: 0
+    applications_authenticated_select: true
+    incidents_authenticated_select: true
+    applications_rows: 3
+    incidents_rows: 15
+  recertification_status: "PENDING_CORRECTIONS_AND_CI"
+
+
 privileged_roles:
   required: true
   technical_roles:
