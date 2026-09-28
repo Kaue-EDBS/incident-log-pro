@@ -1,3 +1,5 @@
+> **C05-AUD Bloco C concluído em 28/09/2026 às 09:58 BRT.** C05-HYG-02 e C05-HYG-03 estão **CLOSED/PASS_PRIMARY**. Migration `20260928095246_c05_fk_indexes_and_clock_ownership.sql` adicionou os 5 índices FK faltantes e consolidou a autoridade de `updated_at`: guards validam; server-clocks escrevem timestamps. `trg_treatments_updated_at` removido; `safra_touch_updated_at()` preservada nas quatro tabelas que ainda dependem dela. Nova suíte **12/12 PASS**; freeze 10/10, notifications 10/10, schema 23/23 e guards 7/7 continuam verdes. PRIMARY = 30 migrations, sem fixtures residuais. Restam **2 achados técnicos e 0 melhorias de higiene**.
+
 # STATUS — incident-log-pro / Painel Safra
 
 > Atualizado em: 27/09/2026  
