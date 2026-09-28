@@ -189,7 +189,7 @@ Mudança de identidade, integração, dados pessoais, retenção, arquivos ou ex
 | ID | Risco residual | Estado atual | Controle/fase restante | Bloqueia recertificação? |
 |---|---|---|---|---|
 | RR-C02-01 | uso indevido de START/END/CANCEL por usuário autenticado | START_CONTROLLED / END_CANCEL_CONTRACT_DEFINED | START C08; END/CANCEL F01/F02 | não, desde que RPC futura cumpra AB-END/AB-CANCEL |
-| RR-C02-02 | role/claim desatualizado ou sessão revogada | CONTROLLED_C02_AUD | canonical predicate também em role lookup/audit | sim até testes/PRIMARY confirmarem |
+| RR-C02-02 | role/claim desatualizado ou sessão revogada | CONTROLLED_VERIFIED_C02_AUD | canonical predicate também em role lookup/audit; verificado no PRIMARY | não |
 | RR-C02-03 | enumeração ou leitura excessiva de dados internos | CONTROLLED_CURRENT_SURFACE | sem grants diretos + RLS + full Data API smoke | não |
 | RR-C02-04 | dado pessoal indevido em texto livre/log/notificação | RESIDUAL_ACCEPTED_WITH_MINIMIZATION | UX C08 + notificações M05 + relatórios F08 | não |
 | RR-C02-05 | duplicidade por retry/concorrência | CONTROLLED_START | unique idempotency + advisory lock + retry/conflict/concurrency tests | não |
@@ -217,6 +217,56 @@ O fechamento do C02 foi reavaliado contra o roadmap e as implementações poster
 | quatro classes de testes | PASS | positivos, negativos, concorrência/retry e limites/bordas derivados |
 | contrato de evidência | PASS | ator, correlation_id, estados, ação, resultado, auditoria, timestamps, notificações e efeitos colaterais definidos |
 | riscos residuais | PASS | riscos explicitados e com owner/fase; não significam default ou inferência |
-| gates C02 | PASS histórico / RECERTIFICAÇÃO EM EXECUÇÃO | G3.5, THREAT-001 e AUTHZ-001 só voltam a PASS atual após correções, gates e verificação no PRIMARY |
+| gates C02 | PASS histórico / RECERTIFICADO 27/09/2026 | G3.5, THREAT-001 e AUTHZ-001 recertificados após correções, gates e verificação no PRIMARY |
 
 Observação: o C02 aprova modelo de ameaça, abuso e contrato de autorização. A execução integral de todos os testes funcionais permanece distribuída nas fases de implementação previstas no roadmap; isso não reabre o C02.
+
+
+## 14. Fechamento da C02-AUD — 27/09/2026
+
+**Status: RECERTIFIED / PASS**
+
+A reauditoria corretiva C02-AUD foi fechada às **19:52 BRT** após:
+
+- correção do bypass de sessão corporativa nos RPCs de RBAC;
+- exigência do predicado corporativo canônico também na leitura de roles/auditoria;
+- remoção de EXECUTE browser desnecessário das trigger functions legadas;
+- formalização dos abuse cases AB-START/END/CANCEL/AUTHZ/API/DATA/LEAK/TIME/VERSION/RETRY/SLA/CARD;
+- teste explícito de conflito de idempotência;
+- teste concorrente real de START;
+- smoke Data API cobrindo legado + 17 tabelas Safra;
+- smoke RPC cobrindo superfície RBAC/Safra;
+- imutabilidade de treatment terminal;
+- prova de que proposal não publica o 12º card;
+- reconciliação da matriz de paridade;
+- App Smoke, Database Disposable, rollback/rebuild e lint de banco verdes;
+- verificação direta no Lovable Cloud PRIMARY.
+
+Evidência adversarial no PRIMARY após a correção:
+
+```text
+corporate_allowed = false
+roles_visible = []
+platform_admin_visible = false
+audit_rows_visible = 0
+```
+
+para JWT sintético usando `sub` ligado a admin, porém domínio externo e sessão inexistente.
+
+Controle positivo em transação com rollback confirmou:
+
+```text
+corporate_allowed = true
+platform_admin_visible = true
+role_list_contains_platform_admin = true
+```
+
+para sessão corporativa válida.
+
+Gates recertificados:
+
+```text
+G3.5 = PASS
+THREAT-001 = PASS
+AUTHZ-001 = PASS
+```

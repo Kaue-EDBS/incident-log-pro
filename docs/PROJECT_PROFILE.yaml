@@ -306,16 +306,28 @@ c02_gate:
   material_blockers_without_owner: 0
 
 c02_reaudit:
-  status: "IN_EXECUTION"
+  status: "APPROVED"
   opened_at: "2026-09-27T18:37:00-03:00"
+  closed_at: "2026-09-27T19:52:00-03:00"
   historical_gate_preserved: true
   current_recertification:
-    g3_5: "PENDING"
-    threat_001: "PENDING"
-    authz_001: "BLOCKED_BY_C02_AUD_01"
-  open_findings: 10
-  highest_severity: "HIGH_AUTHZ"
-  primary_finding: "RBAC public RPCs do not consistently enforce canonical corporate live-session predicate"
+    g3_5: "PASS"
+    threat_001: "PASS"
+    authz_001: "PASS"
+  open_findings: 0
+  findings_closed: 10
+  highest_severity_remediated: "HIGH_AUTHZ"
+  code_pr: 8
+  code_merge_commit: "4f9f21c32cf3e06b82673afbc9948b5c1baee2b8"
+  primary_migration_verified: "20260927214303_c02_threat_model_authz_hardening.sql"
+  primary_authz_bypass_closed: true
+  primary_invalid_session_roles_visible: 0
+  primary_invalid_session_audit_rows_visible: 0
+  safra_domain_tables_rls_verified: 17
+  direct_browser_grants_on_safra_domain: 0
+  terminal_history_immutability_verified: true
+  app_smoke_run: 36356555119
+  database_disposable_run: 36356555209
   audit_document: "docs/AUDITORIA_C02_REABERTURA_2026-09-27.md"
 
 c04_gate:
