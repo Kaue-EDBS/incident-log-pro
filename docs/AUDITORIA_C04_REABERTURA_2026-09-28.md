@@ -4,7 +4,7 @@
 **Bloco:** SAFRA-C04 — Identidade, RBAC e RLS  
 **Data de abertura:** 28/09/2026  
 **Horário:** 07:15 BRT  
-**Estado:** EM EXECUÇÃO / AGUARDANDO DECISÕES CORRETIVAS  
+**Estado:** IMPLEMENTADA / AGUARDANDO RECERTIFICAÇÃO FINAL DE CI  
 **Base da auditoria:** branch `audit/c03-corrections-2026-09-28` + Lovable Cloud PRIMARY  
 **Dependência de merge:** esta branch é empilhada sobre a C03-AUD e não deve ser mesclada antes da conclusão da fila anterior.
 
@@ -238,7 +238,7 @@ Pontos positivos:
 
 Não foi encontrada nova “sujeira” crítica de auth no código inspecionado.
 
-## 6. Pendências para decisão
+## 6. Pendências identificadas na abertura — RESOLVIDAS
 
 | ID | Pendência | Proposta |
 |---|---|---|
@@ -247,6 +247,8 @@ Não foi encontrada nova “sujeira” crítica de auth no código inspecionado.
 | C04-AUD-07 | REST ainda lê `applications/incidents` embora Reliability tenha saído do produto | revogar SELECT/policies legadas agora |
 
 Itens 01, 04, 05 e 06 não requerem correção funcional nesta fotografia.
+
+> As três pendências desta seção foram resolvidas no Bloco A. Esta tabela permanece como registro histórico da abertura da reauditoria.
 
 ## 7. Gate de fechamento
 
@@ -420,8 +422,8 @@ Estas melhorias **não são defeitos abertos**. Elas formam a próxima camada de
 | PREV-02 | Matriz completa de papéis como regressão | Fixar Jair=governance, Bruno=executive/analytics, Jiane/Daniel/Renato=owners e platform admins=técnicos | **DONE / PASS** |
 | PREV-03 | Invariante permanente `PAPEL != OWNERSHIP` | Impedir qualquer herança automática de ownership por papel administrativo | **DONE / PASS** |
 | PREV-04 | Teste adversarial de privilege escalation | Rejeitar/neutralizar tentativas de enviar owner, role, version, user_id, authority ou clocks pelo client | **DONE / PASS** |
-| PREV-05 | Gate UI x REST x RPC x grants x RLS | Detectar automaticamente divergência entre superfície visível e superfície de API | QUEUED |
-| PREV-06 | `anon` deny-by-default como gate permanente | Tornar CRUD/EXECUTE anônimo negado uma condição obrigatória de recertificação | QUEUED |
+| PREV-05 | Gate UI x REST x RPC x grants x RLS | Detectar automaticamente divergência entre superfície visível e superfície de API | **DONE / PASS** |
+| PREV-06 | `anon` deny-by-default como gate permanente | Tornar CRUD/EXECUTE anônimo negado uma condição obrigatória de recertificação | **DONE / PASS** |
 
 ### Regra de execução das preventivas
 
@@ -538,8 +540,143 @@ PREV-02 = DONE/PASS
 PREV-03 = DONE/PASS
 PREV-04 = DONE/PASS
 BLOCK_B = COMPLETE
-PREVENTIVE_IMPROVEMENTS_REMAINING = 2
-NEXT = BLOCK_C_PREV_05_PREV_06
+PREVENTIVE_IMPROVEMENTS_REMAINING = 0
+NEXT = FINAL_CI_RECERTIFICATION
 ```
 
-A C04-AUD continua sem achados materiais abertos. A recertificação final depende apenas de PREV-05, PREV-06 e CI final.
+A C04-AUD continua sem achados materiais abertos. Após o Bloco C, a recertificação final depende apenas do CI final e da reconciliação ordenada da fila.
+
+
+## 12. Bloco C — coerência de superfície e deny-by-default
+
+**Executado em:** 28/09/2026 às 08:36 BRT  
+**Escopo:** PREV-05 e PREV-06  
+**Branch:** `audit/c04-identity-rbac-rls-2026-09-28`  
+**Estado:** **CONCLUÍDO / PASS**
+
+### 12.1 PREV-05 — gate UI x REST/Data API x RPC x grants x RLS
+
+Foi criado o contrato canônico:
+
+`docs/data-contracts/C04_AUTHORIZATION_SURFACE.json`
+
+O contrato fixa explicitamente:
+
+- 19 relações públicas do produto/histórico;
+- zero tabela de acesso direto pela UI;
+- 10 funções públicas inventariadas;
+- 7 funções com EXECUTE permitido para `authenticated`;
+- 3 RPCs efetivamente usados pela camada de aplicação:
+  - `safra_is_corporate_user`;
+  - `safra_get_start_catalog`;
+  - `safra_start_treatment`.
+
+Foi criado o gate estático:
+
+`.github/scripts/check-c04-authorization-surface.py`
+
+O gate falha quando:
+
+- surge `.from(...)` direto no código da aplicação;
+- surge RPC não aprovada;
+- uma chamada `.rpc(...)` ou `.from(...)` usa nome dinâmico em vez de contrato literal;
+- um RPC canônico desaparece sem atualização explícita do contrato.
+
+O gate foi conectado ao workflow:
+
+`.github/workflows/app-smoke-test.yml`
+
+Validação imediata da branch:
+
+- **74 arquivos TypeScript/TSX inspecionados**;
+- RPCs observadas: exatamente as 3 aprovadas;
+- `.from(...)` direto observado: **0**;
+- chamadas dinâmicas de RPC/tabela: **0**.
+
+Foi criado ainda o gate estrutural de banco:
+
+`supabase/tests/database/c04_authorization_surface_gate.test.sql`
+
+Resultado contra o Lovable Cloud PRIMARY:
+
+```text
+12/12 PASS
+```
+
+Esse teste impede:
+
+- nova tabela/view pública sem revisão do contrato;
+- tabela pública sem RLS;
+- CRUD direto de `authenticated`;
+- policy pública inesperada;
+- função pública não inventariada;
+- EXECUTE de `authenticated` fora do allowlist.
+
+**Estado PREV-05:** DONE / PASS.
+
+### 12.2 PREV-06 — anon deny-by-default permanente
+
+O mesmo gate pgTAP passa a validar dinamicamente toda a superfície pública:
+
+- `anon SELECT = 0`;
+- `anon INSERT = 0`;
+- `anon UPDATE = 0`;
+- `anon DELETE = 0`;
+- `anon EXECUTE = 0` em todas as funções públicas.
+
+O smoke HTTP já existente continua cobrindo as 19 tabelas via Data API:
+
+`.github/scripts/test-safra-direct-api.sh`
+
+O smoke RPC:
+
+`.github/scripts/test-safra-direct-rpc.sh`
+
+foi ampliado para incluir também:
+
+- `set_updated_at`;
+- `validate_incident_timestamps`.
+
+Assim, todas as 10 funções públicas inventariadas ficam cobertas entre o contrato SQL e o smoke HTTP/RPC.
+
+Estado confirmado no PRIMARY durante esta execução:
+
+```text
+public relations = 19
+all public base tables RLS = true
+anon CRUD grants = 0
+authenticated direct CRUD grants = 0
+public policies = 0
+anon public-function EXECUTE = 0
+authenticated RPC execute surface = exact allowlist
+```
+
+**Estado PREV-06:** DONE / PASS.
+
+### 12.3 Resultado do Bloco C
+
+```text
+PREV-05 = DONE/PASS
+PREV-06 = DONE/PASS
+BLOCK_C = COMPLETE
+PREVENTIVE_IMPROVEMENTS_REMAINING = 0
+OPEN_MATERIAL_FINDINGS = 0
+C04_AUD_TECHNICAL_SCOPE = COMPLETE
+C04_AUD_RECERTIFICATION = PENDING_FINAL_CI_AND_QUEUE_RECONCILIATION
+```
+
+### 12.4 Próximo passo
+
+Não há nova correção funcional aberta na C04-AUD.
+
+A posição 3 da fila deve agora:
+
+1. preservar os Blocos A, B e C;
+2. reconciliar a branch com `main` somente após C02 e C03;
+3. reexecutar os Blocos A/B/C como smoke, sem reimplementá-los;
+4. executar App Smoke e Database Disposable no head final;
+5. reverificar o PRIMARY;
+6. atualizar a documentação para **C04-AUD RECERTIFICADA**;
+7. somente então permitir merge.
+
+GitHub Actions continua sendo o único gate externo ainda pendente para a recertificação formal.
