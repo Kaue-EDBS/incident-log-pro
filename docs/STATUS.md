@@ -16,6 +16,8 @@
 
 > **C04-AUD Bloco A concluído em 28/09/2026 às 08:01 BRT.** As três pendências materiais foram tratadas: JWT expirado -> START negado com zero mutation foi comprovado no PRIMARY; START foi separado documentalmente de END/CANCEL ainda deferidos; e o REST legacy de `applications/incidents` foi retirado de `authenticated` pela migration `20260928075934_c04_reaudit_legacy_surface_hardening.sql`, já promovida e rastreada no PRIMARY. A C04-AUD passa a ter **0 achados materiais abertos** e **6 melhorias preventivas** na posição 3 da fila. Recertificação final continua pendente das preventivas + CI final.
 
+> **C04-AUD Bloco B concluído em 28/09/2026 às 08:15 BRT.** PREV-01 a PREV-04 foram convertidos em regressões permanentes em `supabase/tests/database/c04_preventive_identity_authority.test.sql` e executados no Lovable Cloud PRIMARY com **22/22 PASS** e rollback integral. Binding altera apenas `user_id`; matriz de 9 papéis permanece exata; 11 ownerships continuam explícitos (Daniel 6, Jiane 4, Renato 1); PAPEL != OWNERSHIP; START mantém assinatura única sem owner/role/version/actor/criticality/timestamp do client e browser sem grants de escalada. Restam apenas **PREV-05 e PREV-06** no Bloco C antes do CI final.
+
 ---
 
 ## 1. Baseline registrada
