@@ -1431,6 +1431,30 @@ HYGIENE_IMPROVEMENTS = 3
 C05_AUD = OPEN / TECHNICAL_GAPS_REMAIN
 ```
 
+
+
+#### C05-AUD Bloco A — CONCLUÍDO em 28/09/2026 às 09:23 BRT
+
+**C05-HYG-01 — CLOSED/PASS**
+
+Executado:
+
+- removida a trilha residual `drizzle.config.ts` + `drizzle/`;
+- removidas dependências diretas `drizzle-kit`, `drizzle-orm` e `postgres`;
+- reconciliado manifesto raiz do `bun.lock`;
+- criado `.github/scripts/check-c05-migration-authority.py`;
+- gate ligado a App Smoke e Database Disposable;
+- `supabase/migrations` permanece a única autoridade;
+- 29 migrations na branch = 29 migrations no PRIMARY.
+
+Restam:
+
+```text
+OPEN_FINDINGS = 4
+HYGIENE_IMPROVEMENTS = 2
+NEXT = BLOCK_B
+```
+
 ### C05.0 — Autoridade de migrations e captura do C04 — CONCLUÍDO
 
 Decisão:
