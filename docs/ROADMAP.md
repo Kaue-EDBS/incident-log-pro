@@ -1034,6 +1034,30 @@ Backlog autorizado da onda:
 
 Fonte detalhada: `docs/AUDITORIA_C04_REABERTURA_2026-09-28.md`.
 
+
+
+#### Bloco A — CONCLUÍDO em 28/09/2026 às 08:01 BRT
+
+Fechadas e promovidas ao PRIMARY:
+
+- C04-AUD-02 — JWT expirado -> START `SAFRA_START_FORBIDDEN` -> zero treatment/event;
+- C04-AUD-03 — START atual; END/CANCEL continuam `NOT_IMPLEMENTED` e deferidos para F01/F02;
+- C04-AUD-07 — superfície REST legacy de `applications/incidents` retirada de `authenticated`, policies C04 antigas removidas e histórico preservado.
+
+Migration:
+`20260928075934_c04_reaudit_legacy_surface_hardening.sql`.
+
+Próximo escopo da C04-AUD no ITEM 3:
+
+1. PREV-01 — binding `principal -> auth.user`;
+2. PREV-02 — matriz de papéis;
+3. PREV-03 — `PAPEL != OWNERSHIP`;
+4. PREV-04 — privilege escalation adversarial;
+5. PREV-05 — gate UI/REST/RPC/grants/RLS;
+6. PREV-06 — anon deny-by-default permanente.
+
+O ITEM 3 deve apenas reexecutar o Bloco A como smoke; não reabrir suas decisões sem nova evidência.
+
 ### Objetivo
 
 Implementar autenticação corporativa e autorização definitiva conforme o modelo aprovado.
