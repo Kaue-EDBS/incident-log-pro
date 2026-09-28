@@ -7,6 +7,8 @@
 
 > **C03-AUD aberta em 28/09/2026 às 06:13 BRT.** A autoridade conceitual deste glossário permanece válida durante a reauditoria. Foram autorizadas correções de nomenclatura de rota, separação visual Safra × Reliability legado, separação de hooks por domínio e atualização dos metadados/estado pós-C05–C08. Fonte de acompanhamento: `docs/AUDITORIA_C03_REABERTURA_2026-09-28.md`.
 
+> **C03-AUD-01 implementada em 28/09/2026:** o destino canônico de START passa a ser `/tratativas/nova`; `/novo-incidente` existe apenas como redirect temporário de compatibilidade. Validação CI permanece pendente pela indisponibilidade de minutos do GitHub Actions.
+
 ## 1. Objetivo
 
 Evitar que frontend, banco, documentação, testes e usuários usem palavras diferentes para conceitos distintos.
