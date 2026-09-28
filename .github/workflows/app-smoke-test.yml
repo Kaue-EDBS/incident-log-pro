@@ -41,6 +41,10 @@ jobs:
       - name: C04 authorization surface coherence
         run: python3 .github/scripts/check-c04-authorization-surface.py
 
+      - name: C05 migration authority
+        run: python3 .github/scripts/check-c05-migration-authority.py
+
+
 
       - name: C07 analytics timezone contract - UTC host
         run: TZ=UTC bun .github/scripts/test-c07-analytics-timezone.ts
