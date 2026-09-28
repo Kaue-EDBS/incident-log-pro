@@ -457,7 +457,7 @@ c05_reaudit:
   foreign_keys: 36
   destructive_cascade_foreign_keys: 0
   open_findings: 4
-  hygiene_improvements: 3
+  hygiene_improvements: 2
   decisions_closed:
     c05_aud_01:
       status: "CLOSED_PASS_PRIMARY"
@@ -478,8 +478,19 @@ c05_reaudit:
     - "C05-AUD-03_END_CANCEL_REAL_CONCURRENCY"
     - "C05-AUD-04_STRUCTURAL_ROLLBACK_PROOF"
     - "C05-AUD-05_AUTHENTICATED_DIRECT_API_HTTP_SMOKE"
+  block_a_migration_authority:
+    completed_at: "2026-09-28T09:23:17-03:00"
+    c05_hyg_01: "CLOSED_PASS"
+    canonical_source: "supabase/migrations"
+    drizzle_authority: false
+    drizzle_paths: 0
+    drizzle_direct_dependencies: 0
+    migration_authority_gate: ".github/scripts/check-c05-migration-authority.py"
+    app_smoke_gate: true
+    database_disposable_gate: true
+    repo_migration_count: 29
+    primary_migration_count: 29
   remaining_hygiene:
-    - "C05-HYG-01_DRIZZLE_RESIDUAL_TOOLING"
     - "C05-HYG-02_FK_SUPPORT_INDEXES"
     - "C05-HYG-03_DUPLICATE_UPDATED_AT_TRIGGER_RESPONSIBILITY"
   runtime_probe:
