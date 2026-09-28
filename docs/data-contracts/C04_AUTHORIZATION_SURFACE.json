@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "scope": "C04-AUD PREV-05/PREV-06 authorization surface contract",
+  "rules": {
+    "ui_direct_table_access": "DENY_ALL",
+    "anon_direct_table_crud": "DENY_ALL",
+    "authenticated_direct_table_crud": "DENY_ALL",
+    "anon_public_function_execute": "DENY_ALL"
+  },
+  "ui": {
+    "allowed_rpcs": [
+      "safra_get_start_catalog",
+      "safra_is_corporate_user",
+      "safra_start_treatment"
+    ],
+    "allowed_direct_tables": []
+  },
+  "database": {
+    "public_tables": [
+      "applications",
+      "governance_issues",
+      "incidents",
+      "notifications_log",
+      "operational_areas",
+      "scenario_owners",
+      "scenario_proposal_owner_responses",
+      "scenario_proposals",
+      "scenario_slas",
+      "scenario_version_impacted_areas",
+      "scenario_version_systems",
+      "scenario_versions",
+      "scenarios",
+      "systems",
+      "treatment_escalations",
+      "treatment_events",
+      "treatment_impact_measurements",
+      "treatment_impacted_areas",
+      "treatments"
+    ],
+    "public_functions": [
+      "get_my_safra_roles()",
+      "get_safra_rbac_audit_events(integer)",
+      "safra_get_start_catalog()",
+      "safra_has_role(text)",
+      "safra_is_corporate_user()",
+      "safra_log_access_denied(text,text)",
+      "safra_session_is_live()",
+      "safra_start_treatment(uuid,uuid,text,uuid[])",
+      "set_updated_at()",
+      "validate_incident_timestamps()"
+    ],
+    "authenticated_execute_allowlist": [
+      "get_my_safra_roles()",
+      "get_safra_rbac_audit_events(integer)",
+      "safra_get_start_catalog()",
+      "safra_has_role(text)",
+      "safra_is_corporate_user()",
+      "safra_session_is_live()",
+      "safra_start_treatment(uuid,uuid,text,uuid[])"
+    ]
+  }
+}
