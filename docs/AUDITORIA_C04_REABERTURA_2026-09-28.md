@@ -259,3 +259,51 @@ C04-AUD só poderá ser recertificada quando:
 - o PRIMARY for reverificado após qualquer migration corretiva.
 
 > **C04 histórico permanece preservado. Esta C04-AUD está EM EXECUÇÃO e ainda não foi recertificada.**
+
+
+## 8. Decisão de execução — branch exclusiva e fila
+
+**Decisão registrada em:** 28/09/2026 às 07:42 BRT  
+**Estado:** MELHORIAS AUTORIZADAS / AGUARDANDO VEZ NA FILA  
+**Branch exclusiva:** `audit/c04-identity-rbac-rls-2026-09-28`  
+**Posição na fila programada:** **ITEM 3**
+
+O fechamento histórico do SAFRA-C04 permanece preservado. A reauditoria C04-AUD passa a ter uma onda corretiva própria e isolada. Nenhuma correção deste bloco deve ser aplicada diretamente na branch C03-AUD nem em `main`.
+
+A branch C04 é o recipiente canônico para ir acumulando novos achados e melhorias que pertençam estritamente a **Identidade, sessão, RBAC, ownership, RLS e equivalência UI/REST/RPC** até a execução do ITEM 3.
+
+### 8.1 Backlog de melhorias autorizado
+
+| ID | Melhoria | Estado de entrada |
+|---|---|---|
+| C04-IMP-01 | Retirar a superfície REST legacy de `public.applications` e `public.incidents` para `authenticated`, preservando as tabelas como histórico estacionado | AUTORIZADO / PENDENTE |
+| C04-IMP-02 | Remover/reconciliar policies legacy de `applications/incidents` que não devem permanecer como superfície funcional | AUTORIZADO / PENDENTE |
+| C04-IMP-03 | Criar regressão explícita: JWT expirado -> START negado -> zero mutation/efeito persistido | AUTORIZADO / PENDENTE |
+| C04-IMP-04 | Reconciliar END/CANCEL como funcionalidade ainda deferida e provar ausência de exposição prematura, sem implementar os RPCs nesta onda | AUTORIZADO / PENDENTE |
+| C04-IMP-05 | Criar regressão do binding de principal por identidade corporativa para principals ainda sem `auth.user` vinculado | AUTORIZADO / PENDENTE |
+| C04-IMP-06 | Endurecer a matriz de papéis: Jair governance; Bruno executive/analytics sem técnica; Jiane/Daniel/Renato owners; platform admins sem ownership automático | AUTORIZADO / PENDENTE |
+| C04-IMP-07 | Tornar permanente o teste adversarial contra elevação de owner/role/version/authority via payload | AUTORIZADO / PENDENTE |
+| C04-IMP-08 | Criar gate de coerência entre UI, REST/Data API, RPC, grants e RLS para impedir nova divergência de superfície | AUTORIZADO / PENDENTE |
+| C04-IMP-09 | Manter `anon` deny-by-default como gate explícito de recertificação | AUTORIZADO / PENDENTE |
+
+### 8.2 Regra da fila
+
+A execução é estrita:
+
+1. **ITEM 1 — C02-AUD / PR #10** deve concluir;
+2. **ITEM 2 — C03-AUD** deve ser recertificado, ficar verde no head final e concluir;
+3. **ITEM 3 — C04-AUD** pode então ser reconciliado com `main`, preservando C02 + C03, e iniciar as melhorias acima.
+
+Se ITEM 1 ou ITEM 2 estiver bloqueado por GitHub Actions/CI, a C04 não deve ser adiantada nem mesclada por bypass.
+
+Antes do merge da C04:
+
+- mudanças estruturais de banco devem ser migration versionada;
+- PRIMARY Lovable Cloud deve ser reverificado após mudanças;
+- App Smoke e Database Disposable devem passar no head final;
+- a documentação C04-AUD deve registrar resultado por melhoria;
+- END/CANCEL continuam fora do escopo funcional desta onda.
+
+### 8.3 Regra para novos achados
+
+Novos achados detectados antes da execução podem ser adicionados a esta branch e a este backlog **somente quando pertencerem ao escopo Identidade/RBAC/RLS**. Mudanças de domínio, SLA, UX funcional, END/CANCEL ou outras fases devem continuar em seus blocos próprios do roadmap.
