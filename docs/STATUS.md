@@ -12,7 +12,7 @@
 
 > Snapshot runtime recertificado no fechamento da C01-AUD: Lovable publicado tecnicamente com endpoint acessível, audiência funcional **INTERNAL**, Microsoft/Azure + sessão viva + domínio corporativo aprovado. PRIMARY observado com **2 usuários Auth corporativos**, **2 principals ativos vinculados**, **9 grants funcionais ativos**, **0 grants anon nas estruturas centrais** e **0 policies públicas `USING (true)`**.
 
-> **C04-AUD — Identidade, RBAC e RLS aberta em 28/09/2026 às 07:15 BRT** sobre a branch `audit/c04-identity-rbac-rls-2026-09-28`, empilhada sobre a C03-AUD. Resultado inicial: anon bloqueado; role mapping Jair/Bruno/Jiane coerente; platform admin sem ownership; START protegido. Pendências abertas: regressão explícita de mutation sob JWT expirado, reconciliação documental de END/CANCEL ainda deferidos e retirada do SELECT REST legado de `applications/incidents`. Fonte: `docs/AUDITORIA_C04_REABERTURA_2026-09-28.md`.
+> **C04-AUD — Identidade, RBAC e RLS aberta em 28/09/2026 às 07:15 BRT; melhorias autorizadas em 28/09/2026 às 07:42 BRT.** Branch exclusiva: `audit/c04-identity-rbac-rls-2026-09-28`, empilhada sobre a C03-AUD. A onda corretiva C04 não deve alterar C03 nem `main` antes de sua vez. Está registrada como **ITEM 3** da fila programada, depois de C02/PR #10 e C03-AUD. A branch poderá ser alimentada com novos achados estritamente de Identidade/RBAC/RLS até sua execução. Backlog inclui: retirada da superfície REST legacy de `applications/incidents`, teste JWT expirado -> zero mutation, reconciliação END/CANCEL deferidos, binding de principals, matriz de papéis/ownership, regressão de privilege escalation e gate UI/REST/RPC/RLS. Fonte: `docs/AUDITORIA_C04_REABERTURA_2026-09-28.md`.
 
 ---
 
