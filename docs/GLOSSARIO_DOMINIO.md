@@ -5,6 +5,8 @@
 **Status:** CANÔNICO — SAFRA-C03 / READY_FOR_C05  
 **Autoridade:** este documento congela o vocabulário funcional do Painel Safra. Alteração material exige decisão registrada.
 
+> **C03-AUD aberta em 28/09/2026 às 06:13 BRT.** A autoridade conceitual deste glossário permanece válida durante a reauditoria. Foram autorizadas correções de nomenclatura de rota, separação visual Safra × Reliability legado, separação de hooks por domínio e atualização dos metadados/estado pós-C05–C08. Fonte de acompanhamento: `docs/AUDITORIA_C03_REABERTURA_2026-09-28.md`.
+
 ## 1. Objetivo
 
 Evitar que frontend, banco, documentação, testes e usuários usem palavras diferentes para conceitos distintos.
