@@ -444,20 +444,44 @@ jair_runtime_access:
 
 c05_reaudit:
   opened_at: "2026-09-28T08:56:11-03:00"
-  status: "OPEN_AWAITING_DECISIONS"
+  status: "OPEN_TECHNICAL_GAPS_REMAIN"
   branch: "audit/c05-schema-v2-migrations-invariants-2026-09-28"
   base_branch: "audit/c04-identity-rbac-rls-2026-09-28"
   audit_document: "docs/AUDITORIA_C05_REABERTURA_2026-09-28.md"
   migration_authority: "SUPABASE_MIGRATIONS_CANONICAL"
-  migration_repo_count: 28
-  migration_primary_count: 28
+  migration_repo_count: 29
+  migration_primary_count: 29
   migration_version_drift: 0
   schema_v2_tables: 17
   schema_v2_rls_tables: 17
   foreign_keys: 36
   destructive_cascade_foreign_keys: 0
-  open_findings: 6
+  open_findings: 4
   hygiene_improvements: 3
+  decisions_closed:
+    c05_aud_01:
+      status: "CLOSED_PASS_PRIMARY"
+      canonical_delivery_statuses:
+        - "QUEUED"
+        - "SENT"
+        - "FAILED"
+      transition_model: "QUEUED_TO_SENT_OR_FAILED_TERMINAL"
+      migration: "20260928090910_c05_notification_delivery_state_machine.sql"
+      primary_test: "10/10_PASS"
+    c05_aud_06:
+      status: "CLOSED_DECISION_A"
+      positive_authorization: "GOVERNED_RPC"
+      direct_table_access: "DENY_BY_DEFAULT"
+      positive_table_rls_policy_required: false
+  remaining_findings:
+    - "C05-AUD-02_VERSION_FREEZE_REGRESSION"
+    - "C05-AUD-03_END_CANCEL_REAL_CONCURRENCY"
+    - "C05-AUD-04_STRUCTURAL_ROLLBACK_PROOF"
+    - "C05-AUD-05_AUTHENTICATED_DIRECT_API_HTTP_SMOKE"
+  remaining_hygiene:
+    - "C05-HYG-01_DRIZZLE_RESIDUAL_TOOLING"
+    - "C05-HYG-02_FK_SUPPORT_INDEXES"
+    - "C05-HYG-03_DUPLICATE_UPDATED_AT_TRIGGER_RESPONSIBILITY"
   runtime_probe:
     published_version_freeze: "PASS"
     published_version_child_freeze: "PASS"
@@ -466,6 +490,4 @@ c05_reaudit:
     end_from_active: "PASS"
     terminal_rewrite_blocked: "PASS"
     notification_invalid_delivery_status_rejected: false
-  decisions_required:
-    - "CANONICAL_NOTIFICATION_DELIVERY_STATUS_VOCABULARY"
-    - "RLS_POSITIVE_MEANS_GOVERNED_RPC_IN_RPC_ONLY_ARCHITECTURE"
+  decisions_required: []
