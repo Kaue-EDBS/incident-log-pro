@@ -1,6 +1,6 @@
 # STATUS — incident-log-pro / Painel Safra
 
-> Atualizado em: 27/09/2026  
+> Atualizado em: 28/09/2026  
 > Fase atual: **SAFRA-C08 — UX do COMEÇO / START**  
 > Escopo atual: **START end-to-end implementado e promovido ao PRIMARY; próxima ação é homologar a UX com sessão Microsoft corporativa real antes de avançar nas demais telas do C08.**
 
