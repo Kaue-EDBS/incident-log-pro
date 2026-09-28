@@ -1640,6 +1640,8 @@ Próxima fase canônica: **SAFRA-C05 — Schema v2, migrations e invariantes**.
 
 > **C05-AUD Bloco A concluído em 28/09/2026 às 09:23 BRT.** C05-HYG-01 foi fechado: Drizzle não tinha uso runtime/build/CI; config, schema e snapshots foram removidos; `drizzle-kit`, `drizzle-orm` e `postgres` saíram das dependências diretas e do manifesto raiz do `bun.lock`. Criado `.github/scripts/check-c05-migration-authority.py`, executado por App Smoke e Database Disposable, para impedir segunda trilha de migrations. Branch: 29 migrations canônicas em `supabase/migrations`; PRIMARY: 29 migrations, sem DDL desta etapa. Restam **4 pendências técnicas + 2 melhorias de higiene**.
 
+> **C05-AUD Bloco B executado em 28/09/2026 às 09:37 BRT.** C05-AUD-02 fechado com regressão comportamental de freeze **10/10 PASS no PRIMARY** e rollback integral. C05-AUD-03 fechado com teste concorrente permanente + prova runtime nas duas ordens: END-first deixa RESOLVED e rejeita CANCEL; CANCEL-first deixa CANCELLED e rejeita END; tabela técnica isolada removida após a prova. C05-AUD-05 foi implementado como smoke HTTP com usuário autenticado descartável e ligado ao Database Disposable, mas aguarda execução real porque o ambiente atual não dispõe de stack Supabase local/rede. Restam **2 achados abertos + 2 melhorias de higiene**.
+
 ## SAFRA-C05 — schema v2 canônico materializado — 25/09/2026
 
 Migration canônica:
