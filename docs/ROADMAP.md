@@ -1504,6 +1504,28 @@ HYGIENE_IMPROVEMENTS = 0
 NEXT = C05-AUD-04 + C05-AUD-05_RUNTIME
 ```
 
+
+
+#### C05-AUD — FECHAMENTO TÉCNICO em 28/09/2026 às 10:05 BRT
+
+Implementação encerrada:
+
+- C05-AUD-04 — prova estrutural de rollback implementada com 9 asserts;
+- C05-AUD-05 — smoke HTTP autenticado implementado;
+- ambos integrados ao Database Disposable;
+- 0 achados de implementação restantes;
+- 0 melhorias de higiene restantes.
+
+```text
+C05_AUD_TECHNICAL_SCOPE = COMPLETE
+OPEN_IMPLEMENTATION_FINDINGS = 0
+HYGIENE_IMPROVEMENTS = 0
+RUNTIME_GATES_PENDING = 2
+RECERTIFICATION = PENDING_DATABASE_DISPOSABLE_FINAL_CI
+```
+
+A C05-AUD pode ser deixada em handoff enquanto a próxima auditoria começa. Não marcar C05 como RECERTIFICADA nem permitir merge como certificado até os dois gates de runtime e o CI final ficarem verdes.
+
 ### C05.0 — Autoridade de migrations e captura do C04 — CONCLUÍDO
 
 Decisão:
