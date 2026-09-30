@@ -31,7 +31,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
 | 004 | Tratativas simultâneas do mesmo cenário | DECIDED (D-57) — aplicação pendente |
 | 005 | Canal de notificações e platform admins | DECIDED (D-58) — implementação na M05 |
-| 006 | Janela oficial da "Safra corrente" | OPEN — DEFERRED_TO_F04_M05 |
+| 006 | Janela oficial da "Safra corrente" | DECIDED (D-59) — implementação na F04/M05 |
 | 007 | Publicação formal do 12º card | OPEN — DEFERRED_TO_M10 |
 | 008 | Janela da governança semanal | OPEN — DEFERRED_TO_F05 |
 | 009 | Eventos dos SLAs textuais | OPEN — NON_BLOCKING (D-47) |
@@ -204,8 +204,9 @@ Definir:
 
 ## GI-SAFRA-006 — Janela temporal oficial da “Safra corrente”
 
-**Status:** OPEN — DEFERRED_TO_F04_M05  
-**Fase:** M05/F04.
+**Status:** DECIDED (D-59) — implementação na F04/M05  
+**Fase:** M05/F04.  
+**Decisão do owner (30/09/2026):** a Safra é aberta e encerrada manualmente no sistema, por marcação do Kaue.
 
 Definir o período exato usado em métricas, e-mails e análises da Safra corrente.
 

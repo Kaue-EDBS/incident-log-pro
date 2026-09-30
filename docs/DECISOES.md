@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
 | D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — implementação na M05 |
 | D-57 | Cada pessoa pode ter no máximo uma tratativa ACTIVE por cenário; pessoas diferentes podem abrir o mesmo cenário (resolve GI-SAFRA-004) | APPROVED — aplicação técnica pendente |
 | D-56 | Detecção/aviso automático de gatilho fica para versão futura do produto (V2/V3); thresholds do GI-SAFRA-002 e mínimo da curva A do GI-SAFRA-003 não são necessários no MVP | APPROVED |
@@ -148,7 +149,7 @@ O inventário vigente é:
 | GI-SAFRA-003 — fonte mínimo curva A | OPEN / DEFERRED_TO_PRODUCT_V2 (D-56) | D-46 mantém automação desligada e START manual |
 | GI-SAFRA-004 — múltiplas tratativas simultâneas | DECIDED (D-57) / APPLICATION_PENDING | uma ACTIVE por pessoa e por cenário; trava ainda não aplicada no banco |
 | GI-SAFRA-005 — canal/provider de notificações e platform admins | DECIDED (D-58) / IMPLEMENTATION_IN_M05 | e-mail + Teams; destinatários definidos |
-| GI-SAFRA-006 — janela temporal oficial da Safra | OPEN / DEFERRED_TO_F04_M05 | métricas/comunicações não devem inventar janela |
+| GI-SAFRA-006 — janela temporal oficial da Safra | DECIDED (D-59) / IMPLEMENTATION_IN_F04_M05 | abertura/encerramento manual pelo Kaue |
 | GI-SAFRA-007 — publicação formal do 12º card | OPEN / DEFERRED_TO_M10 | proposta não vira cenário produtivo automaticamente |
 | GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_F05 | nenhuma cadência é inferida |
 | GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-47 permite estruturar apenas cláusulas inequivocamente elegíveis; demais permanecem não estruturadas |
@@ -997,3 +998,12 @@ Destinatários do aviso de abertura de protocolo:
 | Diretoria | fora do fluxo por ora (D-55) | — |
 
 Pré-requisito: autorização no Microsoft 365 da Editora para o Painel enviar e-mail e postar no Teams (TI/administrador do tenant). Detalhes (caixa remetente, canal ou chat do Teams, modelo da mensagem) ficam para a M05. Continuam valendo: envio server-side, template versionado, log de entrega, idempotência e deduplicação por e-mail.
+
+### D-59 — Início e fim da Safra por marcação manual
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-006.**
+
+- A "Safra corrente" não tem datas fixas: ela começa quando o Kaue marca **"Safra iniciada"** no sistema e termina quando ele marca **"Safra encerrada"**.
+- Os instantes são gravados pelo servidor, no fuso `America/Sao_Paulo` para exibição (C07, Regra 2), com autor registrado.
+- Métricas, e-mails e relatórios "da Safra corrente" usam esse intervalo.
+- O encerramento é o marco da política de retenção (ADR-016): a partir dele contam os prazos de eliminação/anonimização de dados pessoais.
+- Implementação quando a primeira funcionalidade precisar da janela (F04/M05). Incluir substitutos para a marcação exige decisão nova.

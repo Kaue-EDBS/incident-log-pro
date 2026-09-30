@@ -283,7 +283,7 @@ deferred_decisions:
   multiple_simultaneous_treatments: "GI-SAFRA-004; DECIDED_D57_ONE_ACTIVE_PER_PERSON_PER_SCENARIO; LOCK_NOT_YET_APPLIED"
   incomplete_or_not_applicable_close_policy: "DEFERRED_TO_SAFRA_F01"
   email_notification_provider_and_channel: "GI-SAFRA-005; DECIDED_D58_EMAIL_AND_TEAMS; IMPLEMENTATION_IN_M05"
-  current_safra_time_window: "GI-SAFRA-006; DEFERRED_TO_F04_M05"
+  current_safra_time_window: "GI-SAFRA-006; DECIDED_D59_MANUAL_OPEN_CLOSE_BY_OWNER; IMPLEMENTATION_IN_F04_M05"
   formal_new_scenario_approval_flow: "GI-SAFRA-007; DEFERRED_TO_M10"
   weekly_governance_window: "GI-SAFRA-008; DEFERRED_TO_F05"
   textual_sla_event_mapping: "GI-SAFRA-009; OPEN_NON_BLOCKING_D47"
