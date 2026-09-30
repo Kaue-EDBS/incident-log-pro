@@ -35,7 +35,7 @@
 - Tabelas em `public`: 17, todas do domínio Safra, todas com RLS e sem acesso `anon`.
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Tratativas registradas: 0.
-- Migrations: 31 no PRIMARY e 28 no repositório. As 3 a mais são o **drift conhecido** de 28/09 (C00-AUD2-07, encaminhado ao C05).
+- Migrations: 32 no PRIMARY e 29 no repositório. As 3 a mais são o **drift conhecido** de 28/09 (C00-AUD2-07, encaminhado ao C05).
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---
@@ -59,4 +59,4 @@
 
 ## 6. Próximo passo
 
-Concluir a C01-AUD2 e seguir para a reconciliação da C02-AUD.
+**Pausa em 30/09/2026.** Retomar na C01-AUD2, pergunta da **GI-SAFRA-009** (quais prazos viram cronômetro). Roteiro completo, decisões D-55 a D-61 e pacote final pendente: `docs/HANDOFF_2026-09-30.md`.

@@ -3,7 +3,7 @@
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Bloco:** SAFRA-C01 — Documentação canônica e PROJECT_PROFILE  
 **Data de abertura:** 30/09/2026  
-**Estado:** EM EXECUÇÃO — documentação reconciliada; migration de alinhamento dos GI pendente de aplicação no PRIMARY; perguntas dos GI em andamento com o owner  
+**Estado:** EM EXECUÇÃO (pausa em 30/09/2026) — documentação reconciliada; migration de alinhamento dos GI aplicada; perguntas dos GI respondidas até a GI-008 (D-55 a D-61); retomar na GI-009 (`docs/HANDOFF_2026-09-30.md`)  
 **Decisões geradas:** D-52, D-53, D-54 (`docs/DECISOES.md`)
 
 ---
@@ -106,7 +106,7 @@ Causa: o Lovable permite alterar o banco por caminhos que não salvam o arquivo 
 
 - [x] ficha técnica coerente com o PRIMARY
 - [x] fonte única dos GI definida e statuses padronizados nos documentos
-- [ ] migration de alinhamento dos GI aplicada no PRIMARY e registrada
-- [ ] CI verde com a migration nova
+- [x] migration de alinhamento dos GI aplicada no PRIMARY e registrada (`20260930150000`)
+- [x] CI verde com a migration nova (`fd01831`)
 - [ ] rodada de perguntas dos GI com o owner concluída e registrada
 - [ ] `unknown_material_count = 0` recertificado ao final
