@@ -3,7 +3,7 @@
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Bloco:** SAFRA-C00 — Baseline e contenção P0  
 **Data de abertura:** 30/09/2026  
-**Estado:** APLICADA NO PRIMARY — pendente apenas o CI do GitHub (minutos esgotados até 01/10/2026)  
+**Estado:** CONCLUÍDA — 30/09/2026  
 **Base auditada:** `main` em `fe14bc3`  
 **Decisões geradas:** D-50 e D-51 (`docs/DECISOES.md`)
 
@@ -109,7 +109,7 @@ As 3 aplicações demo (XPTO, ABC e SEP) e 15 incidentes apareciam no app public
 | lint zero-warning | PASS (com `endOfLine: auto`, porque o clone Windows usa CRLF; o repositório está em LF) |
 | contrato de fuso horário C07, host UTC | PASS |
 | contrato de fuso horário C07, host Asia/Tokyo | PASS |
-| testes de banco (pgTAP), smoke Data API/RPC, rollback | **NÃO EXECUTADO localmente**: exige Supabase CLI e Docker. Depende do Database Disposable Test no GitHub. |
+| testes de banco (pgTAP), smoke Data API/RPC, rollback | não executado localmente (sem Supabase CLI/Docker); **PASS no CI** — ver seção 7 |
 
 ---
 
@@ -153,7 +153,9 @@ Isso contraria a autoridade única de migrations do C05 (ADR-035): o banco real 
 
 A C00-AUD2 só fecha quando:
 
-- [ ] o Database Disposable Test e o App Smoke Test passarem no GitHub;
+- [x] o Database Disposable Test e o App Smoke Test passarem no GitHub — ambos SUCCESS em `e9c4031` (Database Disposable run `36745901521`), com o repositório temporariamente público para usar runners gratuitos;
 - [x] a migration estiver aplicada no Lovable Cloud PRIMARY e registrada em `supabase_migrations.schema_migrations`;
 - [x] a consulta de verificação no PRIMARY confirmar a ausência dos quatro objetos e a contenção de `anon`;
 - [x] o app publicado mostrar "Em obras" na Visão Geral e o Abrir Protocolo funcionando — conferido pelo owner com sessão Microsoft em 30/09/2026.
+
+> **C00-AUD2 concluída em 30/09/2026.** Achado C00-AUD2-07 (drift de 3 migrations) segue para a reauditoria do C05.
