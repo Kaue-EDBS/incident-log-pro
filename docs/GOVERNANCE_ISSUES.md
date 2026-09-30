@@ -29,7 +29,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 001 | Quais são os 4 cenários CRITICAL? | DECIDED (D-55) — aplicação pendente |
 | 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
 | 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
-| 004 | Tratativas simultâneas do mesmo cenário | OPEN — DEFERRED_TO_M01 |
+| 004 | Tratativas simultâneas do mesmo cenário | DECIDED (D-57) — aplicação pendente |
 | 005 | Canal de notificações e platform admins | OPEN — DEFERRED_TO_M05 |
 | 006 | Janela oficial da "Safra corrente" | OPEN — DEFERRED_TO_F04_M05 |
 | 007 | Publicação formal do 12º card | OPEN — DEFERRED_TO_M10 |
@@ -186,8 +186,9 @@ Nenhum valor será inferido.
 
 ## GI-SAFRA-004 — Treatments simultâneos do mesmo cenário
 
-**Status:** OPEN — DEFERRED_TO_M01  
-**Fase:** SAFRA-M01.
+**Status:** DECIDED (D-57) — aplicação pendente  
+**Fase:** SAFRA-M01.  
+**Decisão do owner (30/09/2026):** trava **por pessoa e por card**. Uma pessoa pode ter vários cards abertos, mas só uma tratativa `ACTIVE` por card até encerrá-la. Pessoas diferentes podem abrir o mesmo card ao mesmo tempo.
 
 Decidir se um cenário pode possuir mais de uma tratativa `ACTIVE` simultaneamente. Até decisão, nenhuma constraint de unicidade será criada.
 
