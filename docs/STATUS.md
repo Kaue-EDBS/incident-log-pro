@@ -4,7 +4,7 @@
 > Fase atual: **SAFRA-C08 — UX do COMEÇO / START**  
 > Escopo atual: **START end-to-end implementado e promovido ao PRIMARY; próxima ação é homologar a UX com sessão Microsoft corporativa real antes de avançar nas demais telas do C08.**
 
-> Segunda reauditoria **C00-AUD2 aberta em 30/09/2026**. O START do C08 havia substituído o fluxo "Novo Incidente" sem decisão. Pela **D-50**, o Reliability Monitor/MTTR foi descontinuado: tabelas `applications`/`incidents`, telas e métricas de TI removidas; a Visão Geral fica "Em obras". Migration `20260930120000_c00_aud2_retire_reliability_monitor.sql` **pendente de aplicação no PRIMARY**. Fonte: `docs/AUDITORIA_C00_REABERTURA_2026-09-30.md`.
+> Segunda reauditoria **C00-AUD2 aberta em 30/09/2026**. O START do C08 havia substituído o fluxo "Novo Incidente" sem decisão. Pela **D-50**, o Reliability Monitor/MTTR foi descontinuado: tabelas `applications`/`incidents`, telas e métricas de TI removidas; a Visão Geral fica "Em obras". Migration `20260930120000_c00_aud2_retire_reliability_monitor.sql` **aplicada e verificada no PRIMARY em 30/09/2026**; CI do GitHub pendente. Fonte: `docs/AUDITORIA_C00_REABERTURA_2026-09-30.md`.
 
 > Reauditoria corretiva **C00-AUD concluída em 27/09/2026 às 13:15 BRT**. C00-AUD-01 a C00-AUD-04 foram fechados: regressão HTTP do legado reforçada, menor privilégio restaurado e promovido ao PRIMARY, lint convertido em gate zero-warning e hook legado morto removido. Evidências completas: `docs/AUDITORIA_C00_REABERTURA_2026-09-27.md`.
 
@@ -3137,7 +3137,8 @@ Decisões: **D-50** (Painel Safra é o único produto; D-02 SUPERSEDED; M07 canc
 C00_AUD2_CODE_AND_DOCS = READY
 C00_AUD2_LOCAL_TYPECHECK_BUILD_LINT_TZ = PASS
 C00_AUD2_DATABASE_DISPOSABLE = PENDING_CI
-C00_AUD2_PRIMARY_MIGRATION = PENDING
+C00_AUD2_PRIMARY_MIGRATION = APPLIED_AND_VERIFIED
+C00_AUD2_PRIMARY_DRIFT_3_MIGRATIONS_28_09 = OPEN (-> reauditoria C05)
 C08_START_REAL_SESSION_UX_HOMOLOGATION = PENDING
 ```
 

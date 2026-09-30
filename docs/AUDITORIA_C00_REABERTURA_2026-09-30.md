@@ -3,7 +3,7 @@
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Bloco:** SAFRA-C00 — Baseline e contenção P0  
 **Data de abertura:** 30/09/2026  
-**Estado:** EM EXECUÇÃO — código, migration e documentação prontos; aplicação no PRIMARY e CI pendentes  
+**Estado:** APLICADA NO PRIMARY — pendente apenas o CI do GitHub (minutos esgotados até 01/10/2026)  
 **Base auditada:** `main` em `fe14bc3`  
 **Decisões geradas:** D-50 e D-51 (`docs/DECISOES.md`)
 
@@ -65,7 +65,7 @@ O menu dizia "Painel Safra"; Visão Geral, Incidentes, Aplicações e Indicadore
 
 ### C00-AUD2-06 — Dados fictícios exibidos como operação real
 
-Os 14 incidentes e as 3 aplicações demo (XPTO, ABC e SEP) apareciam no app publicado, embora a matriz os classificasse como PARK.
+As 3 aplicações demo (XPTO, ABC e SEP) e 15 incidentes apareciam no app publicado, embora a matriz os classificasse como PARK. Conferência no PRIMARY em 30/09/2026: 12 eram o seed fictício de 14/08 e 3 eram cliques de teste na interface antiga (14/08, 20/08 e 25/09; recuperação 30 s a 1 min depois, sem causa, responsável ou notas). Nenhum era incidente real. A documentação anterior falava em 14.
 
 **Tratamento:** apagados junto com as tabelas.
 
@@ -113,11 +113,47 @@ Os 14 incidentes e as 3 aplicações demo (XPTO, ABC e SEP) apareciam no app pub
 
 ---
 
-## 6. Gate de fechamento
+## 6. Aplicação no PRIMARY — 30/09/2026
+
+Sequência:
+1. merge por fast-forward de `c00-aud2-retire-reliability-monitor` na `main` (`dc23457`), **sem CI**, por decisão do owner (minutos do GitHub esgotados);
+2. Lovable sincronizou `dc23457`; o owner publicou o app;
+3. verificação prévia de dependências no PRIMARY: nenhuma policy, view, função ou trigger externo às próprias tabelas;
+4. migration aplicada pelo conector do Lovable Cloud numa transação única, com registro da versão em `supabase_migrations.schema_migrations`.
+
+Conferência pós-aplicação:
+
+| Verificação | Esperado | Resultado |
+|---|---|---|
+| `public.applications` | ausente | ausente |
+| `public.incidents` | ausente | ausente |
+| `validate_incident_timestamps()` | ausente | ausente |
+| `set_updated_at()` | ausente | ausente |
+| versão `20260930120000` registrada | 1 | 1 |
+| grants de `anon` em `public` | 0 | 0 |
+| tabelas `public` sem RLS | 0 | 0 |
+| policies para `anon` | 0 | 0 |
+| policies `USING/WITH CHECK (true)` | 0 | 0 |
+| cenários | 11 | 11 |
+| treatments | 0 | 0 |
+
+### C00-AUD2-07 — Drift: migrations no PRIMARY ausentes do repositório
+
+Encontradas no `schema_migrations` do PRIMARY, sem arquivo em `supabase/migrations/` e sem SQL guardado no histórico (`statements` nulo):
+
+| Versão | Nome |
+|---|---|
+| `20260928075934` | `c04_reaudit_legacy_surface_hardening` |
+| `20260928090910` | `c05_notification_delivery_state_machine` |
+| `20260928095246` | `c05_fk_indexes_and_clock_ownership` |
+
+Isso contraria a autoridade única de migrations do C05 (ADR-035): o banco real tem objetos que o repositório não reconstrói. **Não bloqueia a C00-AUD2**; encaminhado para a reauditoria do C05.
+
+## 7. Gate de fechamento
 
 A C00-AUD2 só fecha quando:
 
-- o Database Disposable Test e o App Smoke Test passarem no GitHub;
-- a migration estiver aplicada no Lovable Cloud PRIMARY e registrada em `supabase_migrations.schema_migrations`;
-- a consulta de verificação no PRIMARY confirmar a ausência dos quatro objetos e a contenção de `anon`;
-- o app publicado mostrar "Em obras" na Visão Geral e o Abrir Protocolo funcionando.
+- [ ] o Database Disposable Test e o App Smoke Test passarem no GitHub;
+- [x] a migration estiver aplicada no Lovable Cloud PRIMARY e registrada em `supabase_migrations.schema_migrations`;
+- [x] a consulta de verificação no PRIMARY confirmar a ausência dos quatro objetos e a contenção de `anon`;
+- [ ] o app publicado mostrar "Em obras" na Visão Geral e o Abrir Protocolo funcionando (conferência humana com sessão Microsoft).
