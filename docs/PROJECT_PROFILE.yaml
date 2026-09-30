@@ -279,7 +279,7 @@ deferred_decisions:
   scenario_4_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
   scenario_10_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
   scenario_11_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
-  scenario_9_curve_A_source: "GI-SAFRA-003; OPEN_NON_BLOCKING_D46; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_9_curve_A_source: "GI-SAFRA-003; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
   multiple_simultaneous_treatments: "GI-SAFRA-004; DEFERRED_TO_M01; CURRENTLY_ALLOWED"
   incomplete_or_not_applicable_close_policy: "DEFERRED_TO_SAFRA_F01"
   email_notification_provider_and_channel: "GI-SAFRA-005; DEFERRED_TO_M05"

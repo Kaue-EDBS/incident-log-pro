@@ -28,7 +28,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 |---|---|---|
 | 001 | Quais são os 4 cenários CRITICAL? | DECIDED (D-55) — aplicação pendente |
 | 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
-| 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — NON_BLOCKING (D-46) |
+| 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
 | 004 | Tratativas simultâneas do mesmo cenário | OPEN — DEFERRED_TO_M01 |
 | 005 | Canal de notificações e platform admins | OPEN — DEFERRED_TO_M05 |
 | 006 | Janela oficial da "Safra corrente" | OPEN — DEFERRED_TO_F04_M05 |
@@ -175,7 +175,8 @@ Nenhum valor será inferido.
 
 ## GI-SAFRA-003 — Fonte oficial do mínimo da curva A — cenário 9
 
-**Status:** OPEN — NON_BLOCKING (D-46)  
+**Status:** OPEN — DEFERRED_TO_PRODUCT_V2 (D-56)  
+**Decisão do owner (30/09/2026):** como no GI-002, o mínimo só serve à detecção automática, que fica para a V2/V3 do produto. SAFRA-09 segue com START manual (D-46).  
 **Bloqueia START/C08:** não.  
 **Bloqueia automação objetiva da ruptura:** sim.
 
