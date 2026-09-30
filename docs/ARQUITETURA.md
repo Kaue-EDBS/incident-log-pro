@@ -399,13 +399,11 @@ As operações críticas implementadas/devem ser implementadas de forma transaci
 
 Operações críticas não devem depender de `.insert()`/`.update()` genérico no navegador.
 
-## 9. Legado TI
+## 9. Legado TI — RETIRADO
 
-`applications` e `incidents` continuam preservados como domínio legado de confiabilidade de TI.
+Pela D-50 (30/09/2026), o Reliability Monitor/MTTR foi descontinuado. A migration `20260930120000_c00_aud2_retire_reliability_monitor.sql` remove `public.applications`, `public.incidents`, `public.validate_incident_timestamps()` e `public.set_updated_at()`.
 
-Eles não são substitutos de `scenarios`/`treatments`.
-
-Ponte futura entre incidentes TI e tratativas Safra só deve ser criada quando houver regra explícita de integração.
+O único domínio do repositório é o Safra (`scenarios`/`treatments`). Não há ponte com incidentes de TI.
 
 ## 10. REPLICA, backup e recovery
 

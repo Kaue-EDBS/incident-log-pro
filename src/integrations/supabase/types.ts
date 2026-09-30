@@ -14,33 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      applications: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          is_active: boolean
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_active?: boolean
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_active?: boolean
-          name?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       governance_issues: {
         Row: {
           created_at: string
@@ -82,68 +55,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
-      }
-      incidents: {
-        Row: {
-          application_id: string
-          category: string | null
-          cause: string | null
-          created_at: string
-          detected_at: string
-          failure_started_at: string | null
-          id: string
-          notes: string | null
-          recovered_at: string | null
-          resolution: string | null
-          response_started_at: string | null
-          responsible: string | null
-          status: string
-          type: string | null
-          updated_at: string
-        }
-        Insert: {
-          application_id: string
-          category?: string | null
-          cause?: string | null
-          created_at?: string
-          detected_at?: string
-          failure_started_at?: string | null
-          id?: string
-          notes?: string | null
-          recovered_at?: string | null
-          resolution?: string | null
-          response_started_at?: string | null
-          responsible?: string | null
-          status?: string
-          type?: string | null
-          updated_at?: string
-        }
-        Update: {
-          application_id?: string
-          category?: string | null
-          cause?: string | null
-          created_at?: string
-          detected_at?: string
-          failure_started_at?: string | null
-          id?: string
-          notes?: string | null
-          recovered_at?: string | null
-          resolution?: string | null
-          response_started_at?: string | null
-          responsible?: string | null
-          status?: string
-          type?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "incidents_application_id_fkey"
-            columns: ["application_id"]
-            isOneToOne: false
-            referencedRelation: "applications"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       notifications_log: {
         Row: {

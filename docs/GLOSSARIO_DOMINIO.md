@@ -459,7 +459,7 @@ CENÁRIO
 | END × CANCEL | resolução válida × invalidação/encerramento não resolutivo |
 | recorrência × crise | indicador histórico × decisão de escalonamento |
 | proposta × cenário | candidato em governança × entidade publicada |
-| incidente TI × tratativa Safra | domínio legado de confiabilidade × domínio de contingência |
+| incidente TI × tratativa Safra | domínio legado retirado pela D-50 × domínio de contingência; "incidente" não é termo do Painel Safra |
 
 ---
 

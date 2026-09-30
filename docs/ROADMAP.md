@@ -11,7 +11,7 @@
 
 # 0. Resumo executivo
 
-O `incident-log-pro` nasceu como um monitor de confiabilidade de aplicações de TI, centrado em `applications`, `incidents`, MTTD, MTTR, MTBF, downtime e disponibilidade. Esse núcleo permanece útil como legado técnico e referência temporal, mas não representa sozinho o domínio do Painel Safra.
+O `incident-log-pro` nasceu como um monitor de confiabilidade de aplicações de TI, centrado em `applications`, `incidents`, MTTD, MTTR, MTBF, downtime e disponibilidade. Por decisão D-50 (30/09/2026), esse núcleo foi descontinuado: o Painel Safra é o único produto do repositório, e as tabelas e telas do Reliability Monitor foram removidas.
 
 O Painel Safra será uma **torre corporativa de governança de contingências**. O produto deve tornar uma contingência visível, temporizada, auditável, comunicável e analisável, sem substituir a execução operacional de cada área.
 
@@ -288,9 +288,9 @@ ownership = vínculo explícito ao cenário
 
 Não criar aplicação paralela.
 
-## D-02 — Preservar domínio legado de TI
+## D-02 — Preservar domínio legado de TI — SUPERSEDED
 
-`applications/incidents` continuam representando confiabilidade de TI onde fizer sentido, sem serem forçados a representar todo o Safra.
+Substituída pela D-50 em 30/09/2026: o Reliability Monitor/MTTR foi descontinuado e `applications/incidents` foram removidas. Ver `docs/DECISOES.md`.
 
 ## D-03 — Geral é visão, não área
 
@@ -645,7 +645,7 @@ A carga canônica virá da Matriz v3, sem redigitação manual.
 | 3 | Atraso (+48h) sem causa | Logística | Daniel Garcia | retorno <=4h | regra de 48h já existe |
 | 4 | Pedido pago não integrado | TI | Jiane Rodrigues | tratativa <=2h | definir `X min` |
 | 5 | Tracking falso | TI | Jiane Rodrigues | correção <=4h | validação físico x sistêmico |
-| 6 | ERP indisponível/travado | TI | Jiane Rodrigues | continuidade <=30min; pós-mortem <=48h | ponte semântica com incidents TI |
+| 6 | ERP indisponível/travado | TI | Jiane Rodrigues | continuidade <=30min; pós-mortem <=48h | — (ponte com incidents TI cancelada pela D-50) |
 | 7 | Divergência saldo físico x virtual | Logística | Daniel Garcia | correção <=24h | detecção MIXED |
 | 8 | Falha NF-e / bloqueio fiscal | TI | Jiane Rodrigues | liberação <=4h | preservar owner correto da Matriz v3 |
 | 9 | Ruptura estoque curva A | PCP | Renato de Paulo | realocação no dia | fonte oficial do mínimo curva A |
@@ -1389,7 +1389,7 @@ Os invariantes, timestamps, idempotência estrutural, correlation_id, rollback e
 16. `scenario_proposals`;
 17. `scenario_proposal_owner_responses`;
 18. `governance_issues`;
-19. mapeamentos para `incidents` quando aplicável.
+19. ~~mapeamentos para `incidents` quando aplicável~~ — cancelado pela D-50.
 
 ### Invariantes mínimos
 
@@ -1961,7 +1961,7 @@ NOT_APPLICABLE  # somente quando regra aprovada
 - autor;
 - card/cenário;
 - protocolo completo;
-- métricas aplicáveis: MTTD, MTTR, MTBF, disponibilidade e ocorrências;
+- métricas aplicáveis: métricas do protocolo Safra a definir em F04/M05 (MTTD/MTTR/MTBF/disponibilidade de TI retiradas pela D-50);
 - período: Safra corrente — janela exata ainda deve ser formalizada nesta fase/F04.
 
 ### Regras de destinatário
@@ -2009,15 +2009,9 @@ Recorrência sozinha não promove `EXECUTIVE`.
 
 ---
 
-## SAFRA-M07 — Ponte com incidents de TI
+## SAFRA-M07 — Ponte com incidents de TI — CANCELADO
 
-Regras:
-
-- incidente TI pode existir sem protocolo;
-- protocolo pode existir sem incidente;
-- incidente elegível pode ajudar a sugerir cenário no futuro;
-- MVP não cria protocolo automaticamente;
-- MTTD/MTTR/MTBF de TI não substituem duração do protocolo Safra.
+Cancelado pela D-50 (30/09/2026). O domínio de incidentes de TI foi removido; não há ponte a construir.
 
 ---
 
@@ -2237,12 +2231,9 @@ Cenário 6 já possui referência de pós-mortem <=48h e deve ser tratado como S
 - críticos no período;
 - áreas impactadas.
 
-### Métricas de confiabilidade preservadas
+### Métricas de confiabilidade de TI — RETIRADAS
 
-- MTTD;
-- MTTR;
-- MTBF;
-- disponibilidade.
+MTTD, MTTR, MTBF e disponibilidade saíram com a D-50. As métricas do protocolo Safra serão definidas nesta fase, sem inferência.
 
 ### Audiências
 

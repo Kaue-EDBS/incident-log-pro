@@ -14,7 +14,7 @@
 | ID | Decisão | Status |
 |---|---|---|
 | D-01 | Evoluir `incident-log-pro`; não criar app paralelo | APPROVED |
-| D-02 | Preservar `applications/incidents` para TI | APPROVED |
+| D-02 | Preservar `applications/incidents` para TI | SUPERSEDED by D-50 (30/09/2026) |
 | D-03 | Geral é visão agregadora, não área | APPROVED |
 | D-04 | Detecção e ativação são conceitos separados | APPROVED |
 | D-05 | Protocolo não é chamado | APPROVED |
@@ -62,6 +62,8 @@
 | D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | APPROVED |
 | D-48 | Painel Safra é de audiência interna e aceita identidade Microsoft corporativa apenas dos domínios editoradobrasil.com.br e editoradobrasil1.onmicrosoft.com | APPROVED |
 | D-49 | Gate de privacidade/base legal exigido antes de usuários reais foi validado e está atendido | APPROVED / SATISFIED |
+| D-50 | Reliability Monitor/MTTR descontinuado; Painel Safra é o único produto do `incident-log-pro` | APPROVED |
+| D-51 | Os 11 cenários publicados permanecem liberados para START; governança de liberação por card fica para fase futura | APPROVED |
 
 ## 3. ADRs
 
@@ -139,6 +141,8 @@ Questão conhecida, registrada e com comportamento seguro/fase responsável **n�
 | GI-SAFRA-007 — publicação formal do 12º card | OPEN / DEFERRED_TO_M10 | proposta não vira cenário produtivo automaticamente |
 | GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_GOVERNANCE_PHASE | nenhuma cadência é inferida |
 | GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-47 permite estruturar apenas cláusulas inequivocamente elegíveis; demais permanecem não estruturadas |
+| GI-SAFRA-010 — governança de liberação de START por card | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-51 mantém os 11 cenários publicados startáveis; restringir um card exige decisão explícita |
+| métricas do protocolo Safra (substitutas de MTTD/MTTR/MTBF) | DEFERRED_TO_F04_M05 | D-50 retirou as métricas de TI; nenhuma métrica de protocolo é inferida |
 | fechamento com passo incompleto/NA | DEFERRED_TO_F01 | não impacta START |
 | impacto quantitativo — métricas/thresholds | DEFERRED_TO_F04 | modelo conceitual aprovado; thresholds não inferidos |
 | matriz exata de permissões por papel | IMPLEMENTED_C04 | fonte: `private.safra_principals` + `private.safra_role_grants` e matriz C04 |
@@ -882,3 +886,30 @@ Consequências:
 - a pendência `DEFERRED_TO_PRIVACY_OWNER_BEFORE_REAL_USER_RELEASE` deve ser encerrada documentalmente;
 - continuam vigentes minimização, retenção, anonimização/eliminação posterior e as restrições de dados sensíveis;
 - esta decisão não altera a política de retenção aprovada.
+
+### D-50 — Reliability Monitor/MTTR descontinuado
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+Contexto: a reauditoria C00-AUD2 (`docs/AUDITORIA_C00_REABERTURA_2026-09-30.md`) mostrou que o START do C08 substituiu o fluxo "Novo Incidente" sem decisão registrada, contrariando D-02, `ARQUITETURA.md` §9 e o SAFRA-M07.
+
+Decisão:
+- o `incident-log-pro` passa a ter um único produto: o Painel Safra;
+- não existe mais "Novo Incidente"; a abertura é sempre "Abrir Protocolo" sobre um cenário publicado;
+- o Reliability Monitor inteiro sai: `applications`, `incidents`, MTTD, MTTR, MTBF, downtime, disponibilidade e os dados fictícios XPTO/ABC/SEP;
+- as tabelas `public.applications` e `public.incidents` e seus helpers são apagados por migration (`20260930120000_c00_aud2_retire_reliability_monitor.sql`); o conteúdo era apenas seed demo;
+- as telas de MTTR (Visão Geral, Incidentes, Aplicações, Indicadores) são removidas; a Visão Geral fica como "Em obras" até existir a versão Safra;
+- não haverá app paralelo (D-01 mantida).
+
+Alternativas descartadas: convivência dos dois produtos no mesmo app; separação em apps diferentes.
+
+Impacto:
+- D-02 passa a SUPERSEDED;
+- SAFRA-M07 (ponte com incidents de TI) é cancelado;
+- `MATRIZ_PARIDADE.md`, `ARQUITETURA.md` §9, `ROADMAP.md`, `REGRAS_NEGOCIO.md` e `GLOSSARIO_DOMINIO.md` são atualizados;
+- métricas de comunicação/analytics passam a ser métricas do protocolo Safra, a definir em F04/M05 sem inferência;
+- o histórico Git e as migrations antigas permanecem intactos como registro.
+
+### D-51 — START liberado para os 11 cenários publicados
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+Os 11 cenários publicados continuam startáveis, como já estão no C08. A regra de quais cards podem ser abertos, e por quem, será definida numa governança futura (`GI-SAFRA-010`). Até lá, nenhum card é bloqueado por inferência.

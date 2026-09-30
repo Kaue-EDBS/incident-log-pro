@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(26);
+select plan(24);
 
 insert into auth.users(
   id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at
@@ -189,25 +189,15 @@ select ok(
   'expired token fails canonical corporate predicate'
 );
 
--- Trigger helpers are internal-only and cannot be invoked through browser roles.
+-- Legacy trigger helpers were retired by C00-AUD2 (D-50), so browser roles cannot reach them.
 select ok(
-  not has_function_privilege('anon','public.set_updated_at()','EXECUTE'),
-  'anon cannot execute legacy set_updated_at trigger helper'
+  to_regprocedure('public.set_updated_at()') is null,
+  'legacy set_updated_at trigger helper is retired'
 );
 
 select ok(
-  not has_function_privilege('authenticated','public.set_updated_at()','EXECUTE'),
-  'authenticated cannot execute legacy set_updated_at trigger helper'
-);
-
-select ok(
-  not has_function_privilege('anon','public.validate_incident_timestamps()','EXECUTE'),
-  'anon cannot execute legacy timestamp validation trigger helper'
-);
-
-select ok(
-  not has_function_privilege('authenticated','public.validate_incident_timestamps()','EXECUTE'),
-  'authenticated cannot execute legacy timestamp validation trigger helper'
+  to_regprocedure('public.validate_incident_timestamps()') is null,
+  'legacy timestamp validation trigger helper is retired'
 );
 
 -- Restore a valid session for START idempotency threat tests.

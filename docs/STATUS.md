@@ -4,6 +4,8 @@
 > Fase atual: **SAFRA-C08 — UX do COMEÇO / START**  
 > Escopo atual: **START end-to-end implementado e promovido ao PRIMARY; próxima ação é homologar a UX com sessão Microsoft corporativa real antes de avançar nas demais telas do C08.**
 
+> Segunda reauditoria **C00-AUD2 aberta em 30/09/2026**. O START do C08 havia substituído o fluxo "Novo Incidente" sem decisão. Pela **D-50**, o Reliability Monitor/MTTR foi descontinuado: tabelas `applications`/`incidents`, telas e métricas de TI removidas; a Visão Geral fica "Em obras". Migration `20260930120000_c00_aud2_retire_reliability_monitor.sql` **pendente de aplicação no PRIMARY**. Fonte: `docs/AUDITORIA_C00_REABERTURA_2026-09-30.md`.
+
 > Reauditoria corretiva **C00-AUD concluída em 27/09/2026 às 13:15 BRT**. C00-AUD-01 a C00-AUD-04 foram fechados: regressão HTTP do legado reforçada, menor privilégio restaurado e promovido ao PRIMARY, lint convertido em gate zero-warning e hook legado morto removido. Evidências completas: `docs/AUDITORIA_C00_REABERTURA_2026-09-27.md`.
 
 > Reauditoria corretiva **C01-AUD concluída e recertificada em 27/09/2026 às 18:16 BRT**. PROJECT_PROFILE, documentação canônica, domínios corporativos, privacidade, inventário de decisões e fronteiras de runtime foram reconciliados. `unknown_material_count = 0` foi recertificado. Evidências: `docs/AUDITORIA_C01_REABERTURA_2026-09-27.md`.
@@ -3123,3 +3125,25 @@ Somente depois seguir para as demais telas/UX do C08.
 - GI-SAFRA-004: regra definitiva para múltiplas tratativas ACTIVE;
 - GI-SAFRA-005: provider/canal produtivo de comunicação;
 - GI-SAFRA-009: materialização produtiva dos SLAs candidatos em nova scenario_version.
+
+
+---
+
+## SAFRA-C00-AUD2 — Reliability Monitor/MTTR descontinuado — 30/09/2026
+
+Decisões: **D-50** (Painel Safra é o único produto; D-02 SUPERSEDED; M07 cancelado) e **D-51** (os 11 cenários seguem startáveis; governança por card em GI-SAFRA-010).
+
+```text
+C00_AUD2_CODE_AND_DOCS = READY
+C00_AUD2_LOCAL_TYPECHECK_BUILD_LINT_TZ = PASS
+C00_AUD2_DATABASE_DISPOSABLE = PENDING_CI
+C00_AUD2_PRIMARY_MIGRATION = PENDING
+C08_START_REAL_SESSION_UX_HOMOLOGATION = PENDING
+```
+
+O que muda no runtime depois da migration:
+- `public.applications`, `public.incidents`, `public.validate_incident_timestamps()` e `public.set_updated_at()` deixam de existir;
+- menu: Visão Geral ("Em obras") e Abrir Protocolo;
+- o START continua igual (C08.1).
+
+Evidências e achados: `docs/AUDITORIA_C00_REABERTURA_2026-09-30.md`.

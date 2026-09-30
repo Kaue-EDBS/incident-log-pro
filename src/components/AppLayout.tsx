@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Activity, BarChart3, LayoutGrid, PlusCircle, Server, ShieldAlert } from "lucide-react";
+import { Activity, LayoutGrid, PlusCircle } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/integrations/supabase/AuthProvider";
@@ -7,9 +7,6 @@ import { useAuth } from "@/integrations/supabase/AuthProvider";
 const NAV = [
   { to: "/", label: "Visão Geral", icon: LayoutGrid },
   { to: "/novo-incidente", label: "Abrir Protocolo", icon: PlusCircle },
-  { to: "/incidentes", label: "Incidentes", icon: ShieldAlert },
-  { to: "/aplicacoes", label: "Aplicações", icon: Server },
-  { to: "/indicadores", label: "Indicadores", icon: BarChart3 },
 ] as const;
 
 function isActive(pathname: string, to: string) {
@@ -78,7 +75,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
       <main className="px-4 pb-28 pt-6 lg:ml-64 lg:px-10 lg:pb-16 lg:pt-10">{children}</main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-card lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-2 border-t border-border bg-card lg:hidden">
         {NAV.map((item) => (
           <Link
             key={item.to}

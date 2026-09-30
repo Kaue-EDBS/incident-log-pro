@@ -122,19 +122,9 @@ O detalhamento de componentes, filtros, KPIs e visualizações fica reservado à
 ### RB-SAFRA-020 — Identidade do proponente
 No 12º card, nome e e-mail devem vir da sessão Microsoft autenticada e não podem depender de digitação livre.
 
-## 3. Regras legadas de TI preservadas
+## 3. Regras legadas de TI — RETIRADAS
 
-### LEGACY-INC-001
-Uma aplicação não pode ter dois incidentes ativos simultaneamente.
-
-### LEGACY-INC-002
-Preservar coerência entre failure_started_at, detected_at, response_started_at e recovered_at.
-
-### LEGACY-INC-003
-MTTD, MTTR, MTBF, downtime e disponibilidade são derivados de timestamps.
-
-### LEGACY-INC-004
-Cronômetro é reconstruído a partir de timestamps persistidos.
+As regras LEGACY-INC-001 a LEGACY-INC-004 (incidente ativo único por aplicação, coerência de timestamps do incidente, MTTD/MTTR/MTBF/downtime/disponibilidade e cronômetro do incidente) deixaram de valer com a D-50 (30/09/2026), junto com as tabelas `applications` e `incidents`. O texto original permanece no histórico Git.
 
 ## 4. State machine alvo
 

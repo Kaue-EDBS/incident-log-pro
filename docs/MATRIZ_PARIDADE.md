@@ -10,19 +10,19 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 |---|---|---|---|
 | React/TanStack/Vite | funcional | fundação web | KEEP |
 | layout responsivo | funcional | base da nova UX | REUSE |
-| applications | funcional | confiabilidade TI | KEEP |
-| incidents | funcional | TI; não representa todo Safra | KEEP |
-| abertura de incidente | funcional | START de treatment | REDESIGN |
-| cronômetro persistente | funcional | relógios/SLA | REUSE |
-| timestamps | funcional | eventos temporais | REUSE |
-| MTTD/MTTR/MTBF | funcional | indicadores TI | KEEP |
-| downtime/disponibilidade | funcional | métricas TI | KEEP |
-| histórico | funcional | histórico auditável Safra | REDESIGN |
-| indicadores | funcional | torre corporativa | REDESIGN |
-| filtros | funcional | cenário/área/status/criticidade | REDESIGN |
-| dados demo XPTO/ABC/SEP | seed | não representar operação real | PARK |
+| applications | funcional | removida pela D-50 | REMOVE |
+| incidents | funcional | removida pela D-50 | REMOVE |
+| abertura de incidente | funcional | removida; o único START é "Abrir Protocolo" (treatment) | REMOVE |
+| cronômetro persistente | funcional | `LiveTimer` reutilizado no START; relógios/SLA | REUSE |
+| timestamps | funcional | regra de fuso horário (`src/lib/metrics.ts`) reutilizada; timestamps de incidente removidos | REUSE |
+| MTTD/MTTR/MTBF | funcional | removidos pela D-50; métricas do protocolo em F04/M05 | REMOVE |
+| downtime/disponibilidade | funcional | removidos pela D-50 | REMOVE |
+| histórico de incidentes | funcional | tela removida; histórico auditável Safra a construir | REMOVE + BUILD |
+| indicadores | funcional | tela removida; torre corporativa a construir | REMOVE + BUILD |
+| filtros | funcional | componente removido; filtros Safra a construir | REMOVE + BUILD |
+| dados demo XPTO/ABC/SEP | seed | apagados com as tabelas (D-50) | REMOVE |
 | RLS antiga aberta | insegura | removida | REMOVE |
-| RLS C00 safra_access | transitória | RBAC final | REDESIGN |
+| RLS C00 safra_access | transitória | substituída no C04; tabelas removidas na D-50 | REMOVE |
 | client Supabase browser | ativo | leitura/operação autorizada | KEEP |
 | mutations críticas no browser | atuais | RPC transacional | REDESIGN |
 | modo TV | inexistente | visão executiva | BUILD |
@@ -55,7 +55,7 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 
 ## 3. Domínio
 
-### Legado
+### Legado — removido pela D-50
 
 ```text
 Application
@@ -63,6 +63,8 @@ Application
  -> timestamps
  -> reliability metrics
 ```
+
+Descontinuado em 30/09/2026. Mantido aqui só como registro.
 
 ### Alvo
 
@@ -103,6 +105,10 @@ Antes de remover fluxo legado:
 - governança;
 - pós-mortem;
 - relatório executivo.
+
+## 5.1 Lição da reauditoria C00-AUD2
+
+Em 27/09/2026 a abertura de incidente foi trocada pelo START Safra sem decisão registrada, e o hook legado foi removido depois por "não ter consumidor". O critério da seção 4 não foi seguido. A partir de agora, remover ou substituir um fluxo exige decisão em `DECISOES.md` antes do código.
 
 ## 6. Regra de atualização
 
