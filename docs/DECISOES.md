@@ -64,6 +64,9 @@
 | D-49 | Gate de privacidade/base legal exigido antes de usuários reais foi validado e está atendido | APPROVED / SATISFIED |
 | D-50 | Reliability Monitor/MTTR descontinuado; Painel Safra é o único produto do `incident-log-pro` | APPROVED |
 | D-51 | Os 11 cenários publicados permanecem liberados para START; governança de liberação por card fica para fase futura | APPROVED |
+| D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
+| D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
+| D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
 
 ## 3. ADRs
 
@@ -128,7 +131,11 @@ Drizzle permanece como tooling/ORM auxiliar e não pode manter uma segunda trilh
 
 ## 4. Inventário atual de decisões abertas e classificadas
 
-Questão conhecida, registrada e com comportamento seguro/fase responsável **não é UNKNOWN**. O inventário vigente é:
+Questão conhecida, registrada e com comportamento seguro/fase responsável **não é UNKNOWN**.
+
+> **Fonte oficial dos GI-SAFRA:** `docs/GOVERNANCE_ISSUES.md` (C01-AUD2, 30/09/2026). A tabela abaixo é um índice; em caso de divergência, vale o `GOVERNANCE_ISSUES.md`.
+
+O inventário vigente é:
 
 | Item | Estado | Tratamento atual |
 |---|---|---|
@@ -139,7 +146,7 @@ Questão conhecida, registrada e com comportamento seguro/fase responsável **n�
 | GI-SAFRA-005 — canal/provider de notificações e platform admins | OPEN / DEFERRED_TO_M05 | nenhuma decisão de destinatário/provider é inferida |
 | GI-SAFRA-006 — janela temporal oficial da Safra | OPEN / DEFERRED_TO_F04_M05 | métricas/comunicações não devem inventar janela |
 | GI-SAFRA-007 — publicação formal do 12º card | OPEN / DEFERRED_TO_M10 | proposta não vira cenário produtivo automaticamente |
-| GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_GOVERNANCE_PHASE | nenhuma cadência é inferida |
+| GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_F05 | nenhuma cadência é inferida |
 | GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-47 permite estruturar apenas cláusulas inequivocamente elegíveis; demais permanecem não estruturadas |
 | GI-SAFRA-010 — governança de liberação de START por card | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-51 mantém os 11 cenários publicados startáveis; restringir um card exige decisão explícita |
 | métricas do protocolo Safra (substitutas de MTTD/MTTR/MTBF) | DEFERRED_TO_F04_M05 | D-50 retirou as métricas de TI; nenhuma métrica de protocolo é inferida |
@@ -913,3 +920,26 @@ Impacto:
 **APPROVED — 30/09/2026** — owner: Kaue.
 
 Os 11 cenários publicados continuam startáveis, como já estão no C08. A regra de quais cards podem ser abertos, e por quem, será definida numa governança futura (`GI-SAFRA-010`). Até lá, nenhum card é bloqueado por inferência.
+
+### D-52 — Mudança de banco só a partir de arquivo no repositório
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+Contexto: três migrations foram aplicadas no PRIMARY em 28/09/2026 sem arquivo no repositório (achado C00-AUD2-07). O Lovable permite alterar o banco por vários caminhos (chat, editor SQL, conector), e só alguns salvam o arquivo.
+
+Decisão:
+- toda alteração de estrutura, permissão ou dado de referência no PRIMARY nasce como arquivo em `supabase/migrations/`, versionado no GitHub **antes** de ser aplicado;
+- ao aplicar fora do fluxo automático, a versão é registrada em `supabase_migrations.schema_migrations`;
+- no início de cada sessão de trabalho, compara-se a lista de versões do PRIMARY com os arquivos do repositório; qualquer diferença nova é reportada ao owner antes de seguir.
+
+### D-53 — Fonte oficial das pendências de governança
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+`docs/GOVERNANCE_ISSUES.md` passa a ser o único dono do texto e do status de cada GI-SAFRA. `DECISOES.md` mantém só o índice. `public.governance_issues` espelha o status. Havendo divergência, vale o `GOVERNANCE_ISSUES.md` e o banco é corrigido por migration (D-52).
+
+### D-54 — STATUS e ROADMAP enxutos
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+Aplica a regra de autoridade do C01 ("STATUS não é backlog histórico; ROADMAP não duplica regras"):
+- `STATUS.md` descreve só onde o projeto está agora;
+- o histórico integral até 30/09/2026 foi movido, sem alteração, para `docs/historico/`;
+- `ROADMAP.md` lista fases, estado e gates, e aponta para os documentos donos de regras, decisões, arquitetura e domínio.

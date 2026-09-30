@@ -27,7 +27,7 @@ npm run dev
 
 ## Documentação canônica do Painel Safra
 
-Para a reformulação do `incident-log-pro`, use esta estrutura como fonte canônica:
+Use esta estrutura como fonte canônica:
 
 - [docs/ROADMAP.md](docs/ROADMAP.md) — fases, gates e ordem de execução;
 - [docs/STATUS.md](docs/STATUS.md) — estado atual, evidências e bloqueios;
@@ -37,5 +37,8 @@ Para a reformulação do `incident-log-pro`, use esta estrutura como fonte canô
 - [docs/REGRAS_NEGOCIO.md](docs/REGRAS_NEGOCIO.md) — regras e invariantes;
 - [docs/MATRIZ_PARIDADE.md](docs/MATRIZ_PARIDADE.md) — legado x produto-alvo;
 - [docs/DECISOES.md](docs/DECISOES.md) — decisões e ADRs.
+- [docs/GOVERNANCE_ISSUES.md](docs/GOVERNANCE_ISSUES.md) — pendências de governança (fonte oficial dos GI-SAFRA);
+- [docs/GLOSSARIO_DOMINIO.md](docs/GLOSSARIO_DOMINIO.md) — vocabulário e modelo de domínio;
+- [docs/historico/](docs/historico/) — versões anteriores do STATUS e do ROADMAP, preservadas sem alteração.
 
 > Em caso de conflito, prevalecem os documentos canônicos acima conforme a autoridade de cada tema.

@@ -1,12 +1,43 @@
 # GOVERNANCE ISSUES — Painel Safra
 
 **Data de criação:** 25/09/2026  
-**Status:** CANÔNICO  
+**Status:** CANÔNICO — **fonte oficial única das pendências de governança** (C01-AUD2, 30/09/2026)  
 **Objetivo:** registrar lacunas de decisão de negócio sem convertê-las em defaults, inferências ou regras implementadas.
+
+## Como este arquivo se relaciona com os outros
+
+- **Este arquivo é o dono** do texto, do status e do critério de fechamento de cada GI.
+- `docs/DECISOES.md` só aponta para cá; quando um GI é resolvido, a decisão que o resolve ganha um ID `D-xx` lá.
+- A tabela `public.governance_issues` no banco **espelha** o status daqui (`OPEN` ou `RESOLVED`). Se divergir, vale este arquivo e o banco é corrigido.
+
+## Vocabulário de status
+
+| Status | Significa |
+|---|---|
+| `OPEN — NON_BLOCKING (D-xx)` | pergunta sem resposta, mas existe regra segura aprovada; nada fica travado |
+| `OPEN — DEFERRED_TO_<fase>` | pergunta sem resposta, conscientemente adiada para a fase indicada |
+| `RESOLVED (D-xx)` | respondida por decisão registrada em `DECISOES.md` |
+
+Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsável.
+
+## Resumo
+
+| GI | Pergunta | Status |
+|---|---|---|
+| 001 | Quais são os 4 cenários CRITICAL? | OPEN — NON_BLOCKING (D-44) |
+| 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — NON_BLOCKING (D-45) |
+| 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — NON_BLOCKING (D-46) |
+| 004 | Tratativas simultâneas do mesmo cenário | OPEN — DEFERRED_TO_M01 |
+| 005 | Canal de notificações e platform admins | OPEN — DEFERRED_TO_M05 |
+| 006 | Janela oficial da "Safra corrente" | OPEN — DEFERRED_TO_F04_M05 |
+| 007 | Publicação formal do 12º card | OPEN — DEFERRED_TO_M10 |
+| 008 | Janela da governança semanal | OPEN — DEFERRED_TO_F05 |
+| 009 | Eventos dos SLAs textuais | OPEN — NON_BLOCKING (D-47) |
+| 010 | Liberação de START por card | OPEN — NON_BLOCKING (D-51) |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
-**Status:** OPEN — NON_BLOCKING_C08  
+**Status:** OPEN — NON_BLOCKING (D-44)  
 **Tipo:** DOMAIN_DECISION  
 **Owner de governança:** safra_governance_admin  
 **Fase de origem:** SAFRA-C03  
@@ -113,13 +144,13 @@ Quando resolvido:
 
 ---
 
-# Pendências formais — WAITING_HUMAN_DECISION
+# Demais pendências
 
 As decisões abaixo não devem ser completadas pela aplicação, por migration ou por LLM sem aprovação humana explícita.
 
 ## GI-SAFRA-002 — Thresholds ainda abertos dos cenários 2, 4, 10 e 11
 
-**Status:** OPEN — AUTOMATION_DEFERRED / NON_BLOCKING_C08  
+**Status:** OPEN — NON_BLOCKING (D-45)  
 **Bloqueia START/C08:** não.  
 **Bloqueia automação do gatilho:** sim.
 
@@ -135,7 +166,7 @@ Nenhum valor será inferido.
 
 ## GI-SAFRA-003 — Fonte oficial do mínimo da curva A — cenário 9
 
-**Status:** OPEN — AUTOMATION_DEFERRED / NON_BLOCKING_C08  
+**Status:** OPEN — NON_BLOCKING (D-46)  
 **Bloqueia START/C08:** não.  
 **Bloqueia automação objetiva da ruptura:** sim.
 
@@ -145,14 +176,14 @@ Nenhum valor será inferido.
 
 ## GI-SAFRA-004 — Treatments simultâneos do mesmo cenário
 
-**Status:** WAITING_HUMAN_DECISION  
+**Status:** OPEN — DEFERRED_TO_M01  
 **Fase:** SAFRA-M01.
 
 Decidir se um cenário pode possuir mais de uma tratativa `ACTIVE` simultaneamente. Até decisão, nenhuma constraint de unicidade será criada.
 
 ## GI-SAFRA-005 — Canal/provider de notificações e comportamento dos platform admins
 
-**Status:** WAITING_HUMAN_DECISION  
+**Status:** OPEN — DEFERRED_TO_M05  
 **Fase:** SAFRA-M05.
 
 Definir:
@@ -161,14 +192,14 @@ Definir:
 
 ## GI-SAFRA-006 — Janela temporal oficial da “Safra corrente”
 
-**Status:** WAITING_HUMAN_DECISION  
+**Status:** OPEN — DEFERRED_TO_F04_M05  
 **Fase:** M05/F04.
 
 Definir o período exato usado em métricas, e-mails e análises da Safra corrente.
 
 ## GI-SAFRA-007 — Publicação formal do 12º card após ownership
 
-**Status:** WAITING_HUMAN_DECISION  
+**Status:** OPEN — DEFERRED_TO_M10  
 **Fase:** SAFRA-M10.
 
 Após definição do owner, ainda precisa ser decidido:
@@ -179,7 +210,7 @@ Após definição do owner, ainda precisa ser decidido:
 
 ## GI-SAFRA-008 — Janela oficial da governança semanal
 
-**Status:** WAITING_HUMAN_DECISION  
+**Status:** OPEN — DEFERRED_TO_F05  
 **Fase:** SAFRA-F05.
 
 Definir periodicidade/horário e corte de dados do ritual de governança semanal.
@@ -187,7 +218,8 @@ Definir periodicidade/horário e corte de dados do ritual de governança semanal
 
 ## GI-SAFRA-009 — Mapeamento formal dos eventos dos SLAs textuais
 
-**Status:** RESOLVED_FOR_C08 / PRODUCTIVE_VERSIONING_DEFERRED  
+**Status:** OPEN — NON_BLOCKING (D-47)  
+**Nota:** a regra D-47 destravou o C08; a pergunta segue aberta porque a materialização dos SLAs elegíveis ainda depende de nova versão governada.  
 **Fase:** SAFRA-C07/M04.  
 **Bloqueia START/C08:** não.
 
@@ -222,9 +254,19 @@ Regras:
 
 Com isso, a decomposição deixou de ser ambígua para C08. A materialização produtiva dos SLAs elegíveis continua condicionada a nova versão governada.
 
+## GI-SAFRA-010 — Liberação de START por card
+
+**Status:** OPEN — NON_BLOCKING (D-51)  
+**Fase:** governança futura (a definir).  
+**Bloqueia START/C08:** não.
+
+Definir quais dos 11 cards podem ser abertos e por quem. Até decisão, os 11 cenários publicados continuam startáveis por qualquer usuário corporativo autenticado (D-51, D-06). Nenhum card é bloqueado por inferência.
+
+---
+
 ### Persistência operacional
 
-As issues `GI-SAFRA-001..009` também estão materializadas em `public.governance_issues`.
+As issues `GI-SAFRA-001..010` também estão materializadas em `public.governance_issues`.
 
 No banco:
 - `OPEN` representa a decisão ainda pendente;

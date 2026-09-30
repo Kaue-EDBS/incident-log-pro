@@ -1,6 +1,6 @@
 schema_version: 3
-updated_at: "2026-09-27"
-status: C01_AUD_RECERTIFIED
+updated_at: "2026-09-30"
+status: C01_AUD2_RECONCILED
 
 project:
   name: "Painel Safra"
@@ -29,6 +29,7 @@ architecture:
     canonical_strategy: "SUPABASE_MIGRATIONS_CANONICAL"
     c04_canonical_migration: "20260925133200_c04_role_mapping_and_corporate_rls.sql"
     c01_audit_canonical_migration: "20260927204325_c01_corporate_domains_and_profile_alignment.sql"
+    c01_aud2_migration: "20260930150000_c01_aud2_governance_issues_alignment.sql"
     drizzle_schema_authority: false
     drizzle_tooling_role: "AUXILIARY_ORM_ONLY_NO_DEPLOY_AUTHORITY"
     remote_direct_schema_changes_allowed: false
@@ -39,8 +40,20 @@ architecture:
       - "20260925164600"
       - "20260925164700"
       - "20260925170000"
-    migration_history_repair_status: "RECONCILED_2026-09-27"
-    known_drift: []
+    migration_history_repair_status: "DRIFT_DETECTED_2026-09-30"
+    change_rule: "EVERY_DATABASE_CHANGE_STARTS_AS_A_FILE_IN_SUPABASE_MIGRATIONS (D-52)"
+    session_start_drift_check: "COMPARE_PRIMARY_SCHEMA_MIGRATIONS_WITH_REPO_FILES (D-52)"
+    known_drift:
+      - version: "20260928075934"
+        name: "c04_reaudit_legacy_surface_hardening"
+        state: "APPLIED_IN_PRIMARY_WITHOUT_REPO_FILE"
+      - version: "20260928090910"
+        name: "c05_notification_delivery_state_machine"
+        state: "APPLIED_IN_PRIMARY_WITHOUT_REPO_FILE"
+      - version: "20260928095246"
+        name: "c05_fk_indexes_and_clock_ownership"
+        state: "APPLIED_IN_PRIMARY_WITHOUT_REPO_FILE"
+    known_drift_owner_phase: "SAFRA-C05 reaudit"
 
 service:
   service_class:
@@ -229,7 +242,8 @@ domain_rules:
     note: "Business/domain attribute of scenarios. Not equivalent to application service_class."
   critical_scenarios_list: "GOVERNANCE_ISSUE_GI_SAFRA_001"
   safra_rules_registered: 29
-  legacy_it_rules_registered: 4
+  legacy_it_rules_registered: 0
+  legacy_it_rules_status: "RETIRED_BY_D50"
   automated_decisioning: false
   protocol_activation_mode: "MANUAL"
   detection_modes_allowed:
@@ -241,7 +255,6 @@ domain_rules:
     - "Painel SAFRA.docx - reunião de 22/09/2026"
     - "EDB06 - Protocolos de contingência v2.pdf"
     - "Plano de Ação - Metodologia do Painel Safra.md"
-    - "legacy implementation"
   material_business_decisions_open: true
   unknown_material_decisions: 0
   note: "Open governance issues are classified/deferred or have approved safe non-blocking behavior; open does not mean unknown."
@@ -255,6 +268,9 @@ governance:
   parity: "docs/MATRIZ_PARIDADE.md"
   decisions: "docs/DECISOES.md"
   project_profile: "docs/PROJECT_PROFILE.yaml"
+  glossary: "docs/GLOSSARIO_DOMINIO.md"
+  governance_issues: "docs/GOVERNANCE_ISSUES.md"  # fonte oficial dos GI; o banco espelha
+  history: "docs/historico/"
   destructive_git_history_rewrite_allowed: false
 
 deferred_decisions:
@@ -269,8 +285,10 @@ deferred_decisions:
   email_notification_provider_and_channel: "GI-SAFRA-005; DEFERRED_TO_M05"
   current_safra_time_window: "GI-SAFRA-006; DEFERRED_TO_F04_M05"
   formal_new_scenario_approval_flow: "GI-SAFRA-007; DEFERRED_TO_M10"
-  weekly_governance_window: "GI-SAFRA-008; DEFERRED_TO_GOVERNANCE_PHASE"
+  weekly_governance_window: "GI-SAFRA-008; DEFERRED_TO_F05"
   textual_sla_event_mapping: "GI-SAFRA-009; OPEN_NON_BLOCKING_D47"
+  start_release_per_card: "GI-SAFRA-010; OPEN_NON_BLOCKING_D51; ALL_11_PUBLISHED_SCENARIOS_STARTABLE"
+  protocol_metrics_replacing_mttd_mttr: "DEFERRED_TO_F04_M05; D50"
   quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_F04"
 
 c01_gate:
@@ -279,6 +297,11 @@ c01_gate:
   g3: "PASS"
   g3_25: "PASS"
   closed_at: "2026-09-24"
+
+c01_reaudit_2:
+  status: "IN_EXECUTION"
+  opened_at: "2026-09-30"
+  audit_document: "docs/AUDITORIA_C01_REABERTURA_2026-09-30.md"
 
 c01_reaudit:
   status: "APPROVED"
@@ -346,7 +369,8 @@ c05_schema_v2:
   anon_access: false
   authenticated_direct_access: false
   service_role_truncate_allowed: false
-  legacy_applications_incidents_preserved: true
+  legacy_applications_incidents_preserved: false
+  legacy_applications_incidents_status: "DROPPED_BY_D50_MIGRATION_20260930120000"
   rbac_source_reused: "private.safra_principals + private.safra_role_grants"
   concurrent_safra_user_roles_table_created: false
   gi_safra_001_status: "OPEN"
@@ -372,10 +396,7 @@ disposable_database:
   rollback_after_c06: "FORWARD_FIX_DEFAULT"
 
 
-jair_runtime_access:
-  corporate_email: "jair.silva@editoradobrasil.com.br"
-  status: "AUTHENTICATED_AND_BOUND"
-  identity_provider: "azure"
-  role: "safra_governance_admin"
-  last_sign_in_at_utc: "2026-09-25T18:05:38.625392Z"
-  verified_at: "2026-09-25"
+people_registry:
+  source_of_truth: "private.safra_principals (cadastro) + private.safra_role_grants (papéis)"
+  personal_data_in_profile: false
+  note: "Pessoas, e-mails e evidências de login ficam no banco e nas auditorias de fase, não nesta ficha."
