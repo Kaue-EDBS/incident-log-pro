@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — implementação na M05 |
 | D-57 | Cada pessoa pode ter no máximo uma tratativa ACTIVE por cenário; pessoas diferentes podem abrir o mesmo cenário (resolve GI-SAFRA-004) | APPROVED — aplicação técnica pendente |
 | D-56 | Detecção/aviso automático de gatilho fica para versão futura do produto (V2/V3); thresholds do GI-SAFRA-002 e mínimo da curva A do GI-SAFRA-003 não são necessários no MVP | APPROVED |
 | D-55 | Os 11 cenários são CRITICAL; a comunicação de CRITICAL na abertura vai ao dono do card; diretoria fora do fluxo por ora (resolve GI-SAFRA-001) | APPROVED — aplicação técnica pendente |
@@ -146,7 +147,7 @@ O inventário vigente é:
 | GI-SAFRA-002 — thresholds 2/4/10/11 | OPEN / DEFERRED_TO_PRODUCT_V2 (D-56) | D-45 mantém detecção automática `NOT_CONFIGURED`; START manual permitido |
 | GI-SAFRA-003 — fonte mínimo curva A | OPEN / DEFERRED_TO_PRODUCT_V2 (D-56) | D-46 mantém automação desligada e START manual |
 | GI-SAFRA-004 — múltiplas tratativas simultâneas | DECIDED (D-57) / APPLICATION_PENDING | uma ACTIVE por pessoa e por cenário; trava ainda não aplicada no banco |
-| GI-SAFRA-005 — canal/provider de notificações e platform admins | OPEN / DEFERRED_TO_M05 | nenhuma decisão de destinatário/provider é inferida |
+| GI-SAFRA-005 — canal/provider de notificações e platform admins | DECIDED (D-58) / IMPLEMENTATION_IN_M05 | e-mail + Teams; destinatários definidos |
 | GI-SAFRA-006 — janela temporal oficial da Safra | OPEN / DEFERRED_TO_F04_M05 | métricas/comunicações não devem inventar janela |
 | GI-SAFRA-007 — publicação formal do 12º card | OPEN / DEFERRED_TO_M10 | proposta não vira cenário produtivo automaticamente |
 | GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_F05 | nenhuma cadência é inferida |
@@ -979,3 +980,20 @@ Regra:
 - a retentativa do mesmo START (mesma chave de idempotência) continua devolvendo a mesma tratativa, sem contar como segunda abertura.
 
 Aplicação técnica pendente: trava no banco (unicidade de tratativa `ACTIVE` por pessoa e cenário) e mensagem na tela de Abrir Protocolo. Momento de ligar a trava a confirmar com o owner, porque END/CANCEL (F01/F02) ainda não existem.
+
+### D-58 — Canais e destinatários dos avisos
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-005.**
+
+Canais: **e-mail** (Microsoft 365) e **Microsoft Teams**, ambos enviados pelo servidor (nunca pelo navegador).
+
+Destinatários do aviso de abertura de protocolo:
+
+| Quem | Recebe? | Canal |
+|---|---|---|
+| Dono do card (owner vigente) | sim | e-mail e Teams |
+| Jair (`safra_governance_admin`) | sim, de todos os protocolos | só e-mail |
+| Platform admins (time técnico) | não, salvo se forem donos do card | — |
+| Bruno (`safra_executive_admin`) | não (sem e-mail operacional) | — |
+| Diretoria | fora do fluxo por ora (D-55) | — |
+
+Pré-requisito: autorização no Microsoft 365 da Editora para o Painel enviar e-mail e postar no Teams (TI/administrador do tenant). Detalhes (caixa remetente, canal ou chat do Teams, modelo da mensagem) ficam para a M05. Continuam valendo: envio server-side, template versionado, log de entrega, idempotência e deduplicação por e-mail.

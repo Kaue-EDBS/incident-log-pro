@@ -30,7 +30,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
 | 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
 | 004 | Tratativas simultâneas do mesmo cenário | DECIDED (D-57) — aplicação pendente |
-| 005 | Canal de notificações e platform admins | OPEN — DEFERRED_TO_M05 |
+| 005 | Canal de notificações e platform admins | DECIDED (D-58) — implementação na M05 |
 | 006 | Janela oficial da "Safra corrente" | OPEN — DEFERRED_TO_F04_M05 |
 | 007 | Publicação formal do 12º card | OPEN — DEFERRED_TO_M10 |
 | 008 | Janela da governança semanal | OPEN — DEFERRED_TO_F05 |
@@ -194,8 +194,9 @@ Decidir se um cenário pode possuir mais de uma tratativa `ACTIVE` simultaneamen
 
 ## GI-SAFRA-005 — Canal/provider de notificações e comportamento dos platform admins
 
-**Status:** OPEN — DEFERRED_TO_M05  
-**Fase:** SAFRA-M05.
+**Status:** DECIDED (D-58) — implementação na M05  
+**Fase:** SAFRA-M05.  
+**Decisão do owner (30/09/2026):** avisos por e-mail (Microsoft 365) e Teams. Dono do card recebe pelos dois; Jair recebe só por e-mail, de todos os protocolos; platform admins não recebem, salvo se forem donos do card.
 
 Definir:
 - provider/canal produtivo;
