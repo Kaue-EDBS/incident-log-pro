@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
 | D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
 | D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — implementação na M05 |
 | D-57 | Cada pessoa pode ter no máximo uma tratativa ACTIVE por cenário; pessoas diferentes podem abrir o mesmo cenário (resolve GI-SAFRA-004) | APPROVED — aplicação técnica pendente |
@@ -150,7 +151,7 @@ O inventário vigente é:
 | GI-SAFRA-004 — múltiplas tratativas simultâneas | DECIDED (D-57) / APPLICATION_PENDING | uma ACTIVE por pessoa e por cenário; trava ainda não aplicada no banco |
 | GI-SAFRA-005 — canal/provider de notificações e platform admins | DECIDED (D-58) / IMPLEMENTATION_IN_M05 | e-mail + Teams; destinatários definidos |
 | GI-SAFRA-006 — janela temporal oficial da Safra | DECIDED (D-59) / IMPLEMENTATION_IN_F04_M05 | abertura/encerramento manual pelo Kaue |
-| GI-SAFRA-007 — publicação formal do 12º card | OPEN / DEFERRED_TO_M10 | proposta não vira cenário produtivo automaticamente |
+| GI-SAFRA-007 — publicação formal do 12º card | DECIDED (D-60) / IMPLEMENTATION_IN_M10 | proponente escreve, Jair aprova, platform admin publica |
 | GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_F05 | nenhuma cadência é inferida |
 | GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-47 permite estruturar apenas cláusulas inequivocamente elegíveis; demais permanecem não estruturadas |
 | GI-SAFRA-010 — governança de liberação de START por card | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-51 mantém os 11 cenários publicados startáveis; restringir um card exige decisão explícita |
@@ -1007,3 +1008,15 @@ Pré-requisito: autorização no Microsoft 365 da Editora para o Painel enviar e
 - Métricas, e-mails e relatórios "da Safra corrente" usam esse intervalo.
 - O encerramento é o marco da política de retenção (ADR-016): a partir dele contam os prazos de eliminação/anonimização de dados pessoais.
 - Implementação quando a primeira funcionalidade precisar da janela (F04/M05). Incluir substitutos para a marcação exige decisão nova.
+
+### D-60 — Publicação de cenário novo vindo do 12º card
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-007.**
+
+Complementa ADR-014 (triagem e definição do dono pela proposta do 12º card):
+
+1. **Conteúdo:** o usuário que fez a proposta, por ter a necessidade, escreve o conteúdo do cenário (gatilho, protocolo e prazos).
+2. **Aprovação:** o Jair (`safra_governance_admin`) aprova.
+3. **Publicação:** depois da aprovação, um platform admin (`safra_platform_admin`) publica a primeira `scenario_version`.
+4. **Criticidade:** todo cenário novo nasce `CRITICAL`, como os 11 atuais (D-55).
+
+Sem as etapas 2 e 3 registradas, a proposta não vira cenário publicado (regra anterior mantida). Quem aprova e quem publica ficam gravados na trilha de auditoria.
