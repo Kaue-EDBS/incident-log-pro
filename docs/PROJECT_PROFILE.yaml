@@ -285,7 +285,7 @@ deferred_decisions:
   email_notification_provider_and_channel: "GI-SAFRA-005; DECIDED_D58_EMAIL_AND_TEAMS; IMPLEMENTATION_IN_M05"
   current_safra_time_window: "GI-SAFRA-006; DECIDED_D59_MANUAL_OPEN_CLOSE_BY_OWNER; IMPLEMENTATION_IN_F04_M05"
   formal_new_scenario_approval_flow: "GI-SAFRA-007; DECIDED_D60_PROPOSER_WRITES_JAIR_APPROVES_PLATFORM_ADMIN_PUBLISHES_CRITICAL; IMPLEMENTATION_IN_M10"
-  weekly_governance_window: "GI-SAFRA-008; DEFERRED_TO_F05"
+  weekly_governance_window: "GI-SAFRA-008; DECIDED_D61_RITUAL_OUT_OF_APP_SCOPE; F05_SCREEN_KEPT"
   textual_sla_event_mapping: "GI-SAFRA-009; OPEN_NON_BLOCKING_D47"
   start_release_per_card: "GI-SAFRA-010; OPEN_NON_BLOCKING_D51; ALL_11_PUBLISHED_SCENARIOS_STARTABLE"
   protocol_metrics_replacing_mttd_mttr: "DEFERRED_TO_F04_M05; D50"

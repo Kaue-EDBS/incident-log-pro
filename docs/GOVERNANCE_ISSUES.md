@@ -33,7 +33,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 005 | Canal de notificações e platform admins | DECIDED (D-58) — implementação na M05 |
 | 006 | Janela oficial da "Safra corrente" | DECIDED (D-59) — implementação na F04/M05 |
 | 007 | Publicação formal do 12º card | DECIDED (D-60) — implementação na M10 |
-| 008 | Janela da governança semanal | OPEN — DEFERRED_TO_F05 |
+| 008 | Janela da governança semanal | DECIDED (D-61) — fora do escopo; banco atualizado no pacote |
 | 009 | Eventos dos SLAs textuais | OPEN — NON_BLOCKING (D-47) |
 | 010 | Liberação de START por card | OPEN — NON_BLOCKING (D-51) |
 
@@ -224,8 +224,9 @@ Após definição do owner, ainda precisa ser decidido:
 
 ## GI-SAFRA-008 — Janela oficial da governança semanal
 
-**Status:** OPEN — DEFERRED_TO_F05  
-**Fase:** SAFRA-F05.
+**Status:** DECIDED (D-61) — fora do escopo da aplicação  
+**Fase:** SAFRA-F05.  
+**Decisão do owner (30/09/2026):** dia, horário e ritual da reunião semanal ficam fora do Painel. A F05 continua, com a tela de resumo e o registro das ações decididas.
 
 Definir periodicidade/horário e corte de dados do ritual de governança semanal.
 

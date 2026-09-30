@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
 | D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
 | D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
 | D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — implementação na M05 |
@@ -152,7 +153,7 @@ O inventário vigente é:
 | GI-SAFRA-005 — canal/provider de notificações e platform admins | DECIDED (D-58) / IMPLEMENTATION_IN_M05 | e-mail + Teams; destinatários definidos |
 | GI-SAFRA-006 — janela temporal oficial da Safra | DECIDED (D-59) / IMPLEMENTATION_IN_F04_M05 | abertura/encerramento manual pelo Kaue |
 | GI-SAFRA-007 — publicação formal do 12º card | DECIDED (D-60) / IMPLEMENTATION_IN_M10 | proponente escreve, Jair aprova, platform admin publica |
-| GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_F05 | nenhuma cadência é inferida |
+| GI-SAFRA-008 — janela de governança semanal | DECIDED (D-61) / OUT_OF_APP_SCOPE | ritual fora do Painel; F05 mantida |
 | GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-47 permite estruturar apenas cláusulas inequivocamente elegíveis; demais permanecem não estruturadas |
 | GI-SAFRA-010 — governança de liberação de START por card | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-51 mantém os 11 cenários publicados startáveis; restringir um card exige decisão explícita |
 | métricas do protocolo Safra (substitutas de MTTD/MTTR/MTBF) | DEFERRED_TO_F04_M05 | D-50 retirou as métricas de TI; nenhuma métrica de protocolo é inferida |
@@ -1020,3 +1021,10 @@ Complementa ADR-014 (triagem e definição do dono pela proposta do 12º card):
 4. **Criticidade:** todo cenário novo nasce `CRITICAL`, como os 11 atuais (D-55).
 
 Sem as etapas 2 e 3 registradas, a proposta não vira cenário publicado (regra anterior mantida). Quem aprova e quem publica ficam gravados na trilha de auditoria.
+
+### D-61 — Ritual da governança semanal fora do Painel
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-008.**
+
+- O **dia, o horário e o ritual** da reunião semanal de governança são responsabilidade da organização, **fora da alçada da aplicação**. O Painel não guarda nem controla a agenda.
+- A fase **SAFRA-F05 continua**: tela de resumo (cenários recorrentes, prazos estourados, protocolos ativos, tendência) e registro das ações decididas (`PROCESS_CHANGE`, `MASTER_DATA_FIX`, `CAPACITY_CHANGE`, `PARTNER_ACTION`, `SYSTEM_CHANGE`, `TRAINING`, `NO_ACTION_JUSTIFIED`).
+- O período coberto pelo resumo será definido no desenho da F05, sem inferir cadência.

@@ -754,7 +754,7 @@ TRAINING
 NO_ACTION_JUSTIFIED
 ```
 
-Definir janela/ritual oficial nesta fase.
+O dia, o horário e o ritual da reunião ficam fora do Painel (D-61). O período coberto pelo resumo é definido no desenho desta fase.
 
 ---
 
