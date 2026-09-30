@@ -16,7 +16,8 @@
 |---|---|
 | `OPEN — NON_BLOCKING (D-xx)` | pergunta sem resposta, mas existe regra segura aprovada; nada fica travado |
 | `OPEN — DEFERRED_TO_<fase>` | pergunta sem resposta, conscientemente adiada para a fase indicada |
-| `RESOLVED (D-xx)` | respondida por decisão registrada em `DECISOES.md` |
+| `DECIDED (D-xx) — aplicação pendente` | respondida, mas a mudança técnica ainda não foi aplicada; o banco continua `OPEN` até a aplicação |
+| `RESOLVED (D-xx)` | respondida por decisão registrada em `DECISOES.md` e aplicada |
 
 Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsável.
 
@@ -24,7 +25,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 
 | GI | Pergunta | Status |
 |---|---|---|
-| 001 | Quais são os 4 cenários CRITICAL? | OPEN — NON_BLOCKING (D-44) |
+| 001 | Quais são os 4 cenários CRITICAL? | DECIDED (D-55) — aplicação pendente |
 | 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — NON_BLOCKING (D-45) |
 | 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — NON_BLOCKING (D-46) |
 | 004 | Tratativas simultâneas do mesmo cenário | OPEN — DEFERRED_TO_M01 |
@@ -37,7 +38,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
-**Status:** OPEN — NON_BLOCKING (D-44)  
+**Status:** DECIDED (D-55) — aplicação pendente  
 **Tipo:** DOMAIN_DECISION  
 **Owner de governança:** safra_governance_admin  
 **Fase de origem:** SAFRA-C03  
@@ -132,6 +133,12 @@ Decisão D-44:
 - futura classificação exige decisão humana + nova `scenario_version`.
 
 A pergunta nominal dos quatro CRITICAL continua aberta para enriquecimento futuro, mas **não impede C08**.
+
+### Decisão do owner — D-55 — 30/09/2026
+
+Os **11 cenários são CRITICAL**. A comunicação de abertura vai para o **dono do card**; a diretoria fica fora do fluxo por ora. A decisão prevalece sobre a menção a "quatro temas" da reunião de 22/09.
+
+Aplicação técnica pendente: nova `scenario_version` (versão 2) para cada cenário. Ao aplicar, este GI passa a `RESOLVED (D-55)` aqui e no banco.
 
 ### Regra de implementação futura
 

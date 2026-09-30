@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-55 | Os 11 cenários são CRITICAL; a comunicação de CRITICAL na abertura vai ao dono do card; diretoria fora do fluxo por ora (resolve GI-SAFRA-001) | APPROVED — aplicação técnica pendente |
 
 ## 3. ADRs
 
@@ -139,7 +140,7 @@ O inventário vigente é:
 
 | Item | Estado | Tratamento atual |
 |---|---|---|
-| GI-SAFRA-001 — quatro cenários CRITICAL | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-44 mantém criticidade `NULL`; não inferir; futura decisão cria nova versão |
+| GI-SAFRA-001 — quatro cenários CRITICAL | DECIDED (D-55) / APPLICATION_PENDING | os 11 são CRITICAL; entra na versão 2 dos cenários; até lá o banco segue com `NULL` (D-44) |
 | GI-SAFRA-002 — thresholds 2/4/10/11 | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-45 mantém detecção automática `NOT_CONFIGURED`; START manual permitido |
 | GI-SAFRA-003 — fonte mínimo curva A | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-46 mantém automação desligada e START manual |
 | GI-SAFRA-004 — múltiplas tratativas simultâneas | OPEN / DEFERRED_TO_M01 | comportamento atual permite múltiplas ACTIVE; mudança exige decisão explícita |
@@ -943,3 +944,20 @@ Aplica a regra de autoridade do C01 ("STATUS não é backlog histórico; ROADMAP
 - `STATUS.md` descreve só onde o projeto está agora;
 - o histórico integral até 30/09/2026 foi movido, sem alteração, para `docs/historico/`;
 - `ROADMAP.md` lista fases, estado e gates, e aponta para os documentos donos de regras, decisões, arquitetura e domínio.
+
+### D-55 — Os 11 cenários são CRITICAL; aviso vai ao dono do card
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-001.**
+
+Contexto: a reunião de 22/09/2026 falava em quatro temas "super pesados", sem nomeá-los, e em comunicar a diretoria na abertura de um CRITICAL. A criticidade de todos os cenários estava `NULL` (D-44).
+
+Decisão:
+- os 11 cenários publicados (SAFRA-01 a SAFRA-11) têm criticidade `CRITICAL`;
+- a comunicação de abertura de um CRITICAL vai para o **dono do card** (owner vigente do cenário);
+- a **diretoria fica fora** desse fluxo por ora; incluí-la exige decisão nova;
+- esta decisão prevalece sobre a menção a "quatro" da reunião de 22/09, pela regra de precedência (decisão humana posterior registrada).
+
+Aplicação técnica:
+- a criticidade é conteúdo da versão publicada, que é imutável; a mudança entra numa nova `scenario_version` (versão 2) de cada cenário, e a versão 1 passa a `RETIRED`;
+- tratativas já abertas continuariam na versão em que começaram (hoje não há nenhuma);
+- até a aplicação, o banco segue com `criticality = NULL` e o comportamento seguro da D-44;
+- a notificação em si só existe quando o SAFRA-M05 for implementado.

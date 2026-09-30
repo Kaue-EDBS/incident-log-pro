@@ -59,7 +59,7 @@ Fontes: Matriz v3, Protocolos v2 e decisões da reunião de 22/09.
 
 Esta regra não classifica tecnicamente a aplicação Painel Safra. `service_class`, SLO, RTO, RPO e criticidade da aplicação pertencem ao Framework EBSA e são decisões separadas.
 
-A lista exata dos quatro cenários `CRITICAL` está registrada como `GI-SAFRA-001`. Não há evidência nominal suficiente para inferir os quatro; classificação permanece dependente de decisão humana formal.
+**D-55 (30/09/2026):** os 11 cenários são `CRITICAL` por decisão do owner; a comunicação de abertura de um CRITICAL vai ao dono do card, sem a diretoria por ora. Aplicação técnica pendente (versão 2 dos cenários). A regra anterior, que falava em quatro CRITICAL sem nomeá-los, foi superada.
 
 ### RB-SAFRA-010 — Protocolo não é chamado
 Não exigir workflow de ticket técnico para cada protocolo.
