@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-56 | Detecção/aviso automático de gatilho fica para versão futura do produto (V2/V3); thresholds do GI-SAFRA-002 não são necessários no MVP | APPROVED |
 | D-55 | Os 11 cenários são CRITICAL; a comunicação de CRITICAL na abertura vai ao dono do card; diretoria fora do fluxo por ora (resolve GI-SAFRA-001) | APPROVED — aplicação técnica pendente |
 
 ## 3. ADRs
@@ -141,7 +142,7 @@ O inventário vigente é:
 | Item | Estado | Tratamento atual |
 |---|---|---|
 | GI-SAFRA-001 — quatro cenários CRITICAL | DECIDED (D-55) / APPLICATION_PENDING | os 11 são CRITICAL; entra na versão 2 dos cenários; até lá o banco segue com `NULL` (D-44) |
-| GI-SAFRA-002 — thresholds 2/4/10/11 | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-45 mantém detecção automática `NOT_CONFIGURED`; START manual permitido |
+| GI-SAFRA-002 — thresholds 2/4/10/11 | OPEN / DEFERRED_TO_PRODUCT_V2 (D-56) | D-45 mantém detecção automática `NOT_CONFIGURED`; START manual permitido |
 | GI-SAFRA-003 — fonte mínimo curva A | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-46 mantém automação desligada e START manual |
 | GI-SAFRA-004 — múltiplas tratativas simultâneas | OPEN / DEFERRED_TO_M01 | comportamento atual permite múltiplas ACTIVE; mudança exige decisão explícita |
 | GI-SAFRA-005 — canal/provider de notificações e platform admins | OPEN / DEFERRED_TO_M05 | nenhuma decisão de destinatário/provider é inferida |
@@ -961,3 +962,8 @@ Aplicação técnica:
 - tratativas já abertas continuariam na versão em que começaram (hoje não há nenhuma);
 - até a aplicação, o banco segue com `criticality = NULL` e o comportamento seguro da D-44;
 - a notificação em si só existe quando o SAFRA-M05 for implementado.
+
+### D-56 — Detecção automática de gatilho fora do MVP
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+O aviso automático de que um gatilho foi atingido (a partir de integrações como Intelipost, Protheus ou WMS) fica para uma versão futura do produto (V2 ou V3). No MVP, todo START é manual (D-45 continua valendo). Por isso os números de disparo dos cenários 2, 4, 10 e 11 (GI-SAFRA-002) não são necessários agora e ficam adiados, sem valor inferido.

@@ -16,6 +16,7 @@
 |---|---|
 | `OPEN — NON_BLOCKING (D-xx)` | pergunta sem resposta, mas existe regra segura aprovada; nada fica travado |
 | `OPEN — DEFERRED_TO_<fase>` | pergunta sem resposta, conscientemente adiada para a fase indicada |
+| `OPEN — DEFERRED_TO_PRODUCT_V2` | adiada para uma versão futura do produto (V2/V3), fora do MVP |
 | `DECIDED (D-xx) — aplicação pendente` | respondida, mas a mudança técnica ainda não foi aplicada; o banco continua `OPEN` até a aplicação |
 | `RESOLVED (D-xx)` | respondida por decisão registrada em `DECISOES.md` e aplicada |
 
@@ -26,7 +27,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | GI | Pergunta | Status |
 |---|---|---|
 | 001 | Quais são os 4 cenários CRITICAL? | DECIDED (D-55) — aplicação pendente |
-| 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — NON_BLOCKING (D-45) |
+| 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
 | 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — NON_BLOCKING (D-46) |
 | 004 | Tratativas simultâneas do mesmo cenário | OPEN — DEFERRED_TO_M01 |
 | 005 | Canal de notificações e platform admins | OPEN — DEFERRED_TO_M05 |
@@ -157,7 +158,8 @@ As decisões abaixo não devem ser completadas pela aplicação, por migration o
 
 ## GI-SAFRA-002 — Thresholds ainda abertos dos cenários 2, 4, 10 e 11
 
-**Status:** OPEN — NON_BLOCKING (D-45)  
+**Status:** OPEN — DEFERRED_TO_PRODUCT_V2 (D-56)  
+**Decisão do owner (30/09/2026):** o aviso/detecção automática fica para uma versão futura do produto (V2 ou V3). Os números não são necessários agora; START segue manual (D-45).  
 **Bloqueia START/C08:** não.  
 **Bloqueia automação do gatilho:** sim.
 
