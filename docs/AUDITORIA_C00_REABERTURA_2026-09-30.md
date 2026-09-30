@@ -156,4 +156,4 @@ A C00-AUD2 só fecha quando:
 - [ ] o Database Disposable Test e o App Smoke Test passarem no GitHub;
 - [x] a migration estiver aplicada no Lovable Cloud PRIMARY e registrada em `supabase_migrations.schema_migrations`;
 - [x] a consulta de verificação no PRIMARY confirmar a ausência dos quatro objetos e a contenção de `anon`;
-- [ ] o app publicado mostrar "Em obras" na Visão Geral e o Abrir Protocolo funcionando (conferência humana com sessão Microsoft).
+- [x] o app publicado mostrar "Em obras" na Visão Geral e o Abrir Protocolo funcionando — conferido pelo owner com sessão Microsoft em 30/09/2026.
