@@ -177,10 +177,9 @@ select is(
   'DST start: durations are absolute elapsed time'
 );
 
-select is(
-  (select row(requester_seconds, owner_seconds, consolidated_seconds)::text
+select ok(
+  (select requester_seconds = 177300 and owner_seconds = 93600 and consolidated_seconds = 177300
    from private.safra_close_times('2026-10-01 08:00-03', '2026-10-03 09:15-03', '2026-10-02 10:00-03', null)),
-  row(177300::numeric, 93600::numeric, 177300::numeric)::text,
   'multi-day times are also returned as total seconds (safe for analytics)'
 );
 
@@ -191,10 +190,9 @@ select is(
   'DST start: 3 elapsed hours are 10800 seconds'
 );
 
-select is(
-  (select row(requester_seconds, owner_seconds, consolidated_seconds)::text
+select ok(
+  (select requester_seconds is null and owner_seconds = 3600 and consolidated_seconds is null
    from private.safra_close_times('2026-10-01 08:00-03', null, '2026-10-01 09:00-03', null)),
-  row(null::numeric, 3600::numeric, null::numeric)::text,
   'open part keeps empty seconds, never zero'
 );
 
