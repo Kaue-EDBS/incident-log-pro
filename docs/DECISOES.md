@@ -1204,5 +1204,5 @@ Persistência (F01): o protocolo guarda separadamente quem fechou e quando, para
 
 - Planilha fornecida pelo owner: assinatura `b0cca8cc…` igual à aprovada; o leitor gerou cópia idêntica à registrada; comparação sem diferenças (`NO_DIFF`); validação `PASS`.
 - Conferência de 100% dos campos no PRIMARY: `docs/data-contracts/c06_aud2_reconciliation_2026-10-01.json`.
-- Migration `20261001220000_c06_aud2_governance_issue_texts.sql`: textos das pendências abertas e da resolução da GI-SAFRA-009 alinhados às decisões vigentes; nenhum status mudou.
+- Migration `20261001220000_c06_aud2_governance_issue_texts.sql` (CI verde #242/#280; aplicada no PRIMARY, 37 = 37): textos das pendências abertas e da resolução da GI-SAFRA-009 alinhados às decisões vigentes; nenhum status mudou.
 - Marcos P1–P4: critérios revistos (D-62/D-66/D-67/D-73); todos seguem `NOT_PUBLISHED`.

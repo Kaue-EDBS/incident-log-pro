@@ -4,7 +4,7 @@
 **Bloco:** SAFRA-C06 — Seed canônico da Matriz v3  
 **Data:** 01/10/2026  
 **Estado:** CONCLUÍDA  
-**Migration:** `20261001220000_c06_aud2_governance_issue_texts.sql`  
+**Migration:** `20261001220000_c06_aud2_governance_issue_texts.sql` (CI verde: App Smoke #242, Database Disposable #280; aplicada e conferida no PRIMARY, 37 = 37)  
 **Testes/verificadores novos:** `c06_aud2_package.test.sql` (10) e `.github/scripts/check-c06-staging-integrity.py`
 
 ---
