@@ -356,7 +356,7 @@ governance_issues
 
 ## 7. Segurança e exposição
 
-As 17 tabelas novas do domínio C05 foram criadas com:
+As tabelas do domínio Safra (17 criadas no C05; 16 desde a remoção de `treatment_escalations` pela D-73) têm:
 - RLS habilitada;
 - deny-by-default para `anon` e `authenticated`;
 - acesso técnico de `service_role` sem `TRUNCATE`.

@@ -136,7 +136,7 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 | Classe | Controles | Evidências obrigatórias |
 |---|---|---|
 | autorização | canonical corporate predicate, live session, role mapping, owner mapping | `c01_corporate_domains.test.sql`, `c02_threat_model_authz.test.sql`, direct RPC denial |
-| Data API | revoke grants + RLS deny-by-default | direct API smoke cobrindo as 17 tabelas Safra (legado removido pela D-50) |
+| Data API | revoke grants + RLS deny-by-default | direct API smoke cobrindo as 16 tabelas Safra (legado removido pela D-50) |
 | START/retry | server-side RPC, immutable snapshot, idempotency, advisory lock, correlation ID, trava por pessoa e card | C08 pgTAP + C02 conflito de chave + teste concorrente real + `c01_aud2_package.test.sql` |
 | histórico/versionamento | guards de versão/owner/treatment + append-only | C05/C06 tests |
 | tempo/SLA | server timestamps + engine de SLA + snapshot histórico | matriz adversarial C07 |
@@ -230,7 +230,7 @@ O fechamento do C02 foi reavaliado contra o roadmap e as implementações poster
 | quatro classes de testes | PASS | positivos, negativos, concorrência/retry e limites/bordas derivados |
 | contrato de evidência | PASS | ator, correlation_id, estados, ação, resultado, auditoria, timestamps, notificações e efeitos colaterais definidos |
 | riscos residuais | PASS | riscos explicitados e com owner/fase; não significam default ou inferência |
-| gates C02 | PASS histórico / RECERTIFICAÇÃO EM EXECUÇÃO | G3.5, THREAT-001 e AUTHZ-001 só voltam a PASS atual após correções, gates e verificação no PRIMARY |
+| gates C02 | PASS histórico / RECERTIFICADOS em 01/10/2026 (C02-AUD2) | G3.5, THREAT-001 e AUTHZ-001 só voltam a PASS atual após correções, gates e verificação no PRIMARY |
 
 Observação: o C02 aprova modelo de ameaça, abuso e contrato de autorização. A execução integral de todos os testes funcionais permanece distribuída nas fases de implementação previstas no roadmap; isso não reabre o C02.
 
@@ -243,7 +243,7 @@ Substitui a tabela da seção 12 como fotografia atual. A seção 12 fica como h
 |---|---|---|---|---|
 | RR-C02-01 | uso indevido de START/END/CANCEL | START controlado (C08 + D-57); END/CANCEL com contrato definido (D-64/D-66) | F01/F02 | não |
 | RR-C02-02 | role/claim desatualizado ou sessão revogada | **CONTROLLED** — predicado corporativo nas funções de RBAC, verificado no PRIMARY em 01/10 | — | não |
-| RR-C02-03 | enumeração ou leitura excessiva | CONTROLLED — 17 tabelas sem grant direto; smoke cobre todas | — | não |
+| RR-C02-03 | enumeração ou leitura excessiva | CONTROLLED — 16 tabelas sem grant direto; smoke cobre todas | — | não |
 | RR-C02-04 | dado pessoal em texto livre, log ou aviso | RESIDUAL_ACCEPTED_WITH_MINIMIZATION | M05 (conteúdo dos avisos), F08 | não |
 | RR-C02-05 | duplicidade por retry/concorrência | CONTROLLED — chave idempotente, advisory lock, trava por pessoa, teste concorrente | — | não |
 | RR-C02-06 | manipulação de estado/tempo para parar avisos | CONTROLLED_CURRENT_SURFACE — sem SLA nos cards (D-62); avisos dependem do fechamento do usuário (D-67) | M05/F01 | não |

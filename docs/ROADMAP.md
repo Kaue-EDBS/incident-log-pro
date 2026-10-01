@@ -137,6 +137,8 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 
 # 11. Estado das fases
 
+> **Atenção (01/10/2026):** as especificações das fases futuras **M01, M04, M05, F01, F02 e F04** foram escritas antes das decisões D-55 a D-73 e ainda não foram revistas. Elas serão auditadas uma a uma, quando chegar a vez de cada fase. Até lá, em caso de conflito, valem `DECISOES.md`, `REGRAS_NEGOCIO.md` e `GLOSSARIO_DOMINIO.md` v2.0.
+
 ## EIXO 1 — COMEÇO
 
 | Fase | Tema | Estado | Onde ver |

@@ -127,8 +127,8 @@ Arquivo:
 
 Cobre atualmente:
 
-- 17 tabelas do schema v2;
-- RLS ativa nas 17;
+- 16 tabelas do schema v2 (17 até 01/10/2026; `treatment_escalations` removida pela D-73);
+- RLS ativa nas 16;
 - anon sem grant direto;
 - authenticated sem grant direto;
 - criticidade sem default;

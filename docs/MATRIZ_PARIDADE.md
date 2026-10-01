@@ -30,8 +30,13 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 | treatment | inexistente | operação | BUILD |
 | scenario owner | inexistente | autorização | BUILD |
 | áreas impactadas | inexistente | impacto real | BUILD |
-| SLA múltiplo | inexistente | engine temporal | BUILD |
-| escalonamento | inexistente | técnico/negócio/executivo | BUILD |
+| SLA múltiplo | inexistente | engine temporal implementada (C07), **sem uso nos cards no MVP** (D-62) | PARK |
+| escalonamento | inexistente | fora do Painel, feito pelos donos de card (D-73) | REMOVE |
+| trava de uma tratativa por pessoa e card | inexistente | D-57 — implementada (C01-AUD2) | BUILD — FEITO |
+| dono não abre o próprio card | inexistente | D-65 — implementada (C02-AUD2) | BUILD — FEITO |
+| encerramento em duas partes | inexistente | D-66/D-72 — F01 | BUILD |
+| avisos (abertura + escada 2h/4h) | inexistente | D-58/D-67 — M05 | BUILD |
+| Safra corrente (marcar início/fim) | inexistente | D-59/D-69/D-70 — F04/M05 | BUILD |
 | proposal workflow | inexistente | governança | BUILD |
 | trilha Safra | inexistente | auditoria | BUILD |
 | identidade corporativa | inexistente | obrigatória | BUILD |

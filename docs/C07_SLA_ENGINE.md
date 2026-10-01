@@ -1,5 +1,7 @@
 # C07 — Engine de SLA
 
+> **Situação em 01/10/2026 (D-62):** nenhum dos 11 cards usa SLA no MVP. A engine continua implementada e testada, mas sem uso nos cards: `scenario_slas` está vazia e o START não inicia relógio. O acompanhamento é feito pela escada de avisos de 2h e 4h (D-67), que não é SLA.
+
 ## Objetivo
 
 Calcular estado de SLA a partir de eventos e timestamps oficiais sem inferir regra de negócio.
@@ -56,7 +58,7 @@ O texto de SLA da Matriz v3 continua preservado como fonte canônica, mas não f
 
 Motivo:
 - start_event/end_event nem sempre estão formalmente definidos;
-- alguns thresholds continuam em WAITING_HUMAN_DECISION;
+- os thresholds de gatilho foram adiados para a V2 do produto (D-56);
 - versões v1 já estão PUBLISHED e não podem ser reescritas.
 
 Quando uma regra for homologada, ela nasce em nova `scenario_version`.

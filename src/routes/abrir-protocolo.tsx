@@ -4,7 +4,6 @@ import {
   AlertTriangle,
   Building2,
   CheckCircle2,
-  Clock3,
   Loader2,
   PlayCircle,
   RefreshCw,
@@ -128,30 +127,6 @@ function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: ()
           </p>
           <LiveTimer since={result.opened_at} className="mt-2 text-2xl font-semibold" />
         </div>
-      </div>
-
-      <div className="mt-5 border-t border-border pt-5">
-        <p className="text-sm font-medium">SLAs estruturados desta versão</p>
-        {result.slas.length ? (
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
-            {result.slas.map((sla) => (
-              <div key={sla.sla_id} className="rounded-xl border border-border bg-card p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="font-medium">{sla.label}</p>
-                  <span className="rounded-full border border-border px-2 py-1 text-xs">
-                    {sla.state}
-                  </span>
-                </div>
-                <p className="mt-2 text-xs text-muted-foreground">{sla.target_text}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-2 text-sm text-muted-foreground">
-            Nenhum SLA estruturado está publicado nesta versão. O sistema não inferiu relógios a
-            partir do texto.
-          </p>
-        )}
       </div>
 
       <button
@@ -375,13 +350,6 @@ function StartSafraTreatment() {
                     <div>
                       <p className="text-xs text-muted-foreground">Criticidade</p>
                       <p className="font-medium">{selected.criticality ?? "Não definida"}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <Clock3 className="mt-0.5 size-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">SLAs estruturados</p>
-                      <p className="font-medium">{selected.structured_sla_count}</p>
                     </div>
                   </div>
                 </div>
