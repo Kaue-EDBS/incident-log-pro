@@ -1247,4 +1247,4 @@ Persistência (F01): o protocolo guarda separadamente quem fechou e quando, para
 
 ### Aplicação do pacote C07-AUD2 — 01/10/2026
 
-Migration `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql`: engine de SLA removida (D-75); regras de tempo da escada (D-76) e do analytics (D-77) criadas como cálculos que recebem os horários (as colunas de cada parte chegam na F01); resolução da GI-SAFRA-009 atualizada. Teste: `c07_aud2_time_rules.test.sql` (31). O schema público passa de 16 para 15 tabelas.
+Migration `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql` (CI verde #244/#282; aplicada no PRIMARY, 38 = 38): engine de SLA removida (D-75); regras de tempo da escada (D-76) e do analytics (D-77) criadas como cálculos que recebem os horários (as colunas de cada parte chegam na F01); resolução da GI-SAFRA-009 atualizada. Teste: `c07_aud2_time_rules.test.sql` (31). O schema público passa de 16 para 15 tabelas.

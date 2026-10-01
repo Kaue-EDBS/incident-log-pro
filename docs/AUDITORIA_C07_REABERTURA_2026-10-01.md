@@ -4,7 +4,7 @@
 **Bloco:** SAFRA-C07 — Engine de SLA → regras de tempo  
 **Data:** 01/10/2026  
 **Estado:** CONCLUÍDA  
-**Migration:** `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql`  
+**Migration:** `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql` (CI verde: App Smoke #244, Database Disposable #282; aplicada e conferida no PRIMARY: 38 = 38, 15 tabelas, 0 funções de SLA)  
 **Teste novo:** `c07_aud2_time_rules.test.sql` (31)  
 **Decisões:** D-75, D-76, D-77
 
