@@ -371,6 +371,17 @@ c04_gate:
   user_metadata_as_authorization: false
 
 
+c04_reaudit_2:
+  status: "APPROVED"
+  date: "2026-10-01"
+  migration: "20261001180000_c04_aud2_identity_hardening.sql"
+  ci_tests: ["c04_aud2_identity_authz.test.sql", "c04_aud2_hardening.test.sql"]
+  principal_binding: "AZURE_PROVIDER_ONLY"
+  public_default_privileges: "CLOSED_FOR_ANON_AUTHENTICATED"
+  sandbox_exec_bypass: "ACCEPTED_RISK_WORKSPACE_RESTRICTED_TO_TEAM"
+  owner_action_recommended: "DISABLE_EMAIL_PROVIDER_IN_LOVABLE_CLOUD_AUTH"
+  audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
+
 c05_schema_v2:
   status: "CANONICAL_BASE_IMPLEMENTED"
   migration: "20260925170000_c05_schema_v2_canonical_base.sql"

@@ -145,7 +145,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 | C01 | Documentação canônica e PROJECT_PROFILE | CONCLUÍDO (+ C01-AUD e C01-AUD2 concluídas) | `AUDITORIA_C01_*` |
 | C02 | Threat model e abuso de negócio | CONCLUÍDO (+ C02-AUD e C02-AUD2 concluídas em 01/10) | `AUDITORIA_C02_*` |
 | C03 | Glossário e modelo de domínio | CONCLUÍDO (+ C03-AUD2 em 01/10, glossário v2.0) | `GLOSSARIO_DOMINIO.md`, `AUDITORIA_C03_*` |
-| C04 | Identidade, RBAC e RLS | CONCLUÍDO | `DECISOES.md` ADR-023 a 033 |
+| C04 | Identidade, RBAC e RLS | CONCLUÍDO (+ C04-AUD2 em 01/10) | `DECISOES.md` ADR-023 a 033, `AUDITORIA_C04_*` |
 | C05 | Schema v2, migrations e invariantes | CONCLUÍDO; drift de 3 migrations aberto (C00-AUD2-07) | `ARQUITETURA.md` |
 | C06 | Seed canônico da Matriz v3 | CONCLUÍDO | `AUDITORIA_C06_*`, `data-contracts/` |
 | C07 | Engine de SLA | CONCLUÍDO | `C07_SLA_ENGINE.md` |
@@ -1085,7 +1085,7 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 
 ## Bloco 1 — Domínio e backend
 4. C03 — concluído;
-5. C04 — concluído;
+5. C04 — concluído (C04-AUD2 em 01/10);
 6. C05 — concluído (drift a reconciliar);
 7. C06 — concluído;
 8. C07 — concluído.
