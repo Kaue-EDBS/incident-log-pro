@@ -26,20 +26,20 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 
 | GI | Pergunta | Status |
 |---|---|---|
-| 001 | Quais são os 4 cenários CRITICAL? | DECIDED (D-55) — aplicação pendente |
+| 001 | Quais são os 4 cenários CRITICAL? | RESOLVED (D-55) — os 11 são CRITICAL |
 | 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
 | 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
-| 004 | Tratativas simultâneas do mesmo cenário | DECIDED (D-57) — aplicação pendente |
+| 004 | Tratativas simultâneas do mesmo cenário | RESOLVED (D-57) |
 | 005 | Canal de notificações e platform admins | DECIDED (D-58) — implementação na M05 |
 | 006 | Janela oficial da "Safra corrente" | DECIDED (D-59) — implementação na F04/M05 |
 | 007 | Publicação formal do 12º card | DECIDED (D-60) — implementação na M10 |
-| 008 | Janela da governança semanal | DECIDED (D-61) — fora do escopo; banco atualizado no pacote |
-| 009 | Eventos dos SLAs textuais | DECIDED (D-62) — sem cronômetro de SLA; escada de avisos na M05/F01 |
-| 010 | Liberação de START por card | DECIDED (D-63) — mantém os 11 liberados; banco atualizado no pacote |
+| 008 | Janela da governança semanal | RESOLVED (D-61) — fora do escopo |
+| 009 | Eventos dos SLAs textuais | RESOLVED (D-62) — sem cronômetro de SLA |
+| 010 | Liberação de START por card | RESOLVED (D-63) |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
-**Status:** DECIDED (D-55) — aplicação pendente  
+**Status:** RESOLVED (D-55) — aplicado em 01/10/2026 (migration `20261001120000`)  
 **Tipo:** DOMAIN_DECISION  
 **Owner de governança:** safra_governance_admin  
 **Fase de origem:** SAFRA-C03  
@@ -139,7 +139,7 @@ A pergunta nominal dos quatro CRITICAL continua aberta para enriquecimento futur
 
 Os **11 cenários são CRITICAL**. A comunicação de abertura vai para o **dono do card**; a diretoria fica fora do fluxo por ora. A decisão prevalece sobre a menção a "quatro temas" da reunião de 22/09.
 
-Aplicação técnica pendente: nova `scenario_version` (versão 2) para cada cenário. Ao aplicar, este GI passa a `RESOLVED (D-55)` aqui e no banco.
+Aplicado em 01/10/2026: os 11 cenários estão na `scenario_version` 2, CRITICAL; a versão 1 ficou RETIRED (migration `20261001120000`).
 
 ### Regra de implementação futura
 
@@ -186,7 +186,7 @@ Nenhum valor será inferido.
 
 ## GI-SAFRA-004 — Treatments simultâneos do mesmo cenário
 
-**Status:** DECIDED (D-57) — aplicação pendente  
+**Status:** RESOLVED (D-57) — aplicado em 01/10/2026 (migration `20261001120000`)  
 **Fase:** SAFRA-M01.  
 **Decisão do owner (30/09/2026):** trava **por pessoa e por card**. Uma pessoa pode ter vários cards abertos, mas só uma tratativa `ACTIVE` por card até encerrá-la. Pessoas diferentes podem abrir o mesmo card ao mesmo tempo.
 
@@ -224,7 +224,7 @@ Após definição do owner, ainda precisa ser decidido:
 
 ## GI-SAFRA-008 — Janela oficial da governança semanal
 
-**Status:** DECIDED (D-61) — fora do escopo da aplicação  
+**Status:** RESOLVED (D-61) — fora do escopo da aplicação  
 **Fase:** SAFRA-F05.  
 **Decisão do owner (30/09/2026):** dia, horário e ritual da reunião semanal ficam fora do Painel. A F05 continua, com a tela de resumo e o registro das ações decididas.
 
@@ -233,7 +233,7 @@ Definir periodicidade/horário e corte de dados do ritual de governança semanal
 
 ## GI-SAFRA-009 — Mapeamento formal dos eventos dos SLAs textuais
 
-**Status:** DECIDED (D-62) — nenhum card terá cronômetro de SLA no MVP; no lugar, escada de avisos 2h/3h/4h  
+**Status:** RESOLVED (D-62) — nenhum card terá cronômetro de SLA no MVP; a escada de avisos 2h/3h/4h é requisito da M05/F01  
 **Nota anterior:** a regra D-47 destravou o C08; a pergunta segue aberta porque a materialização dos SLAs elegíveis ainda depende de nova versão governada.  
 **Fase:** SAFRA-C07/M04.  
 **Bloqueia START/C08:** não.
@@ -271,7 +271,7 @@ Com isso, a decomposição deixou de ser ambígua para C08. A materialização p
 
 ## GI-SAFRA-010 — Liberação de START por card
 
-**Status:** DECIDED (D-63)  
+**Status:** RESOLVED (D-63)  
 **Fase:** —  
 **Decisão do owner (01/10/2026):** fica como está: qualquer usuário corporativo autenticado abre qualquer um dos 11 cards. Restrição futura exige decisão nova.  
 **Bloqueia START/C08:** não.

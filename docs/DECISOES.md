@@ -73,9 +73,9 @@
 | D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
 | D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
 | D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — implementação na M05 |
-| D-57 | Cada pessoa pode ter no máximo uma tratativa ACTIVE por cenário; pessoas diferentes podem abrir o mesmo cenário (resolve GI-SAFRA-004) | APPROVED — aplicação técnica pendente |
+| D-57 | Cada pessoa pode ter no máximo uma tratativa ACTIVE por cenário; pessoas diferentes podem abrir o mesmo cenário (resolve GI-SAFRA-004) | APPROVED — aplicada em 01/10/2026 |
 | D-56 | Detecção/aviso automático de gatilho fica para versão futura do produto (V2/V3); thresholds do GI-SAFRA-002 e mínimo da curva A do GI-SAFRA-003 não são necessários no MVP | APPROVED |
-| D-55 | Os 11 cenários são CRITICAL; a comunicação de CRITICAL na abertura vai ao dono do card; diretoria fora do fluxo por ora (resolve GI-SAFRA-001) | APPROVED — aplicação técnica pendente |
+| D-55 | Os 11 cenários são CRITICAL; a comunicação de CRITICAL na abertura vai ao dono do card; diretoria fora do fluxo por ora (resolve GI-SAFRA-001) | APPROVED — aplicada em 01/10/2026 |
 
 ## 3. ADRs
 
@@ -148,16 +148,16 @@ O inventário vigente é:
 
 | Item | Estado | Tratamento atual |
 |---|---|---|
-| GI-SAFRA-001 — quatro cenários CRITICAL | DECIDED (D-55) / APPLICATION_PENDING | os 11 são CRITICAL; entra na versão 2 dos cenários; até lá o banco segue com `NULL` (D-44) |
+| GI-SAFRA-001 — quatro cenários CRITICAL | RESOLVED (D-55) | os 11 são CRITICAL na versão 2 (migration 20261001120000) |
 | GI-SAFRA-002 — thresholds 2/4/10/11 | OPEN / DEFERRED_TO_PRODUCT_V2 (D-56) | D-45 mantém detecção automática `NOT_CONFIGURED`; START manual permitido |
 | GI-SAFRA-003 — fonte mínimo curva A | OPEN / DEFERRED_TO_PRODUCT_V2 (D-56) | D-46 mantém automação desligada e START manual |
-| GI-SAFRA-004 — múltiplas tratativas simultâneas | DECIDED (D-57) / APPLICATION_PENDING | uma ACTIVE por pessoa e por cenário; trava ainda não aplicada no banco |
+| GI-SAFRA-004 — múltiplas tratativas simultâneas | RESOLVED (D-57) | uma ACTIVE por pessoa e por cenário; trava ativa (migration 20261001120000) |
 | GI-SAFRA-005 — canal/provider de notificações e platform admins | DECIDED (D-58) / IMPLEMENTATION_IN_M05 | e-mail + Teams; destinatários definidos |
 | GI-SAFRA-006 — janela temporal oficial da Safra | DECIDED (D-59) / IMPLEMENTATION_IN_F04_M05 | abertura/encerramento manual pelo Kaue |
 | GI-SAFRA-007 — publicação formal do 12º card | DECIDED (D-60) / IMPLEMENTATION_IN_M10 | proponente escreve, Jair aprova, platform admin publica |
-| GI-SAFRA-008 — janela de governança semanal | DECIDED (D-61) / OUT_OF_APP_SCOPE | ritual fora do Painel; F05 mantida |
-| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | DECIDED (D-62) / IMPLEMENTATION_IN_M05_F01 | sem cronômetro de SLA; escada de avisos |
-| GI-SAFRA-010 — governança de liberação de START por card | DECIDED (D-63) | 11 cenários liberados para qualquer usuário corporativo |
+| GI-SAFRA-008 — janela de governança semanal | RESOLVED (D-61) / OUT_OF_APP_SCOPE | ritual fora do Painel; F05 mantida |
+| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | RESOLVED (D-62) | sem cronômetro de SLA; escada de avisos é requisito da M05/F01 |
+| GI-SAFRA-010 — governança de liberação de START por card | RESOLVED (D-63) | 11 cenários liberados para qualquer usuário corporativo |
 | métricas do protocolo Safra (substitutas de MTTD/MTTR/MTBF) | DEFERRED_TO_F04_M05 | D-50 retirou as métricas de TI; nenhuma métrica de protocolo é inferida |
 | fechamento com passo incompleto/NA | DEFERRED_TO_F01 | não impacta START |
 | impacto quantitativo — métricas/thresholds | DEFERRED_TO_F04 | modelo conceitual aprovado; thresholds não inferidos |
@@ -1058,3 +1058,10 @@ Implementação: depende do envio de avisos (SAFRA-M05) e do encerramento (SAFRA
 **APPROVED — 01/10/2026** — owner: Kaue. **Resolve GI-SAFRA-010.**
 
 A regra da D-51 deixa de ser provisória: qualquer usuário corporativo autenticado (D-48) pode abrir qualquer um dos 11 cenários publicados, respeitada a trava da D-57 (uma tratativa ativa por pessoa e por cenário). Restringir por área, lista de pessoas ou suspensão de card exige decisão nova.
+
+### Aplicação do pacote C01-AUD2 — 01/10/2026
+
+Migration `20261001120000_c01_aud2_scenario_v2_critical_and_start_lock.sql`, com CI verde (App Smoke e Database Disposable) e aplicada no PRIMARY:
+- D-55: 11 cenários na versão 2 CRITICAL; 11 versões 1 RETIRED; áreas (20) e sistemas (11) copiados; nenhuma linha em `scenario_slas` (D-62);
+- D-57: índice `treatments_one_active_per_person_scenario` e erro `SAFRA_START_ACTIVE_EXISTS` no START;
+- GI-SAFRA-001/004/008/009/010 marcados RESOLVED no banco; 002/003/005/006/007 seguem OPEN.

@@ -30,6 +30,7 @@ architecture:
     c04_canonical_migration: "20260925133200_c04_role_mapping_and_corporate_rls.sql"
     c01_audit_canonical_migration: "20260927204325_c01_corporate_domains_and_profile_alignment.sql"
     c01_aud2_migration: "20260930150000_c01_aud2_governance_issues_alignment.sql"
+    c01_aud2_package_migration: "20261001120000_c01_aud2_scenario_v2_critical_and_start_lock.sql"
     drizzle_schema_authority: false
     drizzle_tooling_role: "AUXILIARY_ORM_ONLY_NO_DEPLOY_AUTHORITY"
     remote_direct_schema_changes_allowed: false
@@ -240,7 +241,7 @@ domain_rules:
       - "Painel SAFRA.docx - reunião de 22/09/2026"
       - "EDB06 - Protocolos de contingência v2.pdf"
     note: "Business/domain attribute of scenarios. Not equivalent to application service_class."
-  critical_scenarios_list: "GOVERNANCE_ISSUE_GI_SAFRA_001"
+  critical_scenarios_list: "ALL_11_CRITICAL_D55"
   safra_rules_registered: 29
   legacy_it_rules_registered: 0
   legacy_it_rules_status: "RETIRED_BY_D50"
@@ -274,20 +275,20 @@ governance:
   destructive_git_history_rewrite_allowed: false
 
 deferred_decisions:
-  four_CRITICAL_scenarios: "GI-SAFRA-001; OPEN_NON_BLOCKING_D44; CRITICALITY_NULL; FUTURE_VERSION_REQUIRED"
+  four_CRITICAL_scenarios: "GI-SAFRA-001; RESOLVED_D55; ALL_11_CRITICAL_IN_SCENARIO_VERSION_2"
   scenario_2_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
   scenario_4_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
   scenario_10_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
   scenario_11_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
   scenario_9_curve_A_source: "GI-SAFRA-003; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
-  multiple_simultaneous_treatments: "GI-SAFRA-004; DECIDED_D57_ONE_ACTIVE_PER_PERSON_PER_SCENARIO; LOCK_NOT_YET_APPLIED"
+  multiple_simultaneous_treatments: "GI-SAFRA-004; RESOLVED_D57; ONE_ACTIVE_PER_PERSON_PER_SCENARIO_ENFORCED"
   incomplete_or_not_applicable_close_policy: "DEFERRED_TO_SAFRA_F01"
   email_notification_provider_and_channel: "GI-SAFRA-005; DECIDED_D58_EMAIL_AND_TEAMS; IMPLEMENTATION_IN_M05"
   current_safra_time_window: "GI-SAFRA-006; DECIDED_D59_MANUAL_OPEN_CLOSE_BY_OWNER; IMPLEMENTATION_IN_F04_M05"
   formal_new_scenario_approval_flow: "GI-SAFRA-007; DECIDED_D60_PROPOSER_WRITES_JAIR_APPROVES_PLATFORM_ADMIN_PUBLISHES_CRITICAL; IMPLEMENTATION_IN_M10"
-  weekly_governance_window: "GI-SAFRA-008; DECIDED_D61_RITUAL_OUT_OF_APP_SCOPE; F05_SCREEN_KEPT"
-  textual_sla_event_mapping: "GI-SAFRA-009; DECIDED_D62_NO_SLA_CLOCKS_REMINDER_LADDER_2H_3H_4H_24X7; IMPLEMENTATION_IN_M05_F01"
-  start_release_per_card: "GI-SAFRA-010; DECIDED_D63; ALL_11_PUBLISHED_SCENARIOS_STARTABLE_BY_ANY_CORPORATE_USER"
+  weekly_governance_window: "GI-SAFRA-008; RESOLVED_D61; RITUAL_OUT_OF_APP_SCOPE; F05_SCREEN_KEPT"
+  textual_sla_event_mapping: "GI-SAFRA-009; RESOLVED_D62; NO_SLA_CLOCKS; REMINDER_LADDER_2H_3H_4H_24X7_IN_M05_F01"
+  start_release_per_card: "GI-SAFRA-010; RESOLVED_D63; ALL_11_PUBLISHED_SCENARIOS_STARTABLE_BY_ANY_CORPORATE_USER"
   protocol_metrics_replacing_mttd_mttr: "DEFERRED_TO_F04_M05; D50"
   quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_F04"
 
@@ -373,9 +374,10 @@ c05_schema_v2:
   legacy_applications_incidents_status: "DROPPED_BY_D50_MIGRATION_20260930120000"
   rbac_source_reused: "private.safra_principals + private.safra_role_grants"
   concurrent_safra_user_roles_table_created: false
-  gi_safra_001_status: "OPEN"
+  gi_safra_001_status: "RESOLVED_D55"
   criticality_default: null
-  active_treatment_uniqueness_constraint: false
+  current_criticality: "CRITICAL_FOR_ALL_11_D55"
+  active_treatment_uniqueness_constraint: "PER_PERSON_AND_SCENARIO_D57"
   seed_11_scenarios: "PASS_C06_01_RECONCILED_198_OF_198"
   start_rpc: "IMPLEMENTED_C08"
   end_rpc: "NOT_IMPLEMENTED_F01_F02"

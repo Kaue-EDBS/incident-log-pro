@@ -3,7 +3,7 @@
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Bloco:** SAFRA-C01 — Documentação canônica e PROJECT_PROFILE  
 **Data de abertura:** 30/09/2026  
-**Estado:** EM EXECUÇÃO (pausa em 30/09/2026) — documentação reconciliada; migration de alinhamento dos GI aplicada; perguntas dos GI respondidas até a GI-008 (D-55 a D-61); retomar na GI-009 (`docs/HANDOFF_2026-09-30.md`)  
+**Estado:** APLICADA NO PRIMARY (01/10/2026) — falta só a conferência do owner no app publicado  
 **Decisões geradas:** D-52, D-53, D-54 (`docs/DECISOES.md`)
 
 ---
@@ -108,5 +108,43 @@ Causa: o Lovable permite alterar o banco por caminhos que não salvam o arquivo 
 - [x] fonte única dos GI definida e statuses padronizados nos documentos
 - [x] migration de alinhamento dos GI aplicada no PRIMARY e registrada (`20260930150000`)
 - [x] CI verde com a migration nova (`fd01831`)
-- [ ] rodada de perguntas dos GI com o owner concluída e registrada
-- [ ] `unknown_material_count = 0` recertificado ao final
+- [x] rodada de perguntas dos GI com o owner concluída e registrada (D-55 a D-63)
+- [x] pacote final com CI verde e aplicado no PRIMARY (`20261001120000`)
+- [x] `unknown_material_count = 0` recertificado: todo GI está RESOLVED, DECIDED com fase de construção ou adiado para a V2 do produto
+- [ ] owner publica o app e confere o Abrir Protocolo (cards CRITICAL e mensagem da trava)
+
+---
+
+## 6. Rodada de perguntas dos GI e pacote final
+
+| GI | Decisão | Situação em 01/10/2026 |
+|---|---|---|
+| 001 | D-55 — os 11 cards são CRITICAL; aviso ao dono do card | RESOLVED — versão 2 aplicada |
+| 002 | D-56 — detecção automática na V2/V3 do produto | OPEN — adiado |
+| 003 | D-56 — idem (mínimo da curva A) | OPEN — adiado |
+| 004 | D-57 — uma tratativa ativa por pessoa e por card | RESOLVED — trava ativa |
+| 005 | D-58 — avisos por e-mail e Teams; destinatários definidos | OPEN — construção na M05 |
+| 006 | D-59 — Kaue marca início e fim da Safra | OPEN — construção na F04/M05 |
+| 007 | D-60 — fluxo de publicação do 12º card | OPEN — construção na M10 |
+| 008 | D-61 — ritual semanal fora do Painel | RESOLVED |
+| 009 | D-62 — sem cronômetro de SLA; escada de avisos 2h/3h/4h | RESOLVED — escada na M05/F01 |
+| 010 | D-63 — 11 cards liberados para qualquer usuário corporativo | RESOLVED |
+
+Pacote (migration `20261001120000_c01_aud2_scenario_v2_critical_and_start_lock.sql`), CI verde em `5f710c7` e conferência no PRIMARY:
+
+| Conferência | Resultado |
+|---|---|
+| cards vigentes na versão 2 CRITICAL | 11 |
+| versões 1 RETIRED preservadas | 11 |
+| áreas impactadas copiadas (v1 → v2) | 20 → 20 |
+| sistemas copiados | 11 |
+| linhas em `scenario_slas` | 0 |
+| trava `treatments_one_active_per_person_scenario` | ativa |
+| START com `SAFRA_START_ACTIVE_EXISTS` | sim |
+| GI resolvidos no banco | 001, 004, 008, 009, 010 |
+| tratativas afetadas | 0 |
+
+Observações:
+- A resolução dos GI no banco só roda quando o usuário Auth do owner existe (PRIMARY). No banco descartável do CI, a lógica é provada pelo teste `c01_aud2_package.test.sql`.
+- Ainda não existe tela de detalhe do protocolo; a mensagem da trava não traz link.
+- END/CANCEL (F01/F02) ainda não existem; com a trava D-57, quem abrir um protocolo fica sem poder abrir outro do mesmo card até o encerramento existir.
