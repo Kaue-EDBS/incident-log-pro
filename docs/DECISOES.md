@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-72 | Situações do protocolo: Em andamento, Aguardando dono, Aguardando solicitante, Encerrado, Cancelado | APPROVED — implementação na F01/F02 |
 | D-71 | "Solicitante" é o termo canônico para quem abriu o protocolo (START) | APPROVED |
 | D-70 | Encerrar a Safra exige digitar "ENCERRAR SAFRA" e pode ser desfeito em 7 dias, sem apagar dados nesse prazo | APPROVED — implementação com a D-59 |
 | D-69 | A Safra corrente começou em 01/10/2026 e termina quando o Kaue marcar o encerramento | APPROVED |
@@ -1168,3 +1169,16 @@ Implementação: junto com a marcação da D-59 (F04/M05).
 - Substitui "ator do START" e o uso informal de "usuário" nesse sentido. "Usuário" continua significando qualquer pessoa autenticada no Painel.
 - Relatórios e avisos usam: "tempo de encerramento pelo **solicitante**", "tempo de encerramento pelo **dono do card**" e a visão consolidada (D-66).
 - O dono do card nunca é o solicitante do próprio card (D-65).
+
+### D-72 — Situações do protocolo com encerramento em duas partes
+**APPROVED — 01/10/2026** — owner: Kaue. Detalha a D-66.
+
+| Situação (tela) | Condição | Efeitos |
+|---|---|---|
+| **Em andamento** | nenhuma parte fechada | trava do solicitante ativa (D-57); escada de avisos ativa (D-67) |
+| **Aguardando dono** | só o solicitante fechou a parte dele | trava do solicitante liberada; avisos encerrados |
+| **Aguardando solicitante** | só o dono fechou a parte dele | solicitante segue travado e recebendo a pergunta "foi resolvido?" |
+| **Encerrado** | as duas partes fechadas | horário de cada parte preservado para os relatórios |
+| **Cancelado** | o solicitante ou o dono cancelou, com motivo | histórico preservado; não conta como resolvido |
+
+Persistência (F01): o protocolo guarda separadamente quem fechou e quando, para o solicitante e para o dono. O estado técnico `RESOLVED` só é atingido com as duas partes fechadas; as duas situações "Aguardando" continuam `ACTIVE` no banco, distinguidas pelas partes já fechadas.
