@@ -18,7 +18,7 @@
 | D-03 | Geral é visão agregadora, não área | APPROVED |
 | D-04 | Detecção e ativação são conceitos separados | APPROVED |
 | D-05 | Protocolo não é chamado | APPROVED |
-| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — decisão vigente |
+| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — **END substituído pela D-64** (01/10/2026) |
 | D-07 | Tratativa errada é CANCELLED; não apagar | APPROVED |
 | D-08 | Novo cenário exige governança | APPROVED |
 | D-09 | Criticidade usa CRITICAL/HIGH/MODERATE | APPROVED; lista crítica pendente |
@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-64 | END só por quem abriu o protocolo ou pelo dono do card, cada um logado no próprio perfil; o botão "Resolvido" abre o Painel e exige confirmação | APPROVED — implementação na F01 |
 | D-63 | Mantida a liberação dos 11 cards para qualquer usuário corporativo autenticado; sem restrição por card (resolve GI-SAFRA-010) | APPROVED |
 | D-62 | Sem cronômetro de SLA nos cards; escada de avisos 2h/3h/4h, 24h por dia, com pergunta "foi resolvido?" a quem abriu (resolve GI-SAFRA-009) | APPROVED — implementação na M05/F01 |
 | D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
@@ -1065,3 +1066,16 @@ Migration `20261001120000_c01_aud2_scenario_v2_critical_and_start_lock.sql`, com
 - D-55: 11 cenários na versão 2 CRITICAL; 11 versões 1 RETIRED; áreas (20) e sistemas (11) copiados; nenhuma linha em `scenario_slas` (D-62);
 - D-57: índice `treatments_one_active_per_person_scenario` e erro `SAFRA_START_ACTIVE_EXISTS` no START;
 - GI-SAFRA-001/004/008/009/010 marcados RESOLVED no banco; 002/003/005/006/007 seguem OPEN.
+
+### D-64 — Quem pode encerrar (END) um protocolo
+**APPROVED — 01/10/2026** — owner: Kaue. **Substitui a parte de END da D-06.** Nasce da reauditoria C02-AUD2 (ameaça do botão "Resolvido" em e-mail encaminhado).
+
+- Só podem encerrar um protocolo:
+  1. **quem abriu** (`treatments.opened_by`);
+  2. **o dono do card** vigente (owner atual do cenário).
+- Cada um encerra **logado no próprio perfil** (login Microsoft corporativo, sessão viva). A verificação é feita no servidor, pelo `auth.uid()`, nunca pelo link ou pelo navegador.
+- O botão **"Resolvido"** do e-mail/Teams (D-62) **não encerra direto**: abre o protocolo no Painel, exige login e um clique de confirmação. Quem não for quem abriu nem o dono vê a mensagem de que não pode encerrar; o link encaminhado não dá poder a terceiros.
+- O encerramento grava autor e horário do servidor e para os avisos pendentes (D-62).
+- START continua liberado a qualquer usuário corporativo (D-63). CANCEL segue a D-06 até decisão própria.
+
+Implementação: SAFRA-F01 (END) junto com a M05 (avisos).
