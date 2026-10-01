@@ -63,6 +63,9 @@ jobs:
       - name: Test concurrent START idempotency
         run: bash .github/scripts/test-safra-start-concurrency.sh
 
+      - name: Test concurrent END x CANCEL
+        run: bash .github/scripts/test-safra-end-cancel-concurrency.sh
+
       - name: Test direct Data API denial
         run: bash .github/scripts/test-safra-direct-api.sh
 

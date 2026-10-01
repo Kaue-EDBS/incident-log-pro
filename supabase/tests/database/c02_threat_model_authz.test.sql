@@ -284,7 +284,7 @@ select is(
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
         'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
@@ -302,7 +302,7 @@ select is(
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
         'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),

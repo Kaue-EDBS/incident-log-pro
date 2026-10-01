@@ -75,7 +75,6 @@ for table in (
     "treatment_impacted_areas",
     "treatment_impact_measurements",
     "treatment_events",
-    "treatment_escalations",
     "scenario_proposals",
     "scenario_proposal_owner_responses",
     "notifications_log",

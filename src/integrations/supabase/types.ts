@@ -538,50 +538,6 @@ export type Database = {
         }
         Relationships: []
       }
-      treatment_escalations: {
-        Row: {
-          changed_by: string | null
-          correlation_id: string
-          created_at: string
-          id: string
-          level: string
-          reason: string | null
-          treatment_id: string
-          valid_from: string
-          valid_to: string | null
-        }
-        Insert: {
-          changed_by?: string | null
-          correlation_id: string
-          created_at?: string
-          id?: string
-          level: string
-          reason?: string | null
-          treatment_id: string
-          valid_from?: string
-          valid_to?: string | null
-        }
-        Update: {
-          changed_by?: string | null
-          correlation_id?: string
-          created_at?: string
-          id?: string
-          level?: string
-          reason?: string | null
-          treatment_id?: string
-          valid_from?: string
-          valid_to?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "treatment_escalations_treatment_id_fkey"
-            columns: ["treatment_id"]
-            isOneToOne: false
-            referencedRelation: "treatments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       treatment_events: {
         Row: {
           actor_user_id: string | null
