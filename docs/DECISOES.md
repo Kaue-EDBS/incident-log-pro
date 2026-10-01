@@ -86,6 +86,7 @@
 | D-71 | "Solicitante" é o termo canônico para quem abriu o protocolo (START) | APPROVED |
 | D-72 | Situações do protocolo: Em andamento, Aguardando dono, Aguardando solicitante, Encerrado, Cancelado | APPROVED — implementação na F01/F02 |
 | D-73 | Escalonamento fica fora do Painel: é feito pelos donos de card, em conjunto, por avaliação própria; SAFRA-M06 cancelado | APPROVED |
+| D-74 | Nome do card é o texto literal da Matriz v3; sem nome curto; a forma de exibir fica para a C08 | APPROVED |
 
 ## 3. ADRs
 
@@ -166,7 +167,7 @@ O inventário vigente é:
 | GI-SAFRA-006 — janela temporal oficial da Safra | DECIDED (D-59) / IMPLEMENTATION_IN_F04_M05 | abertura/encerramento manual pelo Kaue |
 | GI-SAFRA-007 — publicação formal do 12º card | DECIDED (D-60) / IMPLEMENTATION_IN_M10 | proponente escreve, Jair aprova, platform admin publica |
 | GI-SAFRA-008 — janela de governança semanal | RESOLVED (D-61) / OUT_OF_APP_SCOPE | ritual fora do Painel; F05 mantida |
-| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | RESOLVED (D-62) | sem cronômetro de SLA; escada de avisos é requisito da M05/F01 |
+| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | RESOLVED (D-62) | sem cronômetro de SLA; escada de avisos (revista pela D-67: 2h e 4h) é requisito da M05/F01 |
 | GI-SAFRA-010 — governança de liberação de START por card | RESOLVED (D-63) | 11 cenários liberados para qualquer usuário corporativo |
 | métricas do protocolo Safra (substitutas de MTTD/MTTR/MTBF) | DEFERRED_TO_F04_M05 | D-50 retirou as métricas de TI; nenhuma métrica de protocolo é inferida |
 | fechamento com passo incompleto/NA | DEFERRED_TO_F01 | não impacta START |
@@ -1191,3 +1192,17 @@ Persistência (F01): o protocolo guarda separadamente quem fechou e quando, para
 - A fase **SAFRA-M06 (Escalonamento e comitê) é cancelada**.
 - O termo "escalonamento" sai do vocabulário do produto (`GLOSSARIO_DOMINIO.md` v2.0).
 - A tabela `public.treatment_escalations` e o evento `ESCALATION_CHANGED`, criados no C05, deixam de ter uso. A remoção da tabela segue a D-52 (migration própria) e fica para o pacote da reauditoria do C05.
+
+### D-74 — Nome do card é o texto da Matriz v3
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da reauditoria C06-AUD2.
+
+- O nome de cada card (`scenarios.name`) é o texto **literal** da coluna "Cenário" da Matriz v3, inclusive a quebra de linha dentro dos nomes do SAFRA-04 (`Pedido pago não integrado` + `("limbo" de entrada)`) e do SAFRA-05 (`Tracking falso` + `(status ≠ físico)`).
+- Não existe "nome curto" no banco. Listas resumidas (como a do ROADMAP) são apenas referência e não são fonte.
+- Como a tela exibe a quebra de linha é decisão de UX, na C08.
+
+### Aplicação do pacote C06-AUD2 — 01/10/2026
+
+- Planilha fornecida pelo owner: assinatura `b0cca8cc…` igual à aprovada; o leitor gerou cópia idêntica à registrada; comparação sem diferenças (`NO_DIFF`); validação `PASS`.
+- Conferência de 100% dos campos no PRIMARY: `docs/data-contracts/c06_aud2_reconciliation_2026-10-01.json`.
+- Migration `20261001220000_c06_aud2_governance_issue_texts.sql`: textos das pendências abertas e da resolução da GI-SAFRA-009 alinhados às decisões vigentes; nenhum status mudou.
+- Marcos P1–P4: critérios revistos (D-62/D-66/D-67/D-73); todos seguem `NOT_PUBLISHED`.

@@ -1,0 +1,76 @@
+{
+  "pipeline_stage": "reconciliation",
+  "audit": "C06-AUD2",
+  "executed_on": "2026-10-01",
+  "parser": {
+    "name": "c06_matrix_v3",
+    "version": "1.0.0"
+  },
+  "source_sha256": "b0cca8cce835dbdc65ab0c30212fd89480d2cf51e9fb62d215ad1bde0963ead6",
+  "staging_sha256": "242a31fcb033b9382c136b0ca88f186e9a49a8fb83d766e6d8902893e8140cff",
+  "parser_rerun": {
+    "xlsx_provided_by_owner": true,
+    "xlsx_sha256_matched": true,
+    "staging_identical_to_committed_copy": true,
+    "validation_status": "PASS",
+    "validation_errors": 0,
+    "validation_warnings": 5
+  },
+  "preview_diff": {
+    "status": "NO_DIFF",
+    "difference_count": 0,
+    "baseline": "docs/data-contracts/c06_matriz_v3_staging.json"
+  },
+  "human_approval": "Owner Kaue approved the C06-AUD2 package on 2026-10-01; no business field changed.",
+  "primary": {
+    "scenarios": 11,
+    "current_version_no": 2,
+    "current_version_status": "PUBLISHED",
+    "current_criticality": "CRITICAL",
+    "retired_v1": 11,
+    "active_owners": 11,
+    "impacted_area_links_current_version": 20,
+    "system_links_current_version": 11,
+    "structured_slas": 0,
+    "systems_catalog": 10,
+    "operational_areas": 7,
+    "scenario_proposals": 0
+  },
+  "field_reconciliation": {
+    "method": "md5 of the 18 source fields stored in scenario_versions.source_reference (PRIMARY) compared with the same digest of the staging copy; plus column-by-column comparison of name, trigger, activation, protocol, responsible area, owner, impacted areas and tool in PRIMARY",
+    "fields_per_scenario": 18,
+    "scenarios_matched": 11,
+    "column_checks_matched": "11/11 for name, trigger, activation, protocol, responsible_area, owner, impacted_areas, tool, mapping, source_sha256",
+    "source_reference_v2_equals_v1": "11/11",
+    "per_scenario_md5": {
+      "SAFRA-01": "40a2993d6b38bdef94ab2be4e7ffece9",
+      "SAFRA-02": "69e8eb35ad50180febc14c99176a49b7",
+      "SAFRA-03": "add5cc3a815035004954c2bc7ca4c797",
+      "SAFRA-04": "bf1d248090a1f9bfcdaa26e97ec6ac45",
+      "SAFRA-05": "5e9492c71a8538b6357812e0ff48dd35",
+      "SAFRA-06": "6040d9b485078f04c0f1acb3c7ec16dc",
+      "SAFRA-07": "639fbc5200746b69aa47db4967ab59f2",
+      "SAFRA-08": "6d055c85b753924b32d2c3f898e055eb",
+      "SAFRA-09": "303f1831ec4b2a1f92b73264bc98d49a",
+      "SAFRA-10": "5f0820431cb4aa0833f67c9f26b2bdcd",
+      "SAFRA-11": "bc47d011a3e040028656aa9846b74aa7"
+    }
+  },
+  "criticality_source": {
+    "value": "CRITICAL",
+    "source": "D-55 (owner decision, 30/09/2026), not the XLSX",
+    "note": "The Matrix v3 has no criticality column. v1 keeps criticality NULL as RETIRED history; v2 carries the owner decision."
+  },
+  "sla_text": "Preserved literally in source_reference.sla_target; no scenario_slas rows (D-62).",
+  "scenario_names": "Literal Matrix v3 names, including the line break inside SAFRA-04 and SAFRA-05 (D-74). Display is a C08 concern.",
+  "open_gaps_preserved": [
+    "GI-SAFRA-002 (X h, X min, lead time/queue, capacity) — D-56",
+    "GI-SAFRA-003 (curve-A minimum) — D-56"
+  ],
+  "product_gates": "P1-P4 NOT_PUBLISHED; criteria revised to D-62/D-66/D-67/D-73 (docs/product-gates/P1_P4.json 1.2.0)",
+  "supersedes_for_current_state": [
+    "c06_matriz_v3_reconciliation.json (2026-09-25, v1 state)",
+    "c06_02_field_reconciliation.json (2026-09-25, v1 state)"
+  ],
+  "status": "PASS"
+}

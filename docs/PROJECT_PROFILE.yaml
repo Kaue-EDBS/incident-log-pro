@@ -50,6 +50,7 @@ architecture:
       reconstituted_versions: ["20260928075934", "20260928090910", "20260928095246"]
       primary_versions: 36
       repository_versions: 36
+      current_versions_after_c06_aud2: 37
       audit_document: "docs/AUDITORIA_C05_REABERTURA_2026-10-01.md"
 
 service:
@@ -377,6 +378,18 @@ c04_reaudit_2:
   sandbox_exec_bypass: "ACCEPTED_RISK_WORKSPACE_RESTRICTED_TO_TEAM"
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
+
+c06_reaudit_2:
+  status: "APPROVED"
+  date: "2026-10-01"
+  migration: "20261001220000_c06_aud2_governance_issue_texts.sql"
+  xlsx_rerun: "SHA_MATCH_NO_DIFF"
+  field_reconciliation: "11 scenarios x 18 fields = PASS"
+  criticality_source: "D-55 (owner decision)"
+  scenario_names: "LITERAL_MATRIX_V3 (D-74)"
+  staging_integrity_check: ".github/scripts/check-c06-staging-integrity.py"
+  reconciliation_artifact: "docs/data-contracts/c06_aud2_reconciliation_2026-10-01.json"
+  audit_document: "docs/AUDITORIA_C06_REABERTURA_2026-10-01.md"
 
 c05_reaudit_2:
   status: "APPROVED"

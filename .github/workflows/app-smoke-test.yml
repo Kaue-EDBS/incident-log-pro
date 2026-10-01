@@ -35,6 +35,9 @@ jobs:
       - name: Product gates P1-P4
         run: python3 .github/scripts/check-product-gates.py
 
+      - name: C06 Matrix v3 staging integrity
+        run: python3 .github/scripts/check-c06-staging-integrity.py
+
       - name: C06.1 UI/server authorization coherence
         run: python3 .github/scripts/check-c06-1-ui-auth-coherence.py
 

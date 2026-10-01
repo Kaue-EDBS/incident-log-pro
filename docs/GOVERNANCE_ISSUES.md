@@ -234,7 +234,7 @@ Definir periodicidade/horário e corte de dados do ritual de governança semanal
 
 ## GI-SAFRA-009 — Mapeamento formal dos eventos dos SLAs textuais
 
-**Status:** RESOLVED (D-62) — nenhum card terá cronômetro de SLA no MVP; a escada de avisos 2h/3h/4h é requisito da M05/F01  
+**Status:** RESOLVED (D-62) — nenhum card terá cronômetro de SLA no MVP; a escada de avisos, revista pela D-67 (2h e 4h), é requisito da M05/F01  
 **Nota anterior:** a regra D-47 destravou o C08; a pergunta segue aberta porque a materialização dos SLAs elegíveis ainda depende de nova versão governada.  
 **Fase:** SAFRA-C07/M04.  
 **Bloqueia START/C08:** não.
@@ -303,3 +303,5 @@ Perguntas em aberto:
 2. Se sim, por **mensagem direta** à pessoa ou num **canal**? Num canal, todos os membros veem os dados do protocolo (ameaça de vazamento registrada no C02-AUD2).
 
 Até a decisão, a M05 deve considerar apenas e-mail.
+
+> **Atualização 01/10/2026 (C06-AUD2):** as descrições das pendências abertas (002, 003, 005, 006, 007) e a resolução da 009 foram atualizadas também no banco (migration `20261001220000`), com o mesmo conteúdo deste documento. Nenhum status mudou.

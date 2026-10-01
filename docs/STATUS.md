@@ -15,9 +15,10 @@
 |---|---|---|
 | C00-AUD2 — Reliability Monitor/MTTR descontinuado (D-50) | CONCLUÍDA em 30/09 | `AUDITORIA_C00_REABERTURA_2026-09-30.md` |
 | C01-AUD2 — documentação canônica e PROJECT_PROFILE | CONCLUÍDA em 01/10 | `AUDITORIA_C01_REABERTURA_2026-09-30.md` |
-| C03-AUD2 — glossário e modelo de domínio | CONCLUÍDA em 01/10 (glossário v2.0) |
+| C03-AUD2 — glossário e modelo de domínio | CONCLUÍDA em 01/10 (glossário v2.0) | `AUDITORIA_C03_REABERTURA_2026-10-01.md` |
 | C04-AUD2 — identidade, RBAC e RLS | CONCLUÍDA em 01/10 | `AUDITORIA_C04_REABERTURA_2026-10-01.md` |
-| C05-AUD2 — schema, migrations e invariantes | CONCLUÍDA em 01/10 (drift zerado) | `AUDITORIA_C05_REABERTURA_2026-10-01.md` | `AUDITORIA_C03_REABERTURA_2026-10-01.md` |
+| C05-AUD2 — schema, migrations e invariantes | CONCLUÍDA em 01/10 (drift zerado) | `AUDITORIA_C05_REABERTURA_2026-10-01.md` |
+| C06-AUD2 — seed canônico da Matriz v3 | CONCLUÍDA em 01/10 (planilha = banco, 100% dos campos) | `AUDITORIA_C06_REABERTURA_2026-10-01.md` |
 | C02-AUD e C02-AUD2 — threat model | CONCLUÍDAS em 01/10; G3.5, THREAT-001 e AUTHZ-001 recertificados | `AUDITORIA_C02_REABERTURA_2026-10-01.md` |
 
 ---
@@ -39,7 +40,7 @@
 - Tabelas em `public`: 16, todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido, D-73).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Tratativas registradas: 0.
-- Migrations: **36 no PRIMARY e 36 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Migrations: **37 no PRIMARY e 37 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---
@@ -62,4 +63,4 @@
 
 ## 6. Próximo passo
 
-Próxima reauditoria: C06 (seed canônico da Matriz v3).
+Próxima reauditoria: C07.

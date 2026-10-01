@@ -20,12 +20,10 @@ select is(
      'GI-SAFRA-001','GI-SAFRA-002','GI-SAFRA-003','GI-SAFRA-004','GI-SAFRA-005',
      'GI-SAFRA-006','GI-SAFRA-007','GI-SAFRA-008','GI-SAFRA-009'
    )
-   and status='OPEN'
-   and resolved_at is null
-   and resolved_by is null
-   and resolution_text is null),
+   and ((status='OPEN' and resolved_at is null and resolved_by is null and resolution_text is null)
+     or (status='RESOLVED' and resolved_by is not null and resolution_text ~ '^D-[0-9]+ '))),
   9::bigint,
-  'all canonical governance issues remain unresolved until human decision'
+  'each canonical governance issue is OPEN, or RESOLVED only with a cited human decision (D-xx)'
 );
 
 select ok(
