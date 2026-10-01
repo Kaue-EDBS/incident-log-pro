@@ -36,6 +36,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 008 | Janela da governança semanal | RESOLVED (D-61) — fora do escopo |
 | 009 | Eventos dos SLAs textuais | RESOLVED (D-62) — sem cronômetro de SLA |
 | 010 | Liberação de START por card | RESOLVED (D-63) |
+| 011 | Avisos também pelo Teams? Para pessoa ou canal? | OPEN — DEFERRED_TO_M05 |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -288,3 +289,17 @@ No banco:
 - `OPEN` representa a decisão ainda pendente;
 - resolução exige `RESOLVED` + ator + timestamp + texto de resolução;
 - ausência de decisão nunca é convertida em default.
+
+## GI-SAFRA-011 — Avisos pelo Teams
+
+**Status:** OPEN — DEFERRED_TO_M05
+**Fase:** SAFRA-M05.
+**Bloqueia START/C08:** não.
+
+A D-58 previa e-mail e Teams para o dono do card. Na revisão da escada de avisos (D-67, 01/10/2026), o owner confirmou o **e-mail** e ficou **em dúvida sobre o Teams**.
+
+Perguntas em aberto:
+1. Os avisos também vão pelo Teams?
+2. Se sim, por **mensagem direta** à pessoa ou num **canal**? Num canal, todos os membros veem os dados do protocolo (ameaça de vazamento registrada no C02-AUD2).
+
+Até a decisão, a M05 deve considerar apenas e-mail.

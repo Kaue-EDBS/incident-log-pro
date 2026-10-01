@@ -67,11 +67,12 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-67 | Escada de avisos revista: 2h e 4h, ao dono do card (para cobrar o usuário) e ao usuário ("foi resolvido?"), até o usuário fechar a parte dele; sem Jair e sem aviso de 3h; 4h não é SLA | APPROVED — implementação na M05/F01 |
 | D-66 | Encerramento em duas partes (usuário e dono do card, cada um com seu horário); CANCEL por qualquer um dos dois, com motivo; trava D-57 liberada quando o usuário fecha a parte dele | APPROVED — implementação na F01/F02 |
 | D-65 | Dono de card não abre protocolo dos próprios cards; pode abrir de cards de outros donos | APPROVED — implementação pendente (ajuste do START) |
 | D-64 | END só por quem abriu o protocolo ou pelo dono do card, cada um logado no próprio perfil; o botão "Resolvido" abre o Painel e exige confirmação | APPROVED — complementada pela D-66 |
 | D-63 | Mantida a liberação dos 11 cards para qualquer usuário corporativo autenticado; sem restrição por card (resolve GI-SAFRA-010) | APPROVED — com a exceção da D-65 |
-| D-62 | Sem cronômetro de SLA nos cards; escada de avisos 2h/3h/4h, 24h por dia, com pergunta "foi resolvido?" a quem abriu (resolve GI-SAFRA-009) | APPROVED — implementação na M05/F01 |
+| D-62 | Sem cronômetro de SLA nos cards; escada de avisos 2h/3h/4h, 24h por dia, com pergunta "foi resolvido?" a quem abriu (resolve GI-SAFRA-009) | APPROVED — **escada substituída pela D-67**; "sem SLA" mantido |
 | D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
 | D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
 | D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
@@ -1110,3 +1111,19 @@ Implementação pendente: o START passa a recusar a abertura quando `auth.uid()`
 **Relatórios (F04):** três medidas de tempo — tempo de encerramento pelo **dono do card**, tempo de encerramento pelo **usuário** e uma visão **consolidada** mostrando a diferença entre os dois.
 
 Implementação: F01 (END) e F02 (CANCEL). A trava da D-57 hoje usa `status = ACTIVE`; na F01 ela passa a considerar a parte do usuário.
+
+### D-67 — Escada de avisos revista
+**APPROVED — 01/10/2026** — owner: Kaue. **Substitui a escada da D-62** (a parte "sem cronômetro de SLA" continua valendo).
+
+| Momento desde a abertura | Condição | Aviso |
+|---|---|---|
+| 2h | usuário ainda não fechou a parte dele (D-66) | e-mail ao **dono do card**, pedindo que cobre o usuário; pergunta **"foi resolvido?"** ao **usuário** |
+| 4h | usuário ainda não fechou a parte dele | idem |
+| qualquer momento | usuário fechou a parte dele | **nenhum aviso a mais** |
+
+- O Jair saiu da escada e não há mais aviso de 3h.
+- As 4h são só o momento do último aviso. **Não existe "prazo estourado"**: o Painel continua sem cronômetro de SLA (D-62).
+- Tempo corrido, 24h por dia, todos os dias (D-62).
+- A pergunta ao usuário traz o link para o Painel, onde ele fecha a parte dele logado no próprio perfil (D-64/D-66).
+- Canal: **e-mail** decidido. **Teams** em dúvida, registrado como GI-SAFRA-011.
+- O aviso de abertura do protocolo segue a D-58 (dono do card e Jair), salvo decisão nova.
