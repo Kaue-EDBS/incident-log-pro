@@ -110,6 +110,8 @@ Duplo clique, retry ou refresh não pode duplicar abertura, encerramento de part
 ### RB-SAFRA-018 — Administração executiva
 Bruno Palhão possui visão executiva de analytics sobre todos os cards e métricas, sem recebimento de e-mails operacionais e sem manutenção técnica da plataforma.
 
+No módulo de analytics (F04), o Bruno terá uma **visão consolidada** de todos os cards (confirmado pelo owner em 01/10/2026, C04-AUD2). Essa visão não dá poder técnico nem de governança: o Bruno não lê a auditoria de papéis nem administra a plataforma (teste `c04_aud2_identity_authz.test.sql`).
+
 ### RB-SAFRA-019 — Analytics por audiência
 O Frontend deverá tratar analytics por audiência, com pelo menos três perspectivas a detalhar posteriormente:
 
