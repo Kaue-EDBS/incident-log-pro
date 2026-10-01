@@ -81,10 +81,10 @@ select is(
   (
     select count(*)::bigint
     from jsonb_array_elements(public.safra_get_start_catalog()) item
-    where item->>'criticality' is null
+    where item->>'criticality' = 'CRITICAL'
   ),
   11::bigint,
-  'undefined criticality is preserved as null in START catalog'
+  'START catalog exposes CRITICAL for the 11 scenarios (D-55)'
 );
 
 create temporary table c08_start_result as
@@ -219,19 +219,18 @@ select is(
   'retry does not duplicate TREATMENT_OPENED'
 );
 
-select is(
-  (
+select throws_ok(
+  $$
     select public.safra_start_treatment(
-      sc.id,
+      (select id from public.scenarios where code='SAFRA-01'),
       '08080808-0000-4000-8000-000000000011'::uuid,
       null,
       '{}'::uuid[]
-    )->>'status'
-    from public.scenarios sc
-    where sc.code='SAFRA-01'
-  ),
-  'ACTIVE',
-  'non-owner corporate user may START a second treatment while GI-004 is open'
+    );
+  $$,
+  'P0001',
+  'SAFRA_START_ACTIVE_EXISTS',
+  'same person cannot START a second ACTIVE treatment of the same scenario (D-57)'
 );
 
 select throws_ok(

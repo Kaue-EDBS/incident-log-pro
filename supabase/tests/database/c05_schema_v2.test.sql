@@ -101,8 +101,9 @@ select ok(
       and tablename = 'treatments'
       and indexdef ilike '%unique%'
       and indexdef ilike '%active%'
+      and indexdef not ilike '%opened_by%'
   ),
-  'C05 does not invent one-ACTIVE-treatment-per-scenario uniqueness'
+  'no one-ACTIVE-per-scenario uniqueness; only per person and scenario (D-57)'
 );
 
 select is(

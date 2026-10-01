@@ -28,9 +28,9 @@ select is(
    from public.scenarios sc
    join public.scenario_versions sv on sv.id=sc.current_version_id
    where sc.code ~ '^SAFRA-(0[1-9]|1[01])$'
-     and sv.criticality is null),
+     and sv.criticality = 'CRITICAL'),
   11::bigint,
-  'criticality remains null for all 11 while source does not support nominal classification'
+  'current version of all 11 is CRITICAL by owner decision D-55'
 );
 
 select is(

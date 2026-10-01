@@ -67,6 +67,9 @@ function errorMessage(error: unknown) {
     if (message.includes("SAFRA_INVALID_IMPACTED_AREA")) {
       return "Uma das áreas selecionadas não pertence à versão publicada deste cenário.";
     }
+    if (message.includes("SAFRA_START_ACTIVE_EXISTS")) {
+      return "Você já tem um protocolo em andamento para este card. Encerre-o antes de abrir outro.";
+    }
     if (message.includes("SAFRA_START_IDEMPOTENCY_CONFLICT")) {
       return "A tentativa anterior usou a mesma chave com dados diferentes. Revise e tente novamente.";
     }

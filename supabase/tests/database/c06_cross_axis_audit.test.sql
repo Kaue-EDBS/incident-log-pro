@@ -73,7 +73,7 @@ select is(
    where sc.code ~ '^SAFRA-(0[1-9]|1[01])$'
      and sv.criticality is null),
   11::bigint,
-  'criticality stays unresolved for all 11 while GI-SAFRA-001 is open'
+  'v1 history keeps null criticality for all 11 (D-55 applies to v2 only)'
 );
 
 select is(
