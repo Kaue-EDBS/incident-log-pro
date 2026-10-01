@@ -242,7 +242,8 @@ domain_rules:
       - "EDB06 - Protocolos de contingência v2.pdf"
     note: "Business/domain attribute of scenarios. Not equivalent to application service_class."
   critical_scenarios_list: "ALL_11_CRITICAL_D55"
-  safra_rules_registered: 29
+  safra_rules_registered: 33
+  safra_rules_deprecated: ["RB-SAFRA-011"]
   legacy_it_rules_registered: 0
   legacy_it_rules_status: "RETIRED_BY_D50"
   automated_decisioning: false

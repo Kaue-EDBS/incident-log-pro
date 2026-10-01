@@ -1,6 +1,6 @@
 # REGRAS DE NEGÓCIO — Painel Safra
 
-> Fonte canônica das regras de domínio.
+> Fonte canônica das regras de domínio. Vocabulário: `docs/GLOSSARIO_DOMINIO.md` v2.0. Revisado na C03-AUD2 (01/10/2026) para as decisões D-50 a D-73.
 
 ## 1. Governança
 
@@ -19,32 +19,30 @@ Nenhuma decisão material pode ser completada por suposição da LLM.
 ## 2. Regras Safra consolidadas
 
 ### RB-SAFRA-001 — Cenário validado
-Somente cenário `VALIDATED/PUBLISHED` pode originar tratativa real.
+Somente cenário `ACTIVE` com versão `PUBLISHED` pode originar tratativa real.
 
 ### RB-SAFRA-002 — Ativação humana
 Nenhum sinal externo cria automaticamente `treatments` no MVP.
 
 ### RB-SAFRA-003 — START
-Qualquer usuário autenticado pelo Microsoft Entra ID pode iniciar um protocolo publicado.
+Qualquer usuário corporativo autenticado pelo Microsoft Entra ID pode abrir um protocolo de cenário publicado (D-63), **exceto o dono vigente daquele card** (D-65).
 
-O ator do START deve ser persistido pelo backend com timestamp oficial e trilha de auditoria.
+O **solicitante** (D-71) é persistido pelo backend com horário oficial e trilha de auditoria.
 
-O `scenario_owner` não possui exclusividade sobre o START; seu papel é responsabilidade pelo card e execução do protocolo com sua equipe.
+Cada pessoa pode ter no máximo um protocolo em andamento por card, contado pela parte dela (D-57/D-66).
 
 ### RB-SAFRA-004 — END
-Qualquer usuário autenticado pelo Microsoft Entra ID pode encerrar uma tratativa ativa quando a necessidade que motivou a ativação estiver concluída.
-
-O ator do END e o timestamp oficial devem ser persistidos pelo backend.
+O encerramento tem **duas partes** (D-66): a do **solicitante** e a do **dono do card**. Cada parte é fechada pela própria pessoa, logada no próprio perfil (D-64), com autor e horário do servidor. O protocolo só fica Encerrado com as duas partes fechadas. Situações intermediárias: "Aguardando dono" e "Aguardando solicitante" (D-72).
 
 ### RB-SAFRA-005 — Execução durante a tratativa
 Não existe papel funcional separado de `scenario_updater`.
 
 O Painel Safra não executa nem controla passo a passo o trabalho operacional do protocolo. O `scenario_owner` conduz o protocolo com sua equipe, conforme o procedimento definido para o card.
 
-O usuário autenticado que ativou ou acompanha o caso pode encerrar a tratativa quando a necessidade estiver concluída.
+O solicitante fecha a parte dele quando a necessidade estiver atendida; o dono do card fecha a parte do dono (RB-SAFRA-004).
 
 ### RB-SAFRA-006 — Cancelamento auditável
-Tratativa incorreta vira `CANCELLED`; exclusão física é proibida no fluxo normal.
+Tratativa incorreta vira `CANCELLED`, por decisão do **solicitante ou do dono do card**, sempre com motivo (D-66); exclusão física é proibida no fluxo normal.
 
 ### RB-SAFRA-007 — Versão congelada
 Ao abrir, persistir `scenario_version_id`. Histórico não é recalculado contra versão futura.
@@ -59,16 +57,16 @@ Fontes: Matriz v3, Protocolos v2 e decisões da reunião de 22/09.
 
 Esta regra não classifica tecnicamente a aplicação Painel Safra. `service_class`, SLO, RTO, RPO e criticidade da aplicação pertencem ao Framework EBSA e são decisões separadas.
 
-**D-55 (30/09/2026):** os 11 cenários são `CRITICAL` por decisão do owner; a comunicação de abertura de um CRITICAL vai ao dono do card, sem a diretoria por ora. Aplicação técnica pendente (versão 2 dos cenários). A regra anterior, que falava em quatro CRITICAL sem nomeá-los, foi superada.
+**D-55 (30/09/2026):** os 11 cenários são `CRITICAL` por decisão do owner, aplicado na versão 2 em 01/10/2026; a comunicação de abertura vai ao dono do card, sem a diretoria por ora. A regra anterior, que falava em quatro CRITICAL sem nomeá-los, foi superada.
 
 ### RB-SAFRA-010 — Protocolo não é chamado
-Não exigir workflow de ticket técnico para cada protocolo.
+Não exigir workflow de ticket técnico para cada protocolo. O termo é sempre **protocolo**; "chamado" não é usado no Painel (D-05, reafirmada em 01/10/2026).
 
-### RB-SAFRA-011 — Escalonamento separado
-Comitê técnico/negócio/executivo é relação da tratativa, não status.
+### RB-SAFRA-011 — Escalonamento fora do Painel — DEPRECATED (D-73)
+O escalonamento é feito pelos donos de card, em conjunto, por avaliação própria, fora do Painel.
 
-### RB-SAFRA-012 — SLA múltiplo
-SLA deriva de eventos definidos; duração derivável não vira fonte primária.
+### RB-SAFRA-012 — SLA
+Nenhum card usa SLA no MVP (D-62). Se um SLA for criado por decisão futura, ele deriva de eventos definidos, pode haver mais de um por cenário e duração derivável não vira fonte primária. A escada de avisos de 2h/4h (RB-SAFRA-032) não é SLA.
 
 ### RB-SAFRA-013 — Fonte sem integração
 Ausência de fonte nunca aparece como OK. Usar `NO_SOURCE`, `WAITING_INTEGRATION`, `STALE_DATA` ou `UNKNOWN`.
@@ -93,8 +91,10 @@ Fluxo de governança aprovado:
 3. se exatamente um aceitar, esse usuário torna-se owner do novo card;
 4. se dois ou mais aceitarem, Jair realiza o check final e define o owner;
 5. se ninguém aceitar, Jair é informado e pode:
-   - acionar Bruno Palhão para escalonamento executivo; ou
+   - acionar Bruno Palhão para decidir; ou
    - decidir o ownership por conta própria.
+6. o proponente escreve o conteúdo; o Jair aprova; um admin técnico publica; o cenário nasce CRITICAL (D-60);
+7. quem propõe não aprova nem publica; proposta do Jair é aprovada pelo Kaue; aprovador e publicador são pessoas diferentes (D-68).
 
 Jiane participa desse fluxo como candidata a owner e não como governança global.
 
@@ -105,7 +105,7 @@ Recorrência é métrica; não promove automaticamente nível de crise.
 Eventos não podem violar sequência temporal sem justificativa administrativa auditada.
 
 ### RB-SAFRA-017 — Idempotência
-Duplo clique, retry ou refresh não pode duplicar abertura, passo, encerramento, cancelamento ou notificação.
+Duplo clique, retry ou refresh não pode duplicar abertura, encerramento de parte, cancelamento ou aviso.
 
 ### RB-SAFRA-018 — Administração executiva
 Bruno Palhão possui visão executiva de analytics sobre todos os cards e métricas, sem recebimento de e-mails operacionais e sem manutenção técnica da plataforma.
@@ -128,7 +128,7 @@ As regras LEGACY-INC-001 a LEGACY-INC-004 (incidente ativo único por aplicaçã
 
 ## 4. State machine alvo
 
-Estados mínimos:
+Estados técnicos:
 
 ```text
 ACTIVE
@@ -136,45 +136,31 @@ RESOLVED
 CANCELLED
 ```
 
-Escalonamento não cria status adicional.
+Situações na interface (D-72): Em andamento, Aguardando dono e Aguardando solicitante (todas `ACTIVE`), Encerrado (`RESOLVED`, as duas partes fechadas) e Cancelado (`CANCELLED`).
 
 ## 5. Autoridade
 
 ### Usuário autenticado
-Pode visualizar cards e executar START, END e CANCEL conforme regras auditáveis do produto.
+Pode visualizar cards e abrir protocolos (exceto dos cards de que é dono). Ao abrir, torna-se o **solicitante** daquele protocolo: fecha a parte dele e pode cancelar, com motivo.
 
-### Scenario owner
-É o responsável formal pelo card e pelo protocolo operacional junto ao seu time. Recebe as comunicações do próprio card e responde pela estrutura do procedimento, mas não possui exclusividade sobre START/END/CANCEL.
+### Dono do card (scenario owner)
+É o responsável formal pelo card e pelo protocolo operacional junto ao seu time. Recebe os avisos do próprio card, fecha a parte do dono de cada protocolo e pode cancelar, com motivo. Não abre protocolo dos próprios cards (D-65).
 
 ### Papéis administrativos
 Os subtipos administrativos e suas responsabilidades estão registrados em `docs/DECISOES.md`. A implementação fina de RBAC permanece deferida ao SAFRA-C04.
 
 ## 6. Decisões humanas abertas
 
-1. quatro cenários CRITICAL;
-2. thresholds 2/4/10/11;
-3. origem do mínimo da curva A;
-4. múltiplas tratativas simultâneas;
-5. fechamento com passos incompletos/NA;
-6. papéis e delegação finais;
-7. identity provider;
-8. service class;
-9. RTO/RPO;
-10. REPLICA;
-11. canal de notificação;
-12. aprovadores de cenários;
-13. retenção;
-14. janela semanal;
-15. métricas/thresholds quantitativos específicos por cenário, quando aplicável.
+Fonte oficial: `docs/GOVERNANCE_ISSUES.md` (D-53). Em 01/10/2026 seguem abertas: GI-SAFRA-002 e 003 (V2 do produto), 005 (avisos, M05), 006 (marcação da Safra, F04/M05), 007 (12º card, M10) e 011 (Teams). A lista que existia aqui foi resolvida pelas decisões D-44 a D-73.
 
 ## 7. Precedência
 
 ```text
-Matriz v3
- > decisão posterior explícita da reunião de 22/09
+decisão humana posterior registrada em DECISOES.md
+ > Matriz v3
+ > decisão explícita da reunião de 22/09
  > Protocolos v2
  > consolidação metodológica
- > implementação legada
 ```
 
 O Framework EBSA pode bloquear solução insegura, mas não inventa regra de negócio.
@@ -198,7 +184,7 @@ O ownership de uma proposta do 12º card segue a regra de aceite:
 
 - 1 aceite entre Daniel/Renato/Jiane -> ownership automático para quem aceitou;
 - 2 ou mais aceites -> Jair define o owner final;
-- 0 aceites -> Jair decide diretamente ou aciona Bruno para escalonamento executivo.
+- 0 aceites -> Jair decide diretamente ou aciona Bruno para decidir.
 
 
 ### RB-SAFRA-023 — Cenário, versão e tratativa
@@ -213,7 +199,7 @@ Impacto qualitativo descreve consequências/contexto operacional.
 
 - cenário/versão pode registrar impacto esperado/potencial;
 - tratativa registra impacto efetivamente observado;
-- impacto qualitativo não redefine criticidade nem escalonamento automaticamente.
+- impacto qualitativo não redefine criticidade automaticamente.
 
 ### RB-SAFRA-025 — Impacto quantitativo
 Impacto quantitativo é uma medição estruturada com métrica, valor, unidade, fonte e referência temporal.
@@ -222,11 +208,13 @@ Impacto quantitativo é uma medição estruturada com métrica, valor, unidade, 
 - desconhecido não vira zero;
 - uma tratativa pode ter múltiplas medições;
 - não existe score agregado ou threshold automático sem regra de negócio aprovada;
-- impacto quantitativo não altera automaticamente criticidade, escalonamento, status ou SLA.
+- impacto quantitativo não altera automaticamente criticidade nem status.
 
 
 ### RB-SAFRA-026 — Criticidade sem inferência
-Os quatro cenários `CRITICAL` não podem ser definidos por inferência.
+**Superada para a lista nominal pela D-55 (os 11 são CRITICAL).** Continua valendo o princípio: criticidade nunca é definida por inferência; só por decisão humana registrada e nova versão de cenário.
+
+Histórico da regra (até 30/09/2026): os quatro cenários `CRITICAL` não podiam ser definidos por inferência.
 
 - Matriz v3 sem coluna formal de criticidade;
 - reunião confirma existência de quatro temas críticos, mas não os nomeia;
@@ -236,7 +224,7 @@ Os quatro cenários `CRITICAL` não podem ser definidos por inferência.
 
 
 ### RB-SAFRA-027 — Engine de SLA determinística
-**Status: IMPLEMENTED**
+**Status: IMPLEMENTED — sem uso nos cards no MVP (D-62)**
 
 A engine de SLA é determinística e derivada de eventos/timestamps server-side.
 
@@ -326,3 +314,18 @@ Além da comparação dos 18 campos importados, o gate valida as representaçõe
 
 Resultado esperado:
 `MATRIX_V3_RECONCILIATION = 198/198`.
+
+
+## 10. Regras acrescentadas na C03-AUD2 — 01/10/2026
+
+### RB-SAFRA-030 — Solicitante e dono
+O **solicitante** é quem abriu o protocolo (D-71). O **dono do card** não pode ser solicitante do próprio card (D-65). Os dois têm papéis distintos no encerramento (RB-SAFRA-004).
+
+### RB-SAFRA-031 — Encerramento em duas partes
+Ver RB-SAFRA-004 e D-66/D-72. Quando o solicitante fecha a parte dele, a trava (D-57) é liberada e os avisos param. Relatórios medem: tempo de encerramento pelo solicitante, pelo dono e o consolidado.
+
+### RB-SAFRA-032 — Escada de avisos
+Em 2h e 4h desde a abertura, enquanto o solicitante não fechar a parte dele: e-mail ao dono pedindo que cobre o solicitante e pergunta "foi resolvido?" ao solicitante. Tempo corrido, 24h por dia. Não é SLA (D-62/D-67). Aviso de abertura ao dono do card e ao Jair (D-58). Teams em aberto (GI-SAFRA-011).
+
+### RB-SAFRA-033 — Safra corrente
+Começou em 01/10/2026 e termina quando o Kaue marcar (D-59/D-69). Encerrar exige digitar `ENCERRAR SAFRA` e pode ser desfeito em 7 dias, sem apagar dados nesse prazo (D-70).

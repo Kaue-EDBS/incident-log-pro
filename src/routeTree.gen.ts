@@ -10,12 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AbrirProtocoloRouteImport } from './routes/abrir-protocolo'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as NovoIncidenteRouteImport } from './routes/novo-incidente'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AbrirProtocoloRoute = AbrirProtocoloRouteImport.update({
+  id: '/abrir-protocolo',
+  path: '/abrir-protocolo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -23,40 +28,35 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NovoIncidenteRoute = NovoIncidenteRouteImport.update({
-  id: '/novo-incidente',
-  path: '/novo-incidente',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/abrir-protocolo': typeof AbrirProtocoloRoute
   '/auth': typeof AuthRoute
-  '/novo-incidente': typeof NovoIncidenteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/abrir-protocolo': typeof AbrirProtocoloRoute
   '/auth': typeof AuthRoute
-  '/novo-incidente': typeof NovoIncidenteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/abrir-protocolo': typeof AbrirProtocoloRoute
   '/auth': typeof AuthRoute
-  '/novo-incidente': typeof NovoIncidenteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/novo-incidente'
+  fullPaths: '/' | '/abrir-protocolo' | '/auth'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/novo-incidente'
-  id: '__root__' | '/' | '/auth' | '/novo-incidente'
+  to: '/' | '/abrir-protocolo' | '/auth'
+  id: '__root__' | '/' | '/abrir-protocolo' | '/auth'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AbrirProtocoloRoute: typeof AbrirProtocoloRoute
   AuthRoute: typeof AuthRoute
-  NovoIncidenteRoute: typeof NovoIncidenteRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,6 +68,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/abrir-protocolo': {
+      id: '/abrir-protocolo'
+      path: '/abrir-protocolo'
+      fullPath: '/abrir-protocolo'
+      preLoaderRoute: typeof AbrirProtocoloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -75,20 +82,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/novo-incidente': {
-      id: '/novo-incidente'
-      path: '/novo-incidente'
-      fullPath: '/novo-incidente'
-      preLoaderRoute: typeof NovoIncidenteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AbrirProtocoloRoute: AbrirProtocoloRoute,
   AuthRoute: AuthRoute,
-  NovoIncidenteRoute: NovoIncidenteRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

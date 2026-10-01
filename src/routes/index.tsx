@@ -35,7 +35,7 @@ function Overview() {
           protocolos.
         </p>
         <Link
-          to="/novo-incidente"
+          to="/abrir-protocolo"
           className="mt-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
         >
           Abrir protocolo

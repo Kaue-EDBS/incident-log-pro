@@ -29,18 +29,19 @@ import { useSafraStartCatalog, useSafraStartTreatment } from "@/lib/queries";
 import type { SafraStartResult } from "@/lib/safra";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/novo-incidente")({
+export const Route = createFileRoute("/abrir-protocolo")({
   head: () => ({
     meta: [
       { title: "Abrir Protocolo | Painel Safra" },
       {
         name: "description",
-        content: "Inicie uma tratativa Safra a partir de um cenário publicado.",
+        content: "Abra um protocolo da Safra a partir de um cenário publicado.",
       },
       { property: "og:title", content: "Abrir Protocolo | Painel Safra" },
       {
         property: "og:description",
-        content: "START governado, transacional e rastreável para os cenários da Safra.",
+        content:
+          "Abertura de protocolo governada, transacional e rastreável para os cenários da Safra.",
       },
     ],
   }),
@@ -77,7 +78,7 @@ function errorMessage(error: unknown) {
       return "A tentativa anterior usou a mesma chave com dados diferentes. Revise e tente novamente.";
     }
   }
-  return "Não foi possível iniciar a tratativa.";
+  return "Não foi possível abrir o protocolo.";
 }
 
 function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: () => void }) {
@@ -90,14 +91,14 @@ function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: ()
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="size-5 text-[color:var(--turquoise)]" />
-            <p className="font-semibold">Tratativa iniciada</p>
+            <p className="font-semibold">Protocolo aberto</p>
           </div>
           <div>
             <p className="text-lg font-semibold">
               {result.scenario.code} · {result.scenario.name}
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              START oficial em {formatDateTime(result.opened_at)}
+              Aberto oficialmente em {formatDateTime(result.opened_at)}
             </p>
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
@@ -116,7 +117,7 @@ function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: ()
           </p>
           {result.idempotent_replay ? (
             <p className="text-xs text-muted-foreground">
-              Retry reconhecido: a mesma tratativa foi reutilizada, sem duplicação.
+              Tentativa repetida reconhecida: o mesmo protocolo foi reaproveitado, sem duplicação.
             </p>
           ) : null}
         </div>
@@ -159,7 +160,7 @@ function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: ()
         className="mt-6 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-muted"
       >
         <RefreshCw className="size-4" />
-        Abrir outra tratativa
+        Abrir outro protocolo
       </button>
     </section>
   );
@@ -217,7 +218,7 @@ function StartSafraTreatment() {
       });
       retryKey.current = null;
       setResult(created);
-      toast.success("START registrado. A tratativa está em andamento.");
+      toast.success("Protocolo aberto. Ele está em andamento.");
     } catch (error) {
       toast.error(errorMessage(error));
     }
@@ -229,7 +230,7 @@ function StartSafraTreatment() {
         <header>
           <h1 className="text-2xl font-semibold tracking-tight">Abrir Protocolo</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            O START foi persistido com ator, versão e horário definidos no servidor.
+            A abertura foi registrada com solicitante, versão e horário definidos no servidor.
           </p>
         </header>
         <ResultCard
@@ -251,7 +252,7 @@ function StartSafraTreatment() {
       <header className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Abrir Protocolo</h1>
         <p className="text-sm text-muted-foreground">
-          Selecione um cenário publicado, revise o protocolo e confirme o START da tratativa.
+          Selecione um cenário publicado, revise o protocolo e confirme a abertura do protocolo.
         </p>
       </header>
 
@@ -350,7 +351,7 @@ function StartSafraTreatment() {
             <div className="space-y-4">
               <div className="rounded-xl border border-border bg-card p-5">
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  Snapshot do START
+                  Registro da abertura
                 </h2>
                 <div className="mt-4 space-y-3 text-sm">
                   <div className="flex gap-3">
@@ -392,11 +393,11 @@ function StartSafraTreatment() {
                     <AlertTriangle className="mt-0.5 size-4 text-[color:var(--warning)]" />
                     <div>
                       <p className="text-sm font-medium">
-                        {selected.active_treatment_count} tratativa(s) já ativa(s)
+                        {selected.active_treatment_count} protocolo(s) já em andamento
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        Isso não bloqueia o START enquanto a regra de simultaneidade GI-SAFRA-004
-                        estiver aberta. Duplo clique/retry do mesmo comando continua idempotente.
+                        Outras pessoas podem ter protocolos deste card em andamento. Você só pode
+                        ter um por card; um clique repetido não abre um segundo.
                       </p>
                     </div>
                   </div>
@@ -460,7 +461,7 @@ function StartSafraTreatment() {
           <section className="rounded-xl border border-primary/20 bg-primary/5 p-5">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <h2 className="font-semibold">4. Confirmar START</h2>
+                <h2 className="font-semibold">4. Confirmar abertura</h2>
                 <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
                   O backend vai congelar a versão PUBLISHED, o owner e a área responsável atuais.
                   Ator, timestamp e correlation ID serão gerados no servidor. A tela não envia
@@ -480,7 +481,7 @@ function StartSafraTreatment() {
                     ) : (
                       <PlayCircle className="size-5" />
                     )}
-                    Iniciar tratativa
+                    Abrir protocolo
                   </button>
                 </AlertDialogTrigger>
 
@@ -488,8 +489,8 @@ function StartSafraTreatment() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Confirmar abertura do protocolo?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Você está iniciando {selected.code} · {selected.name}. O START cria uma
-                      tratativa ACTIVE e registra TREATMENT_OPENED com horário oficial do servidor.
+                      Você está iniciando {selected.code} · {selected.name}. A abertura cria um
+                      protocolo em andamento e registra o horário oficial do servidor.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -499,7 +500,7 @@ function StartSafraTreatment() {
                       disabled={startTreatment.isPending}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
-                      Confirmar START
+                      Confirmar abertura
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

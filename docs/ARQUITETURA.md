@@ -148,7 +148,7 @@ Regras:
 - uma versão publicada não é reescrita;
 - uma versão retired é imutável;
 - apenas uma versão PUBLISHED pode estar corrente por cenário;
-- criticidade pode permanecer nula enquanto houver governance issue aberta;
+- criticidade sem default; os 11 cenários estão `CRITICAL` na versão 2 (D-55) e a versão 1 preserva `NULL` como histórico;
 - valores não nulos: `CRITICAL | HIGH | MODERATE`.
 
 #### Relações versionadas
@@ -185,8 +185,8 @@ Cada SLA define:
 - regra de aplicabilidade.
 
 Princípios:
-- um cenário pode ter múltiplos SLAs;
-- duração é derivada de eventos/timestamps;
+- **no MVP nenhum card tem SLA (D-62)**: `scenario_slas` permanece vazia e o START não inicia relógio;
+- se um SLA for criado por decisão futura: pode haver mais de um por cenário; duração é derivada de eventos/timestamps;
 - SLA operacional não é SLO/RTO/RPO da aplicação;
 - thresholds não aprovados permanecem ausentes, nunca inventados.
 
@@ -218,9 +218,11 @@ Relações:
 
 Regras:
 - tratamento encerrado não reabre;
-- CANCEL usa campos próprios e justificativa;
+- END em duas partes (solicitante e dono), com autor e horário por parte (D-66/D-72); hoje o schema tem um único `closed_by/closed_at`, a adequar na F01;
+- CANCEL pelo solicitante ou pelo dono, com campos próprios e motivo (D-66);
 - END e CANCEL não são delete;
-- múltiplos ACTIVE do mesmo cenário continuam sem bloqueio estrutural até decisão M01.
+- uma tratativa `ACTIVE` por pessoa e cenário (`treatments_one_active_per_person_scenario`, D-57); pessoas diferentes podem ter tratativas simultâneas;
+- o dono vigente não abre tratativa do próprio cenário (D-65).
 
 ### 4.7 Eventos
 
@@ -232,8 +234,8 @@ Eventos canônicos iniciais:
 - `NOTE_ADDED`;
 - `IMPACT_AREA_ADDED`;
 - `IMPACT_AREA_REMOVED`;
-- `ESCALATION_CHANGED`;
-- `SLA_BREACHED`;
+- `REQUESTER_PART_CLOSED` e `OWNER_PART_CLOSED` (F01);
+- `REMINDER_SENT` (M05);
 - `TREATMENT_RESOLVED`;
 - `TREATMENT_CANCELLED`;
 - `ADMIN_CORRECTION_RECORDED`.
@@ -249,24 +251,11 @@ Cada evento registra:
 
 Eventos não são editados para corrigir histórico. Correções administrativas geram novo evento.
 
-### 4.8 Escalonamentos
+Fora de uso: `ESCALATION_CHANGED` (D-73) e `SLA_BREACHED` (D-62).
 
-`treatment_escalations` representa elevação formal da governança da ocorrência.
+### 4.8 Escalonamentos — FORA DO PAINEL (D-73)
 
-Níveis:
-
-~~~text
-NONE
-TECHNICAL_CRISIS
-BUSINESS_CRISIS
-EXECUTIVE
-~~~
-
-Regras:
-- escalonamento não altera o status do treatment;
-- criticidade de cenário não é escalonamento;
-- no máximo um escalonamento vigente por treatment;
-- histórico é preservado por validade temporal.
+O escalonamento é feito pelos donos de card, em conjunto, fora do Painel. A tabela `treatment_escalations` (criada no C05) ficou sem uso e será removida por migration na reauditoria do C05 (D-52).
 
 ### 4.9 Notificações
 
@@ -287,7 +276,7 @@ Campos estruturais incluem:
 - timestamps de fila/envio/falha;
 - motivo de falha.
 
-Provider e canal produtivos permanecem decisão de M05.
+Destinatários decididos (D-58 aviso de abertura; D-67 escada 2h/4h). Canal: e-mail; Teams em aberto (GI-SAFRA-011). Provider produtivo na M05.
 
 A mesma idempotency key não pode gerar duas entregas lógicas.
 
@@ -304,14 +293,13 @@ A proposta:
 
 `scenario_proposal_owner_responses` registra aceite/recusa dos candidatos a owner.
 
-A publicação de um novo cenário ocorre somente após o fluxo de governança previsto para M10.
+A publicação de um novo cenário segue D-60/D-68 (proponente escreve, Jair aprova, admin técnico publica, separação de funções) e será implementada na M10.
 
 ### 4.11 Governance issues
 
 `governance_issues` registra decisões materiais ainda abertas.
 
-Exemplo vigente:
-- `GI-SAFRA-001` — identificação formal dos quatro cenários CRITICAL.
+Fonte oficial do texto e do status: `docs/GOVERNANCE_ISSUES.md` (D-53); o banco espelha.
 
 Regra:
 - questão aberta não pode ser convertida em default de implementação;
@@ -339,7 +327,7 @@ operational_areas --> scenarios --> scenario_versions
                                   +--> treatment_impacted_areas
                                   +--> treatment_impact_measurements
                                   +--> treatment_events
-                                  +--> treatment_escalations
+                                  +--> treatment_escalations   (sem uso, D-73)
                                   +--> notifications_log
 
 scenario_proposals
@@ -384,7 +372,8 @@ Estado atual:
 
 - START está implementado no C08 por `public.safra_start_treatment(...)` e catálogo governado `public.safra_get_start_catalog()`;
 - END/CANCEL permanecem para as fases de fechamento correspondentes e não devem ser antecipados;
-- escalonamento e mutações auxiliares continuam sujeitos às fases próprias;
+- o START recusa o dono vigente do card (D-65) e a segunda tratativa ativa da mesma pessoa no mesmo cenário (D-57);
+- mutações auxiliares continuam sujeitas às fases próprias; escalonamento está fora do Painel (D-73);
 - o browser não recebe acesso direto às tabelas Safra para substituir RPCs governadas.
 
 As operações críticas implementadas/devem ser implementadas de forma transacional e concentrar:

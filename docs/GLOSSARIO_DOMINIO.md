@@ -324,7 +324,7 @@ Pode possuir:
 - conclusão;
 - causa-raiz;
 - ação preventiva;
-- SLA próprio.
+- prazo próprio, quando o protocolo do card prever (por exemplo, "pós-mortem ≤ 48h"), como texto de referência; não é SLA medido no MVP (D-62).
 
 **Não é:**
 - requisito automático de todas as tratativas, salvo decisão de negócio;

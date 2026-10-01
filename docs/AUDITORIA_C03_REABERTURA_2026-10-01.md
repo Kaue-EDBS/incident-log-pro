@@ -80,3 +80,17 @@ O novo contrato da seção 8 do glossário aponta diferenças entre o que o banc
 Critério de saída do C03: **nenhuma entidade pode ter nome ambíguo ou duas definições concorrentes**.
 
 **PASS.** O glossário v2.0 é a única definição vigente; a v1.1 é histórico. As diferenças com o banco estão listadas na seção 4 e têm fase responsável.
+
+---
+
+## 6. Fechamento complementar — 01/10/2026
+
+Na verificação de "fechou 100%?", o owner pediu a correção de três sobras que ainda contrariavam o critério de saída do C03:
+
+| Sobra | Correção |
+|---|---|
+| `REGRAS_NEGOCIO.md` com regras antigas (RB-003/004/005/006 sobre START/END/CANCEL por qualquer pessoa; RB-011 escalonamento; RB-012 SLA; RB-026 "quatro CRITICAL"; Bruno "escalonamento executivo"; precedência com "implementação legada"; lista de decisões abertas vencida) | reescritas conforme D-55 a D-73; RB-011 DEPRECATED; RB-026 mantida só como princípio; novas RB-SAFRA-030 a 033 (solicitante/dono, duas partes, avisos, Safra corrente) |
+| `ARQUITETURA.md` com escalonamentos, SLA ativo e eventos `ESCALATION_CHANGED`/`SLA_BREACHED` | §4.5, §4.6, §4.7, §4.8, §4.9, §4.10, §4.11, §5 e §8 alinhadas |
+| Tela com "tratativa", "START" e o endereço `/novo-incidente` | textos trocados por "protocolo"/"abertura"; rota renomeada para `/abrir-protocolo` (menu e atalhos atualizados); aviso desatualizado sobre a GI-SAFRA-004 substituído pela regra D-57 |
+
+Verificação local: build, typecheck, lint zero-warning e checagens de coerência verdes.
