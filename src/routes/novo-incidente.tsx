@@ -67,6 +67,9 @@ function errorMessage(error: unknown) {
     if (message.includes("SAFRA_INVALID_IMPACTED_AREA")) {
       return "Uma das áreas selecionadas não pertence à versão publicada deste cenário.";
     }
+    if (message.includes("SAFRA_START_OWNER_OWN_CARD")) {
+      return "Você é o dono deste card e não pode abrir protocolo dele. Donos podem abrir protocolos de cards de outros donos.";
+    }
     if (message.includes("SAFRA_START_ACTIVE_EXISTS")) {
       return "Você já tem um protocolo em andamento para este card. Encerre-o antes de abrir outro.";
     }

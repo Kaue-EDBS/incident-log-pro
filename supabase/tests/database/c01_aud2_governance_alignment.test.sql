@@ -19,7 +19,10 @@ select ok(
 );
 
 select is(
-  (select count(*)::bigint from public.governance_issues where status = 'OPEN'),
+  (select count(*)::bigint from public.governance_issues
+   where status = 'OPEN'
+     and issue_key in ('GI-SAFRA-001','GI-SAFRA-002','GI-SAFRA-003','GI-SAFRA-004','GI-SAFRA-005',
+                       'GI-SAFRA-006','GI-SAFRA-007','GI-SAFRA-008','GI-SAFRA-009','GI-SAFRA-010')),
   10::bigint,
   'GI-SAFRA-001..010 remain open until human decision'
 );
