@@ -35,7 +35,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 007 | Publicação formal do 12º card | DECIDED (D-60) — implementação na M10 |
 | 008 | Janela da governança semanal | DECIDED (D-61) — fora do escopo; banco atualizado no pacote |
 | 009 | Eventos dos SLAs textuais | DECIDED (D-62) — sem cronômetro de SLA; escada de avisos na M05/F01 |
-| 010 | Liberação de START por card | OPEN — NON_BLOCKING (D-51) |
+| 010 | Liberação de START por card | DECIDED (D-63) — mantém os 11 liberados; banco atualizado no pacote |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -271,8 +271,9 @@ Com isso, a decomposição deixou de ser ambígua para C08. A materialização p
 
 ## GI-SAFRA-010 — Liberação de START por card
 
-**Status:** OPEN — NON_BLOCKING (D-51)  
-**Fase:** governança futura (a definir).  
+**Status:** DECIDED (D-63)  
+**Fase:** —  
+**Decisão do owner (01/10/2026):** fica como está: qualquer usuário corporativo autenticado abre qualquer um dos 11 cards. Restrição futura exige decisão nova.  
 **Bloqueia START/C08:** não.
 
 Definir quais dos 11 cards podem ser abertos e por quem. Até decisão, os 11 cenários publicados continuam startáveis por qualquer usuário corporativo autenticado (D-51, D-06). Nenhum card é bloqueado por inferência.

@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-63 | Mantida a liberação dos 11 cards para qualquer usuário corporativo autenticado; sem restrição por card (resolve GI-SAFRA-010) | APPROVED |
 | D-62 | Sem cronômetro de SLA nos cards; escada de avisos 2h/3h/4h, 24h por dia, com pergunta "foi resolvido?" a quem abriu (resolve GI-SAFRA-009) | APPROVED — implementação na M05/F01 |
 | D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
 | D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
@@ -156,7 +157,7 @@ O inventário vigente é:
 | GI-SAFRA-007 — publicação formal do 12º card | DECIDED (D-60) / IMPLEMENTATION_IN_M10 | proponente escreve, Jair aprova, platform admin publica |
 | GI-SAFRA-008 — janela de governança semanal | DECIDED (D-61) / OUT_OF_APP_SCOPE | ritual fora do Painel; F05 mantida |
 | GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | DECIDED (D-62) / IMPLEMENTATION_IN_M05_F01 | sem cronômetro de SLA; escada de avisos |
-| GI-SAFRA-010 — governança de liberação de START por card | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-51 mantém os 11 cenários publicados startáveis; restringir um card exige decisão explícita |
+| GI-SAFRA-010 — governança de liberação de START por card | DECIDED (D-63) | 11 cenários liberados para qualquer usuário corporativo |
 | métricas do protocolo Safra (substitutas de MTTD/MTTR/MTBF) | DEFERRED_TO_F04_M05 | D-50 retirou as métricas de TI; nenhuma métrica de protocolo é inferida |
 | fechamento com passo incompleto/NA | DEFERRED_TO_F01 | não impacta START |
 | impacto quantitativo — métricas/thresholds | DEFERRED_TO_F04 | modelo conceitual aprovado; thresholds não inferidos |
@@ -1052,3 +1053,8 @@ Regras:
 - cada aviso é enviado uma única vez por protocolo (idempotência e log de entrega, conforme M05).
 
 Implementação: depende do envio de avisos (SAFRA-M05) e do encerramento (SAFRA-F01). Não entra no pacote da versão 2 dos cards.
+
+### D-63 — Sem restrição de START por card
+**APPROVED — 01/10/2026** — owner: Kaue. **Resolve GI-SAFRA-010.**
+
+A regra da D-51 deixa de ser provisória: qualquer usuário corporativo autenticado (D-48) pode abrir qualquer um dos 11 cenários publicados, respeitada a trava da D-57 (uma tratativa ativa por pessoa e por cenário). Restringir por área, lista de pessoas ou suspensão de card exige decisão nova.
