@@ -375,7 +375,7 @@ c04_reaudit_2:
   principal_binding: "AZURE_PROVIDER_ONLY"
   public_default_privileges: "CLOSED_FOR_ANON_AUTHENTICATED"
   sandbox_exec_bypass: "ACCEPTED_RISK_WORKSPACE_RESTRICTED_TO_TEAM"
-  owner_action_recommended: "DISABLE_EMAIL_PROVIDER_IN_LOVABLE_CLOUD_AUTH"
+  email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
 c05_reaudit_2:

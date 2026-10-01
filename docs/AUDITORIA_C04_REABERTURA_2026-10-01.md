@@ -3,7 +3,7 @@
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Bloco:** SAFRA-C04 — Identidade, RBAC e RLS  
 **Data:** 01/10/2026  
-**Estado:** CONCLUÍDA — com uma ação recomendada ao owner (desligar o login por e-mail no Lovable)  
+**Estado:** CONCLUÍDA — login por e-mail desligado pelo owner em 01/10/2026 (só Microsoft)  
 **Migration:** `20261001180000_c04_aud2_identity_hardening.sql` (CI verde: App Smoke #236, Database Disposable #274; aplicada e conferida no PRIMARY)  
 **Testes novos:** `c04_aud2_identity_authz.test.sql` (18) e `c04_aud2_hardening.test.sql` (8)
 
@@ -41,7 +41,7 @@ Verificado no PRIMARY: **nenhuma ocupação ocorreu** (2 logins, ambos Microsoft
 
 **Correção:** o gatilho só liga logins com `provider = azure`, não anônimos; também reage a mudança de `raw_app_meta_data`. Cadastro já ligado nunca é religado. Testes: `c04_aud2_hardening`.
 
-**Ação recomendada ao owner:** desligar o método **Email** no Lovable Cloud Auth (ADR-023: Microsoft é o único login). Manter "Disable sign-up" desligado, senão quem ainda não entrou não consegue entrar pela Microsoft.
+**Ação do owner — FEITA em 01/10/2026:** método **Email** desligado no Lovable Cloud Auth; ficou só **Microsoft** (ADR-023). "Disable sign-up" mantido desligado para que quem ainda não entrou consiga entrar pela Microsoft.
 
 ### C04-AUD2-02 — Conta `sandbox_exec` do Lovable ignora as regras — ALTA — RISCO ACEITO
 

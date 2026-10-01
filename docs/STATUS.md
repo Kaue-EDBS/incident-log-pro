@@ -57,7 +57,6 @@
 - END/CANCEL (F01/F02) ainda não existem: com a trava D-57, quem abrir um protocolo não consegue abrir outro do mesmo card até o encerramento existir.
 - Homologação do START com sessão real (checklist em `docs/HANDOFF_C08_START_2026-09-27.md`).
 - Backup/restore com RTO 30 min e RPO 5 min: SAFRA-C09.
-- Recomendado ao owner: desligar o login por e-mail no Lovable Cloud Auth (C04-AUD2-01).
 
 ---
 
