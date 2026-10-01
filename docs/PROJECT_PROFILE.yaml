@@ -330,17 +330,25 @@ c02_gate:
   material_blockers_without_owner: 0
 
 c02_reaudit:
-  status: "IN_EXECUTION"
+  status: "APPROVED"
   opened_at: "2026-09-27T18:37:00-03:00"
+  closed_at: "2026-10-01"
   historical_gate_preserved: true
   current_recertification:
-    g3_5: "PENDING"
-    threat_001: "PENDING"
-    authz_001: "BLOCKED_BY_C02_AUD_01"
-  open_findings: 10
-  highest_severity: "HIGH_AUTHZ"
-  primary_finding: "RBAC public RPCs do not consistently enforce canonical corporate live-session predicate"
+    g3_5: "PASS"
+    threat_001: "PASS"
+    authz_001: "PASS"
+  open_findings: 0
   audit_document: "docs/AUDITORIA_C02_REABERTURA_2026-09-27.md"
+
+c02_reaudit_2:
+  status: "APPROVED"
+  date: "2026-10-01"
+  decisions: ["D-64", "D-65", "D-66", "D-67", "D-68", "D-69", "D-70"]
+  new_abuse_cases: ["AB-START-04", "AB-START-05", "AB-END-02", "AB-END-03", "AB-NOTIF-01", "AB-NOTIF-02", "AB-CARD-02", "AB-SAFRA-01", "AB-DRIFT-01"]
+  residual_risks_section: "docs/PRIVACIDADE_THREAT_MODEL.md §14"
+  pending_enforcement: "D-65 START check (RR-C02-11)"
+  audit_document: "docs/AUDITORIA_C02_REABERTURA_2026-10-01.md"
 
 c04_gate:
   status: "APPROVED"

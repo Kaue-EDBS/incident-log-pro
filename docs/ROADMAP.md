@@ -143,7 +143,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 |---|---|---|---|
 | C00 | Baseline e contenção P0 | CONCLUÍDO (+ C00-AUD e C00-AUD2 concluídas) | `AUDITORIA_C00_*` |
 | C01 | Documentação canônica e PROJECT_PROFILE | CONCLUÍDO; **C01-AUD2 em execução** | `AUDITORIA_C01_*` |
-| C02 | Threat model e abuso de negócio | CONCLUÍDO; C02-AUD registrada como em execução | `AUDITORIA_C02_*` |
+| C02 | Threat model e abuso de negócio | CONCLUÍDO (+ C02-AUD e C02-AUD2 concluídas em 01/10) | `AUDITORIA_C02_*` |
 | C03 | Glossário e modelo de domínio | CONCLUÍDO | `GLOSSARIO_DOMINIO.md` |
 | C04 | Identidade, RBAC e RLS | CONCLUÍDO | `DECISOES.md` ADR-023 a 033 |
 | C05 | Schema v2, migrations e invariantes | CONCLUÍDO; drift de 3 migrations aberto (C00-AUD2-07) | `ARQUITETURA.md` |
@@ -1079,7 +1079,7 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 ## Bloco 0 — Fundação segura
 1. C00 — concluído;
 2. C01 — concluído (C01-AUD2 em execução);
-3. C02 — concluído (reauditoria a reconciliar).
+3. C02 — concluído (reauditorias concluídas em 01/10).
 
 ## Bloco 1 — Domínio e backend
 4. C03 — concluído;

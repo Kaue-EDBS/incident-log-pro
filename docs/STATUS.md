@@ -15,7 +15,7 @@
 |---|---|---|
 | C00-AUD2 — Reliability Monitor/MTTR descontinuado (D-50) | CONCLUÍDA em 30/09 | `AUDITORIA_C00_REABERTURA_2026-09-30.md` |
 | C01-AUD2 — documentação canônica e PROJECT_PROFILE | EM EXECUÇÃO | `AUDITORIA_C01_REABERTURA_2026-09-30.md` |
-| C02-AUD — threat model | registrada como EM EXECUÇÃO; próxima a reconciliar | `AUDITORIA_C02_REABERTURA_2026-09-27.md` |
+| C02-AUD e C02-AUD2 — threat model | CONCLUÍDAS em 01/10; G3.5, THREAT-001 e AUTHZ-001 recertificados | `AUDITORIA_C02_REABERTURA_2026-10-01.md` |
 
 ---
 
@@ -53,7 +53,7 @@
 - Pendências de governança: ver `docs/GOVERNANCE_ISSUES.md`. Resolvidas: 001, 004, 008, 009, 010. Decididas, aguardando construção: 005 (avisos, M05), 006 (marcar a Safra, F04/M05), 007 (12º card, M10). Adiadas para a V2 do produto: 002, 003.
 - END/CANCEL (F01/F02) ainda não existem: com a trava D-57, quem abrir um protocolo não consegue abrir outro do mesmo card até o encerramento existir.
 - Drift de 3 migrations no PRIMARY sem arquivo: reauditoria do C05.
-- Estado da C02-AUD a reconciliar.
+- Aplicar a D-65 no START (dono não abre o próprio card) e espelhar a GI-SAFRA-011 no banco.
 - Homologação do START com sessão real (checklist em `docs/HANDOFF_C08_START_2026-09-27.md`).
 - Backup/restore com RTO 30 min e RPO 5 min: SAFRA-C09.
 

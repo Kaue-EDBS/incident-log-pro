@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-70 | Encerrar a Safra exige digitar "ENCERRAR SAFRA" e pode ser desfeito em 7 dias, sem apagar dados nesse prazo | APPROVED — implementação com a D-59 |
 | D-69 | A Safra corrente começou em 01/10/2026 e termina quando o Kaue marcar o encerramento | APPROVED |
 | D-68 | 12º card com separação de funções: quem propõe não aprova nem publica; proposta do Jair é aprovada pelo Kaue; proposta de admin técnico é publicada por outro admin | APPROVED — implementação na M10 |
 | D-67 | Escada de avisos revista: 2h e 4h, ao dono do card (para cobrar o usuário) e ao usuário ("foi resolvido?"), até o usuário fechar a parte dele; sem Jair e sem aviso de 3h; 4h não é SLA | APPROVED — implementação na M05/F01 |
@@ -1148,3 +1149,13 @@ Implementação: SAFRA-M10.
 - Ela **termina quando o Kaue marcar** o encerramento no sistema; não há data prevista.
 - Enquanto a marcação da D-59 não existir no sistema (F04/M05), esta decisão é o registro oficial do início. Ao construir a marcação, o primeiro registro deve usar 01/10/2026 00:00 (São Paulo) como início, com referência a esta decisão.
 - O encerramento continua sendo o marco da política de retenção (ADR-016).
+
+### D-70 — Proteções contra encerrar a Safra por engano
+**APPROVED — 01/10/2026** — owner: Kaue. Complementa a D-59. Nasce da reauditoria C02-AUD2.
+
+- **Confirmação reforçada:** para marcar "Safra encerrada", é preciso digitar `ENCERRAR SAFRA`; um clique não basta.
+- **Prazo para desfazer:** por **7 dias** após o encerramento, a Safra pode ser **reaberta**. Nesse prazo, **nenhum dado pessoal é apagado ou anonimizado** pela política de retenção.
+- A contagem da retenção (ADR-016) começa só depois desses 7 dias sem reabertura.
+- Encerramento e reabertura ficam na trilha de auditoria, com autor e horário do servidor.
+
+Implementação: junto com a marcação da D-59 (F04/M05).
