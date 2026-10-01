@@ -270,65 +270,6 @@ export type Database = {
         }
         Relationships: []
       }
-      scenario_slas: {
-        Row: {
-          applicability_text: string | null
-          code: string
-          created_at: string
-          end_event: string
-          id: string
-          label: string
-          scenario_version_id: string
-          start_event: string
-          target_text: string
-          target_unit: string
-          target_value: number
-          tolerance_documentation: string | null
-          tolerance_unit: string | null
-          tolerance_value: number | null
-        }
-        Insert: {
-          applicability_text?: string | null
-          code: string
-          created_at?: string
-          end_event: string
-          id?: string
-          label: string
-          scenario_version_id: string
-          start_event: string
-          target_text: string
-          target_unit: string
-          target_value: number
-          tolerance_documentation?: string | null
-          tolerance_unit?: string | null
-          tolerance_value?: number | null
-        }
-        Update: {
-          applicability_text?: string | null
-          code?: string
-          created_at?: string
-          end_event?: string
-          id?: string
-          label?: string
-          scenario_version_id?: string
-          start_event?: string
-          target_text?: string
-          target_unit?: string
-          target_value?: number
-          tolerance_documentation?: string | null
-          tolerance_unit?: string | null
-          tolerance_value?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "scenario_slas_scenario_version_id_fkey"
-            columns: ["scenario_version_id"]
-            isOneToOne: false
-            referencedRelation: "scenario_versions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       scenario_version_impacted_areas: {
         Row: {
           created_at: string

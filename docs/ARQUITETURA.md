@@ -154,8 +154,7 @@ Regras:
 #### Relações versionadas
 
 - `scenario_version_impacted_areas`;
-- `scenario_version_systems`;
-- `scenario_slas`.
+- `scenario_version_systems`.
 
 Essas relações pertencem à **versão**, não ao cenário estável, para preservar a fotografia histórica.
 
@@ -171,24 +170,16 @@ Regras:
 
 O START grava snapshot de owner e área responsável na tratativa para impedir reescrita histórica quando o cenário mudar depois.
 
-### 4.5 SLAs
+### 4.5 Regras de tempo (C07-AUD2)
 
-`scenario_slas` pertence a `scenario_version`.
+A engine de SLA e a tabela `scenario_slas` foram removidas (D-75). Os prazos da Matriz v3 ficam como texto em `source_reference`.
 
-Cada SLA define:
-- código;
-- rótulo;
-- `start_event`;
-- `end_event`;
-- alvo estruturado quando aplicável;
-- texto-alvo;
-- regra de aplicabilidade.
+As regras de tempo são cálculos puros, sem gravar duração, e não são chamáveis pelo navegador:
+- `private.safra_reminder_steps` — escada de avisos (D-76);
+- `private.safra_close_times` — tempos do solicitante, do dono e consolidado (D-77);
+- `private.safra_local_day` — dia do relatório em `America/Sao_Paulo`.
 
-Princípios:
-- **no MVP nenhum card tem SLA (D-62)**: `scenario_slas` permanece vazia e o START não inicia relógio;
-- se um SLA for criado por decisão futura: pode haver mais de um por cenário; duração é derivada de eventos/timestamps;
-- SLA operacional não é SLO/RTO/RPO da aplicação;
-- thresholds não aprovados permanecem ausentes, nunca inventados.
+Elas recebem os horários como parâmetro; a F01 liga as colunas de cada parte fechada.
 
 ### 4.6 Treatments
 
@@ -251,7 +242,7 @@ Cada evento registra:
 
 Eventos não são editados para corrigir histórico. Correções administrativas geram novo evento.
 
-Removido: `ESCALATION_CHANGED` (D-73, não é mais aceito pelo banco). Sem uso nos cards: `SLA_BREACHED` (D-62).
+Removidos: `ESCALATION_CHANGED` (D-73) e `SLA_BREACHED` (D-75); o banco não aceita mais esses tipos.
 
 ### 4.8 Escalonamentos — FORA DO PAINEL (D-73)
 
@@ -320,7 +311,6 @@ operational_areas --> scenarios --> scenario_versions
                           |              |
                           |              +--> scenario_version_impacted_areas
                           |              +--> scenario_version_systems --> systems
-                          |              +--> scenario_slas
                           |
                           +--> treatments
                                   |
@@ -356,7 +346,7 @@ governance_issues
 
 ## 7. Segurança e exposição
 
-As tabelas do domínio Safra (17 criadas no C05; 16 desde a remoção de `treatment_escalations` pela D-73) têm:
+As tabelas do domínio Safra (17 criadas no C05; 15 desde a remoção de `treatment_escalations` pela D-73 e de `scenario_slas` pela D-75) têm:
 - RLS habilitada;
 - deny-by-default para `anon` e `authenticated`;
 - acesso técnico de `service_role` sem `TRUNCATE`.

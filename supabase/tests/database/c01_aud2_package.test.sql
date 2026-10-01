@@ -60,10 +60,9 @@ select is(
   'D-55: impacted areas and systems are copied to version 2'
 );
 
-select is(
-  (select count(*)::bigint from public.scenario_slas),
-  0::bigint,
-  'D-62: no structured SLA clock is created'
+select ok(
+  to_regclass('public.scenario_slas') is null,
+  'D-62/D-75: no structured SLA clock exists (engine retired)'
 );
 
 -- D-57: one ACTIVE treatment per person and scenario.

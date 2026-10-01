@@ -30,7 +30,6 @@ describe("SAFRA START RPC contracts", () => {
         responsible_area: area,
         owner,
         potential_impacted_areas: [area],
-        structured_sla_count: 0,
         active_treatment_count: 1,
       },
     ]);
@@ -54,7 +53,6 @@ describe("SAFRA START RPC contracts", () => {
         responsible_area: area,
         owner,
         potential_impacted_areas: [],
-        structured_sla_count: 0,
         active_treatment_count: 0,
       },
     ]);
@@ -86,7 +84,6 @@ describe("SAFRA START RPC contracts", () => {
       owner,
       responsible_area: area,
       impacted_areas: [],
-      slas: [],
     });
 
     expect(parsed.status).toBe("ACTIVE");

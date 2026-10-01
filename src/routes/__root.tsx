@@ -92,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Painel Safra | Editora do Brasil" },
       {
         property: "og:description",
-        content: "Cenários, tratativas, protocolos e SLAs da Safra em um só lugar.",
+        content: "Cenários e protocolos da Safra em um só lugar.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

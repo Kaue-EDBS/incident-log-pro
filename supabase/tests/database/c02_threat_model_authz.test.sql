@@ -282,14 +282,14 @@ select is(
       and grantee='anon'
       and table_name in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
         'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
   0::bigint,
-  'anon has no direct grants on the 17-table Safra domain surface'
+  'anon has no direct grants on the 15-table Safra domain surface'
 );
 
 select is(
@@ -300,14 +300,14 @@ select is(
       and grantee='authenticated'
       and table_name in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
         'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
   0::bigint,
-  'authenticated has no direct grants on the 17-table Safra domain surface'
+  'authenticated has no direct grants on the 15-table Safra domain surface'
 );
 
 select is(

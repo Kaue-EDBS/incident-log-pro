@@ -79,7 +79,7 @@
 | D-64 | END só por quem abriu o protocolo ou pelo dono do card, cada um logado no próprio perfil; o botão "Resolvido" abre o Painel e exige confirmação | APPROVED — complementada pela D-66 |
 | D-65 | Dono de card não abre protocolo dos próprios cards; pode abrir de cards de outros donos | APPROVED — aplicada em 01/10/2026 (migration 20261001150000) |
 | D-66 | Encerramento em duas partes (usuário e dono do card, cada um com seu horário); CANCEL por qualquer um dos dois, com motivo; trava D-57 liberada quando o usuário fecha a parte dele | APPROVED — implementação na F01/F02 |
-| D-67 | Escada de avisos revista: 2h e 4h, ao dono do card (para cobrar o usuário) e ao usuário ("foi resolvido?"), até o usuário fechar a parte dele; sem Jair e sem aviso de 3h; 4h não é SLA | APPROVED — implementação na M05/F01 |
+| D-67 | Escada de avisos revista: 2h e 4h, ao dono do card (para cobrar o usuário) e ao usuário ("foi resolvido?"), até o usuário fechar a parte dele; sem Jair e sem aviso de 3h; 4h não é SLA | APPROVED — **completada pela D-76** (de hora em hora após 4h; dono para ao fechar a parte dele) |
 | D-68 | 12º card com separação de funções: quem propõe não aprova nem publica; proposta do Jair é aprovada pelo Kaue; proposta de admin técnico é publicada por outro admin | APPROVED — implementação na M10 |
 | D-69 | A Safra corrente começou em 01/10/2026 e termina quando o Kaue marcar o encerramento | APPROVED |
 | D-70 | Encerrar a Safra exige digitar "ENCERRAR SAFRA" e pode ser desfeito em 7 dias, sem apagar dados nesse prazo | APPROVED — implementação com a D-59 |
@@ -87,6 +87,9 @@
 | D-72 | Situações do protocolo: Em andamento, Aguardando dono, Aguardando solicitante, Encerrado, Cancelado | APPROVED — implementação na F01/F02 |
 | D-73 | Escalonamento fica fora do Painel: é feito pelos donos de card, em conjunto, por avaliação própria; SAFRA-M06 cancelado | APPROVED |
 | D-74 | Nome do card é o texto literal da Matriz v3; sem nome curto; a forma de exibir fica para a C08 | APPROVED |
+| D-75 | Engine de SLA aposentada: funções, `scenario_slas` e `SLA_BREACHED` removidos | APPROVED — aplicada em 01/10/2026 |
+| D-76 | Escada de avisos: 2h, 4h e depois de hora em hora até o solicitante fechar a parte dele; o dono deixa de receber quando fecha a parte dele | APPROVED — regra de tempo pronta; envio na M05/F01 |
+| D-77 | Tempos do analytics: solicitante, dono e consolidado (até a última parte); cancelado não conta; parte aberta fica em aberto | APPROVED — regra de tempo pronta; uso na F01/F04 |
 
 ## 3. ADRs
 
@@ -1206,3 +1209,42 @@ Persistência (F01): o protocolo guarda separadamente quem fechou e quando, para
 - Conferência de 100% dos campos no PRIMARY: `docs/data-contracts/c06_aud2_reconciliation_2026-10-01.json`.
 - Migration `20261001220000_c06_aud2_governance_issue_texts.sql` (CI verde #242/#280; aplicada no PRIMARY, 37 = 37): textos das pendências abertas e da resolução da GI-SAFRA-009 alinhados às decisões vigentes; nenhum status mudou.
 - Marcos P1–P4: critérios revistos (D-62/D-66/D-67/D-73); todos seguem `NOT_PUBLISHED`.
+
+### D-75 — Engine de SLA aposentada
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da reauditoria C07-AUD2. Aplica a D-62.
+
+- Como nenhum card usa SLA (D-62), a engine do C07 é **removida**, como foi feito com o escalonamento (D-73): as funções `safra_evaluate_sla`, `safra_evaluate_configured_sla` (2 versões), `safra_treatment_sla_state`, `safra_treatment_event_time` e `safra_sla_target_interval`, a tabela `scenario_slas` (vazia) e o tipo de evento `SLA_BREACHED` (nenhum registro).
+- O catálogo e o resumo do START deixam de trazer campos de SLA.
+- Os prazos da Matriz v3 continuam como **texto de referência** (`source_reference.sla_target`).
+- Se uma versão futura do produto quiser SLA, o código antigo está no histórico do GitHub, e a volta exige decisão nova.
+
+### D-76 — Escada de avisos completa
+**APPROVED — 01/10/2026** — owner: Kaue. Completa a D-67.
+
+| Momento desde a abertura | Solicitante | Dono do card |
+|---|---|---|
+| 2h | "foi resolvido?" | pedido para cobrar o solicitante, **se ainda não fechou a parte dele** |
+| 4h | idem | idem |
+| 5h, 6h, 7h… (de hora em hora) | idem | idem |
+
+- Os avisos param quando o **solicitante** fecha a parte dele ou quando o protocolo é **cancelado**.
+- Se o **dono** fecha a parte dele primeiro, ele **deixa de receber**; só o solicitante continua recebendo.
+- Tempo corrido em horas absolutas, 24h por dia (horário de verão não altera).
+- Bordas: o aviso vale no instante exato (2h00); quem fecha ou cancela exatamente nesse instante não recebe aquele aviso.
+- Regra de tempo: `private.safra_reminder_steps`. Envio: M05/F01.
+
+### D-77 — Tempos de encerramento do analytics
+**APPROVED — 01/10/2026** — owner: Kaue. Detalha a D-66.
+
+- **Tempo do solicitante:** da abertura até o solicitante fechar a parte dele.
+- **Tempo do dono:** da abertura até o dono fechar a parte dele.
+- **Consolidado:** da abertura até a **última** parte fechada (protocolo totalmente encerrado).
+- Parte ainda aberta: o tempo dela e o consolidado ficam **em aberto** (nunca zero nem "cumprido").
+- Protocolo **cancelado** não conta como resolvido: fica fora dos tempos (D-72).
+- Nada de duração gravada: os tempos são sempre calculados a partir dos horários do servidor.
+- Dia e hora dos relatórios no fuso `America/Sao_Paulo`.
+- Regras de tempo: `private.safra_close_times` e `private.safra_local_day`.
+
+### Aplicação do pacote C07-AUD2 — 01/10/2026
+
+Migration `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql`: engine de SLA removida (D-75); regras de tempo da escada (D-76) e do analytics (D-77) criadas como cálculos que recebem os horários (as colunas de cada parte chegam na F01); resolução da GI-SAFRA-009 atualizada. Teste: `c07_aud2_time_rules.test.sql` (31). O schema público passa de 16 para 15 tabelas.

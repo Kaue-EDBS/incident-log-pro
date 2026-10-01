@@ -234,7 +234,7 @@ Definir periodicidade/horário e corte de dados do ritual de governança semanal
 
 ## GI-SAFRA-009 — Mapeamento formal dos eventos dos SLAs textuais
 
-**Status:** RESOLVED (D-62) — nenhum card terá cronômetro de SLA no MVP; a escada de avisos, revista pela D-67 (2h e 4h), é requisito da M05/F01  
+**Status:** RESOLVED (D-62) — nenhum card terá cronômetro de SLA; engine aposentada (D-75); a escada de avisos (D-67, completada pela D-76: 2h, 4h e de hora em hora) é requisito da M05/F01  
 **Nota anterior:** a regra D-47 destravou o C08; a pergunta segue aberta porque a materialização dos SLAs elegíveis ainda depende de nova versão governada.  
 **Fase:** SAFRA-C07/M04.  
 **Bloqueia START/C08:** não.

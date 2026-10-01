@@ -244,7 +244,7 @@ Existem dois níveis distintos:
 
 **No MVP, nenhum card usa SLA (D-62).** Não existe cronômetro de prazo nem "prazo estourado" nos 11 cards. Os prazos da Matriz v3 permanecem apenas como **texto de referência** no protocolo. As 4 horas da escada de avisos (2.22) **não são SLA**.
 
-O conceito, a tabela `scenario_slas` e a engine do C07 continuam no domínio para uso futuro, por decisão nova.
+A engine do C07 e a tabela `scenario_slas` foram aposentadas em 01/10/2026 (D-75). Uma volta do SLA exige decisão nova.
 
 **Não é:**
 - SLO do software;

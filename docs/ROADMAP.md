@@ -126,7 +126,7 @@ AUTHENTICATION != AUTHORIZATION
 | Regras de negócio (RB-SAFRA) | `docs/REGRAS_NEGOCIO.md` |
 | Privacidade e ameaças | `docs/PRIVACIDADE_THREAT_MODEL.md` |
 | Destino das capacidades | `docs/MATRIZ_PARIDADE.md` |
-| Engine de SLA | `docs/C07_SLA_ENGINE.md` |
+| Regras de tempo (SLA aposentado, D-75) | `docs/C07_REGRAS_DE_TEMPO.md` |
 | Rollback e banco descartável | `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md` |
 | Auditorias por fase | `docs/AUDITORIA_*.md` |
 | Histórico | `docs/historico/` |
@@ -150,7 +150,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 | C04 | Identidade, RBAC e RLS | CONCLUÍDO (+ C04-AUD2 em 01/10) | `DECISOES.md` ADR-023 a 033, `AUDITORIA_C04_*` |
 | C05 | Schema v2, migrations e invariantes | CONCLUÍDO (+ C05-AUD2 em 01/10, drift zerado) | `ARQUITETURA.md`, `AUDITORIA_C05_*` |
 | C06 | Seed canônico da Matriz v3 | CONCLUÍDO (+ C06-AUD2 em 01/10, planilha = banco) | `AUDITORIA_C06_*`, `data-contracts/` |
-| C07 | Engine de SLA | CONCLUÍDO | `C07_SLA_ENGINE.md` |
+| C07 | Engine de SLA → regras de tempo | CONCLUÍDO; C07-AUD2 em 01/10: SLA aposentado (D-75), escada e tempos do analytics (D-76/D-77) | `C07_REGRAS_DE_TEMPO.md`, `AUDITORIA_C07_*` |
 | C08 | UX do COMEÇO | **EM EXECUÇÃO** — START implementado; homologação com sessão real pendente | abaixo |
 | C09 | Fundação operacional | NÃO INICIADO | abaixo |
 
@@ -404,6 +404,8 @@ Deve responder rapidamente:
 ---
 
 ## SAFRA-M04 — SLA em tempo real
+
+> **01/10/2026:** sem SLA nos cards (D-62) e engine aposentada (D-75). Esta fase será revista quando chegar (ver aviso da seção 11).
 
 Exibir:
 

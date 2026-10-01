@@ -7,14 +7,14 @@ select is(
    where c.relnamespace='public'::regnamespace
      and c.relname in (
       'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-      'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+      'scenario_version_impacted_areas','scenario_version_systems',
       'treatments','treatment_impacted_areas','treatment_impact_measurements',
       'treatment_events','scenario_proposals',
       'scenario_proposal_owner_responses','notifications_log','governance_issues'
      )
      and c.relrowsecurity),
-  16::bigint,
-  'all 16 SAFRA domain tables keep RLS enabled'
+  15::bigint,
+  'all 15 SAFRA domain tables keep RLS enabled'
 );
 
 select is(
@@ -25,7 +25,7 @@ select is(
      and c.confdeltype='c'
      and cl.relname in (
       'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-      'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+      'scenario_version_impacted_areas','scenario_version_systems',
       'treatments','treatment_impacted_areas','treatment_impact_measurements',
       'treatment_events','scenario_proposals',
       'scenario_proposal_owner_responses','notifications_log','governance_issues'
@@ -40,7 +40,7 @@ select is(
    where table_schema='public'
      and table_name in (
       'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-      'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+      'scenario_version_impacted_areas','scenario_version_systems',
       'treatments','treatment_impacted_areas','treatment_impact_measurements',
       'treatment_events','scenario_proposals',
       'scenario_proposal_owner_responses','notifications_log','governance_issues'

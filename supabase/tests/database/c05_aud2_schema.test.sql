@@ -99,8 +99,8 @@ select is(
 select is(
   (select count(*)::bigint from pg_class c join pg_namespace n on n.oid = c.relnamespace
    where n.nspname = 'public' and c.relkind = 'r'),
-  16::bigint,
-  'public schema holds exactly the 16 Safra domain tables'
+  15::bigint,
+  'public schema holds exactly the 15 Safra domain tables (scenario_slas retired by D-75)'
 );
 
 select * from finish();

@@ -332,10 +332,9 @@ select is(
   'START payload exposes no owner/version/criticality/timestamp override'
 );
 
-select is(
-  (select count(*)::bigint from public.scenario_slas),
-  0::bigint,
-  'START does not infer or publish structured SLA configuration'
+select ok(
+  to_regclass('public.scenario_slas') is null,
+  'START has no structured SLA configuration (D-75)'
 );
 
 select * from finish();

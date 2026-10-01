@@ -127,7 +127,7 @@ Arquivo:
 
 Cobre atualmente:
 
-- 16 tabelas do schema v2 (17 até 01/10/2026; `treatment_escalations` removida pela D-73);
+- 15 tabelas do schema v2 (17 criadas; `treatment_escalations` removida pela D-73 e `scenario_slas` pela D-75);
 - RLS ativa nas 16;
 - anon sem grant direto;
 - authenticated sem grant direto;

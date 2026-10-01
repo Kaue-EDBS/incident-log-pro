@@ -30,7 +30,7 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 | treatment | inexistente | operação | BUILD |
 | scenario owner | inexistente | autorização | BUILD |
 | áreas impactadas | inexistente | impacto real | BUILD |
-| SLA múltiplo | inexistente | engine temporal implementada (C07), **sem uso nos cards no MVP** (D-62) | PARK |
+| SLA múltiplo | inexistente | engine aposentada (D-75); no lugar, regras de tempo da escada e do analytics (D-76/D-77) | REMOVE |
 | escalonamento | inexistente | fora do Painel, feito pelos donos de card (D-73) | REMOVE |
 | trava de uma tratativa por pessoa e card | inexistente | D-57 — implementada (C01-AUD2) | BUILD — FEITO |
 | dono não abre o próprio card | inexistente | D-65 — implementada (C02-AUD2) | BUILD — FEITO |

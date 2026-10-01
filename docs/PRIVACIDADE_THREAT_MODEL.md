@@ -120,11 +120,11 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 | AB-API-01 | cliente enumera tabelas pela Data API | 401/403/sem grant; RLS permanece defense-in-depth | smoke cobre superfície Safra inteira |
 | AB-DATA-01 | cliente tenta INSERT/UPDATE/DELETE direto em tabelas Safra | negar por grant/RLS; mutações críticas somente por RPC governada | C05/C08 |
 | AB-LEAK-01 | usuário autenticado tenta extrair RBAC audit/roles sem sessão válida | retornar vazio/false; audit só para admin corporativo válido | C02-AUD |
-| AB-TIME-01 | cliente adultera `opened_at`, timestamps ou relógio de SLA | ignorar input de relógio; usar server clock e campos imutáveis | C05/C07/C08 |
+| AB-TIME-01 | cliente adultera `opened_at`, timestamps ou horários das partes | ignorar input de relógio; usar server clock e campos imutáveis | C05/C07/C08 |
 | AB-VERSION-01 | editar versão publicada/retirada para alterar tratativa ativa | rejeitar edição retroativa; tratamento continua na versão congelada | version guards |
 | AB-RETRY-01 | duas requisições concorrentes disputam a mesma chave START | exatamente uma tratativa e um `TREATMENT_OPENED` | advisory lock + unique key + teste concorrente |
-| AB-SLA-01 | tentar “parar” prazo/avisos via CANCEL, evento futuro ou `as_of` manipulado | sem cronômetro de SLA nos cards (D-62); avisos param só quando o usuário fecha a parte dele (D-67); CANCEL exige motivo e não é resolvido; raw evaluator não é client-callable | C07 + D-62/D-67 |
-| AB-NOTIF-01 | aviso de 2h/4h duplicado, enviado após o fechamento ou não enviado | um envio por etapa e protocolo; nada após o usuário fechar; log de entrega | D-67; M05 |
+| AB-SLA-01 | tentar “parar” prazo/avisos via CANCEL, evento futuro ou `as_of` manipulado | sem SLA (D-62/D-75); avisos param só quando o solicitante fecha a parte dele ou há cancelamento (D-76); `as_of` antes da abertura é recusado; regras de tempo não são client-callable | `c07_aud2_time_rules` + D-76 |
+| AB-NOTIF-01 | aviso da escada (2h, 4h, de hora em hora) duplicado, enviado após o fechamento ou não enviado | um envio por etapa e protocolo; nada após o usuário fechar; log de entrega | D-67; M05 |
 | AB-NOTIF-02 | aviso postado em canal do Teams expõe dados a quem não participa | até decisão, só e-mail individual | GI-SAFRA-011; M05 |
 | AB-CARD-01 | publicar 12º card/proposta sem governança | proposta não entra no catálogo produtivo automaticamente | DEFERRED_TO_M10; sem RPC produtiva de publicação nesta fase |
 | AB-CARD-02 | a mesma pessoa propõe, aprova e/ou publica o próprio card | negar; proponente ≠ aprovador ≠ publicador; proposta do Jair aprovada pelo Kaue | D-68; M10 |
@@ -136,10 +136,10 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 | Classe | Controles | Evidências obrigatórias |
 |---|---|---|
 | autorização | canonical corporate predicate, live session, role mapping, owner mapping | `c01_corporate_domains.test.sql`, `c02_threat_model_authz.test.sql`, direct RPC denial |
-| Data API | revoke grants + RLS deny-by-default | direct API smoke cobrindo as 16 tabelas Safra (legado removido pela D-50) |
+| Data API | revoke grants + RLS deny-by-default | direct API smoke cobrindo as 15 tabelas Safra (legado removido pela D-50) |
 | START/retry | server-side RPC, immutable snapshot, idempotency, advisory lock, correlation ID, trava por pessoa e card | C08 pgTAP + C02 conflito de chave + teste concorrente real + `c01_aud2_package.test.sql` |
 | histórico/versionamento | guards de versão/owner/treatment + append-only | C05/C06 tests |
-| tempo/SLA | server timestamps + engine de SLA + snapshot histórico | matriz adversarial C07 |
+| tempo | server timestamps + regras de tempo puras (D-76/D-77) + snapshot histórico | `c07_aud2_time_rules.test.sql` |
 | END/CANCEL | guard terminal, motivo obrigatório, duas partes, só usuário/dono; commands ainda futuros | testes de guard atuais + contratos AB-END-01..03/AB-CANCEL-01 antes da RPC futura |
 | avisos | destinatários no servidor, um envio por etapa, link sem poder de ação | contratos AB-NOTIF-01/02 e T-19 antes da M05 |
 | proposta/12º card | proposal separado de scenario produtivo | contrato AB-CARD-01; implementação futura M10 |
@@ -243,7 +243,7 @@ Substitui a tabela da seção 12 como fotografia atual. A seção 12 fica como h
 |---|---|---|---|---|
 | RR-C02-01 | uso indevido de START/END/CANCEL | START controlado (C08 + D-57); END/CANCEL com contrato definido (D-64/D-66) | F01/F02 | não |
 | RR-C02-02 | role/claim desatualizado ou sessão revogada | **CONTROLLED** — predicado corporativo nas funções de RBAC, verificado no PRIMARY em 01/10 | — | não |
-| RR-C02-03 | enumeração ou leitura excessiva | CONTROLLED — 16 tabelas sem grant direto; smoke cobre todas | — | não |
+| RR-C02-03 | enumeração ou leitura excessiva | CONTROLLED — 15 tabelas sem grant direto; smoke cobre todas | — | não |
 | RR-C02-04 | dado pessoal em texto livre, log ou aviso | RESIDUAL_ACCEPTED_WITH_MINIMIZATION | M05 (conteúdo dos avisos), F08 | não |
 | RR-C02-05 | duplicidade por retry/concorrência | CONTROLLED — chave idempotente, advisory lock, trava por pessoa, teste concorrente | — | não |
 | RR-C02-06 | manipulação de estado/tempo para parar avisos | CONTROLLED_CURRENT_SURFACE — sem SLA nos cards (D-62); avisos dependem do fechamento do usuário (D-67) | M05/F01 | não |

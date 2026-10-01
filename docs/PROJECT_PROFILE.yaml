@@ -285,7 +285,7 @@ deferred_decisions:
   current_safra_time_window: "GI-SAFRA-006; DECIDED_D59_MANUAL_OPEN_CLOSE_BY_OWNER; IMPLEMENTATION_IN_F04_M05"
   formal_new_scenario_approval_flow: "GI-SAFRA-007; DECIDED_D60_PROPOSER_WRITES_JAIR_APPROVES_PLATFORM_ADMIN_PUBLISHES_CRITICAL; IMPLEMENTATION_IN_M10"
   weekly_governance_window: "GI-SAFRA-008; RESOLVED_D61; RITUAL_OUT_OF_APP_SCOPE; F05_SCREEN_KEPT"
-  textual_sla_event_mapping: "GI-SAFRA-009; RESOLVED_D62; NO_SLA_CLOCKS; REMINDER_LADDER_2H_3H_4H_24X7_IN_M05_F01"
+  textual_sla_event_mapping: "GI-SAFRA-009; RESOLVED_D62; SLA_ENGINE_RETIRED_D75; REMINDER_LADDER_2H_4H_THEN_HOURLY_D76_IN_M05_F01"
   start_release_per_card: "GI-SAFRA-010; RESOLVED_D63; ALL_11_PUBLISHED_SCENARIOS_STARTABLE_BY_ANY_CORPORATE_USER"
   protocol_metrics_replacing_mttd_mttr: "DEFERRED_TO_F04_M05; D50"
   quantitative_impact_definition: "APPROVED_CONCEPTUAL_MODEL_C03; METRICS_AND_THRESHOLDS_DEFERRED_TO_F04"
@@ -379,6 +379,17 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+c07_reaudit_2:
+  status: "APPROVED"
+  date: "2026-10-01"
+  migration: "20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql"
+  sla_engine: "RETIRED (D-75)"
+  reminder_ladder: "private.safra_reminder_steps (D-76)"
+  close_times: "private.safra_close_times (D-77)"
+  local_day: "private.safra_local_day"
+  test: "supabase/tests/database/c07_aud2_time_rules.test.sql"
+  audit_document: "docs/AUDITORIA_C07_REABERTURA_2026-10-01.md"
+
 c06_reaudit_2:
   status: "APPROVED"
   date: "2026-10-01"
@@ -403,8 +414,8 @@ c05_schema_v2:
   status: "CANONICAL_BASE_IMPLEMENTED"
   migration: "20260925170000_c05_schema_v2_canonical_base.sql"
   primary_applied: true
-  new_domain_tables: 16
-  retired_tables: ["treatment_escalations (D-73)"]
+  new_domain_tables: 15
+  retired_tables: ["treatment_escalations (D-73)", "scenario_slas (D-75)"]
   rls_default: "DENY_BY_DEFAULT"
   anon_access: false
   authenticated_direct_access: false

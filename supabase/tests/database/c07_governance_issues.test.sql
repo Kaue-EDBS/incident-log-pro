@@ -54,7 +54,7 @@ select ok(
 );
 
 select is(
-  (select count(*)::bigint from public.scenario_slas),
+  (select count(*)::bigint from pg_class where relname='scenario_slas' and relnamespace='public'::regnamespace),
   0::bigint,
   'governance issue registration does not infer structured SLA rows'
 );

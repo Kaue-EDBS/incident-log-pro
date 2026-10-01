@@ -66,7 +66,7 @@ Não exigir workflow de ticket técnico para cada protocolo. O termo é sempre *
 O escalonamento é feito pelos donos de card, em conjunto, por avaliação própria, fora do Painel.
 
 ### RB-SAFRA-012 — SLA
-Nenhum card usa SLA no MVP (D-62). Se um SLA for criado por decisão futura, ele deriva de eventos definidos, pode haver mais de um por cenário e duração derivável não vira fonte primária. A escada de avisos de 2h/4h (RB-SAFRA-032) não é SLA.
+Nenhum card usa SLA (D-62) e a engine de SLA foi aposentada (D-75). Os prazos da Matriz v3 ficam como texto de referência. A escada de avisos (RB-SAFRA-032) não é SLA.
 
 ### RB-SAFRA-013 — Fonte sem integração
 Ausência de fonte nunca aparece como OK. Usar `NO_SOURCE`, `WAITING_INTEGRATION`, `STALE_DATA` ou `UNKNOWN`.
@@ -225,36 +225,16 @@ Histórico da regra (até 30/09/2026): os quatro cenários `CRITICAL` não podia
 - C06 deve preservar a pendência no seed/reconciliação.
 
 
-### RB-SAFRA-027 — Engine de SLA determinística
-**Status: IMPLEMENTED — sem uso nos cards no MVP (D-62)**
+### RB-SAFRA-027 — Regras de tempo
+**Status: IMPLEMENTED (C07-AUD2) — engine de SLA aposentada (D-75)**
 
-A engine de SLA é determinística e derivada de eventos/timestamps server-side.
-
-Estados canônicos:
-- `ON_TRACK`;
-- `BREACHED`;
-- `COMPLETED_ON_TIME`;
-- `COMPLETED_LATE`;
-- `NOT_MEASURABLE`;
-- `NOT_APPLICABLE` somente quando uma regra explícita declarar não aplicabilidade.
-
-Regras:
-- SLA textual sem `start_event`, `end_event` e alvo estruturado permanece `NOT_MEASURABLE`;
-- ausência do evento inicial => `NOT_MEASURABLE`;
-- evento final exatamente no deadline => `COMPLETED_ON_TIME`;
-- breach ocorre somente após o deadline;
-- CANCEL antes do end_event não equivale a cumprimento;
-- CANCEL após o deadline preserva breach;
-- relógio anterior ao start é inválido;
-- cálculos usam `timestamptz`;
-- alvo estruturado aceita apenas MINUTE/HOUR/DAY e valor > 0;
-- a engine não publica SLAs de cenário por inferência.
-
-Implementação:
-- `private.safra_sla_target_interval`;
-- `private.safra_evaluate_sla`;
-- `private.safra_treatment_event_time`;
-- `private.safra_treatment_sla_state`.
+- tempos sempre derivados de horários do servidor (`timestamptz`); nenhuma duração gravada como fonte;
+- relógio negativo (horário antes da abertura) é recusado;
+- horário ausente nunca vira "OK" nem zero;
+- escada de avisos (D-76): `private.safra_reminder_steps`;
+- tempos de encerramento (D-77): `private.safra_close_times`;
+- dia/hora dos relatórios em `America/Sao_Paulo`: `private.safra_local_day`;
+- nenhuma regra de tempo é chamável pelo navegador.
 
 ### RB-SAFRA-028 — P1–P4 não publicados por inferência
 **Status: IMPLEMENTED**
@@ -324,10 +304,10 @@ Resultado esperado:
 O **solicitante** é quem abriu o protocolo (D-71). O **dono do card** não pode ser solicitante do próprio card (D-65). Os dois têm papéis distintos no encerramento (RB-SAFRA-004).
 
 ### RB-SAFRA-031 — Encerramento em duas partes
-Ver RB-SAFRA-004 e D-66/D-72. Quando o solicitante fecha a parte dele, a trava (D-57) é liberada e os avisos param. Relatórios medem: tempo de encerramento pelo solicitante, pelo dono e o consolidado.
+Ver RB-SAFRA-004 e D-66/D-72. Quando o solicitante fecha a parte dele, a trava (D-57) é liberada e os avisos param. Relatórios medem: tempo de encerramento pelo solicitante, pelo dono e o consolidado, até a última parte fechada (D-77); cancelado não conta.
 
 ### RB-SAFRA-032 — Escada de avisos
-Em 2h e 4h desde a abertura, enquanto o solicitante não fechar a parte dele: e-mail ao dono pedindo que cobre o solicitante e pergunta "foi resolvido?" ao solicitante. Tempo corrido, 24h por dia. Não é SLA (D-62/D-67). Aviso de abertura ao dono do card e ao Jair (D-58). Teams em aberto (GI-SAFRA-011).
+Aos 2h, aos 4h e depois de hora em hora desde a abertura, enquanto o solicitante não fechar a parte dele nem houver cancelamento: pergunta "foi resolvido?" ao solicitante e e-mail ao dono pedindo que cobre o solicitante, só enquanto o dono não tiver fechado a parte dele (D-76). Tempo corrido, 24h por dia. Não é SLA (D-62/D-67). Aviso de abertura ao dono do card e ao Jair (D-58). Teams em aberto (GI-SAFRA-011).
 
 ### RB-SAFRA-033 — Safra corrente
 Começou em 01/10/2026 e termina quando o Kaue marcar (D-59/D-69). Encerrar exige digitar `ENCERRAR SAFRA` e pode ser desfeito em 7 dias, sem apagar dados nesse prazo (D-70).

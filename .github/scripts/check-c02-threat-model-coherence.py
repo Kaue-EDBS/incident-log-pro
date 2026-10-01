@@ -21,7 +21,7 @@ rpc_smoke = read(".github/scripts/test-safra-direct-rpc.sh")
 parity = read("docs/MATRIZ_PARIDADE.md")
 profile = read("docs/PROJECT_PROFILE.yaml")
 c05_guards = read("supabase/migrations/20260925210500_c05_terminal_state_guards.sql")
-c07_boundaries = read("supabase/tests/database/c07_boundary_adversarial_matrix.test.sql")
+c07_time_rules = read("supabase/tests/database/c07_aud2_time_rules.test.sql")
 c08_start = read("supabase/tests/database/c08_start_end_to_end.test.sql")
 
 for abuse_id in (
@@ -70,7 +70,6 @@ for table in (
     "scenario_owners",
     "scenario_version_impacted_areas",
     "scenario_version_systems",
-    "scenario_slas",
     "treatments",
     "treatment_impacted_areas",
     "treatment_impact_measurements",
@@ -97,8 +96,8 @@ require(profile, "c02_reaudit:", "PROJECT_PROFILE C02 reaudit state")
 
 require(c05_guards, "END is allowed only from ACTIVE treatment", "END transition guard")
 require(c05_guards, "CANCEL requires cancellation_reason", "CANCEL reason guard")
-require(c07_boundaries, "CANCEL after deadline preserves breach", "CANCEL SLA abuse boundary")
-require(c07_boundaries, "future CANCEL is invisible to an earlier historical snapshot", "historical snapshot boundary")
+require(c07_time_rules, "cancel stops the reminder ladder", "CANCEL reminder boundary")
+require(c07_time_rules, "as_of before opening is rejected", "manipulated as_of boundary")
 require(c08_start, "same idempotency key returns same treatment", "sequential START retry contract")
 require(c08_start, "retry does not duplicate TREATMENT_OPENED", "START event dedupe contract")
 
