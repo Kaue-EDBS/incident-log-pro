@@ -34,7 +34,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 006 | Janela oficial da "Safra corrente" | DECIDED (D-59) — implementação na F04/M05 |
 | 007 | Publicação formal do 12º card | DECIDED (D-60) — implementação na M10 |
 | 008 | Janela da governança semanal | DECIDED (D-61) — fora do escopo; banco atualizado no pacote |
-| 009 | Eventos dos SLAs textuais | OPEN — NON_BLOCKING (D-47) |
+| 009 | Eventos dos SLAs textuais | DECIDED (D-62) — sem cronômetro de SLA; escada de avisos na M05/F01 |
 | 010 | Liberação de START por card | OPEN — NON_BLOCKING (D-51) |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
@@ -233,8 +233,8 @@ Definir periodicidade/horário e corte de dados do ritual de governança semanal
 
 ## GI-SAFRA-009 — Mapeamento formal dos eventos dos SLAs textuais
 
-**Status:** OPEN — NON_BLOCKING (D-47)  
-**Nota:** a regra D-47 destravou o C08; a pergunta segue aberta porque a materialização dos SLAs elegíveis ainda depende de nova versão governada.  
+**Status:** DECIDED (D-62) — nenhum card terá cronômetro de SLA no MVP; no lugar, escada de avisos 2h/3h/4h  
+**Nota anterior:** a regra D-47 destravou o C08; a pergunta segue aberta porque a materialização dos SLAs elegíveis ainda depende de nova versão governada.  
 **Fase:** SAFRA-C07/M04.  
 **Bloqueia START/C08:** não.
 

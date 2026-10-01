@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-62 | Sem cronômetro de SLA nos cards; escada de avisos 2h/3h/4h, 24h por dia, com pergunta "foi resolvido?" a quem abriu (resolve GI-SAFRA-009) | APPROVED — implementação na M05/F01 |
 | D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
 | D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
 | D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
@@ -154,7 +155,7 @@ O inventário vigente é:
 | GI-SAFRA-006 — janela temporal oficial da Safra | DECIDED (D-59) / IMPLEMENTATION_IN_F04_M05 | abertura/encerramento manual pelo Kaue |
 | GI-SAFRA-007 — publicação formal do 12º card | DECIDED (D-60) / IMPLEMENTATION_IN_M10 | proponente escreve, Jair aprova, platform admin publica |
 | GI-SAFRA-008 — janela de governança semanal | DECIDED (D-61) / OUT_OF_APP_SCOPE | ritual fora do Painel; F05 mantida |
-| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-47 permite estruturar apenas cláusulas inequivocamente elegíveis; demais permanecem não estruturadas |
+| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | DECIDED (D-62) / IMPLEMENTATION_IN_M05_F01 | sem cronômetro de SLA; escada de avisos |
 | GI-SAFRA-010 — governança de liberação de START por card | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-51 mantém os 11 cenários publicados startáveis; restringir um card exige decisão explícita |
 | métricas do protocolo Safra (substitutas de MTTD/MTTR/MTBF) | DEFERRED_TO_F04_M05 | D-50 retirou as métricas de TI; nenhuma métrica de protocolo é inferida |
 | fechamento com passo incompleto/NA | DEFERRED_TO_F01 | não impacta START |
@@ -1028,3 +1029,26 @@ Sem as etapas 2 e 3 registradas, a proposta não vira cenário publicado (regra 
 - O **dia, o horário e o ritual** da reunião semanal de governança são responsabilidade da organização, **fora da alçada da aplicação**. O Painel não guarda nem controla a agenda.
 - A fase **SAFRA-F05 continua**: tela de resumo (cenários recorrentes, prazos estourados, protocolos ativos, tendência) e registro das ações decididas (`PROCESS_CHANGE`, `MASTER_DATA_FIX`, `CAPACITY_CHANGE`, `PARTNER_ACTION`, `SYSTEM_CHANGE`, `TRAINING`, `NO_ACTION_JUSTIFIED`).
 - O período coberto pelo resumo será definido no desenho da F05, sem inferir cadência.
+
+### D-62 — Escada de avisos no lugar de cronômetro de SLA
+**APPROVED — 01/10/2026** — owner: Kaue. **Resolve GI-SAFRA-009.**
+
+**Sem cronômetro de SLA.** Nenhum dos 11 cards terá relógio de prazo nem marcação de "prazo estourado" no MVP. `public.scenario_slas` continua vazio; a engine do C07 e a política D-47 ficam disponíveis, mas sem uso nos cards. Os prazos da Matriz v3 permanecem como texto de referência no protocolo.
+
+**Escada de avisos**, igual para os 11 cards, enquanto o protocolo estiver `ACTIVE`:
+
+| Tempo desde a abertura | Aviso para | Pergunta a quem abriu |
+|---|---|---|
+| 2h | dono do card | "Foi resolvido?" |
+| 3h | Jair | "Foi resolvido?" |
+| 4h (último) | Jair e dono do card | "Foi resolvido?" |
+
+Regras:
+- o tempo conta **24 horas por dia, todos os dias**, inclusive madrugada, fins de semana e feriados ("tempos de Safra");
+- canais conforme D-58: dono do card por e-mail e Teams; Jair só por e-mail; quem abriu recebe a pergunta por e-mail e Teams;
+- a pergunta traz um link para o protocolo no Painel, com dois botões: **"Resolvido"** encerra o protocolo na hora (END, registrado com autor e horário do servidor); **"Ainda não"** registra a resposta, o protocolo segue aberto e os avisos seguintes continuam;
+- quando o protocolo é encerrado ou cancelado, os avisos pendentes deixam de sair;
+- depois do aviso de 4h não há novos avisos; o protocolo segue aberto até ser encerrado;
+- cada aviso é enviado uma única vez por protocolo (idempotência e log de entrega, conforme M05).
+
+Implementação: depende do envio de avisos (SAFRA-M05) e do encerramento (SAFRA-F01). Não entra no pacote da versão 2 dos cards.
