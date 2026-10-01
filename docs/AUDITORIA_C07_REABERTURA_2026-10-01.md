@@ -82,7 +82,7 @@ Pedida pelo owner depois do fechamento. Varredura do PRIMARY, do código, dos do
 
 **Regras de tempo — 14 casos extras no PRIMARY, todos corretos:** dono fechando no instante exato das 2h; cancelamento no instante exato das 4h; consulta histórica antes do fechamento; fim do horário de verão (fev/2019); fração de segundo antes das 2h; 30 dias (718 avisos) e 1 ano (8.758) sem lentidão; só o dono fechado; cancelado após o solicitante fechar; tempos de vários dias; volatilidade `IMMUTABLE`; dia local na virada UTC.
 
-**Achado R1 — BAIXA — CORRIGIDO:** `safra_close_times` devolvia só `interval`, que agrupa horas em dias; agora devolve também o total em segundos (`requester_seconds`, `owner_seconds`, `consolidated_seconds`). Migration `20261001233000_c07_aud2b_close_times_seconds.sql`; +4 testes (35 no total).
+**Achado R1 — BAIXA — CORRIGIDO:** `safra_close_times` devolvia só `interval`, que agrupa horas em dias; agora devolve também o total em segundos (`requester_seconds`, `owner_seconds`, `consolidated_seconds`). Migration `20261001233000_c07_aud2b_close_times_seconds.sql`; +4 testes (35 no total). CI: a primeira rodada (#284) falhou por erro do próprio teste (comparava `177300` com `177300.000000` como texto); corrigido para comparação numérica; CI verde #247/#285; aplicada e conferida no PRIMARY (39 = 39).
 
 **Código — limpo.** Observação para o C08: o `LiveTimer` da tela de resultado é só um contador desde a abertura (não é prazo); decidir na UX se fica.
 

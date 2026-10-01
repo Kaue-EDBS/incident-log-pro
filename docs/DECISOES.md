@@ -1251,4 +1251,4 @@ Migration `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql` (CI ver
 
 ### Aplicação do pacote C07-AUD2b — 01/10/2026
 
-Auditoria detalhada do SLA: migration `20261001233000_c07_aud2b_close_times_seconds.sql` (tempos também em segundos; comentário sem SLA); D-47 e ADR-038 marcados SUPERSEDED; documentos vigentes sem SLA; Knowledge do Lovable atualizado com autorização do owner.
+Auditoria detalhada do SLA: migration `20261001233000_c07_aud2b_close_times_seconds.sql` (CI verde #247/#285; aplicada no PRIMARY, 39 = 39) (tempos também em segundos; comentário sem SLA); D-47 e ADR-038 marcados SUPERSEDED; documentos vigentes sem SLA; Knowledge do Lovable atualizado com autorização do owner.
