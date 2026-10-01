@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-71 | "Solicitante" é o termo canônico para quem abriu o protocolo (START) | APPROVED |
 | D-70 | Encerrar a Safra exige digitar "ENCERRAR SAFRA" e pode ser desfeito em 7 dias, sem apagar dados nesse prazo | APPROVED — implementação com a D-59 |
 | D-69 | A Safra corrente começou em 01/10/2026 e termina quando o Kaue marcar o encerramento | APPROVED |
 | D-68 | 12º card com separação de funções: quem propõe não aprova nem publica; proposta do Jair é aprovada pelo Kaue; proposta de admin técnico é publicada por outro admin | APPROVED — implementação na M10 |
@@ -1159,3 +1160,11 @@ Implementação: SAFRA-M10.
 - Encerramento e reabertura ficam na trilha de auditoria, com autor e horário do servidor.
 
 Implementação: junto com a marcação da D-59 (F04/M05).
+
+### D-71 — Termo canônico "Solicitante"
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da reauditoria C03-AUD2.
+
+- **Solicitante** é a pessoa que abriu o protocolo (executou o START), identificada pela sessão Microsoft (`treatments.opened_by`).
+- Substitui "ator do START" e o uso informal de "usuário" nesse sentido. "Usuário" continua significando qualquer pessoa autenticada no Painel.
+- Relatórios e avisos usam: "tempo de encerramento pelo **solicitante**", "tempo de encerramento pelo **dono do card**" e a visão consolidada (D-66).
+- O dono do card nunca é o solicitante do próprio card (D-65).
