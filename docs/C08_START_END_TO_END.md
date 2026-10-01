@@ -27,8 +27,7 @@ A UI não envia:
 - criticidade;
 - área responsável;
 - ator;
-- timestamps;
-- resultado de SLA.
+- timestamps.
 
 Esses valores são resolvidos ou gerados pelo servidor.
 
@@ -42,7 +41,7 @@ Esses valores são resolvidos ou gerados pelo servidor.
 6. cria treatment ACTIVE;
 7. congela o snapshot;
 8. grava TREATMENT_OPENED;
-9. retorna snapshot e estados dos SLAs estruturados existentes.
+9. retorna o snapshot do protocolo (sem SLA desde a D-75).
 
 ## Idempotência
 
@@ -62,9 +61,9 @@ A rota `/novo-incidente` passou a funcionar como **Abrir Protocolo**:
 - resumo do impacto;
 - confirmação explícita;
 - resultado do START;
-- relógio em andamento;
-- SLAs estruturados existentes;
-- mensagem explícita quando não há SLA estruturado.
+- contador de tempo desde a abertura (só exibição; não é prazo).
+
+> 01/10/2026: os blocos de SLA foram removidos da tela (D-62) e do retorno do START (D-75). A rota hoje é `/abrir-protocolo`.
 
 ## Segurança
 
@@ -113,7 +112,7 @@ Também foi corrigido o plano pgTAP de 22 para 24 testes; os 24 asserts funciona
 Não resolvidos por este trabalho:
 - GI-SAFRA-004 — múltiplos ACTIVE;
 - GI-SAFRA-005 — comunicação produtiva;
-- GI-SAFRA-009 — materialização futura dos SLAs estruturados candidatos;
+- GI-SAFRA-009 — resolvida pela D-62; SLA aposentado pela D-75;
 - valores de negócio ainda ausentes de GI-001/002/003.
 
 ## Próximo passo

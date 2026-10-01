@@ -36,8 +36,9 @@ As funções recebem os horários como parâmetro. As colunas com o horário de 
 - solicitante: abertura → parte do solicitante;
 - dono: abertura → parte do dono;
 - consolidado: abertura → **última** parte fechada;
-- `CLOSED` (as duas partes), `IN_PROGRESS` (alguma parte aberta), `CANCELLED` (fora dos tempos).
+- `CLOSED` (as duas partes), `IN_PROGRESS` (alguma parte aberta), `CANCELLED` (fora dos tempos);
+- cada tempo vem em dois formatos: intervalo (para exibir) e **total em segundos** (para somar e comparar no analytics). Use os segundos em contas: o intervalo do PostgreSQL agrupa horas em dias ("2 days 01:15").
 
 ## Testes
 
-`supabase/tests/database/c07_aud2_time_rules.test.sql` (31): limite exato, sem aviso de 3h, de hora em hora, fechamento às 1h59 e no instante exato, cancelamento, dono que fecha primeiro, avisos simultâneos para as duas pessoas, fusos diferentes, horário de verão de 2018, relógio negativo, horário ausente, tempos parciais, cancelados e consolidado, superfície fechada ao navegador e ausência de duração gravada.
+`supabase/tests/database/c07_aud2_time_rules.test.sql` (35): limite exato, sem aviso de 3h, de hora em hora, fechamento às 1h59 e no instante exato, cancelamento, dono que fecha primeiro, avisos simultâneos para as duas pessoas, fusos diferentes, horário de verão de 2018, relógio negativo, horário ausente, tempos parciais, cancelados e consolidado, superfície fechada ao navegador e ausência de duração gravada.

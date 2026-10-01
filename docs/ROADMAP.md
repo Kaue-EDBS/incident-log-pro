@@ -71,14 +71,13 @@ Quando o Framework EBSA exigir um controle técnico, ele pode bloquear uma imple
 ## 2.1 O Painel Safra faz
 
 - mantém catálogo dos cenários publicados;
-- apresenta gatilho, owner, protocolo, criticidade, SLA e contexto;
+- apresenta gatilho, owner, protocolo, criticidade, prazos de referência da Matriz v3 e contexto;
 - permite START manual por usuário autenticado;
 - registra ator, data e hora oficiais;
 - mantém vínculo imutável com a versão de cenário usada no START;
 - mantém status da tratativa;
-- mede tempos e SLAs a partir de eventos persistidos;
+- mede tempos de encerramento a partir dos horários do servidor (D-77) e envia a escada de avisos (D-76); não há SLA (D-75);
 - envia comunicações operacionais aprovadas;
-- registra escalonamentos;
 - permite END e CANCEL auditáveis;
 - preserva histórico;
 - calcula indicadores e recorrência;
@@ -962,16 +961,18 @@ Gate: `G11`.
 - owner/criticidade/protocolo histórico permanecem congelados;
 - 12º card não vira cenário publicado sem governança.
 
-## 15.4 SLA
+## 15.4 Regras de tempo (SLA aposentado, D-75)
 
-- dois SLAs simultâneos;
-- borda exata;
-- breach;
-- END no instante do breach;
-- CANCEL;
-- evento ausente;
-- timezone/DST;
-- tentativa de alterar status/timestamp para parar SLA falha.
+- aviso no instante exato (2h00) e nenhum aviso antes;
+- sem aviso de 3h; de hora em hora após 4h;
+- fechamento ou cancelamento no instante exato do aviso;
+- dono que fecha primeiro deixa de receber; solicitante continua;
+- tempos do solicitante, do dono e consolidado (até a última parte);
+- cancelado fora dos tempos; parte aberta em aberto;
+- fuso e horário de verão;
+- horário antes da abertura recusado.
+
+Cobertura: `supabase/tests/database/c07_aud2_time_rules.test.sql`.
 
 ## 15.5 Segurança / API
 
@@ -1102,7 +1103,7 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 11. M01 — state machine;
 12. M02 — audit trail/acompanhamento mínimo;
 13. M03 — timeline;
-14. M04 — SLA runtime;
+14. M04 — SLA runtime (sem SLA desde a D-75; fase a rever);
 15. M05 — notificações;
 16. ~~M06 — escalonamento~~ — cancelado (D-73);
 17. ~~M07 — ponte TI~~ — cancelado (D-50);
@@ -1158,7 +1159,7 @@ Só passa quando:
 - START é transacional/idempotente;
 - versão é congelada;
 - audit event existe;
-- SLA inicia corretamente;
+- escada de avisos começa corretamente (D-76);
 - comunicação START é deduplicada.
 
 ## P3 — IN-FLIGHT READY
@@ -1170,8 +1171,7 @@ Só passa quando:
 - timeline confiável;
 - eventos auditáveis;
 - concorrência tratada;
-- SLA runtime correto;
-- escalonamento auditável;
+- escada de avisos correta durante o protocolo (D-76);
 - nenhuma dependência de checklist operacional existe.
 
 ## P4 — CLOSE READY
@@ -1181,10 +1181,11 @@ Só passa quando:
 Só passa quando:
 
 - END por usuário autenticado funciona;
+- encerramento em duas partes funciona (D-66);
 - CANCEL com motivo funciona;
 - END x CANCEL concorrente é seguro;
 - histórico é imutável/auditável;
-- SLA não pode ser manipulado por status/timestamp do client;
+- horários de encerramento não podem ser manipulados pelo client (D-66);
 - comunicação END/CANCEL é idempotente.
 
 ## P5 — BUSINESS READY

@@ -59,7 +59,7 @@
 | D-44 | Criticidade ausente nos cenários v1 é estado explícito e não bloqueia START; nenhuma classificação será inferida | APPROVED |
 | D-45 | Cenários com threshold/fonte de gatilho ausente operam em START manual no MVP; automação permanece desabilitada | APPROVED |
 | D-46 | Cenário 9 permanece START manual enquanto não existir fonte oficial do mínimo curva A; ruptura automática fica desabilitada | APPROVED |
-| D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | APPROVED |
+| D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | SUPERSEDED — sem SLA (D-62); engine aposentada (D-75) |
 | D-48 | Painel Safra é de audiência interna e aceita identidade Microsoft corporativa apenas dos domínios editoradobrasil.com.br e editoradobrasil1.onmicrosoft.com | APPROVED |
 | D-49 | Gate de privacidade/base legal exigido antes de usuários reais foi validado e está atendido | APPROVED / SATISFIED |
 | D-50 | Reliability Monitor/MTTR descontinuado; Painel Safra é o único produto do `incident-log-pro` | APPROVED |
@@ -738,7 +738,7 @@ Limites preservados:
 
 
 ### ADR-038 — Engine de SLA determinística e privada
-**APPROVED / IMPLEMENTED — 25/09/2026**.
+**APPROVED / IMPLEMENTED — 25/09/2026** — **SUPERSEDED em 01/10/2026 pela D-75** (engine removida). Mantido como histórico; os princípios de tempo (horário do servidor, sem inferência, funções privadas) continuam nas regras de tempo da D-76/D-77.
 
 Decisão:
 - o cálculo de SLA é derivado de timestamps/eventos server-side;
@@ -868,7 +868,7 @@ Enquanto não existir fonte/regra oficial do saldo mínimo:
 - futura automação exige fonte oficial + regra versionada.
 
 ### D-47 / GI-SAFRA-009 — política formal de estruturação dos SLAs textuais
-**APPROVED — 27/09/2026**.
+**APPROVED — 27/09/2026** — **SUPERSEDED**: sem SLA nos cards (D-62) e engine aposentada (D-75). Mantida como histórico.
 
 Uma cláusula textual só é elegível a `scenario_slas` quando cumprir **todos** os critérios:
 1. descreve explicitamente prazo da **tratativa**, não detecção, gatilho, milestone intermediário, janela operacional ou pós-mortem;
@@ -1248,3 +1248,7 @@ Persistência (F01): o protocolo guarda separadamente quem fechou e quando, para
 ### Aplicação do pacote C07-AUD2 — 01/10/2026
 
 Migration `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql` (CI verde #244/#282; aplicada no PRIMARY, 38 = 38): engine de SLA removida (D-75); regras de tempo da escada (D-76) e do analytics (D-77) criadas como cálculos que recebem os horários (as colunas de cada parte chegam na F01); resolução da GI-SAFRA-009 atualizada. Teste: `c07_aud2_time_rules.test.sql` (31). O schema público passa de 16 para 15 tabelas.
+
+### Aplicação do pacote C07-AUD2b — 01/10/2026
+
+Auditoria detalhada do SLA: migration `20261001233000_c07_aud2b_close_times_seconds.sql` (tempos também em segundos; comentário sem SLA); D-47 e ADR-038 marcados SUPERSEDED; documentos vigentes sem SLA; Knowledge do Lovable atualizado com autorização do owner.

@@ -71,3 +71,21 @@ A resolução citava só 2h e 4h. Atualizada para a escada da D-76, no banco e n
 ## 5. Gate
 
 **PASS.** SLA aposentado sem perda de dado; regras de tempo do produto definidas pelo owner e cobertas por testes de borda.
+
+---
+
+## 6. Auditoria detalhada do SLA (C07-AUD2b) — 01/10/2026
+
+Pedida pelo owner depois do fechamento. Varredura do PRIMARY, do código, dos documentos e do Lovable atrás de qualquer resto de SLA, e bateria extra nas regras de tempo.
+
+**Banco PRIMARY — limpo.** Nenhuma função, tabela, coluna, regra, gatilho, índice, tipo ou view de SLA; nenhum evento ou payload com SLA. Os 22 `sla_target` em `source_reference` (11 cards × v1/v2) são o texto de referência mantido pela D-75. Resto: comentário da função `safra_guard_version_child_mutation` citava SLA — corrigido.
+
+**Regras de tempo — 14 casos extras no PRIMARY, todos corretos:** dono fechando no instante exato das 2h; cancelamento no instante exato das 4h; consulta histórica antes do fechamento; fim do horário de verão (fev/2019); fração de segundo antes das 2h; 30 dias (718 avisos) e 1 ano (8.758) sem lentidão; só o dono fechado; cancelado após o solicitante fechar; tempos de vários dias; volatilidade `IMMUTABLE`; dia local na virada UTC.
+
+**Achado R1 — BAIXA — CORRIGIDO:** `safra_close_times` devolvia só `interval`, que agrupa horas em dias; agora devolve também o total em segundos (`requester_seconds`, `owner_seconds`, `consolidated_seconds`). Migration `20261001233000_c07_aud2b_close_times_seconds.sql`; +4 testes (35 no total).
+
+**Código — limpo.** Observação para o C08: o `LiveTimer` da tela de resultado é só um contador desde a abertura (não é prazo); decidir na UX se fica.
+
+**Documentos corrigidos:** glossário (8 trechos), `C08_START_END_TO_END.md`, ROADMAP nas seções vigentes (§2.1 definição do produto, §15.4 matriz de testes, §19 ordem, §20 marcos P2–P4 alinhados ao `P1_P4.json`), D-47 e ADR-038 marcados SUPERSEDED, GI-009, threat model (T-12), matriz de paridade, política da D-47 movida para `docs/historico/`. As especificações das fases futuras do ROADMAP ficam para a revisão de cada fase (decisão do owner).
+
+**Lovable — Knowledge do projeto** ainda dizia "prazos (SLA) registrados". Atualizado com autorização do owner (texto sem SLA, com a regra D-52).

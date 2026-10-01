@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(31);
+select plan(35);
 
 -- Reference opening: 01/10/2026 08:00 São Paulo = 11:00 UTC.
 
@@ -175,6 +175,34 @@ select is(
      '2018-11-03 23:00-03', '2018-11-04 03:00-02', '2018-11-04 01:30-02', null)),
   interval '3 hours',
   'DST start: durations are absolute elapsed time'
+);
+
+select is(
+  (select row(requester_seconds, owner_seconds, consolidated_seconds)::text
+   from private.safra_close_times('2026-10-01 08:00-03', '2026-10-03 09:15-03', '2026-10-02 10:00-03', null)),
+  row(177300::numeric, 93600::numeric, 177300::numeric)::text,
+  'multi-day times are also returned as total seconds (safe for analytics)'
+);
+
+select is(
+  (select consolidated_seconds from private.safra_close_times(
+     '2018-11-03 23:00-03', '2018-11-04 03:00-02', '2018-11-04 01:30-02', null)),
+  10800::numeric,
+  'DST start: 3 elapsed hours are 10800 seconds'
+);
+
+select is(
+  (select row(requester_seconds, owner_seconds, consolidated_seconds)::text
+   from private.safra_close_times('2026-10-01 08:00-03', null, '2026-10-01 09:00-03', null)),
+  row(null::numeric, 3600::numeric, null::numeric)::text,
+  'open part keeps empty seconds, never zero'
+);
+
+select is(
+  (select array_agg(notify_owner order by step_no) from private.safra_reminder_steps(
+     '2026-10-01 08:00-03', null, '2026-10-01 10:00-03', null, '2026-10-01 12:00-03')),
+  array[false,false],
+  'owner closing at the exact 2h instant does not receive that reminder'
 );
 
 -- 3. Fuso do analytics -------------------------------------------------------

@@ -93,7 +93,7 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 | T-09 | dado pessoal indevido em texto livre | minimização + finalidade + UX/revisão |
 | T-10 | integração/proposta cria protocolo sem governança | ativação humana; proposal não publica card/cenário automaticamente |
 | T-11 | retry/double submit duplica ação | idempotência + unique key + advisory lock + correlation ID |
-| T-12 | ausência de fonte aparece como OK | estados explícitos `NOT_MEASURABLE`/`NOT_CONFIGURED` e sem inferência |
+| T-12 | ausência de fonte aparece como OK | detector `NOT_CONFIGURED`; horário ausente recusado (`SAFRA_TIME_REQUIRED`); parte aberta fica em aberto, nunca zero (D-77); sem inferência |
 | T-13 | service role no browser | proibido + guard de inicialização do client |
 | T-14 | auditoria manipulável ou exfiltrada pelo frontend | persistência DB/server + roles + sessão corporativa canônica |
 | T-15 | token antigo/revogado reutiliza role já vinculada | `auth.sessions` viva + expiração JWT + domínio/provider aprovados também nas funções de RBAC |

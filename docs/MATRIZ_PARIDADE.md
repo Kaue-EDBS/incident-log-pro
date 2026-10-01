@@ -13,7 +13,7 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 | applications | funcional | removida pela D-50 | REMOVE |
 | incidents | funcional | removida pela D-50 | REMOVE |
 | abertura de incidente | funcional | removida; o único START é "Abrir Protocolo" (treatment) | REMOVE |
-| cronômetro persistente | funcional | `LiveTimer` reutilizado no START; relógios/SLA | REUSE |
+| cronômetro persistente | funcional | `LiveTimer` reutilizado no START só como contador desde a abertura (não é prazo; sem SLA, D-75) | REUSE |
 | timestamps | funcional | regra de fuso horário (`src/lib/metrics.ts`) reutilizada; timestamps de incidente removidos | REUSE |
 | MTTD/MTTR/MTBF | funcional | removidos pela D-50; métricas do protocolo em F04/M05 | REMOVE |
 | downtime/disponibilidade | funcional | removidos pela D-50 | REMOVE |
@@ -78,9 +78,9 @@ Operational Area
  -> Scenario
  -> Scenario Version
  -> Owner
- -> SLA / Steps / Impact
+ -> Steps / Impact
  -> Treatment
- -> Steps / Events / Escalations
+ -> Steps / Events / Reminders
  -> Closure / Governance
 ```
 
@@ -104,7 +104,7 @@ Antes de remover fluxo legado:
 - START RPC — CONCLUÍDO no C08;
 - END/CANCEL RPCs — DEFERRED_TO_F01/F02;
 - timeline;
-- SLA engine;
+- regras de tempo — CONCLUÍDO no C07-AUD2 (SLA aposentado, D-75);
 - notificações;
 - visão por área;
 - governança;

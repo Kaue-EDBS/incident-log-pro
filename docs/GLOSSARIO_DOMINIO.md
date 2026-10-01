@@ -57,7 +57,7 @@ Pode conter:
 - modo de ativação;
 - criticidade;
 - protocolo;
-- SLAs;
+- prazos da Matriz v3 como texto de referência (não são SLA medido, D-75);
 - observações e regras vigentes.
 
 **Regra:** uma versão publicada não é sobrescrita. Alteração material exige nova versão.
@@ -347,7 +347,7 @@ Pode possuir:
 
 **Não é:**
 - criticidade;
-- breach de SLA;
+- aviso da escada (2.22);
 - nova categoria de status.
 
 ---
@@ -579,7 +579,7 @@ medido_em = timestamp
 - criticidade;
 - escalonamento;
 - estado da tratativa;
-- cumprimento de SLA.
+- avisos da escada.
 
 Qualquer automação futura baseada em limiar exige regra de negócio própria e versionada.
 
@@ -646,7 +646,7 @@ Esta seção transforma o glossário em contrato de implementação. O C05 pode 
 | área responsável atual | `scenarios.responsible_area_id` | governada; histórico operacional deve ser preservado na tratativa |
 | áreas potencialmente impactáveis | relação da `scenario_version` | versionada |
 | sistemas/ferramentas associados | relação da `scenario_version` | versionada |
-| SLAs | `scenario_slas` vinculados à `scenario_version` | versionados; **vazio no MVP (D-62)** |
+| prazos da Matriz v3 | texto em `scenario_versions.source_reference` | versionado; **não é SLA medido** — tabela de SLA removida (D-75) |
 | ocorrência real | `treatments` | estado controlado |
 | áreas realmente impactadas | `treatment_impacted_areas` | pertencem à tratativa |
 | impacto qualitativo observado | `treatments.impact_summary` | auditável |
@@ -661,7 +661,6 @@ Esta seção transforma o glossário em contrato de implementação. O C05 pode 
 ```text
 scenario 1 ---- N scenario_versions
 scenario 1 ---- N scenario_owners (histórico temporal)
-scenario_version 1 ---- N scenario_slas
 scenario_version 1 ---- N potential_impacted_areas
 scenario_version 1 ---- N associated_systems
 scenario 1 ---- N treatments
@@ -757,7 +756,7 @@ Persistir no START:
 - `owner_id_at_start`;
 - `responsible_area_id_at_start`.
 
-A criticidade, gatilho, protocolo e SLAs históricos são obtidos da `scenario_version_id` congelada e não precisam ser duplicados na tratativa.
+A criticidade, gatilho, protocolo e prazos de referência históricos são obtidos da `scenario_version_id` congelada e não precisam ser duplicados na tratativa.
 
 Se owner ou área responsável mudar depois, a tratativa antiga continua mostrando quem respondia no momento do START. O vínculo atual do cenário continua separado para operação futura.
 
@@ -811,11 +810,11 @@ Valores válidos: `CRITICAL`, `HIGH`, `MODERATE`.
 - cenário novo nasce `CRITICAL` (D-60);
 - mudar criticidade exige nova versão.
 
-### 8.10 SLA
+### 8.10 SLA e regras de tempo
 
-SLA pertence à versão do cenário (`scenario_slas`), mas **no MVP nenhum card tem SLA** (D-62): a tabela permanece vazia e START não inicia relógio.
+Não há SLA no produto: a engine e a tabela `scenario_slas` foram aposentadas (D-75) e o START não inicia relógio. O que mede tempo são as **regras de tempo** (`docs/C07_REGRAS_DE_TEMPO.md`): escada de avisos (D-76) e tempos de encerramento (D-77), sempre calculados a partir dos horários do servidor, sem duração gravada, com parte aberta "em aberto" e cancelado fora dos tempos.
 
-Se um SLA for criado no futuro por decisão nova, continuam valendo: timestamps oficiais como fonte, duração calculada, CANCEL não equivale a cumprido, evento ausente = não mensurável.
+Uma volta do SLA exige decisão nova.
 
 ### 8.11 END e CANCEL — semântica de persistência
 
@@ -855,7 +854,7 @@ REMINDER_SENT             (aviso enviado — M05)
 ADMIN_CORRECTION_RECORDED
 ```
 
-Removido: `ESCALATION_CHANGED` (D-73). Sem uso nos cards: `SLA_BREACHED` (D-62).
+Removidos: `ESCALATION_CHANGED` (D-73) e `SLA_BREACHED` (D-75).
 
 Regras:
 - evento possui ator quando houver ação humana;
