@@ -300,7 +300,8 @@ c01_gate:
   closed_at: "2026-09-24"
 
 c01_reaudit_2:
-  status: "IN_EXECUTION"
+  status: "APPROVED"
+  closed_at: "2026-10-01"
   opened_at: "2026-09-30"
   audit_document: "docs/AUDITORIA_C01_REABERTURA_2026-09-30.md"
 
@@ -347,7 +348,7 @@ c02_reaudit_2:
   decisions: ["D-64", "D-65", "D-66", "D-67", "D-68", "D-69", "D-70"]
   new_abuse_cases: ["AB-START-04", "AB-START-05", "AB-END-02", "AB-END-03", "AB-NOTIF-01", "AB-NOTIF-02", "AB-CARD-02", "AB-SAFRA-01", "AB-DRIFT-01"]
   residual_risks_section: "docs/PRIVACIDADE_THREAT_MODEL.md §14"
-  pending_enforcement: "D-65 START check (RR-C02-11)"
+  d65_enforced: "20261001150000_c02_aud2_owner_cannot_start_own_card.sql"
   audit_document: "docs/AUDITORIA_C02_REABERTURA_2026-10-01.md"
 
 c04_gate:

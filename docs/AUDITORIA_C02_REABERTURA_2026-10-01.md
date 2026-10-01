@@ -3,7 +3,7 @@
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Bloco:** SAFRA-C02 — Threat model e abuso de negócio  
 **Data:** 01/10/2026  
-**Estado:** CONCLUÍDA — gates recertificados; uma regra decidida (D-65) aguarda aplicação no START  
+**Estado:** CONCLUÍDA — gates recertificados; D-65 aplicada no START em 01/10/2026  
 **Decisões geradas:** D-64 a D-70 (`docs/DECISOES.md`)  
 **Documento dono das ameaças:** `docs/PRIVACIDADE_THREAT_MODEL.md` (§7, §7.1, §7.2 e §14)
 
@@ -77,14 +77,14 @@ Nova pendência: **GI-SAFRA-011** — avisos também pelo Teams? Para pessoa ou 
 | THREAT-001 | abusos de negócio mapeados e ligados a controles e testes | **PASS** |
 | AUTHZ-001 | autorização validada no servidor, sem bypass conhecido | **PASS** — bypass de RBAC fechado e verificado no PRIMARY |
 
-**Ressalva:** a regra D-65 (dono não abre o próprio card) está decidida, mas a verificação no START ainda não foi aplicada (RR-C02-11). Não é falha de acesso: hoje o dono consegue abrir protocolo do próprio card, o que contraria a regra de negócio, mas não expõe dado nem eleva privilégio. Entra na próxima migration do START.
+**Ressalva resolvida:** a D-65 foi aplicada no START (migration `20261001150000`, CI verde na rodada 270, aplicada e conferida no PRIMARY em 01/10/2026). RR-C02-11 passa a CONTROLLED.
 
 ---
 
 ## 6. Pendências que saem desta auditoria
 
-1. Aplicar a D-65 no START (migration + teste + mensagem na tela).
-2. Espelhar a GI-SAFRA-011 na tabela `public.governance_issues` (D-53), na mesma migration.
+1. ~~Aplicar a D-65 no START~~ — feito em 01/10/2026.
+2. ~~Espelhar a GI-SAFRA-011 no banco~~ — feito em 01/10/2026.
 3. F01/F02: END em duas partes, CANCEL por um dos dois, trava por parte do usuário (D-64/D-66).
 4. M05: escada de avisos (D-67), aviso de abertura (D-58), decisão sobre Teams (GI-SAFRA-011).
 5. F04/M05: marcação da Safra com as proteções da D-70.

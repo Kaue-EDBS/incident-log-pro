@@ -110,7 +110,7 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 | AB-START-02 | retry do mesmo START com mesma chave/payload | devolver a mesma tratativa, sem duplicar evento | idempotency key + advisory lock + digest |
 | AB-START-03 | mesma idempotency key com payload/ator/cenário diferente | rejeitar `SAFRA_START_IDEMPOTENCY_CONFLICT` | RPC START |
 | AB-START-04 | a mesma pessoa abre um segundo protocolo do mesmo card com outra chave | rejeitar `SAFRA_START_ACTIVE_EXISTS`; outra pessoa pode abrir | D-57; índice único + verificação no START; `c01_aud2_package.test.sql` |
-| AB-START-05 | o dono do card abre protocolo do próprio card | rejeitar; dono só abre cards de outros donos | D-65; **verificação no START pendente** |
+| AB-START-05 | o dono do card abre protocolo do próprio card | rejeitar `SAFRA_START_OWNER_OWN_CARD`; dono só abre cards de outros donos | D-65; START (migration `20261001150000`); `c02_aud2_owner_start.test.sql` |
 | AB-END-01 | END prematuro, repetido ou em estado terminal | rejeitar; END só parte de ACTIVE e usa horário oficial | guard já existe; command/RPC fica DEFERRED_TO_F01/F02 |
 | AB-END-02 | e-mail/Teams com o botão "Resolvido" é encaminhado e um terceiro tenta encerrar | negar; só usuário ou dono, logados no próprio perfil, com confirmação no Painel | D-64; F01 |
 | AB-END-03 | uma parte fecha e o sistema trata o protocolo como totalmente encerrado | encerramento em duas partes, cada uma com seu horário; trava do usuário só libera quando ele fecha | D-66; F01 |
@@ -251,7 +251,7 @@ Substitui a tabela da seção 12 como fotografia atual. A seção 12 fica como h
 | RR-C02-08 | destinatário errado ou duplicado | contrato decidido (D-58/D-67); Teams em aberto (GI-SAFRA-011) | M05 | não |
 | RR-C02-09 | enquadramento/base legal | CLOSED_BY_D49 | — | não |
 | RR-C02-10 | usuário travado num card sem poder fechar | ACCEPTED_TEMPORARY — END/CANCEL ainda não existem; liberação manual pelo admin com autorização do owner | F01/F02 | não |
-| RR-C02-11 | dono abre protocolo do próprio card | OPEN — regra D-65 decidida, verificação no START ainda não aplicada | próxima migration do START | não (regra de negócio, sem quebra de acesso) |
+| RR-C02-11 | dono abre protocolo do próprio card | **CONTROLLED** — verificação no START aplicada em 01/10/2026 | — | não |
 | RR-C02-12 | exposição pelo repositório público em 30/09 | ACCEPTED_BY_OWNER — sem segredo exposto; e-mails e matriz ficaram visíveis | comunicação a cargo do owner | não |
 | RR-C02-13 | 3 migrations no PRIMARY sem arquivo | OPEN — controle D-52 ativo; reconstituição no C05 | C05-AUD | não |
 | RR-C02-14 | Safra encerrada por engano | contrato decidido (D-70) | F04/M05 | não |

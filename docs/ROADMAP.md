@@ -142,9 +142,9 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 | Fase | Tema | Estado | Onde ver |
 |---|---|---|---|
 | C00 | Baseline e contenção P0 | CONCLUÍDO (+ C00-AUD e C00-AUD2 concluídas) | `AUDITORIA_C00_*` |
-| C01 | Documentação canônica e PROJECT_PROFILE | CONCLUÍDO; **C01-AUD2 em execução** | `AUDITORIA_C01_*` |
+| C01 | Documentação canônica e PROJECT_PROFILE | CONCLUÍDO (+ C01-AUD e C01-AUD2 concluídas) | `AUDITORIA_C01_*` |
 | C02 | Threat model e abuso de negócio | CONCLUÍDO (+ C02-AUD e C02-AUD2 concluídas em 01/10) | `AUDITORIA_C02_*` |
-| C03 | Glossário e modelo de domínio | CONCLUÍDO | `GLOSSARIO_DOMINIO.md` |
+| C03 | Glossário e modelo de domínio | CONCLUÍDO (+ C03-AUD2 em 01/10, glossário v2.0) | `GLOSSARIO_DOMINIO.md`, `AUDITORIA_C03_*` |
 | C04 | Identidade, RBAC e RLS | CONCLUÍDO | `DECISOES.md` ADR-023 a 033 |
 | C05 | Schema v2, migrations e invariantes | CONCLUÍDO; drift de 3 migrations aberto (C00-AUD2-07) | `ARQUITETURA.md` |
 | C06 | Seed canônico da Matriz v3 | CONCLUÍDO | `AUDITORIA_C06_*`, `data-contracts/` |
@@ -154,7 +154,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 
 ## EIXO 2 — MEIO
 
-M01 a M11: NÃO INICIADOS. M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
+M01 a M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
 
 ## EIXO 3 — FIM
 
@@ -467,7 +467,9 @@ NOT_APPLICABLE  # somente quando regra aprovada
 
 ---
 
-## SAFRA-M06 — Escalonamento e comitê
+## SAFRA-M06 — Escalonamento e comitê — CANCELADO (D-73)
+
+O escalonamento é feito pelos donos de card, em conjunto, fora do Painel. Texto abaixo mantido só como registro.
 
 Níveis:
 
@@ -1078,7 +1080,7 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 
 ## Bloco 0 — Fundação segura
 1. C00 — concluído;
-2. C01 — concluído (C01-AUD2 em execução);
+2. C01 — concluído (reauditorias concluídas em 01/10);
 3. C02 — concluído (reauditorias concluídas em 01/10).
 
 ## Bloco 1 — Domínio e backend
@@ -1098,7 +1100,7 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 13. M03 — timeline;
 14. M04 — SLA runtime;
 15. M05 — notificações;
-16. M06 — escalonamento;
+16. ~~M06 — escalonamento~~ — cancelado (D-73);
 17. ~~M07 — ponte TI~~ — cancelado (D-50);
 18. M08 — Torre de Controle;
 19. M09 — visões por audiência;

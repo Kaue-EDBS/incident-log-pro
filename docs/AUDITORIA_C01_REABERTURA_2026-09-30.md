@@ -3,7 +3,7 @@
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
 **Bloco:** SAFRA-C01 — Documentação canônica e PROJECT_PROFILE  
 **Data de abertura:** 30/09/2026  
-**Estado:** APLICADA NO PRIMARY (01/10/2026) — falta só a conferência do owner no app publicado  
+**Estado:** CONCLUÍDA — 01/10/2026  
 **Decisões geradas:** D-52, D-53, D-54 (`docs/DECISOES.md`)
 
 ---
@@ -111,7 +111,7 @@ Causa: o Lovable permite alterar o banco por caminhos que não salvam o arquivo 
 - [x] rodada de perguntas dos GI com o owner concluída e registrada (D-55 a D-63)
 - [x] pacote final com CI verde e aplicado no PRIMARY (`20261001120000`)
 - [x] `unknown_material_count = 0` recertificado: todo GI está RESOLVED, DECIDED com fase de construção ou adiado para a V2 do produto
-- [ ] owner publica o app e confere o Abrir Protocolo (cards CRITICAL e mensagem da trava)
+- [x] conferência visual reclassificada: ainda não há front-end/UX homologado; a verificação de tela passa para a homologação de UX do C08 (decisão do owner em 01/10/2026)
 
 ---
 
