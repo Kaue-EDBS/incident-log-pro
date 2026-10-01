@@ -251,11 +251,11 @@ Cada evento registra:
 
 Eventos não são editados para corrigir histórico. Correções administrativas geram novo evento.
 
-Fora de uso: `ESCALATION_CHANGED` (D-73) e `SLA_BREACHED` (D-62).
+Removido: `ESCALATION_CHANGED` (D-73, não é mais aceito pelo banco). Sem uso nos cards: `SLA_BREACHED` (D-62).
 
 ### 4.8 Escalonamentos — FORA DO PAINEL (D-73)
 
-O escalonamento é feito pelos donos de card, em conjunto, fora do Painel. A tabela `treatment_escalations` (criada no C05) ficou sem uso e será removida por migration na reauditoria do C05 (D-52).
+O escalonamento é feito pelos donos de card, em conjunto, fora do Painel. A tabela `treatment_escalations` foi removida em 01/10/2026 (migration `20261001200000`).
 
 ### 4.9 Notificações
 
@@ -327,7 +327,6 @@ operational_areas --> scenarios --> scenario_versions
                                   +--> treatment_impacted_areas
                                   +--> treatment_impact_measurements
                                   +--> treatment_events
-                                  +--> treatment_escalations   (sem uso, D-73)
                                   +--> notifications_log
 
 scenario_proposals

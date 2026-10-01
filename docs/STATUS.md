@@ -16,7 +16,8 @@
 | C00-AUD2 — Reliability Monitor/MTTR descontinuado (D-50) | CONCLUÍDA em 30/09 | `AUDITORIA_C00_REABERTURA_2026-09-30.md` |
 | C01-AUD2 — documentação canônica e PROJECT_PROFILE | CONCLUÍDA em 01/10 | `AUDITORIA_C01_REABERTURA_2026-09-30.md` |
 | C03-AUD2 — glossário e modelo de domínio | CONCLUÍDA em 01/10 (glossário v2.0) |
-| C04-AUD2 — identidade, RBAC e RLS | CONCLUÍDA em 01/10 | `AUDITORIA_C04_REABERTURA_2026-10-01.md` | `AUDITORIA_C03_REABERTURA_2026-10-01.md` |
+| C04-AUD2 — identidade, RBAC e RLS | CONCLUÍDA em 01/10 | `AUDITORIA_C04_REABERTURA_2026-10-01.md` |
+| C05-AUD2 — schema, migrations e invariantes | CONCLUÍDA em 01/10 (drift zerado) | `AUDITORIA_C05_REABERTURA_2026-10-01.md` | `AUDITORIA_C03_REABERTURA_2026-10-01.md` |
 | C02-AUD e C02-AUD2 — threat model | CONCLUÍDAS em 01/10; G3.5, THREAT-001 e AUTHZ-001 recertificados | `AUDITORIA_C02_REABERTURA_2026-10-01.md` |
 
 ---
@@ -35,10 +36,10 @@
 ## 3. Banco (Lovable Cloud PRIMARY)
 
 - Motor: PostgreSQL na stack Supabase, gerenciado pelo Lovable Cloud.
-- Tabelas em `public`: 17, todas do domínio Safra, todas com RLS e sem acesso `anon`.
+- Tabelas em `public`: 16, todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido, D-73).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Tratativas registradas: 0.
-- Migrations: 35 no PRIMARY e 32 no repositório. As 3 a mais são o **drift conhecido** de 28/09 (C00-AUD2-07, encaminhado ao C05).
+- Migrations: **36 no PRIMARY e 36 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---
@@ -54,7 +55,6 @@
 
 - Pendências de governança: ver `docs/GOVERNANCE_ISSUES.md`. Resolvidas: 001, 004, 008, 009, 010. Decididas, aguardando construção: 005 (avisos, M05), 006 (marcar a Safra, F04/M05), 007 (12º card, M10). Adiadas para a V2 do produto: 002, 003.
 - END/CANCEL (F01/F02) ainda não existem: com a trava D-57, quem abrir um protocolo não consegue abrir outro do mesmo card até o encerramento existir.
-- Drift de 3 migrations no PRIMARY sem arquivo: reauditoria do C05.
 - Homologação do START com sessão real (checklist em `docs/HANDOFF_C08_START_2026-09-27.md`).
 - Backup/restore com RTO 30 min e RPO 5 min: SAFRA-C09.
 - Recomendado ao owner: desligar o login por e-mail no Lovable Cloud Auth (C04-AUD2-01).
@@ -63,4 +63,4 @@
 
 ## 6. Próximo passo
 
-Reauditoria do C05 (drift de 3 migrations e remoção de `treatment_escalations`, D-73).
+Próxima reauditoria: C06 (seed canônico da Matriz v3).

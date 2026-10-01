@@ -69,7 +69,7 @@ O novo contrato da seção 8 do glossário aponta diferenças entre o que o banc
 |---|---|
 | `treatments` tem um único `closed_by/closed_at`; o END em duas partes precisa de autor e horário por parte | F01 (desenho no C05-AUD) |
 | trava D-57 conta `status = ACTIVE`; deve contar a parte do solicitante aberta | F01 |
-| `treatment_escalations` e o evento `ESCALATION_CHANGED` sem uso (D-73) | C05-AUD (migration de remoção) |
+| `treatment_escalations` e o evento `ESCALATION_CHANGED` sem uso (D-73) | **feito** na C05-AUD2 (01/10/2026) |
 | evento `SLA_BREACHED` sem uso (D-62) | C05-AUD (documentar; sem tabela própria) |
 | eventos novos `REQUESTER_PART_CLOSED`, `OWNER_PART_CLOSED`, `REMINDER_SENT` | F01/M05 |
 

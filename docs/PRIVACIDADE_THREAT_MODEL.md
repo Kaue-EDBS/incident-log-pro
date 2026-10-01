@@ -129,7 +129,7 @@ O sistema deve armazenar somente os atributos necessários à identidade, autori
 | AB-CARD-01 | publicar 12º card/proposta sem governança | proposta não entra no catálogo produtivo automaticamente | DEFERRED_TO_M10; sem RPC produtiva de publicação nesta fase |
 | AB-CARD-02 | a mesma pessoa propõe, aprova e/ou publica o próprio card | negar; proponente ≠ aprovador ≠ publicador; proposta do Jair aprovada pelo Kaue | D-68; M10 |
 | AB-SAFRA-01 | encerrar a Safra por engano e disparar a eliminação de dados pessoais | digitar `ENCERRAR SAFRA`; 7 dias para reabrir sem apagar nada | D-70; F04/M05 |
-| AB-DRIFT-01 | alterar o banco direto no Lovable, sem arquivo nem teste | toda mudança nasce em `supabase/migrations/`; diferença reportada no início da sessão | D-52; drift de 28/09 em análise no C05 |
+| AB-DRIFT-01 | alterar o banco direto no Lovable, sem arquivo nem teste | toda mudança nasce em `supabase/migrations/`; diferença reportada no início da sessão | D-52; drift de 28/09 reconstituído na C05-AUD2 |
 
 ### 7.2 Threat → controle → evidência
 
@@ -253,6 +253,6 @@ Substitui a tabela da seção 12 como fotografia atual. A seção 12 fica como h
 | RR-C02-10 | usuário travado num card sem poder fechar | ACCEPTED_TEMPORARY — END/CANCEL ainda não existem; liberação manual pelo admin com autorização do owner | F01/F02 | não |
 | RR-C02-11 | dono abre protocolo do próprio card | **CONTROLLED** — verificação no START aplicada em 01/10/2026 | — | não |
 | RR-C02-12 | exposição pelo repositório público em 30/09 | ACCEPTED_BY_OWNER — sem segredo exposto; e-mails e matriz ficaram visíveis | comunicação a cargo do owner | não |
-| RR-C02-13 | 3 migrations no PRIMARY sem arquivo | OPEN — controle D-52 ativo; reconstituição no C05 | C05-AUD | não |
+| RR-C02-13 | 3 migrations no PRIMARY sem arquivo | **CLOSED** — reconstituídas na C05-AUD2 (01/10/2026); PRIMARY e repositório com 36 versões | — | não |
 | RR-C02-14 | Safra encerrada por engano | contrato decidido (D-70) | F04/M05 | não |
 | RR-C02-15 | separação de funções no 12º card | contrato decidido (D-68) | M10 | não |

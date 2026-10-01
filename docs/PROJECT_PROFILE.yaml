@@ -41,20 +41,16 @@ architecture:
       - "20260925164600"
       - "20260925164700"
       - "20260925170000"
-    migration_history_repair_status: "DRIFT_DETECTED_2026-09-30"
+    migration_history_repair_status: "RECONCILED_2026-10-01"
     change_rule: "EVERY_DATABASE_CHANGE_STARTS_AS_A_FILE_IN_SUPABASE_MIGRATIONS (D-52)"
     session_start_drift_check: "COMPARE_PRIMARY_SCHEMA_MIGRATIONS_WITH_REPO_FILES (D-52)"
-    known_drift:
-      - version: "20260928075934"
-        name: "c04_reaudit_legacy_surface_hardening"
-        state: "APPLIED_IN_PRIMARY_WITHOUT_REPO_FILE"
-      - version: "20260928090910"
-        name: "c05_notification_delivery_state_machine"
-        state: "APPLIED_IN_PRIMARY_WITHOUT_REPO_FILE"
-      - version: "20260928095246"
-        name: "c05_fk_indexes_and_clock_ownership"
-        state: "APPLIED_IN_PRIMARY_WITHOUT_REPO_FILE"
-    known_drift_owner_phase: "SAFRA-C05 reaudit"
+    known_drift: []
+    drift_reconciliation:
+      date: "2026-10-01"
+      reconstituted_versions: ["20260928075934", "20260928090910", "20260928095246"]
+      primary_versions: 36
+      repository_versions: 36
+      audit_document: "docs/AUDITORIA_C05_REABERTURA_2026-10-01.md"
 
 service:
   service_class:
@@ -382,11 +378,20 @@ c04_reaudit_2:
   owner_action_recommended: "DISABLE_EMAIL_PROVIDER_IN_LOVABLE_CLOUD_AUTH"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+c05_reaudit_2:
+  status: "APPROVED"
+  date: "2026-10-01"
+  migration: "20261001200000_c05_aud2_retire_escalations_and_history_fk.sql"
+  destructive_cascade_count: 0
+  end_cancel_concurrency_test: ".github/scripts/test-safra-end-cancel-concurrency.sh"
+  audit_document: "docs/AUDITORIA_C05_REABERTURA_2026-10-01.md"
+
 c05_schema_v2:
   status: "CANONICAL_BASE_IMPLEMENTED"
   migration: "20260925170000_c05_schema_v2_canonical_base.sql"
   primary_applied: true
-  new_domain_tables: 17
+  new_domain_tables: 16
+  retired_tables: ["treatment_escalations (D-73)"]
   rls_default: "DENY_BY_DEFAULT"
   anon_access: false
   authenticated_direct_access: false

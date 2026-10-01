@@ -159,3 +159,5 @@ A C00-AUD2 só fecha quando:
 - [x] o app publicado mostrar "Em obras" na Visão Geral e o Abrir Protocolo funcionando — conferido pelo owner com sessão Microsoft em 30/09/2026.
 
 > **C00-AUD2 concluída em 30/09/2026.** Achado C00-AUD2-07 (drift de 3 migrations) segue para a reauditoria do C05.
+
+> **Atualização 01/10/2026:** o achado C00-AUD2-07 (drift de 3 migrations) foi resolvido na C05-AUD2: as versões foram reconstituídas a partir do PRIMARY e o histórico do repositório e o do banco ficaram iguais (36 versões). Ver `docs/AUDITORIA_C05_REABERTURA_2026-10-01.md`.

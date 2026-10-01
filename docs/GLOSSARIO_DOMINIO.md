@@ -652,7 +652,7 @@ Esta seção transforma o glossário em contrato de implementação. O C05 pode 
 | impacto qualitativo observado | `treatments.impact_summary` | auditável |
 | impacto quantitativo observado | `treatment_impact_measurements` | append/auditável |
 | eventos operacionais | `treatment_events` | append-only |
-| ~~escalonamento~~ | `treatment_escalations` | **sem uso (D-73)**; remoção na reauditoria do C05 |
+| ~~escalonamento~~ | — | **removido em 01/10/2026 (D-73)** |
 | proposta de novo cenário | `scenario_proposals` | nunca equivale a cenário publicado |
 | decisão aberta de governança | `governance_issues` | permanece explícita até resolução |
 
@@ -668,7 +668,6 @@ scenario 1 ---- N treatments
 scenario_version 1 ---- N treatments
 treatment 1 ---- N treatment_events
 treatment 1 ---- N treatment_impacted_areas
-treatment 1 ---- N treatment_escalations   (sem uso, D-73)
 treatment 1 ---- N treatment_impact_measurements
 scenario_proposal 1 ---- N owner_responses
 ```
@@ -856,7 +855,7 @@ REMINDER_SENT             (aviso enviado — M05)
 ADMIN_CORRECTION_RECORDED
 ```
 
-Fora de uso: `ESCALATION_CHANGED` (D-73) e `SLA_BREACHED` (D-62).
+Removido: `ESCALATION_CHANGED` (D-73). Sem uso nos cards: `SLA_BREACHED` (D-62).
 
 Regras:
 - evento possui ator quando houver ação humana;
