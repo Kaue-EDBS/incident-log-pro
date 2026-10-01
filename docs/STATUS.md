@@ -26,6 +26,7 @@
 - **Telas:** Visão Geral ("Em obras") e Abrir Protocolo.
 - **START:** os 11 cenários, todos **CRITICAL** (versão 2, D-55), podem ser abertos por qualquer usuário corporativo (D-63). Cada pessoa só pode ter **um protocolo em andamento por card** (D-57).
 - **Publicação:** feita sempre pelo owner no Lovable.
+- **Safra corrente:** começou em 01/10/2026; termina quando o Kaue marcar (D-69).
 
 ---
 

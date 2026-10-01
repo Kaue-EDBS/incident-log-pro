@@ -67,6 +67,7 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-69 | A Safra corrente começou em 01/10/2026 e termina quando o Kaue marcar o encerramento | APPROVED |
 | D-68 | 12º card com separação de funções: quem propõe não aprova nem publica; proposta do Jair é aprovada pelo Kaue; proposta de admin técnico é publicada por outro admin | APPROVED — implementação na M10 |
 | D-67 | Escada de avisos revista: 2h e 4h, ao dono do card (para cobrar o usuário) e ao usuário ("foi resolvido?"), até o usuário fechar a parte dele; sem Jair e sem aviso de 3h; 4h não é SLA | APPROVED — implementação na M05/F01 |
 | D-66 | Encerramento em duas partes (usuário e dono do card, cada um com seu horário); CANCEL por qualquer um dos dois, com motivo; trava D-57 liberada quando o usuário fecha a parte dele | APPROVED — implementação na F01/F02 |
@@ -1139,3 +1140,11 @@ Implementação: F01 (END) e F02 (CANCEL). A trava da D-57 hoje usa `status = AC
 - O servidor verifica essas regras pelo `auth.uid()` de cada etapa, e cada etapa fica na trilha de auditoria.
 
 Implementação: SAFRA-M10.
+
+### D-69 — Início da Safra corrente
+**APPROVED — 01/10/2026** — owner: Kaue. Aplica a D-59.
+
+- A Safra corrente **começou em 01/10/2026** (fuso `America/Sao_Paulo`).
+- Ela **termina quando o Kaue marcar** o encerramento no sistema; não há data prevista.
+- Enquanto a marcação da D-59 não existir no sistema (F04/M05), esta decisão é o registro oficial do início. Ao construir a marcação, o primeiro registro deve usar 01/10/2026 00:00 (São Paulo) como início, com referência a esta decisão.
+- O encerramento continua sendo o marco da política de retenção (ADR-016).
