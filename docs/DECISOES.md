@@ -18,7 +18,7 @@
 | D-03 | Geral é visão agregadora, não área | APPROVED |
 | D-04 | Detecção e ativação são conceitos separados | APPROVED |
 | D-05 | Protocolo não é chamado | APPROVED |
-| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — **END substituído pela D-64** (01/10/2026) |
+| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — **START ajustado pela D-65; END e CANCEL substituídos pelas D-64/D-66** (01/10/2026) |
 | D-07 | Tratativa errada é CANCELLED; não apagar | APPROVED |
 | D-08 | Novo cenário exige governança | APPROVED |
 | D-09 | Criticidade usa CRITICAL/HIGH/MODERATE | APPROVED; lista crítica pendente |
@@ -67,8 +67,10 @@
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
-| D-64 | END só por quem abriu o protocolo ou pelo dono do card, cada um logado no próprio perfil; o botão "Resolvido" abre o Painel e exige confirmação | APPROVED — implementação na F01 |
-| D-63 | Mantida a liberação dos 11 cards para qualquer usuário corporativo autenticado; sem restrição por card (resolve GI-SAFRA-010) | APPROVED |
+| D-66 | Encerramento em duas partes (usuário e dono do card, cada um com seu horário); CANCEL por qualquer um dos dois, com motivo; trava D-57 liberada quando o usuário fecha a parte dele | APPROVED — implementação na F01/F02 |
+| D-65 | Dono de card não abre protocolo dos próprios cards; pode abrir de cards de outros donos | APPROVED — implementação pendente (ajuste do START) |
+| D-64 | END só por quem abriu o protocolo ou pelo dono do card, cada um logado no próprio perfil; o botão "Resolvido" abre o Painel e exige confirmação | APPROVED — complementada pela D-66 |
+| D-63 | Mantida a liberação dos 11 cards para qualquer usuário corporativo autenticado; sem restrição por card (resolve GI-SAFRA-010) | APPROVED — com a exceção da D-65 |
 | D-62 | Sem cronômetro de SLA nos cards; escada de avisos 2h/3h/4h, 24h por dia, com pergunta "foi resolvido?" a quem abriu (resolve GI-SAFRA-009) | APPROVED — implementação na M05/F01 |
 | D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
 | D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
@@ -1079,3 +1081,32 @@ Migration `20261001120000_c01_aud2_scenario_v2_critical_and_start_lock.sql`, com
 - START continua liberado a qualquer usuário corporativo (D-63). CANCEL segue a D-06 até decisão própria.
 
 Implementação: SAFRA-F01 (END) junto com a M05 (avisos).
+
+### D-65 — Dono de card não abre protocolo do próprio card
+**APPROVED — 01/10/2026** — owner: Kaue.
+
+- O dono vigente de um card **não pode abrir protocolo daquele card**. O papel dele no protocolo é o de dono, não o de usuário.
+- O mesmo dono **pode** abrir protocolo de um card de **outro** dono; nesse protocolo ele é o usuário.
+- Por isso, quem abre nunca é o próprio dono do card, e o encerramento em duas partes (D-66) sempre envolve duas pessoas.
+- Ajusta a D-63 (liberação geral) e a D-06 (START por qualquer usuário).
+
+Implementação pendente: o START passa a recusar a abertura quando `auth.uid()` é o dono vigente do cenário, com mensagem própria na tela.
+
+### D-66 — Encerramento em duas partes e cancelamento
+**APPROVED — 01/10/2026** — owner: Kaue. Complementa a D-64.
+
+**Encerramento (END) em duas partes:**
+- o protocolo tem duas partes a fechar: a do **usuário** (quem abriu) e a do **dono do card**;
+- cada um fecha a própria parte, logado no próprio perfil (D-64), e cada fechamento grava o **seu horário** (servidor);
+- quando o **usuário** fecha a parte dele, a trava da D-57 é liberada para ele naquele card: ele já pode abrir outro protocolo do mesmo card;
+- se o **dono** fecha primeiro, o usuário continua travado até fechar a parte dele;
+- o protocolo só fica totalmente encerrado quando as duas partes estão fechadas.
+
+**Cancelamento (CANCEL):**
+- **qualquer um dos dois** (usuário ou dono do card) pode cancelar, sozinho, logado no próprio perfil;
+- **motivo obrigatório** sempre;
+- cancelamento não conta como resolvido e preserva o histórico (regras C02/C07 mantidas).
+
+**Relatórios (F04):** três medidas de tempo — tempo de encerramento pelo **dono do card**, tempo de encerramento pelo **usuário** e uma visão **consolidada** mostrando a diferença entre os dois.
+
+Implementação: F01 (END) e F02 (CANCEL). A trava da D-57 hoje usa `status = ACTIVE`; na F01 ela passa a considerar a parte do usuário.
