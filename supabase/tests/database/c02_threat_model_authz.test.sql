@@ -275,10 +275,13 @@ select is(
     from pg_proc p
     join pg_namespace n on n.oid=p.pronamespace
     where n.nspname='public'
-      and p.proname in ('safra_end_treatment','safra_cancel_treatment')
+      and p.proname in ('safra_close_my_part','safra_cancel_treatment')
+      and p.prosecdef
+      and has_function_privilege('authenticated', p.oid, 'EXECUTE')
+      and not has_function_privilege('anon', p.oid, 'EXECUTE')
   ),
-  0::bigint,
-  'END/CANCEL RPCs remain unexposed until their governed implementation phase'
+  2::bigint,
+  'END/CANCEL RPCs are governed SECURITY DEFINER commands, closed to anon (C08.1, D-87)'
 );
 
 select is(

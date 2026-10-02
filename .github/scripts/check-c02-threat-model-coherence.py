@@ -53,7 +53,7 @@ for marker in (
     "invalid corporate session cannot enumerate RBAC audit rows",
     "valid corporate platform admin can read governed RBAC audit events",
     "SAFRA_START_IDEMPOTENCY_CONFLICT",
-    "END/CANCEL RPCs remain unexposed",
+    "END/CANCEL RPCs are governed SECURITY DEFINER commands",
     "CANCEL reason/history cannot be rewritten",
     "scenario proposal cannot create or publish a productive scenario by itself",
     "scenario proposal does not become a 12th START catalog card",

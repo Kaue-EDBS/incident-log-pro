@@ -192,16 +192,16 @@ select is(
 );
 
 -- ---------------------------------------------------------------------------
--- Item 3 — END/CANCEL: until F01/F02 exist there must be no hidden path.
+-- Item 3 — END/CANCEL: only the two governed commands of C08.1 (D-87) exist.
 -- ---------------------------------------------------------------------------
 select is(
-  (select count(*)::bigint
+  (select string_agg(p.proname, ',' order by p.proname)
    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public'
      and p.proname ~* '(end|cancel|close|resolve|finish)'
      and has_function_privilege('authenticated', p.oid, 'EXECUTE')),
-  0::bigint,
-  'C04 item 3: no browser-callable END/CANCEL function exists before F01/F02'
+  'safra_cancel_treatment,safra_close_my_part',
+  'C04 item 3: the only browser-callable END/CANCEL paths are the governed C08.1 commands'
 );
 
 select ok(
