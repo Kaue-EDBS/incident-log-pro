@@ -1056,6 +1056,10 @@ export type Database = {
           target_role: string
         }[]
       }
+      safra_admin_get_notifications_queue: {
+        Args: { p_limit?: number }
+        Returns: Json
+      }
       safra_admin_get_ops_summary: { Args: { p_hours?: number }; Returns: Json }
       safra_admin_get_owner_treatments: {
         Args: { p_owner_principal_id: string }
