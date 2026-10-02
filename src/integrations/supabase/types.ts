@@ -728,6 +728,10 @@ export type Database = {
       safra_get_start_catalog: { Args: never; Returns: Json }
       safra_has_role: { Args: { requested_role: string }; Returns: boolean }
       safra_is_corporate_user: { Args: never; Returns: boolean }
+      safra_log_access_denied: {
+        Args: { p_reason?: string; p_resource: string }
+        Returns: string
+      }
       safra_session_is_live: { Args: never; Returns: boolean }
       safra_start_treatment: {
         Args: {
