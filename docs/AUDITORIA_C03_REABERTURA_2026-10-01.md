@@ -94,3 +94,22 @@ Na verificação de "fechou 100%?", o owner pediu a correção de três sobras q
 | Tela com "tratativa", "START" e o endereço `/novo-incidente` | textos trocados por "protocolo"/"abertura"; rota renomeada para `/abrir-protocolo` (menu e atalhos atualizados); aviso desatualizado sobre a GI-SAFRA-004 substituído pela regra D-57 |
 
 Verificação local: build, typecheck, lint zero-warning e checagens de coerência verdes.
+
+
+---
+
+## 7. Recertificacao da branch historica C03-AUD - 02/10/2026
+
+A branch `audit/c03-corrections-2026-09-28` foi reconciliada com `main` no commit `13ff995e9f0378602ef9159351e51cb928696bd8`, preservando o fechamento C02 e sem rebase destrutivo.
+
+Estado dos itens da rodada de 28/09:
+- C03-AUD-01: CLOSED / PASS. A rota antiga foi supersedida pela baseline vigente; a rota atual e `/abrir-protocolo`.
+- C03-AUD-02: CLOSED / PASS. Painel Safra permanece como produto unico.
+- C03-AUD-03: CLOSED / PASS. Frontend/runtime Reliability permanece removido.
+- C03-AUD-04: CLOSED / PASS. O glossario vigente e `GLOSSARIO_DOMINIO.md` v2.0; a versao anterior permanece historica.
+
+CI do commit de reconciliacao:
+- App Smoke Test: PASS, run `37012065249`.
+- Database Disposable Test: PASS, run `37012064906`.
+
+Resultado: C03-AUD historica RECERTIFICADA em 02/10/2026 contra a baseline vigente. Esta recertificacao nao restaura arquivos ou regras supersedidas por decisoes posteriores.
