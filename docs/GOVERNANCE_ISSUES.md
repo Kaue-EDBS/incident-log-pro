@@ -374,6 +374,6 @@ Pela D-101, protocolo sem nenhuma parte concluída é cancelado sozinho 72 horas
 ## GI-SAFRA-017 — Trocar o envio provisório pelo registro de aplicativo da TI
 - **Status:** aberto
 - **Contexto:** D-132. Hoje os avisos saem pela conexão Outlook do Kaue e os do sistema só enquanto alguém da gestão/admin estiver com o Painel aberto.
-- **Passo intermediário (sem depender do TI):** envio agendado no servidor (Edge Function + agendamento no banco) pela mesma conexão Outlook, se ela funcionar fora do site.
+- **Passo intermediário (sem depender do TI):** D-133, envio agendado no servidor a cada 2 minutos pela mesma conexão Outlook.
 - **Pendente da TI:** MS_CLIENT_ID, MS_CLIENT_SECRET (com validade e responsável pela renovação) e Application Access Policy restrita a painel.safra@.
 - **Ao fechar:** ativar o carteiro oficial agendado e retirar as funções `*_for_session`.

@@ -1,8 +1,8 @@
 // SAFRA-M05 — função de envio dos avisos (Supabase Edge Function, Deno).
-// Ativação depois do chamado do TI: configurar MS_TENANT_ID, MS_CLIENT_ID e MS_CLIENT_SECRET nos
-// segredos do projeto (remetente padrão: painel.safra@editoradobrasil.com.br; MAIL_SENDER só
-// sobrescreve) e agendar a chamada (migration de
-// ativação). Sem essas configurações, a função responde "disabled" e não mexe na fila.
+// Envia pelo aplicativo do TI (MS_TENANT_ID, MS_CLIENT_ID, MS_CLIENT_SECRET) ou, até lá, pela
+// conexão Microsoft Outlook do Lovable (D-133). Remetente: painel.safra@editoradobrasil.com.br
+// (MAIL_SENDER só sobrescreve). Chamada a cada 2 minutos pelo agendamento do banco. Sem nenhuma
+// das duas configurações, responde "disabled" e não mexe na fila. A resposta só traz contagens.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { readConfig, runOnce, type ClaimedNotice } from "./sender.ts";
 

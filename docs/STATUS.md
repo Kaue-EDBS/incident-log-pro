@@ -52,7 +52,7 @@
 - Tabelas em `public`: 16 (inclui o registro técnico `ops_events`, D-95), todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido pela D-73; SLA pela D-75).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Protocolos registrados: 1 (03-0001, demonstração do owner em 02/10/2026, fora do analytics pela D-115).
-- Migrations: **59 no PRIMARY e 59 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Migrations: **60 no PRIMARY e 60 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---
@@ -82,4 +82,4 @@
 
 Próximo: ativar o envio dos avisos quando o TI liberar (AUDITORIA_M05 §4); seguir com M08 em diante. M04 cancelada pela D-110. Publicar e homologar com login real fica para o final (decisão do owner, 02/10/2026).
 
-- 2026-10-02 — M05 provisório (D-132): envio pela sessão de quem está no Painel (gestão/admins: fila inteira; demais: só os avisos da própria ação). Migration `20261002300000_m05_session_delivery.sql`. Próximo: envio agendado no servidor (GI-SAFRA-017).
+- 2026-10-02 — M05 provisório (D-132): envio pela sessão de quem está no Painel (gestão/admins: fila inteira; demais: só os avisos da própria ação). Migration `20261002300000_m05_session_delivery.sql`. D-133: envio agendado no servidor a cada 2 minutos (migration `20261002310000_m05_scheduled_delivery.sql`).

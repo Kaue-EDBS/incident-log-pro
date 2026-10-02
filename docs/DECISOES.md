@@ -1453,3 +1453,13 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **Limite:** os avisos do sistema só saem com alguém da gestão/admin com o Painel aberto (o owner deixa o próprio PC ligado no Painel como solução temporária). Sem isso, expiram em 24 h.
 - **Próximo passo pedido pelo owner: e-mails automáticos de verdade**, com envio agendado no servidor, sem depender de navegador aberto (GI-SAFRA-017).
 - Alternativa recusada: deixar qualquer usuário corporativo pegar a fila inteira (exporia o conteúdo dos avisos de todos e permitiria marcar aviso como enviado sem enviar).
+
+### D-133 — E-mails automáticos pelo servidor, a cada 2 minutos (M05)
+**APPROVED — 02/10/2026** — owner: Kaue ("só quero que os e-mails sejam automáticos").
+
+- O agendador do banco chama a função do servidor `safra-send-notifications` a cada 2 minutos (migration `20261002310000`). Ela esvazia a fila com a chave de sistema, **sem depender de ninguém com o Painel aberto**, inclusive lembretes de madrugada.
+- Caminho de envio: aplicativo do TI quando existir (MS_*); até lá, a **conexão Microsoft Outlook do Lovable**, com remetente painel.safra@editoradobrasil.com.br.
+- A função é pública, mas só esvazia a fila e devolve contagens: nunca devolve conteúdo de aviso.
+- O envio pelo Painel aberto (D-132) fica como reforço; a fila trava cada aviso antes de enviar, então ninguém recebe o mesmo aviso duas vezes.
+- Condição: a conexão Outlook precisa estar disponível para a função do servidor (`LOVABLE_API_KEY` e `MICROSOFT_OUTLOOK_API_KEY`). Enquanto não estiver, a função responde "disabled" e a fila segue pelo D-132.
+

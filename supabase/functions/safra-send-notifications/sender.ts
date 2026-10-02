@@ -2,10 +2,14 @@
  * SAFRA-M05 — carteiro dos avisos (D-111 a D-114).
  *
  * Pega da fila os avisos prontos (`safra_notifications_claim`), envia cada um pelo Microsoft
- * Graph (`/users/{caixa}/sendMail`) e devolve o resultado (`safra_notifications_report`).
- * O banco decide quem recebe, o texto, as novas tentativas e a expiração; aqui só se envia.
+ * Graph e devolve o resultado (`safra_notifications_report`). O banco decide quem recebe, o
+ * texto, as novas tentativas e a expiração; aqui só se envia.
  *
- * Fica desligado (não pega nada da fila) enquanto faltar qualquer configuração do TI.
+ * Dois caminhos de envio, nesta ordem:
+ * 1. aplicativo do TI (`MS_TENANT_ID`, `MS_CLIENT_ID`, `MS_CLIENT_SECRET`): `/users/{caixa}/sendMail`;
+ * 2. provisório (D-133): conexão Microsoft Outlook do Lovable (`LOVABLE_API_KEY`,
+ *    `MICROSOFT_OUTLOOK_API_KEY`), assinando como a caixa oficial.
+ * Fica desligado (não pega nada da fila) enquanto faltar a configuração dos dois.
  */
 
 export type ClaimedNotice = {
@@ -16,12 +20,17 @@ export type ClaimedNotice = {
   attempt: number;
 };
 
-export type SenderConfig = {
-  tenantId: string;
-  clientId: string;
-  clientSecret: string;
-  mailbox: string;
-};
+export type SenderConfig =
+  | {
+      kind: "graph_app";
+      tenantId: string;
+      clientId: string;
+      clientSecret: string;
+      mailbox: string;
+    }
+  | { kind: "outlook_gateway"; lovableKey: string; connectionKey: string; mailbox: string };
+
+const GATEWAY_URL = "https://connector-gateway.lovable.dev/microsoft_outlook";
 
 export type SenderDeps = {
   claim: (limit: number) => Promise<ClaimedNotice[]>;
@@ -37,20 +46,59 @@ export type SenderResult =
 export const DEFAULT_MAIL_SENDER = "painel.safra@editoradobrasil.com.br";
 
 const REQUIRED = ["MS_TENANT_ID", "MS_CLIENT_ID", "MS_CLIENT_SECRET"] as const;
+const GATEWAY_REQUIRED = ["LOVABLE_API_KEY", "MICROSOFT_OUTLOOK_API_KEY"] as const;
 
 /** Lê a configuração; devolve o que falta em vez de inventar valores. */
 export function readConfig(env: (name: string) => string | undefined): SenderConfig | string[] {
+  const mailbox = env("MAIL_SENDER")?.trim() || DEFAULT_MAIL_SENDER;
   const missing = REQUIRED.filter((name) => !env(name)?.trim());
-  if (missing.length) return [...missing];
+  if (!missing.length) {
+    return {
+      kind: "graph_app",
+      tenantId: env("MS_TENANT_ID")!.trim(),
+      clientId: env("MS_CLIENT_ID")!.trim(),
+      clientSecret: env("MS_CLIENT_SECRET")!.trim(),
+      mailbox,
+    };
+  }
+  const gatewayMissing = GATEWAY_REQUIRED.filter((name) => !env(name)?.trim());
+  if (!gatewayMissing.length) {
+    return {
+      kind: "outlook_gateway",
+      lovableKey: env("LOVABLE_API_KEY")!.trim(),
+      connectionKey: env("MICROSOFT_OUTLOOK_API_KEY")!.trim(),
+      mailbox,
+    };
+  }
+  return [...missing, ...gatewayMissing];
+}
+
+type Transport = { url: string; headers: Record<string, string>; from: boolean };
+
+async function getTransport(config: SenderConfig, doFetch: typeof fetch): Promise<Transport> {
+  if (config.kind === "outlook_gateway") {
+    return {
+      url: `${GATEWAY_URL}/me/sendMail`,
+      headers: {
+        Authorization: `Bearer ${config.lovableKey}`,
+        "X-Connection-Api-Key": config.connectionKey,
+        "Content-Type": "application/json",
+      },
+      from: true,
+    };
+  }
+  const token = await getToken(config, doFetch);
   return {
-    tenantId: env("MS_TENANT_ID")!.trim(),
-    clientId: env("MS_CLIENT_ID")!.trim(),
-    clientSecret: env("MS_CLIENT_SECRET")!.trim(),
-    mailbox: env("MAIL_SENDER")?.trim() || DEFAULT_MAIL_SENDER,
+    url: `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(config.mailbox)}/sendMail`,
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    from: false,
   };
 }
 
-async function getToken(config: SenderConfig, doFetch: typeof fetch): Promise<string> {
+async function getToken(
+  config: Extract<SenderConfig, { kind: "graph_app" }>,
+  doFetch: typeof fetch,
+): Promise<string> {
   const response = await doFetch(
     `https://login.microsoftonline.com/${encodeURIComponent(config.tenantId)}/oauth2/v2.0/token`,
     {
@@ -81,9 +129,9 @@ export async function runOnce(
   const notices = await deps.claim(limit);
   if (notices.length === 0) return { status: "ok", claimed: 0, sent: 0, failed: 0 };
 
-  let token: string;
+  let transport: Transport;
   try {
-    token = await getToken(config, deps.fetch);
+    transport = await getTransport(config, deps.fetch);
   } catch (error) {
     // Sem token, nada sai: cada aviso volta para a fila com o motivo (nova tentativa depois).
     const reason = error instanceof Error ? error.message : "TOKEN_ERROR";
@@ -95,21 +143,19 @@ export async function runOnce(
   let failed = 0;
   for (const notice of notices) {
     try {
-      const response = await deps.fetch(
-        `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(config.mailbox)}/sendMail`,
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: {
-              subject: notice.subject,
-              body: { contentType: "Text", content: notice.body },
-              toRecipients: [{ emailAddress: { address: notice.to } }],
-            },
-            saveToSentItems: false,
-          }),
-        },
-      );
+      const response = await deps.fetch(transport.url, {
+        method: "POST",
+        headers: transport.headers,
+        body: JSON.stringify({
+          message: {
+            subject: notice.subject,
+            body: { contentType: "Text", content: notice.body },
+            ...(transport.from ? { from: { emailAddress: { address: config.mailbox } } } : {}),
+            toRecipients: [{ emailAddress: { address: notice.to } }],
+          },
+          saveToSentItems: false,
+        }),
+      });
       if (response.status === 202 || response.ok) {
         await deps.report(notice.id, true, null);
         sent += 1;

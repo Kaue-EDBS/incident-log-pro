@@ -7,6 +7,7 @@ import {
 } from "../../supabase/functions/safra-send-notifications/sender";
 
 const CONFIG = {
+  kind: "graph_app" as const,
   tenantId: "45ba725f-d260-45c3-ac85-11f433471277",
   clientId: "client",
   clientSecret: "secret",
@@ -56,7 +57,12 @@ function fakeDeps(notices: ClaimedNotice[], sendStatus: (to: string) => number, 
 describe("M05 sender", () => {
   test("stays disabled, without touching the queue, until TI provides every setting", async () => {
     const config = readConfig((name) => (name === "MS_TENANT_ID" ? CONFIG.tenantId : undefined));
-    expect(config).toEqual(["MS_CLIENT_ID", "MS_CLIENT_SECRET"]);
+    expect(config).toEqual([
+      "MS_CLIENT_ID",
+      "MS_CLIENT_SECRET",
+      "LOVABLE_API_KEY",
+      "MICROSOFT_OUTLOOK_API_KEY",
+    ]);
     const fake = fakeDeps([notice("a")], () => 202);
     const result = await runOnce(config, fake.deps);
     expect(result.status).toBe("disabled");
@@ -80,6 +86,33 @@ describe("M05 sender", () => {
       message: { subject: "[Painel Safra] X", body: { contentType: "Text", content: "Olá" } },
       saveToSentItems: false,
     });
+  });
+
+  test("D-133: without the TI app, sends through the Lovable Outlook connection as painel.safra@", async () => {
+    const env: Record<string, string> = { LOVABLE_API_KEY: "lk", MICROSOFT_OUTLOOK_API_KEY: "ok" };
+    const config = readConfig((name) => env[name]);
+    expect(config).toMatchObject({ kind: "outlook_gateway", mailbox: CONFIG.mailbox });
+    const fake = fakeDeps([notice("a")], () => 202);
+    const result = await runOnce(config, fake.deps);
+    expect(result).toEqual({ status: "ok", claimed: 1, sent: 1, failed: 0 });
+    expect(fake.calls.some((c) => c.url.includes("/oauth2/v2.0/token"))).toBe(false);
+    const mail = fake.calls[0]!;
+    expect(mail.url).toBe("https://connector-gateway.lovable.dev/microsoft_outlook/me/sendMail");
+    expect(JSON.parse(mail.body)).toMatchObject({
+      message: { from: { emailAddress: { address: CONFIG.mailbox } } },
+      saveToSentItems: false,
+    });
+  });
+
+  test("the TI app wins when both are configured", () => {
+    const env: Record<string, string> = {
+      MS_TENANT_ID: CONFIG.tenantId,
+      MS_CLIENT_ID: "c",
+      MS_CLIENT_SECRET: "s",
+      LOVABLE_API_KEY: "lk",
+      MICROSOFT_OUTLOOK_API_KEY: "ok",
+    };
+    expect(readConfig((name) => env[name])).toMatchObject({ kind: "graph_app" });
   });
 
   test("a failed send goes back to the queue with the reason", async () => {
