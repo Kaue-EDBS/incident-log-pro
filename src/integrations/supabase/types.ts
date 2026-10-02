@@ -786,6 +786,10 @@ export type Database = {
       safra_get_treatment_timeline: { Args: { p_treatment_id: string }; Returns: Json }
       safra_get_reliability_metrics: { Args: { p_owner_principal_id?: string }; Returns: Json }
       safra_get_season: { Args: never; Returns: Json }
+      safra_get_cards_overview: { Args: never; Returns: Json }
+      safra_admin_get_people: { Args: never; Returns: Json }
+      safra_log_screen_view: { Args: { p_route: string }; Returns: undefined }
+      safra_admin_get_screen_usage: { Args: { p_days?: number }; Returns: Json }
       safra_end_season: { Args: { p_confirm: string }; Returns: Json }
       safra_undo_end_season: { Args: never; Returns: Json }
       safra_start_season: { Args: never; Returns: Json }

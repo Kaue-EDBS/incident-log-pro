@@ -1413,3 +1413,12 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - A M08 é **cancelada** como fase: o que ela pedia já existe em "Todos os protocolos", Saúde do sistema e Analytics; SLA, escalonamento e criticidade não existem mais (D-75, D-73, D-55). **Sem modo TV.**
 - No lugar, uma **faixa "Agora, em todos os cards"** no topo de "Todos os protocolos", só para **Jair, Bruno e admins**: em andamento, ninguém concluiu, aguardando o dono, aguardando quem abriu, fecham sozinhos em 24 h, o mais antigo, e os abertos e encerrados hoje. A faixa sempre mostra todos os cards, qualquer que seja o filtro da lista.
 
+### D-121 a D-124 — Visões por audiência (M09)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-121:** tela **"Cards e donos"** (card, versão, dono, área responsável, em andamento, protocolos na Safra), só leitura, para **Jair, Bruno e admins**.
+- **D-122:** Analytics ganha o ranking **"Cards que mais falham na Safra"** (top 5 por falhas; desempate pelo MTTR).
+- **D-123:** Administração ganha o **painel de cadastrados** (pessoas, papéis, cards, último acesso; usuários comuns só contados) e a **trilha de papéis**; só platform admins.
+- **D-124:** **uso das telas anônimo** (D-90): conta por dia quantas vezes cada tela foi aberta, sem guardar quem abriu; só platform admins leem.
+- Pendências de governança **não** viram tela (são do projeto, não da operação). **Bruno vê o mesmo que o Jair.**
+

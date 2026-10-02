@@ -276,6 +276,115 @@ export function useStartSeason() {
   return useSeasonMutation<void>("safra_start_season", () => supabase.rpc("safra_start_season"));
 }
 
+const CardOverviewSchema = z.array(
+  z.object({
+    scenario_id: z.string().uuid(),
+    code: z.string(),
+    name: z.string(),
+    version_no: z.number().nullable(),
+    responsible_area: z.string().nullable(),
+    owner_name: z.string().nullable(),
+    owner_email: z.string().nullable(),
+    owner_available: z.boolean(),
+    owner_has_logged_in: z.boolean(),
+    active_now: z.number(),
+    season_protocols: z.number(),
+  }),
+);
+
+/** Cards e donos (D-121): gestão e admins. */
+export function useCardsOverview(enabled: boolean) {
+  return useQuery({
+    queryKey: ["safra-cards-overview"],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_get_cards_overview", () =>
+        supabase.rpc("safra_get_cards_overview"),
+      );
+      if (error) throw error;
+      return CardOverviewSchema.parse(data);
+    },
+  });
+}
+
+const PeopleSchema = z.object({
+  people: z.array(
+    z.object({
+      principal_id: z.string().uuid(),
+      name: z.string().nullable(),
+      email: z.string(),
+      active: z.boolean(),
+      has_logged_in: z.boolean(),
+      last_sign_in_at: z.string().nullable(),
+      roles: z.array(z.string()),
+      cards: z.array(z.string()),
+    }),
+  ),
+  logins_without_registration: z.number(),
+});
+
+/** Painel de cadastrados (D-123): só platform admins. */
+export function useAdminPeople(enabled: boolean) {
+  return useQuery({
+    queryKey: ["safra-admin-people"],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_admin_get_people", () =>
+        supabase.rpc("safra_admin_get_people"),
+      );
+      if (error) throw error;
+      return PeopleSchema.parse(data);
+    },
+  });
+}
+
+const RbacTrailSchema = z.array(
+  z.object({
+    occurred_at: z.string(),
+    actor_email: z.string().nullable(),
+    action: z.string(),
+    resource: z.string().nullable(),
+    target_principal_email: z.string().nullable(),
+    target_role: z.string().nullable(),
+    result: z.string().nullable(),
+  }),
+);
+
+/** Trilha de papéis (D-123). */
+export function useRbacTrail(enabled: boolean) {
+  return useQuery({
+    queryKey: ["safra-rbac-trail"],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await measured("get_safra_rbac_audit_events", () =>
+        supabase.rpc("get_safra_rbac_audit_events", { p_limit: 100 }),
+      );
+      if (error) throw error;
+      return RbacTrailSchema.parse(data ?? []);
+    },
+  });
+}
+
+const ScreenUsageSchema = z.object({
+  from: z.string(),
+  routes: z.array(z.object({ route: z.string(), views: z.number(), today: z.number().nullable() })),
+});
+
+/** Uso das telas, anônimo (D-124). */
+export function useScreenUsage(enabled: boolean) {
+  return useQuery({
+    queryKey: ["safra-screen-usage"],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_admin_get_screen_usage", () =>
+        supabase.rpc("safra_admin_get_screen_usage", { p_days: 30 }),
+      );
+      if (error) throw error;
+      return ScreenUsageSchema.parse(data);
+    },
+  });
+}
+
 export function useSafraStartTreatment() {
   const invalidate = useInvalidateProtocols();
 

@@ -14,6 +14,7 @@ import { Route as AbrirProtocoloRouteImport } from './routes/abrir-protocolo'
 import { Route as AdministracaoRouteImport } from './routes/administracao'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CardsEDonosRouteImport } from './routes/cards-e-donos'
 import { Route as MeusProtocolosRouteImport } from './routes/meus-protocolos'
 import { Route as ProtocolosDosMeusCardsRouteImport } from './routes/protocolos-dos-meus-cards'
 import { Route as TodosOsProtocolosRouteImport } from './routes/todos-os-protocolos'
@@ -43,6 +44,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CardsEDonosRoute = CardsEDonosRouteImport.update({
+  id: '/cards-e-donos',
+  path: '/cards-e-donos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MeusProtocolosRoute = MeusProtocolosRouteImport.update({
   id: '/meus-protocolos',
   path: '/meus-protocolos',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/administracao': typeof AdministracaoRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/cards-e-donos': typeof CardsEDonosRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
   '/todos-os-protocolos': typeof TodosOsProtocolosRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/administracao': typeof AdministracaoRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/cards-e-donos': typeof CardsEDonosRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
   '/todos-os-protocolos': typeof TodosOsProtocolosRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/administracao': typeof AdministracaoRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/cards-e-donos': typeof CardsEDonosRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
   '/todos-os-protocolos': typeof TodosOsProtocolosRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/administracao'
     | '/analytics'
     | '/auth'
+    | '/cards-e-donos'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
     | '/todos-os-protocolos'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/administracao'
     | '/analytics'
     | '/auth'
+    | '/cards-e-donos'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
     | '/todos-os-protocolos'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/administracao'
     | '/analytics'
     | '/auth'
+    | '/cards-e-donos'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
     | '/todos-os-protocolos'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   AdministracaoRoute: typeof AdministracaoRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
+  CardsEDonosRoute: typeof CardsEDonosRoute
   MeusProtocolosRoute: typeof MeusProtocolosRoute
   ProtocolosDosMeusCardsRoute: typeof ProtocolosDosMeusCardsRoute
   TodosOsProtocolosRoute: typeof TodosOsProtocolosRoute
@@ -171,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cards-e-donos': {
+      id: '/cards-e-donos'
+      path: '/cards-e-donos'
+      fullPath: '/cards-e-donos'
+      preLoaderRoute: typeof CardsEDonosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/meus-protocolos': {
       id: '/meus-protocolos'
       path: '/meus-protocolos'
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdministracaoRoute: AdministracaoRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
+  CardsEDonosRoute: CardsEDonosRoute,
   MeusProtocolosRoute: MeusProtocolosRoute,
   ProtocolosDosMeusCardsRoute: ProtocolosDosMeusCardsRoute,
   TodosOsProtocolosRoute: TodosOsProtocolosRoute,

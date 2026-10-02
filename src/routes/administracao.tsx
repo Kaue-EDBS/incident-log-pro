@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Activity, Loader2 } from "lucide-react";
 import { ComingSoon } from "@/components/ComingSoon";
 import { SeasonPanel } from "@/components/SeasonPanel";
+import { PeoplePanel, RbacTrailPanel, ScreenUsagePanel } from "@/components/AdminPanels";
 import { Button } from "@/components/ui/button";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
@@ -165,15 +166,13 @@ function Administration() {
         title="Administração"
         intro="Ferramentas para cuidar do Painel e melhorar o app (D-88)."
         allowed={viewer.canSeeAdmin}
-        items={[
-          "Painel de cadastrados: pessoas, papéis e quem já entrou",
-          "Trilha de auditoria de papéis e cadastros",
-          "Onde as pessoas param nas telas, de forma anônima (D-90)",
-          "Avisos enviados e backups (depois da M05)",
-        ]}
+        items={["Envio dos avisos por e-mail (depois do chamado do TI)"]}
       />
       <SeasonPanel />
       <SystemHealth />
+      <PeoplePanel />
+      <RbacTrailPanel />
+      <ScreenUsagePanel />
     </div>
   );
 }

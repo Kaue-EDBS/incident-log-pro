@@ -227,6 +227,7 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   await expect(page.getByLabel("Modo Camaleão")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Protocolos dos meus cards" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Todos os protocolos" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Cards e donos" })).toHaveCount(0);
 });
 
 test("requester: cancel needs a reason", async ({ browser }) => {
@@ -272,6 +273,11 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   const page = await openAs(browser, "admin");
 
   // M03: a gestão e os admins veem todos os protocolos, só leitura, com histórico.
+  await page.getByRole("link", { name: "Todos os protocolos" }).first().click();
+  // D-121: Cards e donos.
+  await page.getByRole("link", { name: "Cards e donos" }).first().click();
+  await expect(page.getByRole("table", { name: /Cards, donos/ })).toBeVisible();
+  await expectAccessible(page, "cards e donos");
   await page.getByRole("link", { name: "Todos os protocolos" }).first().click();
   // D-120: faixa com os números do momento (no lugar da Torre de Controle).
   await expect(page.getByRole("heading", { name: "Agora, em todos os cards" })).toBeVisible();
@@ -326,6 +332,10 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await page.getByRole("link", { name: "Administração" }).first().click();
   await expect(page.getByText("Painel de cadastrados", { exact: false })).toBeVisible();
   await expectAccessible(page, "administração");
+  // D-123/D-124: cadastrados, trilha de papéis e uso das telas (anônimo).
+  await expect(page.getByRole("heading", { name: "Painel de cadastrados" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Trilha de papéis" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Uso das telas/ })).toBeVisible();
   // D-59: só o Kaue vê a marcação da Safra (o teste não encerra a Safra).
   await expect(page.getByRole("heading", { name: "Safra", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Encerrar Safra" })).toBeVisible();

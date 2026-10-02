@@ -5,14 +5,16 @@ import {
   Eye,
   Inbox,
   ListChecks,
+  Table2,
   LayoutGrid,
   Settings,
 } from "lucide-react";
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { BrandMark } from "@/components/BrandMark";
 import { useAuth } from "@/integrations/supabase/AuthProvider";
 import { useViewer, type ViewAs } from "@/lib/chameleon";
+import { logScreenView } from "@/lib/ops";
 import { useSafraStartCatalog } from "@/lib/queries";
 
 type NavItem = { to: string; label: string; short: string; icon: typeof LayoutGrid };
@@ -95,6 +97,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { user, signOut } = useAuth();
   const viewer = useViewer();
 
+  // D-124: conta cada tela aberta, sem identificar a pessoa.
+  useEffect(() => {
+    logScreenView(pathname);
+  }, [pathname]);
+
   // Só define o que aparece no menu; a permissão é sempre conferida no banco.
   const nav: NavItem[] = [
     { to: "/", label: "Início", short: "Início", icon: LayoutGrid },
@@ -118,6 +125,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
             icon: ListChecks,
           },
         ]
+      : []),
+    ...(viewer.canSeeAllProtocols
+      ? [{ to: "/cards-e-donos", label: "Cards e donos", short: "Cards", icon: Table2 }]
       : []),
     ...(viewer.canSeeAnalytics
       ? [{ to: "/analytics", label: "Analytics", short: "Analytics", icon: BarChart3 }]

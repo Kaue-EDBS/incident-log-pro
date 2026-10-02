@@ -69,6 +69,45 @@ const GLOSSARY = [
   ["MTTF", "tempo funcionando: do fim de uma falha até o início da próxima no mesmo card."],
 ] as const;
 
+/** Cards que mais falham na Safra (D-122). */
+function Ranking({
+  cards,
+}: {
+  cards: Array<ReliabilityRow & { code: string; name: string; scenario_id: string }>;
+}) {
+  const top = [...cards]
+    .filter((card) => card.failures > 0)
+    .sort((a, b) => b.failures - a.failures || (b.mttr.mean ?? 0) - (a.mttr.mean ?? 0))
+    .slice(0, 5);
+  return (
+    <section
+      aria-labelledby="ranking-title"
+      className="rounded-xl border border-border bg-card p-4"
+    >
+      <h2 id="ranking-title" className="text-sm font-semibold">
+        Cards que mais falham na Safra
+      </h2>
+      {top.length === 0 ? (
+        <p className="mt-2 text-sm text-muted-foreground">Nenhuma falha registrada ainda.</p>
+      ) : (
+        <ol aria-label="Ranking de falhas" className="mt-2 space-y-1 text-sm">
+          {top.map((card, index) => (
+            <li key={card.scenario_id} className="flex justify-between gap-3">
+              <span>
+                {index + 1}. {cardNumber(card.code)} · {cardDisplayName(card.name)}
+              </span>
+              <span className="tabular-nums text-muted-foreground">
+                {card.failures} {card.failures === 1 ? "falha" : "falhas"} · MTTR{" "}
+                {formatDuration(card.mttr.mean)}
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 /** Indicadores da Safra corrente (D-88, D-117). */
 function Analytics() {
   const viewer = useViewer();
@@ -111,6 +150,8 @@ function Analytics() {
         </div>
       ) : (
         <>
+          <Ranking cards={data.cards} />
+
           <div className="overflow-x-auto rounded-xl border border-border bg-card p-4">
             <table className="w-full min-w-[720px] text-sm">
               <caption className="sr-only">Indicadores por card: média e mediana</caption>

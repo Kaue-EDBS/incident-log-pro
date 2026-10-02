@@ -78,6 +78,15 @@ export async function measured<T>(name: string, call: () => PromiseLike<T>): Pro
   }
 }
 
+/** Uso das telas, anônimo (D-124, D-90): conta a abertura; o banco não guarda quem abriu. */
+export function logScreenView(route: string) {
+  if (typeof window === "undefined") return;
+  void supabase.rpc("safra_log_screen_view", { p_route: route.slice(0, 100) }).then(
+    () => undefined,
+    () => undefined,
+  );
+}
+
 let globalHandlersInstalled = false;
 
 /** Erros não tratados da tela (uma vez por página carregada). */
