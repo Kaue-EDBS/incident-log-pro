@@ -1435,3 +1435,12 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 
 - O **Jair** pode **recusar** uma proposta, **com motivo** (10 a 1.000 caracteres), em qualquer etapa antes da publicação. Proposta do próprio Jair: quem recusa é o **Kaue** (mesma regra da aprovação, D-68).
 - A proposta recusada não anda mais; quem propôs (e o dono, se já definido) recebe o aviso com o motivo.
+
+### D-131 — Envio provisório dos avisos pela conexão Outlook do Lovable
+**APPROVED — 02/10/2026** — owner: Kaue (feito no Lovable). Substitui, por enquanto, a ativação da M05 pelo App Registration do TI.
+
+- Os avisos da fila (M05/M10) saem pela **conexão Microsoft Outlook vinculada ao projeto no Lovable** (`src/lib/notifications.functions.ts`), com remetente `painel.safra@editoradobrasil.com.br` e sem cópia em Itens Enviados.
+- O envio acontece **enquanto alguém está com o Painel aberto** (a cada 2 minutos) e logo depois de abrir, concluir, desfazer ou cancelar um protocolo. Com o Painel fechado por todos, os avisos (inclusive lembretes de 24/12/1 h) esperam na fila e expiram em 24 h.
+- Primeiro envio real em 02/10/2026 18:36 (protocolos 01-0001 e 04-0001: 4 avisos SENT).
+- Continua previsto: trocar pelo App Registration do TI (Mail.Send restrito à caixa compartilhada) com envio agendado no banco, sem depender de navegador aberto. A Edge Function `safra-send-notifications` segue pronta para isso; as duas podem conviver, porque a fila trava cada aviso antes de enviar.
+

@@ -89,11 +89,12 @@ A restauração é feita **por nós, no painel do Lovable**, sem chamado. O supo
 
 ### 4.7 Avisos por e-mail não chegam (M05)
 1. **Saúde do sistema** (Administração): "Avisos na fila", "enviados", "com falha" e "expirados" nas últimas 24 h.
-2. **Fila crescendo e nada enviado:** o envio está desligado ou parado. Conferir se os 4 segredos (`MS_TENANT_ID`, `MS_CLIENT_ID`, `MS_CLIENT_SECRET`, `MAIL_SENDER`) estão no projeto do Lovable e se o agendamento do envio existe (`select jobname from cron.job`).
-3. **Muitos "com falha":** abrir o histórico de um protocolo afetado (gestão/admin) e ver o motivo. `TOKEN_HTTP_401`: o **segredo do aplicativo venceu** ou foi trocado; pedir um novo ao TI e atualizar no Lovable. `HTTP 403`: a permissão Mail.Send ou a restrição da caixa mudou; chamado ao TI. `HTTP 429/503`: Microsoft lenta; o Painel tenta de novo sozinho (até 5 vezes).
-4. **Status da Microsoft:** https://status.cloud.microsoft (ou o Centro de administração do Microsoft 365, pelo TI).
-5. **Avisos perdidos não são reenviados** (expiram em 24 h, para ninguém receber aviso velho). Se a falha durou mais que isso, avisar os donos de card para olharem "Protocolos dos meus cards".
-6. Registrar o incidente (seção 7).
+2. **Envio provisório (D-131):** hoje os avisos saem pela conexão Outlook do Lovable, só enquanto alguém está com o Painel aberto. Fila parada à noite é esperado. Se a conexão cair (falhas `HTTP 401`), reconectar o Microsoft Outlook em Connectors no Lovable.
+3. **Fila crescendo e nada enviado (depois da troca pelo App do TI):** o envio está desligado ou parado. Conferir se os 4 segredos (`MS_TENANT_ID`, `MS_CLIENT_ID`, `MS_CLIENT_SECRET`, `MAIL_SENDER`) estão no projeto do Lovable e se o agendamento do envio existe (`select jobname from cron.job`).
+4. **Muitos "com falha":** abrir o histórico de um protocolo afetado (gestão/admin) e ver o motivo. `TOKEN_HTTP_401`: o **segredo do aplicativo venceu** ou foi trocado; pedir um novo ao TI e atualizar no Lovable. `HTTP 403`: a permissão Mail.Send ou a restrição da caixa mudou; chamado ao TI. `HTTP 429/503`: Microsoft lenta; o Painel tenta de novo sozinho (até 5 vezes).
+5. **Status da Microsoft:** https://status.cloud.microsoft (ou o Centro de administração do Microsoft 365, pelo TI).
+6. **Avisos perdidos não são reenviados** (expiram em 24 h, para ninguém receber aviso velho). Se a falha durou mais que isso, avisar os donos de card para olharem "Protocolos dos meus cards".
+7. Registrar o incidente (seção 7).
 
 ---
 
