@@ -64,7 +64,6 @@ declare -a c02_rpcs=(
   "get_my_safra_roles|{}"
   "safra_has_role|{\"requested_role\":\"safra_platform_admin\"}"
   "get_safra_rbac_audit_events|{\"p_limit\":5}"
-  "safra_log_access_denied|{\"p_resource\":\"c02-smoke\",\"p_reason\":\"anonymous-smoke\"}"
 )
 
 for entry in "${c02_rpcs[@]}"; do

@@ -15,6 +15,13 @@ values(
   clock_timestamp()
 );
 
+-- AUD-GERAL A-01: Microsoft identity of the corporate tenant for synthetic azure users.
+insert into auth.identities(provider_id,user_id,identity_data,provider,created_at,updated_at)
+select u.id::text,u.id,jsonb_build_object('sub',u.id::text,'email',u.email,'custom_claims',jsonb_build_object('tid','45ba725f-d260-45c3-ac85-11f433471277')),'azure',clock_timestamp(),clock_timestamp()
+from auth.users u
+where u.raw_app_meta_data->>'provider'='azure'
+  and not exists(select 1 from auth.identities i where i.user_id=u.id and i.provider='azure');
+
 insert into auth.sessions(id,user_id,created_at,updated_at)
 values(
   '08080808-0000-4000-8000-000000000002'::uuid,

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Entrar | Painel Safra" },
       {
         property: "og:description",
-        content: "Acesso ao painel de confiabilidade das aplicações da Editora do Brasil.",
+        content: "Acesso ao Painel Safra da Editora do Brasil.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

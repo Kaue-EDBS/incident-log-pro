@@ -256,3 +256,7 @@ Substitui a tabela da seção 12 como fotografia atual. A seção 12 fica como h
 | RR-C02-13 | 3 migrations no PRIMARY sem arquivo | **CLOSED** — reconstituídas na C05-AUD2 (01/10/2026); PRIMARY e repositório com 36 versões | — | não |
 | RR-C02-14 | Safra encerrada por engano | contrato decidido (D-70) | F04/M05 | não |
 | RR-C02-15 | separação de funções no 12º card | contrato decidido (D-68) | M10 | não |
+| RR-AUD-01 | conta de outra empresa com e-mail `@editoradobrasil` herdando papel | **CONTROLLED** — tenant Microsoft da Editora exigido no acesso e no vínculo (01/10/2026) | — | não |
+| RR-AUD-02 | contas Microsoft de fora acumulando em `auth.users` (sign-up aberto para novos funcionários) | ACCEPTED — barradas pelo predicado; revisão periódica pelo owner | — | não |
+| RR-AUD-03 | START publicado antes de END/CANCEL e aviso ao dono | ACCEPTED_WITH_CONDITION (D-79) — ninguém tem acesso; liberar só depois de F01/F02/M05 | F01/F02/M05 | sim, para liberar acesso |
+| RR-AUD-04 | repositório público | ACCEPTED_BY_OWNER (D-80) | — | não |

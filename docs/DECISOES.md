@@ -21,9 +21,9 @@
 | D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — **START ajustado pela D-65; END e CANCEL substituídos pelas D-64/D-66** (01/10/2026) |
 | D-07 | Tratativa errada é CANCELLED; não apagar | APPROVED |
 | D-08 | Novo cenário exige governança | APPROVED |
-| D-09 | Criticidade usa CRITICAL/HIGH/MODERATE | APPROVED; lista crítica pendente |
+| D-09 | Criticidade usa CRITICAL/HIGH/MODERATE | APPROVED; lista crítica resolvida pela D-55 (os 11 são CRITICAL) |
 | D-10 | Recorrência não define crise sozinha | APPROVED |
-| D-11 | Comitê é escalonamento, não status | APPROVED |
+| D-11 | Comitê é escalonamento, não status | SUPERSEDED by D-73 (escalonamento fora do Painel) |
 | D-12 | Lovable Cloud é backend provider e banco é PRIMARY | APPROVED |
 | D-13 | Stack do PRIMARY é PostgreSQL/Supabase | APPROVED |
 | D-14 | Histórico Git publicado não deve ser reescrito | APPROVED |
@@ -34,7 +34,7 @@
 | D-19 | safra_admin dividido em plataforma, governança e executivo | APPROVED |
 | D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico | APPROVED |
 | D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards | APPROVED |
-| D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | APPROVED |
+| D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | SUPERSEDED by D-60/D-68 (fluxo de publicação) e D-73 (sem escalonamento) |
 | D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED |
 | D-24 | Application criticality = MEDIUM | APPROVED |
 | D-25 | replica_enabled = false; backup/restore continua obrigatório | APPROVED |
@@ -43,7 +43,7 @@
 | D-28 | SAFRA-C02 concluído; G3.5, THREAT-001 e AUTHZ-001 = PASS | APPROVED |
 | D-29 | Vocabulário canônico do domínio congelado em docs/GLOSSARIO_DOMINIO.md | APPROVED |
 | D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático | APPROVED |
-| D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | APPROVED |
+| D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | SUPERSEDED by D-55 (decisão do owner: os 11 são CRITICAL) |
 | D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default | APPROVED |
 | D-33 | Login funcional exclusivamente via Microsoft Entra ID; Lovable Cloud Auth cria sessão Supabase; login local por senha proibido | APPROVED / HOMOLOGATED |
 | D-34 | Role mapping governado no banco e ownership específico separado de papéis administrativos | APPROVED / IMPLEMENTED |
@@ -56,14 +56,14 @@
 | D-41 | Schema v2 canônico materializado no PRIMARY e versionado em supabase/migrations | APPROVED / IMPLEMENTED |
 | D-42 | supabase/migrations é a única autoridade de migrations; Drizzle fica sem autoridade de deploy; drift C00/C04/C05 reconciliado | APPROVED / IMPLEMENTED |
 | D-43 | Banco descartável padrão = Supabase local via CLI/Docker; rollback pós-C06 = forward fix por padrão | APPROVED / IMPLEMENTED |
-| D-44 | Criticidade ausente nos cenários v1 é estado explícito e não bloqueia START; nenhuma classificação será inferida | APPROVED |
+| D-44 | Criticidade ausente nos cenários v1 é estado explícito e não bloqueia START; nenhuma classificação será inferida | SUPERSEDED by D-55 (versão 2 CRITICAL); vale só como histórico da v1 |
 | D-45 | Cenários com threshold/fonte de gatilho ausente operam em START manual no MVP; automação permanece desabilitada | APPROVED |
 | D-46 | Cenário 9 permanece START manual enquanto não existir fonte oficial do mínimo curva A; ruptura automática fica desabilitada | APPROVED |
 | D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | SUPERSEDED — sem SLA (D-62); engine aposentada (D-75) |
-| D-48 | Painel Safra é de audiência interna e aceita identidade Microsoft corporativa apenas dos domínios editoradobrasil.com.br e editoradobrasil1.onmicrosoft.com | APPROVED |
+| D-48 | Painel Safra é de audiência interna e aceita identidade Microsoft corporativa apenas dos domínios editoradobrasil.com.br e editoradobrasil1.onmicrosoft.com | APPROVED — reforçada em 01/10/2026: exige também o tenant Microsoft da Editora (AUD-GERAL A-01) |
 | D-49 | Gate de privacidade/base legal exigido antes de usuários reais foi validado e está atendido | APPROVED / SATISFIED |
 | D-50 | Reliability Monitor/MTTR descontinuado; Painel Safra é o único produto do `incident-log-pro` | APPROVED |
-| D-51 | Os 11 cenários publicados permanecem liberados para START; governança de liberação por card fica para fase futura | APPROVED |
+| D-51 | Os 11 cenários publicados permanecem liberados para START; governança de liberação por card fica para fase futura | SUPERSEDED by D-63 |
 | D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
 | D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
 | D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
@@ -90,6 +90,9 @@
 | D-75 | Engine de SLA aposentada: funções, `scenario_slas` e `SLA_BREACHED` removidos | APPROVED — aplicada em 01/10/2026 |
 | D-76 | Escada de avisos: 2h, 4h e depois de hora em hora até o solicitante fechar a parte dele; o dono deixa de receber quando fecha a parte dele | APPROVED — regra de tempo pronta; envio na M05/F01 |
 | D-77 | Tempos do analytics: solicitante, dono e consolidado (até a última parte); cancelado não conta; parte aberta fica em aberto | APPROVED — regra de tempo pronta; uso na F01/F04 |
+| D-78 | Dono desativado ou sem papel bloqueia o card temporariamente até nova definição; nesta Safra não haverá troca de dono | APPROVED — aplicada em 01/10/2026 |
+| D-79 | START segue publicado enquanto ninguém tem acesso; END/CANCEL e aviso ao dono precisam existir antes de liberar o acesso | APPROVED — risco aceito com condição |
+| D-80 | Repositório segue público | APPROVED — risco aceito pelo owner |
 
 ## 3. ADRs
 
@@ -583,6 +586,8 @@ Decisão: toda concessão, troca, revogação e remoção de grant governado ger
 horário do servidor, resultado e `correlation_id`. O histórico é append-only por trigger
 (UPDATE/DELETE bloqueados inclusive para sessões privilegiadas). Tentativas negadas são
 registradas por `public.safra_log_access_denied`, com autoria e horário resolvidos no servidor.
+
+> **Correção 01/10/2026 (AUD-GERAL A-11):** a função nunca foi chamada e não conseguiria registrar, porque a recusa desfaz a transação inteira, inclusive o registro. Foi removida. Tentativas negadas não são gravadas no banco; ficam nos logs da plataforma (API/PostgreSQL). Concessões, revogações e mudanças de cadastro continuam auditadas.
 Secrets e tokens nunca são registrados.
 
 ### ADR-031 — Contas de serviço fora de escopo no MVP
@@ -1252,3 +1257,32 @@ Migration `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql` (CI ver
 ### Aplicação do pacote C07-AUD2b — 01/10/2026
 
 Auditoria detalhada do SLA: migration `20261001233000_c07_aud2b_close_times_seconds.sql` (CI verde #247/#285; aplicada no PRIMARY, 39 = 39) (tempos também em segundos; comentário sem SLA); D-47 e ADR-038 marcados SUPERSEDED; documentos vigentes sem SLA; Knowledge do Lovable atualizado com autorização do owner.
+
+### D-78 — Dono indisponível bloqueia o card
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da auditoria geral C00–C07 (A-04).
+
+- Se o dono vigente de um card for **desativado** ou perder o papel `scenario_owner`, o card fica **bloqueado temporariamente**: sai do catálogo e o START é recusado com `SAFRA_SCENARIO_OWNER_UNAVAILABLE`, até a definição de um novo dono.
+- O histórico de dono não muda sozinho; a troca de dono continua sendo um ato de governança.
+- **Nesta Safra não haverá troca de dono.**
+
+### D-79 — START publicado antes do acesso das pessoas
+**APPROVED — 01/10/2026** — owner: Kaue (A-02).
+
+- O app segue publicado com o START ligado porque **ninguém tem acesso ainda**.
+- **Condição:** antes de liberar o acesso às pessoas, precisam existir o encerramento e o cancelamento (F01/F02) e o aviso ao dono (M05). Sem isso, quem abrir um protocolo fica travado no card (D-57) e o dono não é avisado.
+
+### D-80 — Repositório público
+**APPROVED — 01/10/2026** — owner: Kaue (A-03). Risco aceito: e-mails corporativos, papéis e o threat model ficam visíveis. Nenhuma chave secreta está no repositório.
+
+### Aplicação do pacote da auditoria geral — 01/10/2026
+
+Migration `20261001234000_aud_geral_tenant_owner_audit.sql`:
+- A-01: o predicado corporativo e o vínculo login ↔ cadastro exigem o tenant Microsoft da Editora, lido de `auth.identities`; o vínculo também acontece quando a identidade chega;
+- A-04/D-78: dono indisponível bloqueia o card;
+- A-05: mudanças de cadastro auditadas;
+- A-08: o catálogo indica o card do próprio dono;
+- A-11: `safra_log_access_denied` removida;
+- A-12: índice redundante removido;
+- A-16: resumo do START com horário do servidor.
+
+Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram a criar a identidade Microsoft dos usuários sintéticos.

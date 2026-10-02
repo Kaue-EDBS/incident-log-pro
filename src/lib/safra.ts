@@ -30,6 +30,7 @@ export const SafraStartCatalogItemSchema = z.object({
   expected_impact_summary: z.string().nullable(),
   responsible_area: SafraAreaSchema,
   owner: SafraOwnerSchema,
+  is_my_card: z.boolean(),
   potential_impacted_areas: z.array(SafraAreaSchema),
   active_treatment_count: z.number().int().nonnegative(),
 });
@@ -42,6 +43,7 @@ export const SafraStartResultSchema = z.object({
   treatment_id: z.string().uuid(),
   status: z.enum(["ACTIVE", "RESOLVED", "CANCELLED"]),
   opened_at: z.string(),
+  server_time: z.string(),
   opened_by_user_id: z.string().uuid(),
   start_correlation_id: z.string().uuid(),
   start_idempotency_key: z.string().uuid(),

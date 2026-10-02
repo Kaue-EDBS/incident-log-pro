@@ -379,6 +379,20 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+aud_geral_c00_c07:
+  status: "APPROVED"
+  date: "2026-10-01"
+  migration: "20261001234000_aud_geral_tenant_owner_audit.sql"
+  findings: 19
+  corporate_tenant_id: "45ba725f-d260-45c3-ac85-11f433471277"
+  tenant_source: "auth.identities.identity_data.custom_claims.tid"
+  owner_unavailable_rule: "D-78"
+  accepted_risks: ["D-79 START published before access", "D-80 public repository"]
+  platform_exceptions:
+    - "schema drizzle (__drizzle_migrations, 4 rows): Lovable tooling, outside supabase/migrations, no grants (A-10)"
+  ci_note: "disposable DB has no owner login, so GI-001/004/008/009/010 stay OPEN there; tests accept both states (A-19)"
+  audit_document: "docs/AUDITORIA_GERAL_C00_C07_2026-10-01.md"
+
 c07_reaudit_2:
   status: "APPROVED"
   date: "2026-10-01"

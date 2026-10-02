@@ -1,7 +1,7 @@
 # AUDITORIA GERAL C00–C07 — 01/10/2026
 
 **Pedido do owner:** auditoria robusta, detalhista e exigente de tudo o que foi feito até o C07: funções, edge functions, hooks, infraestrutura, lógica de programação e regras de negócio.  
-**Estado:** ACHADOS REGISTRADOS — aguardando decisões do owner (nenhuma correção aplicada nesta etapa)  
+**Estado:** TRATADA — decisões do owner D-78, D-79 e D-80; pacote `20261001234000_aud_geral_tenant_owner_audit.sql`  
 **D-52:** PRIMARY 39 = repositório 39
 
 ## 1. Escopo verificado
@@ -49,3 +49,27 @@
 | A-19 | BAIXA | CI | O banco do CI não tem o login do Kaue, então as 5 GIs resolvidas ficam OPEN nele; os testes aceitam os dois estados | O estado real do PRIMARY só é testado por usuário sintético | Aceitar (documentado) | Não |
 
 **Totais:** 0 crítica, 3 altas, 5 médias, 11 baixas.
+
+## 4. Tratamento (pacote aprovado pelo owner: A-01 a A-19)
+
+| ID | Resultado |
+|---|---|
+| A-01 | **CORRIGIDO** — acesso e vínculo exigem o tenant `45ba725f…`, lido de `auth.identities`; vínculo também quando a identidade chega. Não depende do TI |
+| A-02 | **RISCO ACEITO (D-79)** — ninguém tem acesso; F01/F02 e M05 antes de liberar |
+| A-03 | **RISCO ACEITO (D-80)** |
+| A-04 | **CORRIGIDO (D-78)** — dono indisponível tira o card do catálogo e bloqueia o START (`SAFRA_SCENARIO_OWNER_UNAVAILABLE`) |
+| A-05 | **CORRIGIDO** — vínculo, desativação e mudanças de cadastro auditados |
+| A-06 | **CORRIGIDO** — D-09, D-11, D-22, D-31, D-44 e D-51 atualizadas no índice; D-48 anotada com o tenant |
+| A-07 | **REGISTRADO** — tela "meus protocolos" em F01/M02 (STATUS) |
+| A-08 | **CORRIGIDO** — catálogo traz `is_my_card`; a tela desabilita o card do próprio dono |
+| A-09 | **RISCO ACEITO** (RR-AUD-02) |
+| A-10 | **EXCEÇÃO REGISTRADA** — schema `drizzle` (4 linhas, ferramenta do Lovable, sem grants) no PROJECT_PROFILE |
+| A-11 | **CORRIGIDO** — função removida; ADR-030 corrigida (recusas ficam nos logs da plataforma) |
+| A-12 | **CORRIGIDO** — índice removido |
+| A-13 | **CORRIGIDO** — textos do MTTR removidos |
+| A-14 | **CORRIGIDO** — erro técnico tem mensagem própria |
+| A-15 | **CORRIGIDO** — 404 e erro em português, `lang="pt-BR"`, sem jargão na tela de abertura |
+| A-16 | **CORRIGIDO** — contador parte do horário do servidor |
+| A-17 | **CORRIGIDO** — 41 componentes e 32 bibliotecas sem uso removidos (Drizzle mantido: ferramenta do Lovable) |
+| A-18 | **CORRIGIDO** — `permissions: contents: read` e ações fixadas por hash |
+| A-19 | **REGISTRADO** no PROJECT_PROFILE |

@@ -20,6 +20,7 @@
 | C05-AUD2 — schema, migrations e invariantes | CONCLUÍDA em 01/10 (drift zerado) | `AUDITORIA_C05_REABERTURA_2026-10-01.md` |
 | C06-AUD2 — seed canônico da Matriz v3 | CONCLUÍDA em 01/10 (planilha = banco, 100% dos campos) | `AUDITORIA_C06_REABERTURA_2026-10-01.md` |
 | C07-AUD2 — engine de SLA → regras de tempo | CONCLUÍDA em 01/10 (SLA aposentado; escada e tempos do analytics) | `AUDITORIA_C07_REABERTURA_2026-10-01.md` |
+| Auditoria geral C00–C07 | CONCLUÍDA em 01/10 (19 achados tratados) | `AUDITORIA_GERAL_C00_C07_2026-10-01.md` |
 | C02-AUD e C02-AUD2 — threat model | CONCLUÍDAS em 01/10; G3.5, THREAT-001 e AUTHZ-001 recertificados | `AUDITORIA_C02_REABERTURA_2026-10-01.md` |
 
 ---
@@ -41,7 +42,7 @@
 - Tabelas em `public`: 15, todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido pela D-73; SLA pela D-75).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Tratativas registradas: 0.
-- Migrations: **39 no PRIMARY e 39 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Migrations: **40 no PRIMARY e 40 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---
@@ -56,7 +57,8 @@
 ## 5. Pendências abertas
 
 - Pendências de governança: ver `docs/GOVERNANCE_ISSUES.md`. Resolvidas: 001, 004, 008, 009, 010. Decididas, aguardando construção: 005 (avisos, M05), 006 (marcar a Safra, F04/M05), 007 (12º card, M10). Adiadas para a V2 do produto: 002, 003.
-- END/CANCEL (F01/F02) ainda não existem: com a trava D-57, quem abrir um protocolo não consegue abrir outro do mesmo card até o encerramento existir.
+- END/CANCEL (F01/F02) ainda não existem: com a trava D-57, quem abrir um protocolo não consegue abrir outro do mesmo card até o encerramento existir. **Antes de liberar o acesso às pessoas, F01/F02 e o aviso ao dono (M05) precisam existir (D-79).**
+- Tela "meus protocolos" para o solicitante ver o que abriu (AUD-GERAL A-07): F01/M02.
 - Homologação do START com sessão real (checklist em `docs/HANDOFF_C08_START_2026-09-27.md`).
 - Backup/restore com RTO 30 min e RPO 5 min: SAFRA-C09.
 

@@ -418,3 +418,10 @@ Mudança material de domínio/arquitetura deve:
 4. atualizar testes derivados;
 5. validar em banco descartável;
 6. preservar histórico já publicado.
+
+## Atualização 01/10/2026 — auditoria geral
+
+- **Identidade:** além do domínio do e-mail, o acesso exige o tenant Microsoft da Editora, lido de `auth.identities` (`private.safra_session_in_corporate_tenant`). O vínculo login ↔ cadastro acontece quando a identidade Microsoft chega (`trg_bind_safra_principal_from_identity`).
+- **Dono indisponível (D-78):** `private.safra_owner_is_available` decide se o card aparece no catálogo e se aceita START.
+- **Auditoria:** `trg_safra_audit_principal_change` grava vínculo, desativação e mudanças de cadastro em `private.safra_rbac_audit_events`.
+- **Front:** o catálogo traz `is_my_card`; o resumo do START traz `server_time`. Só 5 componentes de UI permanecem (alert-dialog, button, sonner, textarea, tooltip).

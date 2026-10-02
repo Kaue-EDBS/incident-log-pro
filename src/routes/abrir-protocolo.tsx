@@ -62,7 +62,10 @@ function errorMessage(error: unknown) {
       return "Sua sessão não está autorizada para iniciar protocolos da Safra.";
     }
     if (message.includes("SAFRA_SCENARIO_NOT_STARTABLE")) {
-      return "Este cenário não está ativo com uma versão publicada.";
+      return "Este cenário não está disponível para abertura.";
+    }
+    if (message.includes("SAFRA_SCENARIO_OWNER_UNAVAILABLE")) {
+      return "Este card está bloqueado temporariamente até a definição de um novo dono.";
     }
     if (message.includes("SAFRA_INVALID_IMPACTED_AREA")) {
       return "Uma das áreas selecionadas não pertence à versão publicada deste cenário.";
@@ -102,7 +105,8 @@ function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: ()
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             <span>
-              <strong>Owner:</strong> {result.owner.display_name ?? result.owner.corporate_email}
+              <strong>Dono do card:</strong>{" "}
+              {result.owner.display_name ?? result.owner.corporate_email}
             </span>
             <span>
               <strong>Área:</strong> {result.responsible_area.name}
@@ -112,7 +116,7 @@ function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: ()
             </span>
           </div>
           <p className="break-all text-xs text-muted-foreground">
-            Treatment ID: {result.treatment_id}
+            Número do protocolo: {result.treatment_id}
           </p>
           {result.idempotent_replay ? (
             <p className="text-xs text-muted-foreground">
@@ -123,9 +127,13 @@ function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: ()
 
         <div className="min-w-44 rounded-xl border border-border bg-card p-4 text-center">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Tempo em andamento
+            Tempo desde a abertura
           </p>
-          <LiveTimer since={result.opened_at} className="mt-2 text-2xl font-semibold" />
+          <LiveTimer
+            since={result.opened_at}
+            serverNow={result.server_time}
+            className="mt-2 text-2xl font-semibold"
+          />
         </div>
       </div>
 
@@ -260,7 +268,7 @@ function StartSafraTreatment() {
               1. Cenário
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Apenas cenários ACTIVE com versão PUBLISHED aparecem aqui.
+              Aparecem aqui os cards publicados e disponíveis para abertura.
             </p>
           </div>
 
@@ -269,10 +277,12 @@ function StartSafraTreatment() {
               <button
                 key={scenario.scenario_id}
                 type="button"
+                disabled={scenario.is_my_card}
                 onClick={() => selectScenario(scenario.scenario_id)}
                 className={cn(
                   "rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-primary/60",
                   scenarioId === scenario.scenario_id && "border-primary ring-1 ring-primary",
+                  scenario.is_my_card && "cursor-not-allowed opacity-60 hover:border-border",
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -285,7 +295,14 @@ function StartSafraTreatment() {
                   </span>
                 </div>
                 <div className="mt-4 space-y-1 text-xs text-muted-foreground">
-                  <p>Owner: {scenario.owner.display_name ?? scenario.owner.corporate_email}</p>
+                  <p>
+                    Dono do card: {scenario.owner.display_name ?? scenario.owner.corporate_email}
+                  </p>
+                  {scenario.is_my_card ? (
+                    <p className="font-medium text-foreground">
+                      Você é o dono deste card. Donos não abrem protocolo do próprio card.
+                    </p>
+                  ) : null}
                   <p>Área: {scenario.responsible_area.name}</p>
                   <p>
                     Criticidade:{" "}
@@ -332,7 +349,7 @@ function StartSafraTreatment() {
                   <div className="flex gap-3">
                     <UserRound className="mt-0.5 size-4 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Owner</p>
+                      <p className="text-xs text-muted-foreground">Dono do card</p>
                       <p className="font-medium">
                         {selected.owner.display_name ?? selected.owner.corporate_email}
                       </p>
@@ -431,9 +448,9 @@ function StartSafraTreatment() {
               <div>
                 <h2 className="font-semibold">4. Confirmar abertura</h2>
                 <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
-                  O backend vai congelar a versão PUBLISHED, o owner e a área responsável atuais.
-                  Ator, timestamp e correlation ID serão gerados no servidor. A tela não envia
-                  criticidade, owner, versão ou horário.
+                  O sistema registra a versão publicada do card, o dono e a área responsável atuais.
+                  Quem abriu e o horário são definidos pelo servidor; a tela não envia criticidade,
+                  dono, versão nem horário.
                 </p>
               </div>
 

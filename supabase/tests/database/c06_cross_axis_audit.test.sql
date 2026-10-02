@@ -91,12 +91,8 @@ select is(
 
 
 select ok(
-  not has_function_privilege(
-    'authenticated',
-    'public.safra_log_access_denied(text,text)',
-    'EXECUTE'
-  ),
-  'access-denied audit writer is backend-only'
+  to_regprocedure('public.safra_log_access_denied(text,text)') is null,
+  'unreachable access-denied writer was removed (AUD-GERAL A-11)'
 );
 
 select * from finish();

@@ -2,8 +2,24 @@ import { useEffect, useState } from "react";
 import { formatDuration } from "@/lib/metrics";
 import { cn } from "@/lib/utils";
 
-/** Cronômetro reconstruído sempre como agora - detected_at (o banco é a fonte da verdade). */
-export function LiveTimer({ since, className }: { since: string; className?: string }) {
+/**
+ * Contador desde a abertura. O ponto de partida vem do servidor (abertura e horário do
+ * servidor na resposta); o relógio do computador só mede o tempo passado desde então,
+ * para que um relógio local errado não distorça o valor. Só exibição: não é prazo.
+ */
+export function LiveTimer({
+  since,
+  serverNow,
+  className,
+}: {
+  since: string;
+  serverNow: string;
+  className?: string;
+}) {
+  const [base] = useState(() => ({
+    elapsedAtReceipt: new Date(serverNow).getTime() - new Date(since).getTime(),
+    receivedAt: Date.now(),
+  }));
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -13,7 +29,7 @@ export function LiveTimer({ since, className }: { since: string; className?: str
 
   return (
     <span className={cn("tabular-nums", className)}>
-      {formatDuration(now - new Date(since).getTime())}
+      {formatDuration(base.elapsedAtReceipt + (now - base.receivedAt))}
     </span>
   );
 }
