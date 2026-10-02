@@ -394,6 +394,7 @@ const ProposalSchema = z.object({
     "CONTENT_SUBMITTED",
     "APPROVED",
     "PUBLISHED",
+    "REJECTED",
   ]),
   title: z.string(),
   problem_description: z.string(),
@@ -412,6 +413,7 @@ const ProposalSchema = z.object({
   impacted_area_ids: z.array(z.string()),
   responsible_area: z.string().nullable(),
   published_code: z.string().nullable(),
+  rejection_reason: z.string().nullable().default(null),
   responses: z.array(
     z.object({
       name: z.string(),
@@ -435,6 +437,7 @@ const ProposalSchema = z.object({
   can_submit_content: z.boolean(),
   can_approve: z.boolean(),
   can_publish: z.boolean(),
+  can_reject: z.boolean().default(false),
 });
 
 const ProposalsSchema = z.object({
@@ -492,7 +495,8 @@ type ProposalCommand =
   | "safra_define_proposal_owner"
   | "safra_submit_proposal_content"
   | "safra_approve_proposal"
-  | "safra_publish_proposal";
+  | "safra_publish_proposal"
+  | "safra_reject_proposal";
 
 /** Comandos da M10; cada um é conferido de novo no banco (D-68). */
 export function useProposalAction() {

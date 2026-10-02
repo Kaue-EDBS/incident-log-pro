@@ -32,6 +32,7 @@ const STATUS_LABEL: Record<Proposal["status"], string> = {
   CONTENT_SUBMITTED: "Aguardando aprovação",
   APPROVED: "Aprovada: aguardando a publicação por um administrador",
   PUBLISHED: "Publicada",
+  REJECTED: "Recusada",
 };
 
 const EVENT_LABEL: Record<string, string> = {
@@ -43,6 +44,7 @@ const EVENT_LABEL: Record<string, string> = {
   CONTENT_SUBMITTED: "Conteúdo enviado",
   APPROVED: "Aprovada",
   PUBLISHED: "Publicada",
+  REJECTED: "Recusada",
 };
 
 const fieldClass = "min-h-10 w-full rounded-md border border-input bg-background px-3 text-sm";
@@ -223,6 +225,38 @@ function ContentForm({ item }: { item: Proposal }) {
   );
 }
 
+function RejectBox({ proposalId }: { proposalId: string }) {
+  const { run, busy } = useRun();
+  const [reason, setReason] = useState("");
+  return (
+    <div className="flex w-full flex-wrap items-end gap-3 border-t border-border pt-3">
+      <label className="block min-w-60 flex-1 space-y-1 text-sm">
+        <span className="font-medium">Motivo para recusar (obrigatório)</span>
+        <input
+          className={fieldClass}
+          value={reason}
+          maxLength={1000}
+          onChange={(e) => setReason(e.target.value)}
+        />
+      </label>
+      <Button
+        variant="outline"
+        className="min-h-11"
+        disabled={busy || reason.trim().length < 10}
+        onClick={() =>
+          void run(
+            "safra_reject_proposal",
+            { p_proposal_id: proposalId, p_reason: reason.trim() },
+            "Proposta recusada.",
+          )
+        }
+      >
+        Recusar proposta
+      </Button>
+    </div>
+  );
+}
+
 function GovernanceActions({
   item,
   candidates,
@@ -376,6 +410,8 @@ function GovernanceActions({
         </>
       ) : null}
 
+      {item.can_reject ? <RejectBox proposalId={item.proposal_id} /> : null}
+
       {item.can_publish ? (
         <Button
           className="min-h-11"
@@ -423,6 +459,9 @@ function ProposalItem({
         </div>
         <p className="text-sm">{item.problem_description}</p>
         <p className="text-sm text-muted-foreground">Na Safra: {item.safra_impact_description}</p>
+        {item.rejection_reason ? (
+          <p className="text-sm text-destructive">Recusada: {item.rejection_reason}</p>
+        ) : null}
         {item.owner_name ? <p className="text-sm">Dono: {item.owner_name}</p> : null}
         {item.responses.length ? (
           <ul aria-label="Respostas dos donos de card" className="text-sm text-muted-foreground">

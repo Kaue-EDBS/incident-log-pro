@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(32);
+select plan(36);
 
 -- P = proposer (regular), X = another regular person, J = Jair, K = Kaue, M = Amanda (admin),
 -- D/R/I = Daniel, Renato, Jiane (card owners consulted).
@@ -169,6 +169,21 @@ select pg_temp.act_as('0d');
 select lives_ok($$ select public.safra_approve_proposal(pg_temp.t('p3'), pg_temp.area(0)) $$, 'D-68: Kaue approves Jair''s proposal');
 select throws_ok($$ select public.safra_publish_proposal(pg_temp.t('p3')) $$,
   '42501', 'SAFRA_PROPOSAL_SEPARATION_OF_DUTIES', 'D-68: who approved does not publish');
+
+-- 8. Rejection with reason (D-130) ----------------------------------------------------------
+select pg_temp.act_as('0a');
+insert into ctx values ('p4', public.safra_submit_proposal('Proposta para recusar', 'Problema que não é da Safra, para teste.', 'Não afeta a Safra de verdade, só teste.')::text);
+select throws_ok($$ select public.safra_reject_proposal(pg_temp.t('p4'), 'Não é um problema da Safra.') $$,
+  '42501', 'SAFRA_PROPOSAL_FORBIDDEN', 'D-130: the proposer cannot reject');
+select pg_temp.act_as('0c');
+select throws_ok($$ select public.safra_reject_proposal(pg_temp.t('p4'), 'curto') $$,
+  '22023', 'SAFRA_PROPOSAL_NOTE_REQUIRED', 'D-130: the rejection needs a reason');
+select public.safra_reject_proposal(pg_temp.t('p4'), 'Não é um problema da Safra; tratar com o TI.');
+select ok((select status = 'REJECTED' and rejection_reason like 'Não é um problema%' from public.scenario_proposals where id = pg_temp.t('p4'))
+          and pg_temp.notices('p4', 'PROPOSAL_REJECTED') = 1,
+  'D-130: Jair rejects with a reason and the proposer is told');
+select throws_ok($$ select public.safra_forward_proposal(pg_temp.t('p4')) $$,
+  'P0001', 'SAFRA_PROPOSAL_WRONG_STEP', 'D-130: a rejected proposal does not move on');
 
 select * from finish();
 rollback;

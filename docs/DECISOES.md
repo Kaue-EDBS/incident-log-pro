@@ -1430,4 +1430,8 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-127:** antes de aprovar, quem propôs escreve **nome do card, gatilho, como se detecta, protocolo, impacto esperado e áreas que podem ser impactadas**; o **Jair** define a **área responsável** (na aprovação) e o dono vem da D-126. Nada é completado por inferência.
 - **D-128:** fluxo: proposta → consulta aos donos → dono definido → conteúdo → aprovação (Jair; proposta do Jair: Kaue) → publicação por um admin que não propôs nem aprovou, como **SAFRA-NN, CRITICAL, versão 1** (sem SLA). Publicar nunca reescreve versão publicada; **mudar card já publicado fica para depois**.
 - **D-129:** cada etapa gera **aviso por e-mail** pela fila da M05 (saem quando o TI liberar): Jair (proposta nova), donos consultados (pedido de aceite), quem propôs e o dono (dono definido), quem aprova (conteúdo pronto), quem propôs e os admins que podem publicar (aprovada), quem propôs, o dono e o Jair (publicada).
+### D-130 — Recusar proposta de card novo
+**APPROVED — 02/10/2026** — owner: Kaue.
 
+- O **Jair** pode **recusar** uma proposta, **com motivo** (10 a 1.000 caracteres), em qualquer etapa antes da publicação. Proposta do próprio Jair: quem recusa é o **Kaue** (mesma regra da aprovação, D-68).
+- A proposta recusada não anda mais; quem propôs (e o dono, se já definido) recebe o aviso com o motivo.

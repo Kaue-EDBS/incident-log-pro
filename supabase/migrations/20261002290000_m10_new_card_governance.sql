@@ -16,6 +16,8 @@
 --       Publicar nunca reescreve versão publicada (gatilhos do C05); mudar card publicado fica
 --       para depois.
 -- D-129 avisos por e-mail da M10 pela fila da M05 (saem quando o TI liberar o envio).
+-- D-130 o Jair pode recusar a proposta, com motivo, em qualquer etapa antes da publicação
+--       (proposta do Jair: o Kaue recusa, como na aprovação da D-68); quem propôs é avisado.
 begin;
 
 -- 1. Proposta com estado e conteúdo -------------------------------------------------------
@@ -41,8 +43,13 @@ alter table public.scenario_proposals
   add column published_at timestamptz,
   add column published_by uuid references auth.users(id) on delete restrict,
   add column scenario_id uuid references public.scenarios(id) on delete restrict,
+  add column rejected_at timestamptz,
+  add column rejected_by uuid references auth.users(id) on delete restrict,
+  add column rejection_reason text,
   add constraint scenario_proposals_status_check check (status in (
-    'SUBMITTED', 'OWNER_CONSULTATION', 'OWNER_DEFINED', 'CONTENT_SUBMITTED', 'APPROVED', 'PUBLISHED')),
+    'SUBMITTED', 'OWNER_CONSULTATION', 'OWNER_DEFINED', 'CONTENT_SUBMITTED', 'APPROVED', 'PUBLISHED', 'REJECTED')),
+  add constraint scenario_proposals_rejection_check check (
+    (status = 'REJECTED') = (rejected_at is not null and rejected_by is not null and length(btrim(coalesce(rejection_reason, ''))) between 10 and 1000)),
   add constraint scenario_proposals_owner_decision_check check (
     owner_decision is null or owner_decision in ('SINGLE_ACCEPT', 'GOVERNANCE_DECISION')),
   add constraint scenario_proposals_title_len check (length(title) <= 150),
@@ -50,14 +57,15 @@ alter table public.scenario_proposals
   add constraint scenario_proposals_impact_len check (length(safra_impact_description) <= 3000),
   add constraint scenario_proposals_published_has_scenario check ((status = 'PUBLISHED') = (scenario_id is not null));
 
-create index idx_scenario_proposals_proposed_by on public.scenario_proposals(proposed_by);
-create index idx_scenario_proposals_owner on public.scenario_proposals(owner_principal_id);
-create index idx_scenario_proposals_scenario on public.scenario_proposals(scenario_id);
-create index idx_scenario_proposals_area on public.scenario_proposals(responsible_area_id);
-create index idx_scenario_proposals_forwarded_by on public.scenario_proposals(forwarded_by);
-create index idx_scenario_proposals_owner_defined_by on public.scenario_proposals(owner_defined_by);
-create index idx_scenario_proposals_approved_by on public.scenario_proposals(approved_by);
-create index idx_scenario_proposals_published_by on public.scenario_proposals(published_by);
+create index if not exists idx_scenario_proposals_proposed_by on public.scenario_proposals(proposed_by);
+create index if not exists idx_scenario_proposals_owner on public.scenario_proposals(owner_principal_id);
+create index if not exists idx_scenario_proposals_scenario on public.scenario_proposals(scenario_id);
+create index if not exists idx_scenario_proposals_area on public.scenario_proposals(responsible_area_id);
+create index if not exists idx_scenario_proposals_forwarded_by on public.scenario_proposals(forwarded_by);
+create index if not exists idx_scenario_proposals_owner_defined_by on public.scenario_proposals(owner_defined_by);
+create index if not exists idx_scenario_proposals_approved_by on public.scenario_proposals(approved_by);
+create index if not exists idx_scenario_proposals_published_by on public.scenario_proposals(published_by);
+create index if not exists idx_scenario_proposals_rejected_by on public.scenario_proposals(rejected_by);
 
 create table public.scenario_proposal_events (
   id uuid primary key default gen_random_uuid(),
@@ -68,12 +76,12 @@ create table public.scenario_proposal_events (
   note text,
   constraint scenario_proposal_events_type_check check (event_type in (
     'SUBMITTED', 'FORWARDED', 'OWNER_ACCEPTED', 'OWNER_DECLINED', 'OWNER_DEFINED',
-    'CONTENT_SUBMITTED', 'APPROVED', 'PUBLISHED')),
+    'CONTENT_SUBMITTED', 'APPROVED', 'PUBLISHED', 'REJECTED')),
   constraint scenario_proposal_events_note_len check (note is null or length(note) <= 1000)
 );
 
-create index idx_scenario_proposal_events_proposal on public.scenario_proposal_events(proposal_id, occurred_at);
-create index idx_scenario_proposal_events_actor on public.scenario_proposal_events(actor_user_id);
+create index if not exists idx_scenario_proposal_events_proposal on public.scenario_proposal_events(proposal_id, occurred_at);
+create index if not exists idx_scenario_proposal_events_actor on public.scenario_proposal_events(actor_user_id);
 
 create or replace function private.safra_proposal_events_append_only()
 returns trigger
@@ -196,6 +204,9 @@ begin
     when 'PROPOSAL_PUBLISHED' then
       v_subject := 'Card publicado: ' || coalesce(v_p.scenario_name, v_p.title);
       v_head := 'O card novo foi publicado e já pode receber protocolos.';
+    when 'PROPOSAL_REJECTED' then
+      v_subject := 'Proposta recusada: ' || v_p.title;
+      v_head := 'A proposta foi recusada. Motivo: ' || coalesce(v_p.rejection_reason, '—');
     else
       raise exception 'unknown proposal notice %', p_type;
   end case;
@@ -625,6 +636,42 @@ begin
 end;
 $$;
 
+-- D-130: recusar com motivo, antes da publicação.
+create or replace function public.safra_reject_proposal(p_proposal_id uuid, p_reason text)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_actor uuid := (select auth.uid());
+  v_p public.scenario_proposals%rowtype;
+  v_reason text := nullif(btrim(coalesce(p_reason, '')), '');
+begin
+  select * into v_p from public.scenario_proposals where id = p_proposal_id for update;
+  if not found or not coalesce(private.safra_can_approve_proposal(v_p.proposed_by), false) then
+    raise exception using errcode = '42501', message = 'SAFRA_PROPOSAL_FORBIDDEN';
+  end if;
+  if v_p.status in ('PUBLISHED', 'REJECTED') then
+    raise exception using errcode = 'P0001', message = 'SAFRA_PROPOSAL_WRONG_STEP';
+  end if;
+  if v_reason is null or length(v_reason) < 10 or length(v_reason) > 1000 then
+    raise exception using errcode = '22023', message = 'SAFRA_PROPOSAL_NOTE_REQUIRED';
+  end if;
+
+  update public.scenario_proposals
+     set status = 'REJECTED', rejected_at = clock_timestamp(), rejected_by = v_actor, rejection_reason = v_reason
+   where id = v_p.id
+  returning * into v_p;
+  insert into public.scenario_proposal_events(proposal_id, event_type, actor_user_id, note)
+  values (v_p.id, 'REJECTED', v_actor, v_reason);
+  perform private.safra_enqueue_proposal_notice('PROPOSAL_REJECTED', v_p.id,
+    jsonb_build_array(jsonb_build_object('email', v_p.proposer_email, 'name', v_p.proposer_name))
+      || case when v_p.owner_principal_id is null then '[]'::jsonb else private.safra_principals_json(array[v_p.owner_principal_id]) end,
+    'PR:' || v_p.id || ':REJECTED');
+end;
+$$;
+
 -- 5. Leitura --------------------------------------------------------------------------------
 create or replace function public.safra_get_proposals()
 returns jsonb
@@ -677,6 +724,7 @@ begin
         'impacted_area_ids', to_jsonb(sp.impacted_area_ids),
         'responsible_area', (select oa.name from public.operational_areas oa where oa.id = sp.responsible_area_id),
         'published_code', (select sc.code from public.scenarios sc where sc.id = sp.scenario_id),
+        'rejection_reason', sp.rejection_reason,
         'responses', coalesce((
           select jsonb_agg(jsonb_build_object(
             'name', coalesce(nullif(btrim(p.display_name), ''), p.corporate_email),
@@ -695,6 +743,7 @@ begin
         'can_define_owner', v_governance and sp.status = 'OWNER_CONSULTATION',
         'can_submit_content', sp.proposed_by = v_actor and sp.status in ('OWNER_DEFINED', 'CONTENT_SUBMITTED'),
         'can_approve', sp.status = 'CONTENT_SUBMITTED' and coalesce(private.safra_can_approve_proposal(sp.proposed_by), false),
+        'can_reject', sp.status not in ('PUBLISHED', 'REJECTED') and coalesce(private.safra_can_approve_proposal(sp.proposed_by), false),
         'can_publish', v_admin and sp.status = 'APPROVED' and sp.proposed_by <> v_actor and sp.approved_by is distinct from v_actor
       ) order by sp.submitted_at desc)
       from public.scenario_proposals sp
@@ -729,6 +778,7 @@ revoke all on function public.safra_define_proposal_owner(uuid, uuid, text) from
 revoke all on function public.safra_submit_proposal_content(uuid, text, text, text, text, text, uuid[]) from public, anon;
 revoke all on function public.safra_approve_proposal(uuid, uuid) from public, anon;
 revoke all on function public.safra_publish_proposal(uuid) from public, anon;
+revoke all on function public.safra_reject_proposal(uuid, text) from public, anon;
 revoke all on function public.safra_get_proposals() from public, anon;
 revoke all on function public.safra_get_operational_areas() from public, anon;
 grant execute on function public.safra_submit_proposal(text, text, text) to authenticated, service_role;
@@ -738,6 +788,7 @@ grant execute on function public.safra_define_proposal_owner(uuid, uuid, text) t
 grant execute on function public.safra_submit_proposal_content(uuid, text, text, text, text, text, uuid[]) to authenticated, service_role;
 grant execute on function public.safra_approve_proposal(uuid, uuid) to authenticated, service_role;
 grant execute on function public.safra_publish_proposal(uuid) to authenticated, service_role;
+grant execute on function public.safra_reject_proposal(uuid, text) to authenticated, service_role;
 grant execute on function public.safra_get_proposals() to authenticated, service_role;
 grant execute on function public.safra_get_operational_areas() to authenticated, service_role;
 
