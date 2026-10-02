@@ -86,7 +86,18 @@ jobs:
       - name: Test direct RPC denial
         run: bash .github/scripts/test-safra-direct-rpc.sh
 
+      - name: Stress smoke (parallel open/close/cancel)
+        run: |
+          bash .github/scripts/test-safra-stress.sh > /tmp/stress.log 2>&1 || {
+            cat /tmp/stress.log
+            python3 .github/scripts/annotate-log.py /tmp/stress.log "Stress smoke"
+            exit 1
+          }
+          cat /tmp/stress.log
+          python3 .github/scripts/annotate-log.py /tmp/stress.log "Stress smoke" notice
+
       - name: Front-end smoke (Playwright + axe)
+        if: ${{ !cancelled() }}
         run: |
           set -euo pipefail
           eval "$(supabase status -o env)"
@@ -98,10 +109,12 @@ jobs:
             if curl -fsS -o /dev/null http://localhost:8080/auth; then break; fi
             sleep 2
           done
-          E2E_SUPABASE_URL="${API_URL}" E2E_JWT_SECRET="${JWT_SECRET}" E2E_DB_URL="${DB_URL}"             bunx playwright test -c e2e/playwright.config.ts || { tail -n 80 /tmp/vite.log; exit 1; }
-
-      - name: Stress smoke (parallel open/close/cancel)
-        run: bash .github/scripts/test-safra-stress.sh
+          E2E_SUPABASE_URL="${API_URL}" E2E_JWT_SECRET="${JWT_SECRET}" E2E_DB_URL="${DB_URL}"             bunx playwright test -c e2e/playwright.config.ts > /tmp/e2e.log 2>&1 || {
+              cat /tmp/e2e.log; tail -n 80 /tmp/vite.log
+              python3 .github/scripts/annotate-log.py /tmp/e2e.log "Front-end smoke"
+              exit 1
+            }
+            cat /tmp/e2e.log
 
       - name: Rehearse rollback of latest migration
         run: |
