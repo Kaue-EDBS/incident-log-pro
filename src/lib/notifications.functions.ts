@@ -28,7 +28,8 @@ export const deliverQueuedNotifications = createServerFn({ method: "POST" })
       return { status: "disabled", sent: 0, failed: 0, code: "MISSING_CONNECTOR_KEYS" };
     }
 
-    const rpc = context.supabase.rpc as unknown as (
+    // bind: rpc usa `this` (o cliente); sem ele a chamada quebra ("reading 'rest'").
+    const rpc = context.supabase.rpc.bind(context.supabase) as unknown as (
       fn: string,
       args: Record<string, unknown>,
     ) => PromiseLike<{ data: unknown; error: { code?: string; message: string } | null }>;
