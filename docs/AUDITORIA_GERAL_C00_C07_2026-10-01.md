@@ -73,3 +73,20 @@
 | A-17 | **CORRIGIDO** — 41 componentes e 32 bibliotecas sem uso removidos (Drizzle mantido: ferramenta do Lovable) |
 | A-18 | **CORRIGIDO** — `permissions: contents: read` e ações fixadas por hash |
 | A-19 | **REGISTRADO** no PROJECT_PROFILE |
+
+## 5. Aplicação
+
+- CI: Smoke #250 falhou na instalação (`bun.lock` gravado por bun 1.4.2, formato que o CI/Lovable 1.3.3 não lê; refeito com 1.3.3). Database #289 falhou: a restrição `safra_rbac_audit_action_check` não aceitava os eventos novos de cadastro; em produção isso teria impedido o primeiro login de quem ainda não entrou. Corrigido na própria migration (ainda não aplicada). CI verde: App Smoke #252, Database Disposable #290.
+- PRIMARY: a primeira tentativa caiu na conexão (nada aplicado, conferido). Aplicada em 3 transações, na ordem auditoria → tenant/vínculo → dono/catálogo/resumo → START/remoções/registro. Conferido: 40 = 40; 2 logins ligados, ambos no tenant; 11 cards disponíveis; gatilhos, permissões e funções no lugar.
+
+## 6. Auditoria do lado do Lovable (somente leitura, modo Chat)
+
+| Item | Conferência |
+|---|---|
+| Migration 40 pendente | esperado; aplicada depois do CI |
+| "O banco já barra outro tenant" | estava errado antes da migration 40; correto depois dela |
+| "Só entra quem está em `safra_principals`" | errado: qualquer conta corporativa pode abrir (D-48/D-63); o cadastro só dá papéis |
+| L-01 backup diário, sem PITR | **ALTA** — incompatível com a meta de RPO 5 min / RTO 30 min (D-23); C09, decisão do owner |
+| L-02 sem CSP e sem proteção contra embutir | MÉDIA — C08/C09 |
+| L-03 sem alertas de incidente | MÉDIA — C09 |
+| L-04 `*.lovable.app` nos endereços de retorno | a verificar com o Lovable |

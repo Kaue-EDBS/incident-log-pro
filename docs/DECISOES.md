@@ -1285,4 +1285,4 @@ Migration `20261001234000_aud_geral_tenant_owner_audit.sql`:
 - A-12: índice redundante removido;
 - A-16: resumo do START com horário do servidor.
 
-Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram a criar a identidade Microsoft dos usuários sintéticos.
+Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram a criar a identidade Microsoft dos usuários sintéticos. CI verde (App Smoke #252, Database Disposable #290); aplicada no PRIMARY, 40 = 40.
