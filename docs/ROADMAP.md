@@ -157,7 +157,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 
 ## EIXO 2 — MEIO
 
-M01: CONCLUÍDO em 02/10/2026 (D-98 a D-101, `AUDITORIA_M01_2026-10-02.md`). M02 a M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
+M01: CONCLUÍDO em 02/10/2026 (D-98 a D-101, `AUDITORIA_M01_2026-10-02.md`). M02 e M03: CONCLUÍDOS em 02/10/2026 (D-102 a D-105, `AUDITORIA_M02_M03_2026-10-02.md`). M04 a M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
 
 ## EIXO 3 — FIM
 
@@ -354,6 +354,8 @@ Regras:
 
 ## SAFRA-M02 — Audit trail e acompanhamento mínimo
 
+> **CONCLUÍDO em 02/10/2026** junto com a M03. Eventos registrados: abertura, conclusão e desfazer de cada parte, encerramento e cancelamento. Fora: SLA (D-75), escalonamento (D-73), correção admin (D-100), áreas depois da abertura (D-102), notas (D-103). Avisos: M05.
+
 ### Objetivo
 
 Substitui o antigo conceito de “persistência dos passos”.
@@ -381,6 +383,8 @@ Registrar apenas eventos relevantes ao governo da contingência:
 ---
 
 ## SAFRA-M03 — Timeline operacional
+
+> **CONCLUÍDO em 02/10/2026**: "Ver histórico" em cada protocolo (D-104, D-105). SLAs e escalonamento não se aplicam.
 
 A timeline une:
 

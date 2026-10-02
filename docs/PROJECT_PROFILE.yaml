@@ -379,6 +379,16 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+m02_m03_history:
+  status: "APPROVED"
+  date: "2026-10-02"
+  migration: "20261002180000_m02_m03_protocol_history.sql"
+  decisions: ["D-102", "D-103", "D-104", "D-105"]
+  event_types: ["TREATMENT_OPENED", "REQUESTER_PART_CLOSED", "OWNER_PART_CLOSED", "REQUESTER_PART_UNDONE", "OWNER_PART_UNDONE", "TREATMENT_RESOLVED", "TREATMENT_CANCELLED"]
+  read: "safra_get_treatment_timeline (requester, current owner, owner who closed, governance, platform admin)"
+  tests: ["m02_protocol_history.test.sql (20)", "test-safra-stress.sh history rebuild check"]
+  audit_document: "docs/AUDITORIA_M02_M03_2026-10-02.md"
+
 m01_state_machine:
   status: "APPROVED"
   date: "2026-10-02"

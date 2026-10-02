@@ -2,6 +2,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LiveTimer } from "@/components/LiveTimer";
 import { SituationBadge, TreatmentActions } from "@/components/TreatmentActions";
+import { TreatmentTimeline } from "@/components/TreatmentTimeline";
 import { formatDateTime } from "@/lib/metrics";
 import { cardDisplayName } from "@/lib/safra";
 import type { SafraTreatment } from "@/lib/safra";
@@ -136,6 +137,8 @@ export function TreatmentList({
                 <TreatmentActions treatment={item} />
               </div>
             ) : null}
+
+            <TreatmentTimeline treatmentId={item.treatment_id} />
           </article>
         </li>
       ))}

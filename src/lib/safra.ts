@@ -63,6 +63,34 @@ export const SafraTreatmentSchema = z.object({
 
 export type SafraTreatment = z.infer<typeof SafraTreatmentSchema>;
 
+/** Histórico do protocolo (M02/M03). */
+export const SafraTimelineEventSchema = z.object({
+  event_id: z.string().uuid(),
+  occurred_at: z.string(),
+  event_type: z.enum([
+    "TREATMENT_OPENED",
+    "REQUESTER_PART_CLOSED",
+    "OWNER_PART_CLOSED",
+    "REQUESTER_PART_UNDONE",
+    "OWNER_PART_UNDONE",
+    "TREATMENT_RESOLVED",
+    "TREATMENT_CANCELLED",
+  ]),
+  actor_role: z.enum(["REQUESTER", "OWNER", "SYSTEM"]),
+  actor_name: z.string(),
+});
+
+export type SafraTimelineEvent = z.infer<typeof SafraTimelineEventSchema>;
+
+export const SafraTimelineSchema = z.object({
+  treatment: SafraTreatmentSchema,
+  scenario_version_no: z.number().nullable(),
+  opened_by_name: z.string(),
+  events: z.array(SafraTimelineEventSchema),
+});
+
+export type SafraTimeline = z.infer<typeof SafraTimelineSchema>;
+
 export const SafraTreatmentListSchema = z.array(SafraTreatmentSchema);
 
 export const SafraStartCatalogItemSchema = z.object({
@@ -174,6 +202,7 @@ export function safraErrorMessage(error: unknown, fallback: string): string {
     ],
     ["SAFRA_CANCEL_REASON_TOO_LONG", "O motivo passou de 1.000 caracteres. Resuma um pouco."],
     ["SAFRA_UNDO_FORBIDDEN", "Só quem concluiu a parte pode desfazer."],
+    ["SAFRA_TIMELINE_FORBIDDEN", "Você não tem acesso ao histórico deste protocolo."],
     ["SAFRA_UNDO_NOTHING_TO_UNDO", "Não há conclusão sua para desfazer neste protocolo."],
     ["SAFRA_UNDO_WINDOW_EXPIRED", "Passaram os 5 minutos para desfazer."],
     [

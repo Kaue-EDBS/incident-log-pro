@@ -5,6 +5,7 @@ import { measured } from "./ops";
 import {
   SafraStartCatalogSchema,
   SafraStartResultSchema,
+  SafraTimelineSchema,
   SafraTreatmentListSchema,
   SafraTreatmentSchema,
 } from "./safra";
@@ -24,6 +25,7 @@ function useInvalidateProtocols() {
     void qc.invalidateQueries({ queryKey: KEYS.catalog });
     void qc.invalidateQueries({ queryKey: KEYS.mine });
     void qc.invalidateQueries({ queryKey: KEYS.owner });
+    void qc.invalidateQueries({ queryKey: ["safra-treatment-timeline"] });
   };
 }
 
@@ -109,6 +111,21 @@ export function useCanUseChameleon(enabled: boolean) {
       );
       if (error) throw error;
       return data === true;
+    },
+  });
+}
+
+/** Histórico de um protocolo, carregado só quando a pessoa abre (M02/M03). */
+export function useTreatmentTimeline(treatmentId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["safra-treatment-timeline", treatmentId],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_get_treatment_timeline", () =>
+        supabase.rpc("safra_get_treatment_timeline", { p_treatment_id: treatmentId }),
+      );
+      if (error) throw error;
+      return SafraTimelineSchema.parse(data);
     },
   });
 }

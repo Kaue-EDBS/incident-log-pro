@@ -198,6 +198,11 @@ check "phase 4 RESOLVED status matches its event" "$(q -c "
   select count(*) from public.treatments t join auth.users u on u.id = t.opened_by
   where u.email like 'stress.user%'
     and (t.status = 'RESOLVED') <> exists (select 1 from public.treatment_events e where e.treatment_id = t.id and e.event_type = 'TREATMENT_RESOLVED');")" "0"
+check "M02 the history rebuilds every status (cancel and open events present)" "$(q -c "
+  select count(*) from public.treatments t join auth.users u on u.id = t.opened_by
+  where u.email like 'stress.user%'
+    and ((t.status = 'CANCELLED') <> exists (select 1 from public.treatment_events e where e.treatment_id = t.id and e.event_type = 'TREATMENT_CANCELLED')
+      or not exists (select 1 from public.treatment_events e where e.treatment_id = t.id and e.event_type = 'TREATMENT_OPENED'));")" "0"
 
 # --- latency --------------------------------------------------------------------
 cat "${WORK}"/p*.out | cut -d'|' -f3 | sort -n > "${WORK}/lat"

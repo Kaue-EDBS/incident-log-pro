@@ -1350,3 +1350,11 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-100:** **sem correção pelo admin.** Protocolo aberto errado é cancelado e aberto de novo.
 - **D-101:** protocolo **sem nenhuma parte concluída** é **cancelado automaticamente 72 horas depois da abertura**, sem autor, com o motivo "Cancelado automaticamente: 72 horas sem nenhuma conclusão (D-101)." Se uma das partes já concluiu, ele não é cancelado: continua aguardando a outra parte. Roda a cada 10 minutos.
 
+### D-102 a D-105 — Histórico do protocolo (M02/M03)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-102:** as **áreas impactadas** são escolhidas na abertura e **não mudam** depois.
+- **D-103:** **sem notas** no protocolo nesta Safra. O resumo da abertura basta; a conversa do dia a dia segue por Teams/e-mail. Pode ser revisto depois sem mexer no que existe.
+- **D-104:** o **histórico** de um protocolo é visto por **quem abriu, o dono do card, a gestão (Jair e Bruno) e os platform admins**.
+- **D-105:** no histórico, quem fez cada coisa aparece **pelo nome** (cadastro do Painel; senão o nome da Microsoft); o cancelamento automático aparece como "Sistema".
+

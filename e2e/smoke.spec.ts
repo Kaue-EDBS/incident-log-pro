@@ -218,6 +218,13 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   await expect(mine08.getByText("Aguardando o dono do card")).toBeVisible();
   await expect(mine08.getByText(/será cancelado automaticamente/)).toHaveCount(0);
 
+  // M02/M03: histórico com cada passo, por nome.
+  await mine08.getByRole("button", { name: "Ver histórico" }).click();
+  const history = mine08.getByRole("list", { name: "Histórico do protocolo" });
+  await expect(history.getByRole("listitem")).toHaveCount(4);
+  await expect(history.getByText("Desfez a conclusão")).toBeVisible();
+  await expectAccessible(page, "histórico do protocolo");
+
   // Um usuário comum não vê o Modo Camaleão nem a área de donos.
   await expect(page.getByLabel("Modo Camaleão")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Protocolos dos meus cards" })).toHaveCount(0);
