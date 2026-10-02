@@ -21,6 +21,8 @@
 
 ## 2. Primeiros 15 minutos (qualquer incidente)
 
+> Sem monitor externo (D-97): o Painel fora do ar é percebido por quem usa ou pela página de status do Lovable. Quem perceber avisa o Kaue.
+
 1. **Confirmar o problema**: abrir https://painelsafra.lovable.app com a sua conta. Anotar a hora e o que aparece.
 2. **Olhar a Saúde do sistema** (Administração): erros de tela, falhas técnicas, respostas lentas e logins recusados nas últimas 24 h.
 3. **Classificar** pelo quadro da seção 3.
@@ -104,7 +106,7 @@ Resultados mais recentes: `AUDITORIA_C09_REABERTURA_2026-10-02.md`.
 | Para quem | Assunto |
 |---|---|
 | Suporte do Lovable (https://lovable.dev/support; até 24 h úteis no plano Pro) | incidente da plataforma; página de status https://status.lovable.dev (assinar avisos por e-mail) |
-| TI da Editora | login Microsoft, grupo de acesso, MFA, caixa de envio de e-mail (chamado aberto em 02/10/2026); monitor externo de disponibilidade; subdomínio próprio (GI-SAFRA-015) |
+| TI da Editora | login Microsoft, grupo de acesso, MFA, caixa de envio de e-mail (chamado aberto em 02/10/2026); subdomínio próprio (GI-SAFRA-015). Sem monitor externo de disponibilidade (D-97) |
 | Donos de card | lista de protocolos durante a indisponibilidade |
 
 ---

@@ -96,8 +96,8 @@ A pedido do owner, o Modo Camaleão deixou de valer para todos os platform admin
 | Capacidade no pior caso | OK no CI (0 erros); no PRIMARY depende do tamanho da instância (GI-SAFRA-013) |
 | Observabilidade sem segredos | OK (PRIMARY) |
 | Runbook | OK |
-| Alertas | **pendente** (chamado do TI; o Lovable não avisa queda do projeto: assinar https://status.lovable.dev e pedir ao TI um monitor externo de disponibilidade) |
+| Alertas | **pendente** (chamado do TI; o Lovable não avisa queda do projeto: assinar https://status.lovable.dev; **sem monitor externo de disponibilidade** pelo TI, D-97) |
 | Instância, região dos dados, cabeçalhos | **a decidir**: GI-SAFRA-013, 014 e 015 (antes de liberar o acesso) |
 | Smoke de login real | **pendente** (publicar e homologar, D-79) |
 
-**Veredito:** **G5.5 APROVADO COM PENDÊNCIAS EXTERNAS.** O que dependia do código e do banco está feito e testado; ficam as decisões do owner (GI-SAFRA-013 a 015), o TI (alertas, monitor externo, subdomínio) e a publicação com homologação.
+**Veredito:** **G5.5 APROVADO COM PENDÊNCIAS EXTERNAS.** O que dependia do código e do banco está feito e testado; ficam as decisões do owner (GI-SAFRA-013 a 015), o TI (alertas por e-mail, subdomínio) e a publicação com homologação.

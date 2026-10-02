@@ -1335,3 +1335,9 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 
 - O seletor "ver como" e a leitura `safra_admin_get_owner_treatments` ficam só para **Kaue Pastrello** e **Vinicius Moraes**: é preciso ser `safra_platform_admin` **e** estar logado com um desses dois e-mails corporativos. Amanda e João seguem platform admins (Administração e Saúde do sistema), sem o Modo Camaleão.
 - Quem decide é o banco (`private.safra_can_use_chameleon`); a tela só pergunta (`safra_can_use_chameleon`). Mudar a lista exige nova migration.
+
+### D-97 — Sem monitor externo de disponibilidade
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- O TI **não** vai configurar um monitor externo que confere o Painel a cada minuto (sugestão do Lovable em 02/10/2026).
+- Consequência aceita: se o Painel ou o banco cair por inteiro, ninguém é avisado automaticamente; a queda é percebida por quem usa ou pela página de status do Lovable (https://status.lovable.dev, avisos por e-mail). Os erros parciais continuam na Saúde do sistema (D-95).
