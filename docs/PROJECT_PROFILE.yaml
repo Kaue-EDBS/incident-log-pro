@@ -390,6 +390,11 @@ c08_reaudit:
   tests: ["c08_1_protocol_lifecycle.test.sql (35)", ".github/scripts/test-safra-close-cancel-rpc-concurrency.sh"]
   primary_smoke: "PASS 2026-10-02 (transaction rolled back, nothing persisted)"
   routes: ["/", "/meus-protocolos", "/protocolos-dos-meus-cards", "/abrir-protocolo -> /"]
+  c08_3_migration: "20261002100000_c08_3_chameleon_preview.sql"
+  brand_palette: ["#19286E", "#00C3B3", "#93D50A"]
+  chameleon_mode: "safra_platform_admin only, read-only preview (D-92)"
+  frontend_smoke: "e2e/smoke.spec.ts (Playwright + axe) in Database Disposable Test"
+  stress_smoke: ".github/scripts/test-safra-stress.sh (220 parallel STARTs, p95 935 ms)"
   audit_document: "docs/AUDITORIA_C08_REABERTURA_2026-10-02.md"
 
 aud_geral_c00_c07:

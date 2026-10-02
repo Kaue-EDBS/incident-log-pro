@@ -50,11 +50,19 @@ function mintToken(p: Person) {
 }
 
 async function createPerson(key: string, email: string) {
-  const p: Person = { id: randomUUID(), email, sessionId: randomUUID() };
-  await sql`insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
-            values (${p.id}, ${email}, ${sql.json({ provider: "azure", providers: ["azure"] })}, true, false, now(), now())`;
-  await sql`insert into auth.identities(provider_id,user_id,identity_data,provider,created_at,updated_at)
-            values (${p.id}, ${p.id}, ${sql.json({ custom_claims: { tid: TENANT } })}, 'azure', now(), now())`;
+  // Playwright restarts the worker after a failure and runs beforeAll again. A principal
+  // only binds to one login, so reuse the login a previous run already created.
+  const existing = await sql`select u.id from auth.users u
+                             join auth.identities i on i.user_id = u.id and i.provider = 'azure'
+                             where lower(u.email) = lower(${email}) order by u.created_at limit 1`;
+  const id = (existing[0]?.id as string | undefined) ?? randomUUID();
+  const p: Person = { id, email, sessionId: randomUUID() };
+  if (!existing[0]) {
+    await sql`insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
+              values (${p.id}, ${email}, ${sql.json({ provider: "azure", providers: ["azure"] })}, true, false, now(), now())`;
+    await sql`insert into auth.identities(provider_id,user_id,identity_data,provider,created_at,updated_at)
+              values (${p.id}, ${p.id}, ${sql.json({ custom_claims: { tid: TENANT } })}, 'azure', now(), now())`;
+  }
   await sql`insert into auth.sessions(id,user_id,created_at,updated_at) values (${p.sessionId}, ${p.id}, now(), now())`;
   people[key] = p;
 }

@@ -72,3 +72,40 @@
 ## 5. Gate
 
 **PASS no banco e no código.** Falta para fechar de vez: publicação pelo owner e homologação com login real (C08-02/C08-03).
+
+---
+
+## 6. C08.3 — identidade visual, Modo Camaleão e smoke tests (02/10/2026)
+
+**Pedido do owner:** paleta da Editora, Modo Camaleão para o Kaue ver todas as telas, títulos sem `SAFRA-NN` e sem o que está entre parênteses, smoke test do front e smoke test de stress.
+
+| Item | Resultado |
+|---|---|
+| D-91 Paleta | azul `#19286E` (menu, botões, textos), verde-água `#00C3B3` e limão `#93D50A` (destaques e símbolo); verde-água e limão nunca como texto (contraste) |
+| D-91 Títulos | sem código `SAFRA-NN` e sem parênteses na tela; o banco segue literal (D-74) |
+| D-92 Modo Camaleão | seletor "ver como" para `safra_platform_admin`: usuário, dono de card (escolhendo o dono), Jair/Bruno, administração; só leitura; leitura dos protocolos de um dono via `safra_admin_get_owner_treatments` (migration `20261002100000`, 7 testes pgTAP; aplicada no PRIMARY, 43 = 43) |
+| Telas futuras | Analytics e Administração aparecem conforme a visão (D-88), marcadas "em construção" com o que vão ter |
+
+### Smoke test do front (Playwright + axe, no CI contra o Supabase local)
+
+Usuários sintéticos com identidade Microsoft do tenant e sessão assinada pelo Supabase local; sem login Microsoft real.
+
+| Fluxo | Resultado |
+|---|---|
+| Solicitante: 11 cards, sem `SAFRA-NN` e sem parênteses, busca, card que se expande, resumo obrigatório, abrir, Concluído/Cancelar, X traz os cards de volta, Meus protocolos com contador, concluir a parte → "Aguardando o dono do card"; sem Camaleão e sem área de dono | PASS |
+| Solicitante: cancelar exige motivo | PASS |
+| Dona do card (Jiane): card próprio marcado, "Protocolos dos meus cards" com quem abriu, concluir → Encerrado | PASS |
+| Admin (Kaue): Modo Camaleão como dona, Jair/Bruno e administração; abrir desligado; protocolos da dona sem botões de ação; volta para a visão real | PASS |
+| Acessibilidade (axe, WCAG 2.2 AA, graves e críticos) em Início, card aberto, Meus protocolos, Protocolos dos meus cards e Administração | PASS (0 problemas graves) |
+
+### Smoke test de stress (CI, banco descartável)
+
+| Fase | Resultado |
+|---|---|
+| 220 aberturas simultâneas (20 pessoas × 11 cards) | 220/220 em 4 s; numeração por card com 20 números seguidos, sem buraco nem repetição |
+| 30 aberturas simultâneas da mesma pessoa no mesmo card | 1 abriu, 29 barradas pela trava |
+| 30 aberturas simultâneas com a mesma chave | 1 protocolo, as 30 respostas apontam para ele, 1 evento de abertura |
+| 515 ações simultâneas de concluir (solicitante e dono) e cancelar | 11 s; nenhum erro inesperado; todos terminaram Encerrado ou Cancelado; nenhum com os dois; nenhum evento duplicado |
+| Tempo de resposta (795 chamadas, incluindo a conexão) | p50 637 ms, p95 935 ms, máx. 1.363 ms |
+
+**Achados no caminho (todos do próprio teste, nenhum do produto):** número fixo esperado (outros testes já tinham usado números); conferência de numeração rígida demais; usuário de teste recriado após reinício do Playwright não se ligava ao cadastro já ligado (regra "um cadastro, um login" funcionando). Corrigidos.
