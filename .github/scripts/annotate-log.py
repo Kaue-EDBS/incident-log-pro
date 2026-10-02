@@ -18,7 +18,7 @@ if level == "error":
     keep = [
         line
         for line in lines
-        if re.search(r"(✘|FAIL|Error|error:|Expected|Received|expect\(|Timeout|at .*spec\.ts:\d+|›|Locator|waiting for)", line)
+        if line.startswith("PAGE:") or re.search(r"(✘|FAIL|Error|error:|Expected|Received|expect\(|Timeout|at .*spec\.ts:\d+|›|Locator|waiting for)", line)
     ] or lines[-60:]
 else:
     keep = [line for line in lines if line.startswith(("PASS", "Phase", "Latency"))]

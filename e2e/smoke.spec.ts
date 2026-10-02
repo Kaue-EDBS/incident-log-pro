@@ -1,6 +1,8 @@
 import { createHmac, randomUUID } from "node:crypto";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Browser, type Page } from "@playwright/test";
+
+const opened = /Protocolo (\d{2}-\d{4}) aberto\./;
 import postgres from "postgres";
 
 /**
@@ -17,6 +19,8 @@ type Person = { id: string; email: string; sessionId: string };
 
 const sql = postgres(DB_URL, { max: 1 });
 const people: Record<string, Person> = {};
+let protocol08 = "";
+let lastPage: Page | null = null;
 
 function b64url(value: string | Buffer) {
   return Buffer.from(value).toString("base64url");
@@ -81,6 +85,7 @@ async function openAs(browser: Browser, key: string): Promise<Page> {
     JSON.stringify(session),
   ] as const);
   const page = await context.newPage();
+  lastPage = page;
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Qual é o problema?" })).toBeVisible();
   return page;
@@ -104,6 +109,22 @@ test.beforeAll(async () => {
   await createPerson("requester", "e2e.requester@editoradobrasil.com.br");
   await createPerson("owner", await principal("Jiane Rodrigues"));
   await createPerson("admin", await principal("Kaue Pastrello"));
+});
+
+// On failure, print what the page showed and the roles the database returned
+// (lines prefixed with PAGE: are published as a CI annotation).
+// eslint-disable-next-line no-empty-pattern -- Playwright requires the fixtures object
+test.afterEach(async ({}, testInfo) => {
+  if (testInfo.status === testInfo.expectedStatus || !lastPage) return;
+  const text = await lastPage
+    .locator("body")
+    .innerText()
+    .catch(() => "");
+  for (const line of text.split("\n").filter(Boolean).slice(0, 60)) console.log(`PAGE: ${line}`);
+  const binding =
+    await sql`select display_name, user_id is not null as bound from private.safra_principals
+                            where display_name in ('Jiane Rodrigues', 'Kaue Pastrello')`;
+  console.log(`PAGE: principals ${JSON.stringify(binding)}`);
 });
 
 test.afterAll(async () => {
@@ -142,7 +163,9 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   await expect(start).toBeEnabled();
   await start.click();
   await page.getByRole("button", { name: "Sim, abrir" }).click();
-  await expect(page.getByText("Protocolo 08-0001 aberto.")).toBeVisible();
+  const toast08 = page.getByText(opened).first();
+  await expect(toast08).toBeVisible();
+  protocol08 = opened.exec(await toast08.innerText())![1]!;
   await expect(page.getByRole("button", { name: "Concluído" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Cancelar protocolo" })).toBeVisible();
 
@@ -155,12 +178,19 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
 
   // Meus protocolos: contador e Concluído da minha parte.
   await page.getByRole("link", { name: "Meus protocolos" }).first().click();
-  await expect(page.getByRole("heading", { name: "Protocolo 08-0001" })).toBeVisible();
-  await expect(page.getByText("Tempo desde a abertura:")).toBeVisible();
+  await expect(page.getByRole("heading", { name: `Protocolo ${protocol08}` })).toBeVisible();
+  await expect(page.getByText("Tempo desde a abertura:").first()).toBeVisible();
   await expectAccessible(page, "meus protocolos");
-  await page.getByRole("button", { name: "Concluído" }).click();
+  await page
+    .getByRole("article", { name: `Protocolo ${protocol08}` })
+    .getByRole("button", { name: "Concluído" })
+    .click();
   await page.getByRole("button", { name: "Sim, concluir" }).click();
-  await expect(page.getByText("Aguardando o dono do card").first()).toBeVisible();
+  await expect(
+    page
+      .getByRole("article", { name: `Protocolo ${protocol08}` })
+      .getByText("Aguardando o dono do card"),
+  ).toBeVisible();
 
   // Um usuário comum não vê o Modo Camaleão nem a área de donos.
   await expect(page.getByLabel("Modo Camaleão")).toHaveCount(0);
@@ -176,7 +206,9 @@ test("requester: cancel needs a reason", async ({ browser }) => {
     .fill("Pedidos sem movimentação há mais de 48 horas na transportadora");
   await page.getByRole("button", { name: "Iniciar protocolo" }).click();
   await page.getByRole("button", { name: "Sim, abrir" }).click();
-  await expect(page.getByText("Protocolo 03-0001 aberto.")).toBeVisible();
+  const toast03 = page.getByText(opened).first();
+  await expect(toast03).toBeVisible();
+  const protocol03 = opened.exec(await toast03.innerText())![1]!;
 
   await page.getByRole("button", { name: "Cancelar protocolo" }).click();
   const confirm = page.getByRole("button", { name: "Sim, cancelar" });
@@ -185,7 +217,7 @@ test("requester: cancel needs a reason", async ({ browser }) => {
     .getByLabel("Motivo do cancelamento (obrigatório)")
     .fill("Abri no card errado por engano");
   await confirm.click();
-  await expect(page.getByText("Protocolo 03-0001 cancelado.")).toBeVisible();
+  await expect(page.getByText(`Protocolo ${protocol03} cancelado.`)).toBeVisible();
 });
 
 test("owner: sees own card protocols and closes the last part", async ({ browser }) => {
@@ -194,12 +226,13 @@ test("owner: sees own card protocols and closes the last part", async ({ browser
   await expect(page.getByText("Você é o dono deste card.").first()).toBeVisible();
 
   await page.getByRole("link", { name: "Protocolos dos meus cards" }).first().click();
-  await expect(page.getByRole("heading", { name: "Protocolo 08-0001" })).toBeVisible();
-  await expect(page.getByText("e2e.requester@editoradobrasil.com.br")).toBeVisible();
+  const mine = page.getByRole("article", { name: `Protocolo ${protocol08}` });
+  await expect(mine).toBeVisible();
+  await expect(mine.getByText("e2e.requester@editoradobrasil.com.br")).toBeVisible();
   await expectAccessible(page, "protocolos dos meus cards");
-  await page.getByRole("button", { name: "Concluído" }).click();
+  await mine.getByRole("button", { name: "Concluído" }).click();
   await page.getByRole("button", { name: "Sim, concluir" }).click();
-  await expect(page.getByText("Encerrado").first()).toBeVisible();
+  await expect(mine.getByText("Encerrado")).toBeVisible();
 });
 
 test("admin: Modo Camaleão previews other audiences, read-only", async ({ browser }) => {
@@ -223,7 +256,7 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
 
   // Protocolos dos cards da Jiane, sem botões de ação.
   await page.getByRole("link", { name: "Protocolos dos meus cards" }).first().click();
-  await expect(page.getByRole("heading", { name: "Protocolo 08-0001" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: `Protocolo ${protocol08}` })).toBeVisible();
   await expect(page.getByRole("button", { name: "Concluído" })).toHaveCount(0);
 
   // Visões de gestão e administração.

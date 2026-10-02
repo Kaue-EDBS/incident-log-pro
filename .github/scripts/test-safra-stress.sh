@@ -145,13 +145,13 @@ fail=0
 check() { if [[ "$2" != "$3" ]]; then echo "FAIL $1: expected $3, got $2"; fail=1; else echo "PASS $1 ($2)"; fi; }
 
 check "phase 1 all STARTs succeeded" "$(grep -c '|ok|' "${WORK}/p1.out")" "220"
-check "phase 1 protocol numbers per card are 1..20 without gaps or duplicates" "$(q -c "
+check "phase 1 protocol numbers per card are 20 consecutive numbers, no gaps or duplicates" "$(q -c "
   select count(*) from (
     select scenario_id, count(*) c, count(distinct protocol_seq) d, min(protocol_seq) mi, max(protocol_seq) ma
     from public.treatments t join auth.users u on u.id = t.opened_by
     where u.email like 'stress.user%' and u.email not in ('stress.user21@editoradobrasil.com.br','stress.user22@editoradobrasil.com.br')
     group by scenario_id) x
-  where c = 20 and d = 20 and mi = 1 and ma = 20;")" "11"
+  where c = 20 and d = 20 and ma - mi = 19;")" "11"
 check "phase 2 exactly one START for the same person and card" "$(grep -c '|ok|' "${WORK}/p2.out")" "1"
 check "phase 2 the others were refused by the lock" "$(grep -c 'SAFRA_START_ACTIVE_EXISTS' "${WORK}/p2.out")" "29"
 check "phase 3 same key -> one protocol" "$(q -c "select count(*) from public.treatments where start_idempotency_key = '${KEY}';")" "1"
@@ -173,8 +173,9 @@ check "phase 4 no duplicated part or terminal events" "$(q -c "
     where event_type in ('REQUESTER_PART_CLOSED','OWNER_PART_CLOSED','TREATMENT_RESOLVED','TREATMENT_CANCELLED')
     group by 1, 2 having count(*) > 1) x;")" "0"
 check "phase 4 RESOLVED status matches its event" "$(q -c "
-  select count(*) from public.treatments t
-  where (t.status = 'RESOLVED') <> exists (select 1 from public.treatment_events e where e.treatment_id = t.id and e.event_type = 'TREATMENT_RESOLVED');")" "0"
+  select count(*) from public.treatments t join auth.users u on u.id = t.opened_by
+  where u.email like 'stress.user%'
+    and (t.status = 'RESOLVED') <> exists (select 1 from public.treatment_events e where e.treatment_id = t.id and e.event_type = 'TREATMENT_RESOLVED');")" "0"
 
 # --- latency --------------------------------------------------------------------
 cat "${WORK}"/p*.out | cut -d'|' -f3 | sort -n > "${WORK}/lat"
@@ -186,7 +187,7 @@ echo "Latency over ${n} calls (ms, includes psql connection): p50=${p50} p95=${p
 if (( p95 > 5000 )); then echo "FAIL latency p95 above 5000 ms"; fail=1; fi
 
 if [[ ${fail} -ne 0 ]]; then
-  echo "--- sample of errors ---"; grep '|err|' "${WORK}"/p*.out | head -20 || true
+  echo "--- sample of errors ---"; grep -h '|err|' "${WORK}"/p*.out | sed -n '1,20p' || true
   exit 1
 fi
 echo "PASS C08.3 stress smoke"

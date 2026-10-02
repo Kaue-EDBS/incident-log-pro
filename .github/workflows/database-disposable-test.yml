@@ -86,16 +86,6 @@ jobs:
       - name: Test direct RPC denial
         run: bash .github/scripts/test-safra-direct-rpc.sh
 
-      - name: Stress smoke (parallel open/close/cancel)
-        run: |
-          bash .github/scripts/test-safra-stress.sh > /tmp/stress.log 2>&1 || {
-            cat /tmp/stress.log
-            python3 .github/scripts/annotate-log.py /tmp/stress.log "Stress smoke"
-            exit 1
-          }
-          cat /tmp/stress.log
-          python3 .github/scripts/annotate-log.py /tmp/stress.log "Stress smoke" notice
-
       - name: Front-end smoke (Playwright + axe)
         if: ${{ !cancelled() }}
         run: |
@@ -115,6 +105,17 @@ jobs:
               exit 1
             }
             cat /tmp/e2e.log
+
+      - name: Stress smoke (parallel open/close/cancel)
+        if: ${{ !cancelled() }}
+        run: |
+          bash .github/scripts/test-safra-stress.sh > /tmp/stress.log 2>&1 || {
+            cat /tmp/stress.log
+            python3 .github/scripts/annotate-log.py /tmp/stress.log "Stress smoke"
+            exit 1
+          }
+          cat /tmp/stress.log
+          python3 .github/scripts/annotate-log.py /tmp/stress.log "Stress smoke" notice
 
       - name: Rehearse rollback of latest migration
         run: |
