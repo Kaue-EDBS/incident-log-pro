@@ -18,6 +18,48 @@ export type SafraOwner = z.infer<typeof SafraOwnerSchema>;
 
 const SafraCriticalitySchema = z.enum(["CRITICAL", "HIGH", "MODERATE"]).nullable();
 
+/** Situações do protocolo (D-72). */
+export const SafraSituationSchema = z.enum([
+  "EM_ANDAMENTO",
+  "AGUARDANDO_DONO",
+  "AGUARDANDO_SOLICITANTE",
+  "ENCERRADO",
+  "CANCELADO",
+]);
+
+export type SafraSituation = z.infer<typeof SafraSituationSchema>;
+
+export const SafraTreatmentSchema = z.object({
+  treatment_id: z.string().uuid(),
+  protocol_number: z.string(),
+  status: z.enum(["ACTIVE", "RESOLVED", "CANCELLED"]),
+  situation: SafraSituationSchema,
+  scenario: z.object({
+    id: z.string().uuid(),
+    code: z.string(),
+    name: z.string(),
+  }),
+  owner: SafraOwnerSchema,
+  requester_email: z.string(),
+  impact_summary: z.string().nullable(),
+  impacted_areas: z.array(SafraAreaSchema),
+  problem_started_at: z.string(),
+  opened_at: z.string(),
+  requester_closed_at: z.string().nullable(),
+  owner_closed_at: z.string().nullable(),
+  closed_at: z.string().nullable(),
+  cancelled_at: z.string().nullable(),
+  cancellation_reason: z.string().nullable(),
+  server_time: z.string(),
+  my_role: z.enum(["REQUESTER", "OWNER"]).nullable(),
+  can_close_my_part: z.boolean(),
+  can_cancel: z.boolean(),
+});
+
+export type SafraTreatment = z.infer<typeof SafraTreatmentSchema>;
+
+export const SafraTreatmentListSchema = z.array(SafraTreatmentSchema);
+
 export const SafraStartCatalogItemSchema = z.object({
   scenario_id: z.string().uuid(),
   code: z.string(),
@@ -31,6 +73,7 @@ export const SafraStartCatalogItemSchema = z.object({
   responsible_area: SafraAreaSchema,
   owner: SafraOwnerSchema,
   is_my_card: z.boolean(),
+  my_open_treatment: SafraTreatmentSchema.nullable(),
   potential_impacted_areas: z.array(SafraAreaSchema),
   active_treatment_count: z.number().int().nonnegative(),
 });
@@ -68,3 +111,70 @@ export const SafraStartResultSchema = z.object({
 });
 
 export type SafraStartResult = z.infer<typeof SafraStartResultSchema>;
+
+/** Texto e tom de cada situação: nunca só cor (WCAG 1.4.1). */
+export const SITUATION_LABEL: Record<SafraSituation, string> = {
+  EM_ANDAMENTO: "Em andamento",
+  AGUARDANDO_DONO: "Aguardando o dono do card",
+  AGUARDANDO_SOLICITANTE: "Aguardando quem abriu",
+  ENCERRADO: "Encerrado",
+  CANCELADO: "Cancelado",
+};
+
+/** Mensagens de erro do banco em linguagem simples. */
+export function safraErrorMessage(error: unknown, fallback: string): string {
+  const message =
+    error && typeof error === "object" && "message" in error
+      ? String((error as { message: unknown }).message)
+      : "";
+  const known: Array<[string, string]> = [
+    [
+      "SAFRA_START_FORBIDDEN",
+      "Sua sessão não está autorizada. Entre de novo com a conta Microsoft da Editora.",
+    ],
+    [
+      "SAFRA_READ_FORBIDDEN",
+      "Sua sessão não está autorizada. Entre de novo com a conta Microsoft da Editora.",
+    ],
+    ["SAFRA_SCENARIO_NOT_STARTABLE", "Este card não está disponível para abertura."],
+    [
+      "SAFRA_SCENARIO_OWNER_UNAVAILABLE",
+      "Este card está bloqueado temporariamente até a definição de um novo dono.",
+    ],
+    ["SAFRA_INVALID_IMPACTED_AREA", "Uma das áreas escolhidas não pertence a este card."],
+    [
+      "SAFRA_START_OWNER_OWN_CARD",
+      "Você é o dono deste card. Donos não abrem protocolo do próprio card.",
+    ],
+    [
+      "SAFRA_START_ACTIVE_EXISTS",
+      "Você já tem um protocolo aberto neste card. Conclua a sua parte antes de abrir outro.",
+    ],
+    [
+      "SAFRA_IMPACT_SUMMARY_REQUIRED",
+      "Explique o problema em pelo menos 10 caracteres para orientar o dono do card.",
+    ],
+    ["SAFRA_IMPACT_SUMMARY_TOO_LONG", "A explicação passou de 2.000 caracteres. Resuma um pouco."],
+    ["SAFRA_PROBLEM_START_IN_FUTURE", "O início do problema não pode estar no futuro."],
+    [
+      "SAFRA_START_IDEMPOTENCY_CONFLICT",
+      "Os dados mudaram desde a tentativa anterior. Confira e tente de novo.",
+    ],
+    ["SAFRA_CLOSE_FORBIDDEN", "Só quem abriu o protocolo ou o dono do card pode concluir."],
+    ["SAFRA_CANCEL_FORBIDDEN", "Só quem abriu o protocolo ou o dono do card pode cancelar."],
+    ["SAFRA_TREATMENT_NOT_ACTIVE", "Este protocolo já foi encerrado ou cancelado."],
+    [
+      "SAFRA_CANCEL_REASON_REQUIRED",
+      "Explique o motivo do cancelamento em pelo menos 10 caracteres.",
+    ],
+    ["SAFRA_CANCEL_REASON_TOO_LONG", "O motivo passou de 1.000 caracteres. Resuma um pouco."],
+  ];
+  const hit = known.find(([code]) => message.includes(code));
+  return hit ? hit[1] : fallback;
+}
+
+/** "SAFRA-08" -> "08"; usado no número do protocolo (D-82). */
+export function cardNumber(code: string): string {
+  const match = /^SAFRA-(\d+)$/.exec(code);
+  return match?.[1] ?? code;
+}

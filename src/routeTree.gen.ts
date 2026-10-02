@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AbrirProtocoloRouteImport } from './routes/abrir-protocolo'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as MeusProtocolosRouteImport } from './routes/meus-protocolos'
+import { Route as ProtocolosDosMeusCardsRouteImport } from './routes/protocolos-dos-meus-cards'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +30,69 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeusProtocolosRoute = MeusProtocolosRouteImport.update({
+  id: '/meus-protocolos',
+  path: '/meus-protocolos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtocolosDosMeusCardsRoute = ProtocolosDosMeusCardsRouteImport.update({
+  id: '/protocolos-dos-meus-cards',
+  path: '/protocolos-dos-meus-cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/abrir-protocolo': typeof AbrirProtocoloRoute
   '/auth': typeof AuthRoute
+  '/meus-protocolos': typeof MeusProtocolosRoute
+  '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/abrir-protocolo': typeof AbrirProtocoloRoute
   '/auth': typeof AuthRoute
+  '/meus-protocolos': typeof MeusProtocolosRoute
+  '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/abrir-protocolo': typeof AbrirProtocoloRoute
   '/auth': typeof AuthRoute
+  '/meus-protocolos': typeof MeusProtocolosRoute
+  '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/abrir-protocolo' | '/auth'
+  fullPaths:
+    | '/'
+    | '/abrir-protocolo'
+    | '/auth'
+    | '/meus-protocolos'
+    | '/protocolos-dos-meus-cards'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/abrir-protocolo' | '/auth'
-  id: '__root__' | '/' | '/abrir-protocolo' | '/auth'
+  to:
+    | '/'
+    | '/abrir-protocolo'
+    | '/auth'
+    | '/meus-protocolos'
+    | '/protocolos-dos-meus-cards'
+  id:
+    | '__root__'
+    | '/'
+    | '/abrir-protocolo'
+    | '/auth'
+    | '/meus-protocolos'
+    | '/protocolos-dos-meus-cards'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AbrirProtocoloRoute: typeof AbrirProtocoloRoute
   AuthRoute: typeof AuthRoute
+  MeusProtocolosRoute: typeof MeusProtocolosRoute
+  ProtocolosDosMeusCardsRoute: typeof ProtocolosDosMeusCardsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +118,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/meus-protocolos': {
+      id: '/meus-protocolos'
+      path: '/meus-protocolos'
+      fullPath: '/meus-protocolos'
+      preLoaderRoute: typeof MeusProtocolosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/protocolos-dos-meus-cards': {
+      id: '/protocolos-dos-meus-cards'
+      path: '/protocolos-dos-meus-cards'
+      fullPath: '/protocolos-dos-meus-cards'
+      preLoaderRoute: typeof ProtocolosDosMeusCardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +139,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AbrirProtocoloRoute: AbrirProtocoloRoute,
   AuthRoute: AuthRoute,
+  MeusProtocolosRoute: MeusProtocolosRoute,
+  ProtocolosDosMeusCardsRoute: ProtocolosDosMeusCardsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

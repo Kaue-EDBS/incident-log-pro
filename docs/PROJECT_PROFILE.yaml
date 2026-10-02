@@ -379,6 +379,19 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+c08_reaudit:
+  status: "APPROVED_PENDING_PUBLISH_AND_HOMOLOGATION"
+  date: "2026-10-02"
+  migration: "20261002000000_c08_1_protocol_lifecycle.sql"
+  decisions: ["D-81", "D-82", "D-83", "D-84", "D-85", "D-86", "D-87", "D-88", "D-89", "D-90"]
+  protocol_number_format: "NN-SSSS (card number + per-card sequence, never reset)"
+  commands: ["safra_start_treatment(5 args)", "safra_close_my_part", "safra_cancel_treatment"]
+  reads: ["safra_get_start_catalog", "safra_get_my_treatments", "safra_get_owner_treatments"]
+  tests: ["c08_1_protocol_lifecycle.test.sql (35)", ".github/scripts/test-safra-close-cancel-rpc-concurrency.sh"]
+  primary_smoke: "PASS 2026-10-02 (transaction rolled back, nothing persisted)"
+  routes: ["/", "/meus-protocolos", "/protocolos-dos-meus-cards", "/abrir-protocolo -> /"]
+  audit_document: "docs/AUDITORIA_C08_REABERTURA_2026-10-02.md"
+
 aud_geral_c00_c07:
   status: "APPROVED"
   date: "2026-10-01"

@@ -165,6 +165,8 @@ F01 a F09: NÃO INICIADOS.
 
 ## SAFRA-C08 — UX do COMEÇO
 
+> **02/10/2026:** C08.1 (banco) e C08.2 (telas) concluídos, com encerrar e cancelar antecipados da F01/F02 (D-87) e o 12º card adiado para depois das visões (D-88). Ver `AUDITORIA_C08_REABERTURA_2026-10-02.md`. Falta publicar e homologar com login real.
+
 **Estado: EM EXECUÇÃO — START end-to-end implementado e promovido; pendente homologação UX com sessão Microsoft corporativa real antes das demais telas.**
 
 ### Gate pré-C08 — pendências que impediram iniciar a UX

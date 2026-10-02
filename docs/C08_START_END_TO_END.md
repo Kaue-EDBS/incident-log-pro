@@ -1,3 +1,5 @@
+> **02/10/2026:** este documento descreve o START de 27/09. O fluxo atual (card que se expande, número do protocolo, encerrar em duas partes e cancelar) está em `AUDITORIA_C08_REABERTURA_2026-10-02.md`.
+
 # SAFRA-C08 — START end-to-end
 
 **Data:** 27/09/2026  

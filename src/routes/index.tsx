@@ -1,46 +1,71 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Construction } from "lucide-react";
+import { ScenarioCatalog } from "@/components/ScenarioCatalog";
+import { SituationBadge } from "@/components/TreatmentActions";
+import { useMyTreatments } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Visão Geral | Painel Safra" },
+      { title: "Início | Painel Safra" },
       {
         name: "description",
-        content: "Visão geral do Painel Safra em construção.",
+        content: "Abra e acompanhe os protocolos da Safra da Editora do Brasil.",
       },
-      { property: "og:title", content: "Visão Geral | Painel Safra" },
+      { property: "og:title", content: "Início | Painel Safra" },
       {
         property: "og:description",
-        content: "Visão geral do Painel Safra em construção.",
+        content: "Abra e acompanhe os protocolos da Safra da Editora do Brasil.",
       },
     ],
   }),
-  component: Overview,
+  component: Home,
 });
 
-function Overview() {
-  return (
-    <div className="mx-auto max-w-3xl space-y-8">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Visão Geral</h1>
-        <p className="text-sm text-muted-foreground">Painel Safra — Editora do Brasil.</p>
-      </header>
+function MyOpenProtocols() {
+  const { data = [] } = useMyTreatments();
+  const open = data.filter((item) => item.status === "ACTIVE");
 
-      <section className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border bg-card px-6 py-12 text-center">
-        <Construction className="size-8 text-[color:var(--warning)]" aria-hidden="true" />
-        <p className="text-base font-semibold">Em obras</p>
-        <p className="max-w-md text-sm text-muted-foreground">
-          Esta tela está sendo reconstruída para o Painel Safra. Enquanto isso, você já pode abrir
-          protocolos.
-        </p>
-        <Link
-          to="/abrir-protocolo"
-          className="mt-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-        >
-          Abrir protocolo
+  if (open.length === 0) return null;
+
+  return (
+    <section
+      aria-labelledby="my-open-title"
+      className="rounded-xl border border-primary/30 bg-primary/5 p-4"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 id="my-open-title" className="text-sm font-semibold">
+          Seus protocolos em andamento ({open.length})
+        </h2>
+        <Link to="/meus-protocolos" className="text-sm font-medium text-primary underline">
+          Ver todos
         </Link>
-      </section>
+      </div>
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {open.slice(0, 6).map((item) => (
+          <li
+            key={item.treatment_id}
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm"
+          >
+            <span className="font-semibold">{item.protocol_number}</span>
+            <SituationBadge situation={item.situation} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function Home() {
+  return (
+    <div className="mx-auto max-w-6xl space-y-6">
+      <header className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Painel Safra</h1>
+        <p className="text-sm text-muted-foreground">
+          Algo deu errado na operação? Escolha o card, explique o problema e inicie o protocolo.
+        </p>
+      </header>
+      <MyOpenProtocols />
+      <ScenarioCatalog />
     </div>
   );
 }
