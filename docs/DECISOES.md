@@ -1406,3 +1406,10 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-119:** a próxima Safra começa quando o Kaue aperta **"Iniciar nova Safra"**.
 - Os botões ficam em Administração e **só o Kaue vê e usa** (o banco confere papel e e-mail). Encerrar exige digitar "ENCERRAR SAFRA" e pode ser desfeito em 7 dias, sem apagar dados (D-70). Cada marca fica num histórico só de acréscimo.
 - Primeiro registro: início em 01/10/2026 00:00 (São Paulo), pela D-69. Os indicadores (D-117) usam o período da Safra corrente (a aberta; sem Safra aberta, a última encerrada).
+
+### D-120 — SAFRA-M08 (Torre de Controle) cancelada
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- A M08 é **cancelada** como fase: o que ela pedia já existe em "Todos os protocolos", Saúde do sistema e Analytics; SLA, escalonamento e criticidade não existem mais (D-75, D-73, D-55). **Sem modo TV.**
+- No lugar, uma **faixa "Agora, em todos os cards"** no topo de "Todos os protocolos", só para **Jair, Bruno e admins**: em andamento, ninguém concluiu, aguardando o dono, aguardando quem abriu, fecham sozinhos em 24 h, o mais antigo, e os abertos e encerrados hoje. A faixa sempre mostra todos os cards, qualquer que seja o filtro da lista.
+

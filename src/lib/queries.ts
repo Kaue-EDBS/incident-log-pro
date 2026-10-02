@@ -131,7 +131,22 @@ export function useTreatmentTimeline(treatmentId: string, enabled: boolean) {
   });
 }
 
+const NowSummarySchema = z.object({
+  active: z.number(),
+  nobody_closed: z.number(),
+  waiting_owner: z.number(),
+  waiting_requester: z.number(),
+  closing_within_24h: z.number(),
+  oldest_opened_at: z.string().nullable(),
+  oldest_protocol_number: z.string().nullable(),
+  opened_today: z.number(),
+  closed_today: z.number(),
+});
+
+export type NowSummary = z.infer<typeof NowSummarySchema>;
+
 const AllTreatmentsSchema = z.object({
+  summary: NowSummarySchema.nullable().default(null),
   total: z.number(),
   items: SafraTreatmentListSchema,
 });

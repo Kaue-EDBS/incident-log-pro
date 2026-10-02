@@ -273,6 +273,8 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
 
   // M03: a gestão e os admins veem todos os protocolos, só leitura, com histórico.
   await page.getByRole("link", { name: "Todos os protocolos" }).first().click();
+  // D-120: faixa com os números do momento (no lugar da Torre de Controle).
+  await expect(page.getByRole("heading", { name: "Agora, em todos os cards" })).toBeVisible();
   const anyProtocol = page.getByRole("article", { name: `Protocolo ${protocol08}` });
   await expect(anyProtocol).toBeVisible();
   await expect(anyProtocol.getByRole("button", { name: "Concluído" })).toHaveCount(0);

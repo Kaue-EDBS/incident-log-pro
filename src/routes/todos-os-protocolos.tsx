@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { TreatmentList } from "@/components/TreatmentList";
 import { useViewer } from "@/lib/chameleon";
-import { useAllTreatments, useSafraStartCatalog } from "@/lib/queries";
+import { useAllTreatments, useSafraStartCatalog, type NowSummary } from "@/lib/queries";
+import { formatDateTime } from "@/lib/metrics";
 import { cardDisplayName, cardNumber } from "@/lib/safra";
 
 export const Route = createFileRoute("/todos-os-protocolos")({
@@ -21,6 +22,48 @@ const STATUS_OPTIONS = [
   { value: "RESOLVED", label: "Encerrados" },
   { value: "CANCELLED", label: "Cancelados" },
 ] as const;
+
+function NowTile({ label, value, hint }: { label: string; value: number | string; hint?: string }) {
+  return (
+    <div className="rounded-lg border border-border bg-background p-3">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
+      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+    </div>
+  );
+}
+
+/** Números do momento, de todos os cards (D-120: no lugar da Torre de Controle). */
+function NowStrip({ summary }: { summary: NowSummary }) {
+  return (
+    <section
+      aria-labelledby="now-title"
+      className="space-y-3 rounded-xl border border-border bg-card p-4"
+    >
+      <h2 id="now-title" className="text-sm font-semibold">
+        Agora, em todos os cards
+      </h2>
+      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <NowTile label="Em andamento" value={summary.active} />
+        <NowTile label="Ninguém concluiu" value={summary.nobody_closed} />
+        <NowTile label="Aguardando o dono" value={summary.waiting_owner} />
+        <NowTile label="Aguardando quem abriu" value={summary.waiting_requester} />
+        <NowTile label="Fecham sozinhos em 24 h" value={summary.closing_within_24h} />
+        <NowTile
+          label="Mais antigo"
+          value={summary.oldest_protocol_number ?? "—"}
+          {...(summary.oldest_opened_at
+            ? { hint: `aberto em ${formatDateTime(summary.oldest_opened_at)}` }
+            : {})}
+        />
+      </div>
+      <p className="text-xs text-muted-foreground">
+        Hoje: {summary.opened_today} {summary.opened_today === 1 ? "aberto" : "abertos"} e{" "}
+        {summary.closed_today} {summary.closed_today === 1 ? "encerrado" : "encerrados"}.
+      </p>
+    </section>
+  );
+}
 
 /** Visão da gestão (D-104): todos os protocolos, só leitura, com o histórico de cada um. */
 function AllProtocols() {
@@ -66,6 +109,8 @@ function AllProtocols() {
           quem abriu e o dono do card concluem ou cancelam.
         </p>
       </header>
+
+      {query.data?.summary ? <NowStrip summary={query.data.summary} /> : null}
 
       <div className="flex flex-wrap items-end gap-4 rounded-xl border border-border bg-card p-4">
         <label className="flex flex-col gap-1 text-sm">

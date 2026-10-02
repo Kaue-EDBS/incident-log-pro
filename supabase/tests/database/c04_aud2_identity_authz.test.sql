@@ -199,6 +199,8 @@ select is(
    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public'
      and p.proname ~* '(end|cancel|close|resolve|finish)'
+     -- D-118/D-119: the Safra marking commands end a season, not a protocol (Kaue only).
+     and p.proname not in ('safra_end_season', 'safra_undo_end_season')
      and has_function_privilege('authenticated', p.oid, 'EXECUTE')),
   'safra_cancel_treatment,safra_close_my_part',
   'C04 item 3: the only browser-callable END/CANCEL paths are the governed C08.1 commands'

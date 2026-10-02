@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(11);
+select plan(15);
 
 -- R1, R2 = requesters; O = owner of SAFRA-09 (Renato); G = Jair (governance); M = Amanda (admin).
 insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
@@ -80,6 +80,14 @@ select ok(
 
 select throws_ok($$ select public.safra_get_all_treatments('OPEN') $$,
   '22023', 'SAFRA_INVALID_FILTER', 'an unknown situation filter is refused');
+
+-- D-120: the "now" strip for governance and admins.
+select is((public.safra_get_all_treatments()->'summary'->>'active')::int, 1, 'D-120: protocols in progress right now');
+select is((public.safra_get_all_treatments()->'summary'->>'nobody_closed')::int, 1, 'D-120: in progress with no part closed');
+select is(public.safra_get_all_treatments()->'summary'->>'oldest_protocol_number',
+  (select protocol_number from public.treatments where id = pg_temp.t('a1')), 'D-120: the oldest protocol in progress');
+select is((public.safra_get_all_treatments('CANCELLED')->'summary'->>'active')::int, 1,
+  'D-120: the strip always shows every card, whatever the filter');
 
 select pg_temp.act_as('0f');
 select ok(pg_temp.has(public.safra_get_all_treatments(), 'a1'), 'D-104: a platform admin sees the general list');
