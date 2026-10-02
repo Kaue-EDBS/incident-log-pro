@@ -223,6 +223,16 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   // D-108: quem abriu não vê o histórico.
   await expect(mine08.getByRole("button", { name: "Ver histórico" })).toHaveCount(0);
 
+  // M10: qualquer pessoa propõe um card novo (nome e e-mail vêm da sessão).
+  await page.getByRole("link", { name: "Novo card" }).first().click();
+  await page.getByLabel("Título").fill("E2E: card proposto pelo teste");
+  await page.getByLabel("Qual é o problema?").fill("Problema descrito pelo teste automático.");
+  await page.getByLabel("Como ele afeta a Safra?").fill("Efeito na Safra descrito pelo teste.");
+  await page.getByRole("button", { name: "Enviar proposta" }).click();
+  await expect(page.getByRole("article", { name: "E2E: card proposto pelo teste" })).toBeVisible();
+  await expect(page.getByText(/Aguardando o Jair encaminhar/).first()).toBeVisible();
+  await expectAccessible(page, "novo card");
+
   // Um usuário comum não vê o Modo Camaleão nem a área de donos.
   await expect(page.getByLabel("Modo Camaleão")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Protocolos dos meus cards" })).toHaveCount(0);

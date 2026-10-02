@@ -4,6 +4,7 @@ import {
   ClipboardList,
   Eye,
   Inbox,
+  Lightbulb,
   ListChecks,
   Table2,
   LayoutGrid,
@@ -106,6 +107,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const nav: NavItem[] = [
     { to: "/", label: "Início", short: "Início", icon: LayoutGrid },
     { to: "/meus-protocolos", label: "Meus protocolos", short: "Meus", icon: ClipboardList },
+    { to: "/propostas", label: "Novo card", short: "Novo card", icon: Lightbulb },
     ...(viewer.isOwner
       ? [
           {

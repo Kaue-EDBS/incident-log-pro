@@ -16,6 +16,7 @@ import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CardsEDonosRouteImport } from './routes/cards-e-donos'
 import { Route as MeusProtocolosRouteImport } from './routes/meus-protocolos'
+import { Route as PropostasRouteImport } from './routes/propostas'
 import { Route as ProtocolosDosMeusCardsRouteImport } from './routes/protocolos-dos-meus-cards'
 import { Route as TodosOsProtocolosRouteImport } from './routes/todos-os-protocolos'
 
@@ -54,6 +55,11 @@ const MeusProtocolosRoute = MeusProtocolosRouteImport.update({
   path: '/meus-protocolos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PropostasRoute = PropostasRouteImport.update({
+  id: '/propostas',
+  path: '/propostas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProtocolosDosMeusCardsRoute = ProtocolosDosMeusCardsRouteImport.update({
   id: '/protocolos-dos-meus-cards',
   path: '/protocolos-dos-meus-cards',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/cards-e-donos': typeof CardsEDonosRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
+  '/propostas': typeof PropostasRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
   '/todos-os-protocolos': typeof TodosOsProtocolosRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/cards-e-donos': typeof CardsEDonosRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
+  '/propostas': typeof PropostasRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
   '/todos-os-protocolos': typeof TodosOsProtocolosRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cards-e-donos': typeof CardsEDonosRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
+  '/propostas': typeof PropostasRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
   '/todos-os-protocolos': typeof TodosOsProtocolosRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cards-e-donos'
     | '/meus-protocolos'
+    | '/propostas'
     | '/protocolos-dos-meus-cards'
     | '/todos-os-protocolos'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cards-e-donos'
     | '/meus-protocolos'
+    | '/propostas'
     | '/protocolos-dos-meus-cards'
     | '/todos-os-protocolos'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cards-e-donos'
     | '/meus-protocolos'
+    | '/propostas'
     | '/protocolos-dos-meus-cards'
     | '/todos-os-protocolos'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CardsEDonosRoute: typeof CardsEDonosRoute
   MeusProtocolosRoute: typeof MeusProtocolosRoute
+  PropostasRoute: typeof PropostasRoute
   ProtocolosDosMeusCardsRoute: typeof ProtocolosDosMeusCardsRoute
   TodosOsProtocolosRoute: typeof TodosOsProtocolosRoute
 }
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MeusProtocolosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/propostas': {
+      id: '/propostas'
+      path: '/propostas'
+      fullPath: '/propostas'
+      preLoaderRoute: typeof PropostasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/protocolos-dos-meus-cards': {
       id: '/protocolos-dos-meus-cards'
       path: '/protocolos-dos-meus-cards'
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CardsEDonosRoute: CardsEDonosRoute,
   MeusProtocolosRoute: MeusProtocolosRoute,
+  PropostasRoute: PropostasRoute,
   ProtocolosDosMeusCardsRoute: ProtocolosDosMeusCardsRoute,
   TodosOsProtocolosRoute: TodosOsProtocolosRoute,
 }

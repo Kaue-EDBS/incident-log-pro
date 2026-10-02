@@ -237,6 +237,26 @@ export function safraErrorMessage(error: unknown, fallback: string): string {
     ["SAFRA_SEASON_NOT_ENDED", "A Safra não está encerrada."],
     ["SAFRA_SEASON_UNDO_EXPIRED", "Passaram os 7 dias para desfazer o encerramento."],
     ["SAFRA_SEASON_ALREADY_OPEN", "Já existe uma Safra aberta."],
+    ["SAFRA_PROPOSAL_FORBIDDEN", "Você não pode fazer isso nesta proposta."],
+    ["SAFRA_PROPOSAL_WRONG_STEP", "A proposta já mudou de etapa. Recarregue a página."],
+    ["SAFRA_PROPOSAL_TITLE_REQUIRED", "Escreva um título com pelo menos 5 caracteres."],
+    [
+      "SAFRA_PROPOSAL_DESCRIPTION_REQUIRED",
+      "Explique o problema e o efeito na Safra (pelo menos 10 caracteres cada).",
+    ],
+    ["SAFRA_PROPOSAL_TOO_LONG", "Algum texto passou do limite. Resuma um pouco."],
+    [
+      "SAFRA_PROPOSAL_CONTENT_REQUIRED",
+      "Preencha todos os campos do card (pelo menos 10 caracteres cada).",
+    ],
+    ["SAFRA_PROPOSAL_AREAS_REQUIRED", "Escolha pelo menos uma área que pode ser impactada."],
+    ["SAFRA_PROPOSAL_AREA_REQUIRED", "Escolha a área responsável."],
+    ["SAFRA_PROPOSAL_INVALID_OWNER", "O dono precisa ser um dos donos de card consultados."],
+    ["SAFRA_PROPOSAL_NOTE_REQUIRED", "Registre como foi decidido (pelo menos 10 caracteres)."],
+    [
+      "SAFRA_PROPOSAL_SEPARATION_OF_DUTIES",
+      "Quem propôs ou aprovou não pode publicar. Peça a outro administrador.",
+    ],
     ["SAFRA_UNDO_NOTHING_TO_UNDO", "Não há conclusão sua para desfazer neste protocolo."],
     ["SAFRA_UNDO_WINDOW_EXPIRED", "Passaram os 5 minutos para desfazer."],
     [

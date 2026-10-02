@@ -18,6 +18,7 @@ const SCREEN_LABEL: Record<string, string> = {
   "/cards-e-donos": "Cards e donos",
   "/analytics": "Analytics",
   "/administracao": "Administração",
+  "/propostas": "Novo card",
 };
 
 function Loading() {

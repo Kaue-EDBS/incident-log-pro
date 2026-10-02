@@ -218,7 +218,7 @@ Definir o período exato usado em métricas, e-mails e análises da Safra corren
 
 ## GI-SAFRA-007 — Publicação formal do 12º card após ownership
 
-**Status:** DECIDED (D-60) — implementação na M10  
+**Status:** RESOLVED (D-60, implementada em 02/10/2026 com D-125 a D-129): protocolo e conteúdo aprovados pelo Jair; criticidade CRITICAL; sem SLA; versão 1 publicada por um admin  
 **Fase:** SAFRA-M10.  
 **Decisão do owner (30/09/2026):** o conteúdo é escrito pelo usuário que propôs; o Jair aprova; um platform admin publica; o card novo nasce CRITICAL.
 

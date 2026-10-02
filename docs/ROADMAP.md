@@ -157,7 +157,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 
 ## EIXO 2 — MEIO
 
-M01: CONCLUÍDO em 02/10/2026 (D-98 a D-101, `AUDITORIA_M01_2026-10-02.md`). M02 e M03: CONCLUÍDOS em 02/10/2026 (D-102 a D-105, `AUDITORIA_M02_M03_2026-10-02.md`). M04 **CANCELADO** pela D-110 (sem SLA). M05: CONSTRUÍDO em 02/10/2026 (D-111 a D-114, `AUDITORIA_M05_2026-10-02.md`); envio de verdade aguarda o TI. M08 **CANCELADO** pela D-120 (faixa "Agora" em Todos os protocolos). M09: CONCLUÍDO em 02/10/2026 (D-121 a D-124, `AUDITORIA_M09_2026-10-02.md`). M10 e M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
+M01: CONCLUÍDO em 02/10/2026 (D-98 a D-101, `AUDITORIA_M01_2026-10-02.md`). M02 e M03: CONCLUÍDOS em 02/10/2026 (D-102 a D-105, `AUDITORIA_M02_M03_2026-10-02.md`). M04 **CANCELADO** pela D-110 (sem SLA). M05: CONSTRUÍDO em 02/10/2026 (D-111 a D-114, `AUDITORIA_M05_2026-10-02.md`); envio de verdade aguarda o TI. M08 **CANCELADO** pela D-120 (faixa "Agora" em Todos os protocolos). M09: CONCLUÍDO em 02/10/2026 (D-121 a D-124, `AUDITORIA_M09_2026-10-02.md`). M10: CONCLUÍDO em 02/10/2026 (D-125 a D-129, `AUDITORIA_M10_2026-10-02.md`). M11: NÃO INICIADO. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
 
 ## EIXO 3 — FIM
 
@@ -580,6 +580,8 @@ Visão ampla dos cards conforme política aprovada.
 ---
 
 ## SAFRA-M10 — Governança do 12º card
+
+> **CONCLUÍDO em 02/10/2026** (D-125 a D-129): tela "Novo card". 0 ou 2+ aceites: reunião dos donos fora do Painel e o Jair registra; criticidade CRITICAL; sem SLA; publicação cria a versão 1.
 
 ### Formulário inicial
 

@@ -385,6 +385,139 @@ export function useScreenUsage(enabled: boolean) {
   });
 }
 
+const ProposalSchema = z.object({
+  proposal_id: z.string().uuid(),
+  status: z.enum([
+    "SUBMITTED",
+    "OWNER_CONSULTATION",
+    "OWNER_DEFINED",
+    "CONTENT_SUBMITTED",
+    "APPROVED",
+    "PUBLISHED",
+  ]),
+  title: z.string(),
+  problem_description: z.string(),
+  safra_impact_description: z.string(),
+  proposer_name: z.string(),
+  submitted_at: z.string(),
+  mine: z.boolean(),
+  owner_name: z.string().nullable(),
+  owner_decision: z.string().nullable(),
+  owner_note: z.string().nullable(),
+  scenario_name: z.string().nullable(),
+  trigger_description: z.string().nullable(),
+  detection_description: z.string().nullable(),
+  protocol_text: z.string().nullable(),
+  expected_impact_summary: z.string().nullable(),
+  impacted_area_ids: z.array(z.string()),
+  responsible_area: z.string().nullable(),
+  published_code: z.string().nullable(),
+  responses: z.array(
+    z.object({
+      name: z.string(),
+      response: z.string(),
+      note: z.string().nullable(),
+      responded_at: z.string(),
+    }),
+  ),
+  my_response: z.string().nullable(),
+  events: z.array(
+    z.object({
+      event_type: z.string(),
+      occurred_at: z.string(),
+      actor_name: z.string(),
+      note: z.string().nullable(),
+    }),
+  ),
+  can_forward: z.boolean(),
+  can_respond: z.boolean(),
+  can_define_owner: z.boolean(),
+  can_submit_content: z.boolean(),
+  can_approve: z.boolean(),
+  can_publish: z.boolean(),
+});
+
+const ProposalsSchema = z.object({
+  me: z.object({
+    name: z.string().nullable(),
+    email: z.string().nullable(),
+    is_candidate: z.boolean(),
+  }),
+  candidates: z.array(z.object({ principal_id: z.string().uuid(), name: z.string() })),
+  items: z.array(ProposalSchema),
+});
+
+export type Proposal = z.infer<typeof ProposalSchema>;
+export type ProposalsData = z.infer<typeof ProposalsSchema>;
+
+const PROPOSALS_KEY = ["safra-proposals"] as const;
+
+/** Propostas de card novo (M10): o banco decide o que cada pessoa vê e pode fazer. */
+export function useProposals() {
+  return useQuery({
+    queryKey: PROPOSALS_KEY,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_get_proposals", () =>
+        supabase.rpc("safra_get_proposals"),
+      );
+      if (error) throw error;
+      return ProposalsSchema.parse(data);
+    },
+  });
+}
+
+const AreasSchema = z.array(
+  z.object({ id: z.string().uuid(), code: z.string(), name: z.string() }),
+);
+
+export function useOperationalAreas(enabled: boolean) {
+  return useQuery({
+    queryKey: ["safra-operational-areas"],
+    enabled,
+    staleTime: 60 * 60 * 1000,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_get_operational_areas", () =>
+        supabase.rpc("safra_get_operational_areas"),
+      );
+      if (error) throw error;
+      return AreasSchema.parse(data);
+    },
+  });
+}
+
+type ProposalCommand =
+  | "safra_submit_proposal"
+  | "safra_forward_proposal"
+  | "safra_respond_proposal"
+  | "safra_define_proposal_owner"
+  | "safra_submit_proposal_content"
+  | "safra_approve_proposal"
+  | "safra_publish_proposal";
+
+/** Comandos da M10; cada um é conferido de novo no banco (D-68). */
+export function useProposalAction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { name: string; args: Record<string, unknown> }) => {
+      const name = input.name as ProposalCommand;
+      const { error } = await measured(name, () =>
+        (
+          supabase.rpc as unknown as (
+            fn: string,
+            args: Record<string, unknown>,
+          ) => PromiseLike<{ error: unknown }>
+        )(name, input.args),
+      );
+      if (error) throw error;
+    },
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: PROPOSALS_KEY });
+      void qc.invalidateQueries({ queryKey: KEYS.catalog });
+      void qc.invalidateQueries({ queryKey: ["safra-cards-overview"] });
+    },
+  });
+}
+
 export function useSafraStartTreatment() {
   const invalidate = useInvalidateProtocols();
 

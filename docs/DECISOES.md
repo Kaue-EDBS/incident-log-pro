@@ -1422,3 +1422,12 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-124:** **uso das telas anônimo** (D-90): conta por dia quantas vezes cada tela foi aberta, sem guardar quem abriu; só platform admins leem.
 - Pendências de governança **não** viram tela (são do projeto, não da operação). **Bruno vê o mesmo que o Jair.**
 
+### D-125 a D-129 — Governança do 12º card (M10)
+**APPROVED — 02/10/2026** — owner: Kaue. Aplica a D-60 e a D-68.
+
+- **D-125:** **qualquer pessoa** com login corporativo propõe um card novo; nome e e-mail vêm da sessão Microsoft; o formulário pede título, problema e como afeta a Safra.
+- **D-126:** o Jair encaminha aos donos de card (Daniel, Renato, Jiane). Respondidos todos, se **exatamente 1 aceitou**, ele é o dono. Com **2 ou mais aceites, ou nenhum**, os donos conversam numa **reunião fora do Painel** e o Jair registra o dono escolhido, com o motivo. Sem escalonamento (D-73).
+- **D-127:** antes de aprovar, quem propôs escreve **nome do card, gatilho, como se detecta, protocolo, impacto esperado e áreas que podem ser impactadas**; o **Jair** define a **área responsável** (na aprovação) e o dono vem da D-126. Nada é completado por inferência.
+- **D-128:** fluxo: proposta → consulta aos donos → dono definido → conteúdo → aprovação (Jair; proposta do Jair: Kaue) → publicação por um admin que não propôs nem aprovou, como **SAFRA-NN, CRITICAL, versão 1** (sem SLA). Publicar nunca reescreve versão publicada; **mudar card já publicado fica para depois**.
+- **D-129:** cada etapa gera **aviso por e-mail** pela fila da M05 (saem quando o TI liberar): Jair (proposta nova), donos consultados (pedido de aceite), quem propôs e o dono (dono definido), quem aprova (conteúdo pronto), quem propôs e os admins que podem publicar (aprovada), quem propôs, o dono e o Jair (publicada).
+
