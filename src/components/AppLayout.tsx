@@ -106,6 +106,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
     else void router.navigate({ to: "/" });
   };
 
+  // Clicar no item do menu da tela atual leva de volta ao topo da página.
+  const onNavClick = (to: string) => {
+    if (pathname === to) window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   // D-124: conta cada tela aberta, sem identificar a pessoa.
   useEffect(() => {
     logScreenView(pathname);
@@ -177,6 +182,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <Link
               key={item.to}
               to={item.to}
+              onClick={() => onNavClick(item.to)}
               aria-current={isActive(pathname, item.to) ? "page" : undefined}
               className={cn(
                 "flex min-h-11 items-center gap-3 rounded-lg border-l-4 border-transparent px-3 py-2.5 text-sm font-medium text-white/85 transition-colors hover:bg-sidebar-accent hover:text-white",
@@ -193,13 +199,23 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <p className="truncate text-xs font-medium text-white/85">
             {user?.email ?? "Usuário corporativo"}
           </p>
-          <button
-            type="button"
-            className="mt-3 min-h-11 w-full rounded-lg border border-white/30 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-sidebar-accent"
-            onClick={() => void signOut()}
-          >
-            Sair
-          </button>
+          <div className="mt-3 flex gap-2">
+            <button
+              type="button"
+              className="inline-flex min-h-11 flex-1 items-center justify-center gap-1 rounded-lg border border-white/30 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-sidebar-accent"
+              onClick={goBack}
+            >
+              <ArrowLeft className="size-4" aria-hidden="true" />
+              Voltar
+            </button>
+            <button
+              type="button"
+              className="min-h-11 flex-1 rounded-lg border border-white/30 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-sidebar-accent"
+              onClick={() => void signOut()}
+            >
+              Sair
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -208,28 +224,28 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <BrandMark className="h-7" />
           <span className="text-sm font-semibold">Painel Safra</span>
         </div>
-        <button
-          type="button"
-          className="min-h-11 rounded-lg border border-white/30 px-3 text-xs font-medium"
-          onClick={() => void signOut()}
-        >
-          Sair
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            className="inline-flex min-h-11 items-center gap-1 rounded-lg border border-white/30 px-3 text-xs font-medium"
+            onClick={goBack}
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            Voltar
+          </button>
+          <button
+            type="button"
+            className="min-h-11 rounded-lg border border-white/30 px-3 text-xs font-medium"
+            onClick={() => void signOut()}
+          >
+            Sair
+          </button>
+        </div>
       </header>
 
       <ChameleonBar />
 
       <main id="conteudo" className="px-4 pb-28 pt-6 lg:ml-64 lg:px-10 lg:pb-16 lg:pt-10">
-        {pathname !== "/" ? (
-          <button
-            type="button"
-            onClick={goBack}
-            className="mb-4 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            Voltar
-          </button>
-        ) : null}
         {children}
       </main>
 
@@ -241,6 +257,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           <Link
             key={item.to}
             to={item.to}
+            onClick={() => onNavClick(item.to)}
             aria-current={isActive(pathname, item.to) ? "page" : undefined}
             className={cn(
               "flex min-h-14 flex-1 flex-col items-center justify-center gap-1 py-2 text-xs font-medium text-muted-foreground",
