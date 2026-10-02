@@ -506,6 +506,24 @@ as $$
 $$;
 
 -- A-05: auditoria dos cadastros ----------------------------------------------
+alter table private.safra_rbac_audit_events drop constraint safra_rbac_audit_action_check;
+alter table private.safra_rbac_audit_events
+  add constraint safra_rbac_audit_action_check
+  check (action = any (array[
+    'ROLE_GRANTED'::text,
+    'ROLE_CHANGED'::text,
+    'ROLE_REVOKED'::text,
+    'ROLE_GRANT_DELETED'::text,
+    'PRINCIPAL_CREATED'::text,
+    'PRINCIPAL_BOUND'::text,
+    'PRINCIPAL_UNBOUND'::text,
+    'PRINCIPAL_DEACTIVATED'::text,
+    'PRINCIPAL_REACTIVATED'::text,
+    'PRINCIPAL_CHANGED'::text,
+    'PRINCIPAL_DELETED'::text,
+    'ACCESS_DENIED'::text
+  ]));
+
 create or replace function private.safra_audit_principal_change()
 returns trigger
 language plpgsql
