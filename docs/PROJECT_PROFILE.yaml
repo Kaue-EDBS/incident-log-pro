@@ -393,7 +393,9 @@ c09_ops_foundation:
   ops_rpcs: ["safra_log_ops_event", "safra_admin_get_ops_summary"]
   primary_smoke: "PASS 2026-10-02 (transaction rolled back, nothing persisted)"
   runbook: "docs/RUNBOOK_RECUPERACAO.md"
-  pending: ["Lovable: real restore time, plan capacity, PITR cost", "TI: e-mail alerts", "owner: publish and homologate with real login"]
+  lovable_answers: "2026-10-02: self-service restore 5-15 min (RTO proven); instance Tiny; region AWS eu-west-2; no custom headers on lovable.app"
+  gi_migration: "20261002150000_c09_gi_013_015_lovable_answers.sql"
+  pending: ["GI-SAFRA-013 instance size", "GI-SAFRA-014 data region x LGPD", "GI-SAFRA-015 security headers and own domain", "TI: e-mail alerts and external uptime monitor", "owner: publish and homologate with real login"]
   audit_document: "docs/AUDITORIA_C09_REABERTURA_2026-10-02.md"
 
 c08_reaudit:

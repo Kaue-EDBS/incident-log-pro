@@ -41,7 +41,7 @@ Script: `.github/scripts/test-safra-restore-drill.sh`, depois do teste de capaci
 - Antes = depois: 1.627 protocolos, 2.885 eventos, 186 encerrados, 50 cancelados, 430 logins, 4 vínculos, 9 papéis, 4 registros de auditoria, mesma assinatura (md5) da lista de protocolos.
 - Depois da restauração, uma pessoa restaurada abriu o protocolo **06-0145**, continuando a numeração do card.
 
-**Limite:** o ensaio mede o **nosso** caminho. A restauração real do PRIMARY é feita pelo Lovable; o tempo dela depende do suporte (pergunta aberta no runbook §6). Por isso o RTO de 4 h tem folga: 31 s nossos + o tempo do Lovable + a conferência do runbook §4.5.
+**Restauração real (resposta do Lovable, 02/10/2026):** feita por nós no painel (Cloud → Database → Backups), sem chamado; 5 a 15 min para o tamanho atual (~14 MB), com 3 a 10 min sem banco. Ela **substitui** o banco inteiro, por isso o runbook §4.5 manda exportar os dados antes. Backups diários guardados por cerca de 14 dias, com dados e logins. **RTO de 4 h comprovado com folga.** PITR só no plano Enterprise ou num projeto Supabase próprio (cerca de US$ 100/mês).
 
 ## 4. Capacidade (passo 3)
 
@@ -59,7 +59,9 @@ Conferências (todas PASS): 1.000 + 400 protocolos gravados, um por pessoa no pi
 
 Junto, o **stress** do C08.3 seguiu verde: 220 aberturas paralelas em 7 s, trava de um protocolo por pessoa e card, chave repetida, tempestade de concluir/cancelar.
 
-**Ressalva sobre o portão local:** sem limite, o portão da API local (Kong, um só computador) derrubava conexões acima de ~100 pedidos simultâneos de uma mesma máquina (320 erros de rede/500 na primeira rodada, **0 erros de banco ou de regra**). O teste agora mantém no máximo 64 pedidos em andamento. Como 400 pessoas reais não abrem 400 conexões da mesma máquina, isso não representa o uso real, mas também **não prova a capacidade do plano do Lovable Cloud**: pergunta aberta ao suporte do Lovable (runbook §6).
+**Ressalva sobre o portão local:** sem limite, o portão da API local (Kong, um só computador) derrubava conexões acima de ~100 pedidos simultâneos de uma mesma máquina (320 erros de rede/500 na primeira rodada, **0 erros de banco ou de regra**). O teste agora mantém no máximo 64 pedidos em andamento. Como 400 pessoas reais não abrem 400 conexões da mesma máquina, isso não representa o uso real, mas também **não prova a capacidade do plano do Lovable Cloud**.
+
+**Resposta do Lovable (02/10/2026):** a instância atual é a menor (**Tiny**: ~1 GB de memória, 2 vCPUs compartilhadas, 60 conexões diretas, 200 no pool) e, segundo eles, **não aguenta** 400 aberturas no mesmo minuto; recomendam **Small ou Medium** antes de liberar o acesso, ajustável pelo painel em 2 a 5 min. Observação técnica: o app não abre uma conexão de banco por pessoa (a API usa um pool fixo e enfileira os pedidos), então o limite real é processador e memória, não o número de conexões. De qualquer forma, o computador do CI é mais forte que o Tiny, então a recomendação é prudente: **GI-SAFRA-013**. Outro risco apontado: o **login** tem limite de tentativas por IP, e a Editora sai para a internet por um IP só; quem já entrou continua logado, então o risco é só no primeiro acesso em massa (runbook §4.6).
 
 ## 5. Observabilidade mínima (passo 4)
 
@@ -90,11 +92,12 @@ A pedido do owner, o Modo Camaleão deixou de valer para todos os platform admin
 | Critério | Estado |
 |---|---|
 | Meta RTO/RPO compatível com a infraestrutura | OK (D-93) |
-| Restauração comprovada e cronometrada | OK no CI (31 s); tempo real do Lovable: **pendente** |
-| Capacidade no pior caso | OK no CI (0 erros); capacidade do plano Lovable: **pendente** |
+| Restauração comprovada e cronometrada | OK: CI 31 s; Lovable 5 a 15 min pelo painel |
+| Capacidade no pior caso | OK no CI (0 erros); no PRIMARY depende do tamanho da instância (GI-SAFRA-013) |
 | Observabilidade sem segredos | OK (PRIMARY) |
 | Runbook | OK |
-| Alertas | **pendente** (chamado do TI) |
+| Alertas | **pendente** (chamado do TI; o Lovable não avisa queda do projeto: assinar https://status.lovable.dev e pedir ao TI um monitor externo de disponibilidade) |
+| Instância, região dos dados, cabeçalhos | **a decidir**: GI-SAFRA-013, 014 e 015 (antes de liberar o acesso) |
 | Smoke de login real | **pendente** (publicar e homologar, D-79) |
 
-**Veredito:** **G5.5 APROVADO COM PENDÊNCIAS EXTERNAS.** O que dependia do código e do banco está feito e testado; ficam com Lovable (tempo de restauração, capacidade do plano, PITR), TI (alertas) e owner (publicar e homologar).
+**Veredito:** **G5.5 APROVADO COM PENDÊNCIAS EXTERNAS.** O que dependia do código e do banco está feito e testado; ficam as decisões do owner (GI-SAFRA-013 a 015), o TI (alertas, monitor externo, subdomínio) e a publicação com homologação.

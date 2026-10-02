@@ -44,7 +44,7 @@
 - Tabelas em `public`: 16 (inclui o registro técnico `ops_events`, D-95), todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido pela D-73; SLA pela D-75).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Tratativas registradas: 0.
-- Migrations: **45 no PRIMARY e 45 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Migrations: **46 no PRIMARY e 46 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---
@@ -62,7 +62,8 @@
 - Encerrar (duas partes) e cancelar já existem (C08.1, D-87). **Antes de liberar o acesso às pessoas, falta o aviso ao dono (M05), publicar e homologar com login real (D-79).**
 - Telas "Meus protocolos" e "Protocolos dos meus cards": feitas no C08.2.
 - **Publicar no Lovable** a versão atual antes de liberar o acesso: a publicada é de antes do C07 e não carrega o catálogo (D-79).
-- Meta de recuperação revista (D-93: RPO 24 h, RTO 4 h); GI-SAFRA-012 resolvida. Perguntas ao Lovable: tempo real de restauração, capacidade do plano para 400 pessoas, custo do PITR.
+- Meta de recuperação revista (D-93: RPO 24 h, RTO 4 h); GI-SAFRA-012 resolvida. Lovable respondeu em 02/10: restauração pelo painel em 5 a 15 min (RTO comprovado).
+- **Antes de liberar o acesso, decidir:** GI-SAFRA-013 (subir a instância Tiny), GI-SAFRA-014 (dados em Londres x LGPD), GI-SAFRA-015 (cabeçalhos de segurança e domínio próprio).
 - Alertas por e-mail: chamado aberto no TI em 02/10/2026; até lá, conferir Administração → Saúde do sistema uma vez por dia (D-95).
 - Cabeçalhos de segurança do site (CSP, proteção contra embutir) e alertas de incidente: C08/C09 (auditoria do Lovable L-02/L-03).
 - Homologação do START com sessão real (checklist em `docs/HANDOFF_C08_START_2026-09-27.md`).

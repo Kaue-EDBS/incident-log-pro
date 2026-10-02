@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(13);
+select plan(14);
 
 -- U = corporate user; A = platform admin (Vinicius); X = non-corporate Microsoft account.
 insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
@@ -81,6 +81,12 @@ select ok(not has_function_privilege('anon', 'public.safra_log_ops_event(text,te
           and not has_function_privilege('anon', 'public.safra_admin_get_ops_summary(integer)', 'EXECUTE'),
   'anon cannot log or read');
 select ok((select relrowsecurity from pg_class where oid = 'public.ops_events'::regclass), 'RLS enabled on ops_events');
+
+select is(
+  (select count(*)::int from public.governance_issues
+   where issue_key in ('GI-SAFRA-013','GI-SAFRA-014','GI-SAFRA-015')
+     and status = 'OPEN' and description like 'OPEN — DEFERRED_TO_ACCESS_RELEASE%'),
+  3, 'GI-SAFRA-013..015 (Lovable answers) are OPEN until the owner decides');
 
 select * from finish();
 rollback;

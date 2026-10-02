@@ -1,6 +1,6 @@
 # RUNBOOK DE RECUPERAÇÃO — Painel Safra
 
-**Versão:** 1.0 — 02/10/2026 (SAFRA-C09)  
+**Versão:** 1.1 — 02/10/2026 (SAFRA-C09; respostas do Lovable incorporadas)  
 **Meta (D-93):** perda máxima de dados de **até 24 h** (RPO) e volta em **até 4 h** (RTO).  
 **Quem aciona:** Kaue Pastrello (owner). Substitutos: Amanda Bueno, João Jurado, Vinicius Moraes (platform admins).
 
@@ -13,7 +13,7 @@
 | Peça | Onde está | Como volta |
 |---|---|---|
 | Estrutura do banco e os 11 cards | `supabase/migrations` no GitHub | reconstrução automática (o CI faz isso a cada mudança, em cerca de 2 min) |
-| Protocolos, eventos, vínculos de login, auditoria, registro técnico | só no banco PRIMARY | **backup diário do Lovable Cloud** |
+| Protocolos, eventos, vínculos de login, auditoria, registro técnico | só no banco PRIMARY (AWS eu-west-2, Londres) | **backup diário do Lovable Cloud**, guardado por cerca de 14 dias, com dados e logins (`auth.users`, `auth.identities`) |
 | Telas | GitHub + publicação do Lovable | publicar de novo no Lovable |
 | Login | Microsoft Entra ID (TI) + intermediário de login do Lovable | TI / suporte do Lovable |
 
@@ -38,7 +38,7 @@
 | Telas não carregam (erro em todas as páginas) | publicação do app | republicar a última versão boa no Lovable | 4.3 |
 | Erro ao abrir/concluir depois de uma mudança recente | migration nova | desfazer com nova migration (forward fix) | 4.4 |
 | Dados sumiram ou foram corrompidos | perda de dados | restauração do backup | 4.5 |
-| Muito lento | carga ou plano pequeno | ver Saúde do sistema; pedir aumento ao Lovable | 4.6 |
+| Muito lento | carga ou plano pequeno | ver Saúde do sistema; aumentar a instância pelo painel | 4.6 |
 
 ---
 
@@ -65,18 +65,22 @@
 3. CI verde → aplicar no PRIMARY → conferir `schema_migrations` (D-52).
 
 ### 4.5 Restauração do backup (perda de dados)
+A restauração é feita **por nós, no painel do Lovable**, sem chamado. O suporte do plano Pro pode levar até 24 h úteis para responder, então não dependa dele.
+
 1. **Parar o uso**: avisar que nada deve ser aberto até a volta.
-2. Abrir chamado no suporte do Lovable pedindo a **restauração do backup diário mais recente anterior ao problema** (informar data e hora do problema).
-3. Depois da restauração, conferir:
+2. **Guardar o que existe agora** (a restauração substitui o banco inteiro): Cloud → Advanced settings → **Export data**. O arquivo tem dados pessoais: guardar só no armazenamento corporativo da Editora, **nunca** no GitHub, no CI ou em e-mail pessoal.
+3. Cloud → Database → **Backups** → escolher o backup diário mais recente **anterior** ao problema → restaurar. Tempo informado pelo Lovable: 5 a 15 min; o Painel fica sem banco por 3 a 10 min (as telas abrem, mas as ações dão erro de conexão).
+4. Depois da restauração, conferir:
    - `select count(*) from supabase_migrations.schema_migrations` igual ao número de arquivos em `supabase/migrations`;
    - se faltar alguma migration (backup antigo), aplicar as que faltam pela ordem (D-52);
    - entrar no Painel, abrir um protocolo de teste e cancelá-lo com o motivo "teste pós-restauração".
-4. Recuperar o que se perdeu desde o backup (até 24 h): pedir aos donos de card a lista de protocolos do período e registrá-los de novo, com o início real do problema.
-5. Registrar o tempo total (seção 7).
+5. Recuperar o que se perdeu desde o backup (até 24 h): comparar com o export do passo 2 e com a lista dos donos de card, e registrar de novo os protocolos do período, com o início real do problema.
+6. Registrar o tempo total (seção 7).
 
 ### 4.6 Lentidão
 1. Saúde do sistema: quantas respostas lentas e em quais telas.
-2. Se for geral, pedir ao Lovable a capacidade do plano atual e um aumento temporário.
+2. Se for geral: Cloud → Advanced settings → **Upgrade instance** (2 a 5 min). A instância atual é a menor (Tiny: ~1 GB de memória, 2 vCPUs compartilhadas). Reduzir de novo depois do pico.
+3. Se muita gente não consegue **entrar** ao mesmo tempo: o login tem limite de tentativas por IP, e a Editora sai para a internet por um IP só. Pedir que as pessoas entrem aos poucos; quem já entrou continua logado.
 
 ---
 
@@ -91,7 +95,7 @@
 
 Resultados mais recentes: `AUDITORIA_C09_REABERTURA_2026-10-02.md`.
 
-**Limite do ensaio:** a restauração **real** do PRIMARY é feita pelo Lovable; o tempo dela depende do suporte. Pendente: pedir ao Lovable o tempo típico de restauração (seção 6).
+**Tempo real (Lovable, 02/10/2026):** restauração pelo painel em 5 a 15 min, com 3 a 10 min sem banco. Somando a conferência do §4.5, a volta fica bem dentro das 4 h da D-93.
 
 ---
 
@@ -99,8 +103,8 @@ Resultados mais recentes: `AUDITORIA_C09_REABERTURA_2026-10-02.md`.
 
 | Para quem | Assunto |
 |---|---|
-| Suporte do Lovable | restauração de backup; capacidade do plano atual para 400 pessoas; restauração ponto a ponto (PITR) e custo |
-| TI da Editora | login Microsoft, grupo de acesso, MFA, caixa de envio de e-mail (chamado aberto em 02/10/2026) |
+| Suporte do Lovable (https://lovable.dev/support; até 24 h úteis no plano Pro) | incidente da plataforma; página de status https://status.lovable.dev (assinar avisos por e-mail) |
+| TI da Editora | login Microsoft, grupo de acesso, MFA, caixa de envio de e-mail (chamado aberto em 02/10/2026); monitor externo de disponibilidade; subdomínio próprio (GI-SAFRA-015) |
 | Donos de card | lista de protocolos durante a indisponibilidade |
 
 ---
