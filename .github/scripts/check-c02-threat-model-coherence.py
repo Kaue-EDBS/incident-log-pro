@@ -22,6 +22,8 @@ parity = read("docs/MATRIZ_PARIDADE.md")
 profile = read("docs/PROJECT_PROFILE.yaml")
 c05_guards = read("supabase/migrations/20260925210500_c05_terminal_state_guards.sql")
 c07_time_rules = read("supabase/tests/database/c07_aud2_time_rules.test.sql")
+m05_notifications = read("supabase/tests/database/m05_notifications.test.sql")
+m05_migration = read("supabase/migrations/20261002220000_m05_notifications.sql")
 c08_start = read("supabase/tests/database/c08_start_end_to_end.test.sql")
 
 for abuse_id in (
@@ -96,8 +98,10 @@ require(profile, "c02_reaudit:", "PROJECT_PROFILE C02 reaudit state")
 
 require(c05_guards, "END is allowed only from ACTIVE treatment", "END transition guard")
 require(c05_guards, "CANCEL requires cancellation_reason", "CANCEL reason guard")
-require(c07_time_rules, "cancel stops the reminder ladder", "CANCEL reminder boundary")
-require(c07_time_rules, "as_of before opening is rejected", "manipulated as_of boundary")
+# D-112 (M05) replaced the D-76 ladder: a closed protocol gets no late reminder, and reminder
+# timing uses only the server clock (no caller-supplied "as of" time exists any more).
+require(m05_notifications, "reminders of a closed protocol expire", "CANCEL reminder boundary")
+require(m05_migration, "t.opened_at + interval '48 hours' <= clock_timestamp()", "server-clock reminder boundary")
 require(c08_start, "same idempotency key returns same treatment", "sequential START retry contract")
 require(c08_start, "retry does not duplicate TREATMENT_OPENED", "START event dedupe contract")
 
