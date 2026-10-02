@@ -155,6 +155,39 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_events: {
+        Row: {
+          actor_user_id: string | null
+          code: string | null
+          detail: Json
+          duration_ms: number | null
+          id: string
+          kind: string
+          occurred_at: string
+          route: string | null
+        }
+        Insert: {
+          actor_user_id?: string | null
+          code?: string | null
+          detail?: Json
+          duration_ms?: number | null
+          id?: string
+          kind: string
+          occurred_at?: string
+          route?: string | null
+        }
+        Update: {
+          actor_user_id?: string | null
+          code?: string | null
+          detail?: Json
+          duration_ms?: number | null
+          id?: string
+          kind?: string
+          occurred_at?: string
+          route?: string | null
+        }
+        Relationships: []
+      }
       scenario_owners: {
         Row: {
           assigned_by: string | null
@@ -633,7 +666,13 @@ export type Database = {
           impact_summary: string | null
           opened_at: string
           opened_by: string
+          owner_closed_at: string | null
+          owner_closed_by: string | null
           owner_id_at_start: string
+          problem_started_at: string
+          protocol_number: string
+          protocol_seq: number
+          requester_closed_at: string | null
           responsible_area_id_at_start: string
           scenario_id: string
           scenario_version_id: string
@@ -653,7 +692,13 @@ export type Database = {
           impact_summary?: string | null
           opened_at?: string
           opened_by: string
+          owner_closed_at?: string | null
+          owner_closed_by?: string | null
           owner_id_at_start: string
+          problem_started_at: string
+          protocol_number: string
+          protocol_seq: number
+          requester_closed_at?: string | null
           responsible_area_id_at_start: string
           scenario_id: string
           scenario_version_id: string
@@ -673,7 +718,13 @@ export type Database = {
           impact_summary?: string | null
           opened_at?: string
           opened_by?: string
+          owner_closed_at?: string | null
+          owner_closed_by?: string | null
           owner_id_at_start?: string
+          problem_started_at?: string
+          protocol_number?: string
+          protocol_seq?: number
+          requester_closed_at?: string | null
           responsible_area_id_at_start?: string
           scenario_id?: string
           scenario_version_id?: string
@@ -730,7 +781,6 @@ export type Database = {
         Args: { p_owner_principal_id: string }
         Returns: Json
       }
-      safra_can_use_chameleon: { Args: never; Returns: boolean }
       safra_cancel_treatment: {
         Args: { p_reason: string; p_treatment_id: string }
         Returns: Json
