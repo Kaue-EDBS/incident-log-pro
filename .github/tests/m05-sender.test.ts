@@ -56,7 +56,7 @@ function fakeDeps(notices: ClaimedNotice[], sendStatus: (to: string) => number, 
 describe("M05 sender", () => {
   test("stays disabled, without touching the queue, until TI provides every setting", async () => {
     const config = readConfig((name) => (name === "MS_TENANT_ID" ? CONFIG.tenantId : undefined));
-    expect(config).toEqual(["MS_CLIENT_ID", "MS_CLIENT_SECRET", "MAIL_SENDER"]);
+    expect(config).toEqual(["MS_CLIENT_ID", "MS_CLIENT_SECRET"]);
     const fake = fakeDeps([notice("a")], () => 202);
     const result = await runOnce(config, fake.deps);
     expect(result.status).toBe("disabled");
