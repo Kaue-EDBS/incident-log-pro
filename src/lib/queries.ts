@@ -158,6 +158,24 @@ export function useCloseMyPart() {
   });
 }
 
+/** Desfazer o "Concluído" da própria parte em até 5 minutos (D-99). */
+export function useUndoMyPart() {
+  const invalidate = useInvalidateProtocols();
+
+  return useMutation({
+    mutationFn: async (treatmentId: string): Promise<SafraTreatment> => {
+      const { data, error } = await measured("safra_undo_my_part", () =>
+        supabase.rpc("safra_undo_my_part", {
+          p_treatment_id: treatmentId,
+        }),
+      );
+      if (error) throw error;
+      return SafraTreatmentSchema.parse(data);
+    },
+    onSettled: invalidate,
+  });
+}
+
 export function useCancelTreatment() {
   const invalidate = useInvalidateProtocols();
 
@@ -185,6 +203,7 @@ export const OpsSummarySchema = z.object({
     opened: z.number(),
     resolved: z.number(),
     cancelled: z.number(),
+    auto_cancelled: z.number().default(0),
     active_now: z.number(),
     oldest_active_opened_at: z.string().nullable(),
   }),

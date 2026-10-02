@@ -63,7 +63,10 @@ function SystemHealth() {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Stat label="Protocolos abertos" value={data.protocols.opened} />
             <Stat label="Encerrados" value={data.protocols.resolved} />
-            <Stat label="Cancelados" value={data.protocols.cancelled} />
+            <Stat
+              label="Cancelados (automáticos em 72 h)"
+              value={`${data.protocols.cancelled} (${data.protocols.auto_cancelled})`}
+            />
             <Stat label="Em andamento agora" value={data.protocols.active_now} />
           </div>
           <p className="text-xs text-muted-foreground">

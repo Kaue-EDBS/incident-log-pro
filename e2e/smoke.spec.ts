@@ -204,16 +204,19 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   await expect(page.getByRole("heading", { name: `Protocolo ${protocol08}` })).toBeVisible();
   await expect(page.getByText("Tempo desde a abertura:").first()).toBeVisible();
   await expectAccessible(page, "meus protocolos");
-  await page
-    .getByRole("article", { name: `Protocolo ${protocol08}` })
-    .getByRole("button", { name: "Concluído" })
-    .click();
+  const mine08 = page.getByRole("article", { name: `Protocolo ${protocol08}` });
+  await expect(mine08.getByText(/será cancelado automaticamente/)).toBeVisible();
+  await mine08.getByRole("button", { name: "Concluído" }).click();
   await page.getByRole("button", { name: "Sim, concluir" }).click();
-  await expect(
-    page
-      .getByRole("article", { name: `Protocolo ${protocol08}` })
-      .getByText("Aguardando o dono do card"),
-  ).toBeVisible();
+  await expect(mine08.getByText("Aguardando o dono do card")).toBeVisible();
+
+  // M01 (D-99): desfazer em até 5 minutos e concluir de novo.
+  await mine08.getByRole("button", { name: /Desfazer conclusão/ }).click();
+  await expect(mine08.getByText("Em andamento", { exact: true })).toBeVisible();
+  await mine08.getByRole("button", { name: "Concluído" }).click();
+  await page.getByRole("button", { name: "Sim, concluir" }).click();
+  await expect(mine08.getByText("Aguardando o dono do card")).toBeVisible();
+  await expect(mine08.getByText(/será cancelado automaticamente/)).toHaveCount(0);
 
   // Um usuário comum não vê o Modo Camaleão nem a área de donos.
   await expect(page.getByLabel("Modo Camaleão")).toHaveCount(0);

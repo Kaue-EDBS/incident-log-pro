@@ -75,6 +75,7 @@ A restauração é feita **por nós, no painel do Lovable**, sem chamado. O supo
 4. Depois da restauração, conferir:
    - `select count(*) from supabase_migrations.schema_migrations` igual ao número de arquivos em `supabase/migrations`;
    - se faltar alguma migration (backup antigo), aplicar as que faltam pela ordem (D-52);
+   - `select jobname from cron.job` mostra os 2 agendamentos (`safra-auto-cancel-72h` e `safra-cron-log-cleanup`, D-101); se faltar, reaplicar a migration `20261002160000`;
    - entrar no Painel, abrir um protocolo de teste e cancelá-lo com o motivo "teste pós-restauração".
 5. Recuperar o que se perdeu desde o backup (até 24 h): comparar com o export do passo 2 e com a lista dos donos de card, e registrar de novo os protocolos do período, com o início real do problema.
 6. Registrar o tempo total (seção 7).

@@ -32,7 +32,7 @@ O **solicitante** (D-71) é persistido pelo backend com horário oficial e trilh
 Cada pessoa pode ter no máximo um protocolo em andamento por card, contado pela parte dela (D-57/D-66).
 
 ### RB-SAFRA-004 — END
-O encerramento tem **duas partes** (D-66): a do **solicitante** e a do **dono do card**. Cada parte é fechada pela própria pessoa, logada no próprio perfil (D-64), com autor e horário do servidor. O protocolo só fica Encerrado com as duas partes fechadas. Situações intermediárias: "Aguardando dono" e "Aguardando solicitante" (D-72).
+O encerramento tem **duas partes** (D-66): a do **solicitante** e a do **dono do card**. Cada parte é fechada pela própria pessoa, logada no próprio perfil (D-64), com autor e horário do servidor. O protocolo só fica Encerrado com as duas partes fechadas. Situações intermediárias: "Aguardando dono" e "Aguardando solicitante" (D-72). Quem concluiu a própria parte pode desfazer em até 5 minutos, enquanto o protocolo estiver em andamento (D-99). Encerrado e Cancelado nunca voltam (D-98).
 
 ### RB-SAFRA-005 — Execução durante a tratativa
 Não existe papel funcional separado de `scenario_updater`.
@@ -42,7 +42,7 @@ O Painel Safra não executa nem controla passo a passo o trabalho operacional do
 O solicitante fecha a parte dele quando a necessidade estiver atendida; o dono do card fecha a parte do dono (RB-SAFRA-004).
 
 ### RB-SAFRA-006 — Cancelamento auditável
-Tratativa incorreta vira `CANCELLED`, por decisão do **solicitante ou do dono do card**, sempre com motivo (D-66); exclusão física é proibida no fluxo normal.
+Tratativa incorreta vira `CANCELLED`, por decisão do **solicitante ou do dono do card**, sempre com motivo (D-66); exclusão física é proibida no fluxo normal. Não há correção pelo admin: cancela e abre de novo (D-100). Protocolo sem nenhuma parte concluída é cancelado automaticamente 72 horas depois da abertura (D-101).
 
 ### RB-SAFRA-007 — Versão congelada
 Ao abrir, persistir `scenario_version_id`. Histórico não é recalculado contra versão futura.

@@ -155,7 +155,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 
 ## EIXO 2 — MEIO
 
-M01 a M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
+M01: CONCLUÍDO em 02/10/2026 (D-98 a D-101, `AUDITORIA_M01_2026-10-02.md`). M02 a M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
 
 ## EIXO 3 — FIM
 
@@ -325,29 +325,28 @@ O Painel **não** precisa saber em qual passo operacional a equipe está.
 
 ## SAFRA-M01 — State machine
 
-Estados:
+> **CONCLUÍDO em 02/10/2026** — revisto pelas decisões D-66, D-57, D-87 e D-98 a D-101. Detalhes em `AUDITORIA_M01_2026-10-02.md`.
 
-```text
-ACTIVE
-RESOLVED
-CANCELLED
-```
+Estados: `ACTIVE` (Em andamento, Aguardando dono, Aguardando solicitante), `RESOLVED` (Encerrado), `CANCELLED` (Cancelado).
 
 Transições:
 
 ```text
-NEW START -> ACTIVE
-ACTIVE -> RESOLVED   # END válido
-ACTIVE -> CANCELLED  # CANCEL válido + motivo
+START                     -> ACTIVE
+ACTIVE, uma parte conclui -> ACTIVE (aguardando a outra parte)
+ACTIVE, desfazer ≤ 5 min  -> ACTIVE (a parte volta a ficar aberta)          D-99
+ACTIVE, as duas concluem  -> RESOLVED                                       D-66
+ACTIVE, cancelar + motivo -> CANCELLED (quem abriu ou o dono)               D-66
+ACTIVE, 72 h sem nenhuma conclusão -> CANCELLED automático                  D-101
+RESOLVED / CANCELLED      -> definitivo (sem reabrir, sem correção admin)   D-98, D-100
 ```
 
 Regras:
 
-- qualquer usuário autenticado pode executar END/CANCEL;
-- backend valida estado atual;
-- `RESOLVED`/`CANCELLED` não voltam silenciosamente a `ACTIVE`;
-- concorrência END x CANCEL precisa resultar em uma única transição;
-- regra de múltiplas tratativas simultâneas do mesmo cenário deve ser decidida aqui.
+- só quem abriu e o dono do card concluem e cancelam (D-66), cada um no próprio login (D-64);
+- o banco valida o estado atual e o horário é sempre do servidor;
+- concorrência entre concluir, desfazer e cancelar resulta numa única transição (testes de concorrência e stress);
+- um protocolo em andamento por pessoa por card (D-57).
 
 ---
 

@@ -1341,3 +1341,12 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 
 - O TI **não** vai configurar um monitor externo que confere o Painel a cada minuto (sugestão do Lovable em 02/10/2026).
 - Consequência aceita: se o Painel ou o banco cair por inteiro, ninguém é avisado automaticamente; a queda é percebida por quem usa ou pela página de status do Lovable (https://status.lovable.dev, avisos por e-mail). Os erros parciais continuam na Saúde do sistema (D-95).
+
+### D-98 a D-101 — Regras de mudança de situação do protocolo (M01)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-98:** **sem reabrir.** Encerrado e Cancelado são definitivos; se o problema voltar, abre-se um protocolo novo.
+- **D-99:** quem concluiu a **própria parte** pode **desfazer em até 5 minutos**, enquanto o protocolo estiver em andamento (se a outra parte já concluiu, ele virou Encerrado e não volta). Fica registrado (`REQUESTER_PART_UNDONE` / `OWNER_PART_UNDONE`). Não vale se a pessoa já abriu outro protocolo no mesmo card (D-57).
+- **D-100:** **sem correção pelo admin.** Protocolo aberto errado é cancelado e aberto de novo.
+- **D-101:** protocolo **sem nenhuma parte concluída** é **cancelado automaticamente 72 horas depois da abertura**, sem autor, com o motivo "Cancelado automaticamente: 72 horas sem nenhuma conclusão (D-101)." Se uma das partes já concluiu, ele não é cancelado: continua aguardando a outra parte. Roda a cada 10 minutos.
+

@@ -134,11 +134,23 @@ select line from (
   select random(), 'p4:own:' || id || '|' || owner_id || '|' || owner_email || '|select public.safra_close_my_part(''' || id || '''::uuid)->>''situation''' from t
   union all
   select random(), 'p4:can:' || id || '|' || opened_by || '|' || req_email || '|select public.safra_cancel_treatment(''' || id || '''::uuid, ''Stress: cancelamento concorrente'')->>''situation''' from t where rn % 3 = 0
+  union all
+  -- M01 (D-99): desfazer no meio da tempestade
+  select random(), 'p4:undo:' || id || '|' || opened_by || '|' || req_email || '|select public.safra_undo_my_part(''' || id || '''::uuid)->>''situation''' from t where rn % 4 = 1
 ) x order by r;
 SQL
 t0=$(date +%s)
 run_parallel "${WORK}/p4.jobs" "${WORK}/p4.out"
-echo "Phase 4: $(wc -l < "${WORK}/p4.jobs") jobs in $(( $(date +%s) - t0 ))s"
+echo "Phase 4: $(wc -l < "${WORK}/p4.jobs") jobs in $(( $(date +%s) - t0 ))s, $(grep '^p4:undo:' "${WORK}/p4.out" | grep -c '|ok|' || true) undos succeeded"
+
+# --- phase 5: whoever had the part undone concludes again --------------------------
+q > "${WORK}/p5.jobs" <<'SQL'
+select 'p5:req:' || t.id || '|' || t.opened_by || '|' || ru.email || '|select public.safra_close_my_part(''' || t.id || '''::uuid)->>''situation'''
+from public.treatments t join auth.users ru on ru.id = t.opened_by
+where ru.email like 'stress.user%' and t.status = 'ACTIVE' and t.requester_closed_at is null
+  and t.opened_by not in ('5e000000-0000-4000-8000-000000000021'::uuid, '5e000000-0000-4000-8000-000000000022'::uuid);
+SQL
+if [[ -s "${WORK}/p5.jobs" ]]; then run_parallel "${WORK}/p5.jobs" "${WORK}/p5.out"; else : > "${WORK}/p5.out"; fi
 
 # --- checks -------------------------------------------------------------------------
 fail=0
@@ -157,7 +169,8 @@ check "phase 2 the others were refused by the lock" "$(grep -c 'SAFRA_START_ACTI
 check "phase 3 same key -> one protocol" "$(q -c "select count(*) from public.treatments where start_idempotency_key = '${KEY}';")" "1"
 check "phase 3 all 30 replies point to the same protocol" "$(cut -d'|' -f4 "${WORK}/p3.out" | sort -u | wc -l | tr -d ' ')" "1"
 check "phase 3 one TREATMENT_OPENED event" "$(q -c "select count(*) from public.treatment_events e join public.treatments t on t.id = e.treatment_id where t.start_idempotency_key = '${KEY}' and e.event_type = 'TREATMENT_OPENED';")" "1"
-check "phase 4 no unexpected errors" "$(grep '|err|' "${WORK}/p4.out" | grep -v -c 'SAFRA_TREATMENT_NOT_ACTIVE' || true)" "0"
+check "phase 4 no unexpected errors" "$(grep '|err|' "${WORK}/p4.out" | grep -v -E -c 'SAFRA_TREATMENT_NOT_ACTIVE|SAFRA_UNDO_NOTHING_TO_UNDO' || true)" "0"
+check "phase 5 no errors when concluding again" "$(grep -c '|err|' "${WORK}/p5.out" || true)" "0"
 check "phase 4 no protocol left ACTIVE with both parts closed" "$(q -c "select count(*) from public.treatments where status = 'ACTIVE' and requester_closed_at is not null and owner_closed_at is not null;")" "0"
 check "phase 4 every stress protocol ended RESOLVED or CANCELLED" "$(q -c "
   select count(*) from public.treatments t join auth.users u on u.id = t.opened_by
@@ -167,11 +180,20 @@ check "phase 4 no protocol both resolved and cancelled" "$(q -c "
   select count(*) from public.treatments t
   where exists (select 1 from public.treatment_events e where e.treatment_id = t.id and e.event_type = 'TREATMENT_RESOLVED')
     and exists (select 1 from public.treatment_events e where e.treatment_id = t.id and e.event_type = 'TREATMENT_CANCELLED');")" "0"
-check "phase 4 no duplicated part or terminal events" "$(q -c "
+check "phase 4 part events add up (closed - undone is 0 or 1; one terminal event at most)" "$(q -c "
   select count(*) from (
-    select treatment_id, event_type from public.treatment_events
-    where event_type in ('REQUESTER_PART_CLOSED','OWNER_PART_CLOSED','TREATMENT_RESOLVED','TREATMENT_CANCELLED')
-    group by 1, 2 having count(*) > 1) x;")" "0"
+    select treatment_id,
+      count(*) filter (where event_type = 'REQUESTER_PART_CLOSED') - count(*) filter (where event_type = 'REQUESTER_PART_UNDONE') rq,
+      count(*) filter (where event_type = 'OWNER_PART_CLOSED') - count(*) filter (where event_type = 'OWNER_PART_UNDONE') ow,
+      count(*) filter (where event_type = 'TREATMENT_RESOLVED') rs,
+      count(*) filter (where event_type = 'TREATMENT_CANCELLED') cn
+    from public.treatment_events group by 1) x
+  where rq not in (0, 1) or ow not in (0, 1) or rs > 1 or cn > 1;")" "0"
+check "phase 4 closed parts match their events" "$(q -c "
+  select count(*) from public.treatments t join auth.users u on u.id = t.opened_by
+  where u.email like 'stress.user%'
+    and ((t.requester_closed_at is not null) <> ((select count(*) filter (where e.event_type = 'REQUESTER_PART_CLOSED') - count(*) filter (where e.event_type = 'REQUESTER_PART_UNDONE') from public.treatment_events e where e.treatment_id = t.id) = 1)
+      or (t.owner_closed_at is not null) <> ((select count(*) filter (where e.event_type = 'OWNER_PART_CLOSED') - count(*) filter (where e.event_type = 'OWNER_PART_UNDONE') from public.treatment_events e where e.treatment_id = t.id) = 1));")" "0"
 check "phase 4 RESOLVED status matches its event" "$(q -c "
   select count(*) from public.treatments t join auth.users u on u.id = t.opened_by
   where u.email like 'stress.user%'

@@ -379,6 +379,18 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+m01_state_machine:
+  status: "APPROVED"
+  date: "2026-10-02"
+  migration: "20261002160000_m01_undo_part_and_auto_cancel.sql"
+  decisions: ["D-98", "D-99", "D-100", "D-101"]
+  reopen: "never (D-98)"
+  undo_own_part: "within 5 minutes while ACTIVE (safra_undo_my_part, D-99)"
+  admin_correction: "none; cancel and open again (D-100)"
+  auto_cancel: "72 h after opening when no part closed; pg_cron every 10 min (private.safra_auto_cancel_stale, D-101)"
+  tests: ["m01_state_rules.test.sql (34)", "test-safra-stress.sh phase 4 with undo + phase 5"]
+  audit_document: "docs/AUDITORIA_M01_2026-10-02.md"
+
 c09_ops_foundation:
   status: "G5_5_APPROVED_PENDING_EXTERNAL"
   date: "2026-10-02"

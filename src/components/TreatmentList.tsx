@@ -124,6 +124,13 @@ export function TreatmentList({
               </p>
             ) : null}
 
+            {item.auto_cancel_at ? (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Se ninguém concluir, será cancelado automaticamente em{" "}
+                {formatDateTime(item.auto_cancel_at)} (72 h depois da abertura).
+              </p>
+            ) : null}
+
             {item.status === "ACTIVE" ? (
               <div className="mt-4">
                 <TreatmentActions treatment={item} />

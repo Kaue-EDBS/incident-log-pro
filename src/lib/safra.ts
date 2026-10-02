@@ -50,6 +50,11 @@ export const SafraTreatmentSchema = z.object({
   closed_at: z.string().nullable(),
   cancelled_at: z.string().nullable(),
   cancellation_reason: z.string().nullable(),
+  // M01 (D-99, D-101); com padrão para funcionar antes da migration chegar ao banco.
+  auto_cancelled: z.boolean().default(false),
+  auto_cancel_at: z.string().nullable().default(null),
+  undo_until: z.string().nullable().default(null),
+  can_undo_my_part: z.boolean().default(false),
   server_time: z.string(),
   my_role: z.enum(["REQUESTER", "OWNER"]).nullable(),
   can_close_my_part: z.boolean(),
@@ -168,6 +173,13 @@ export function safraErrorMessage(error: unknown, fallback: string): string {
       "Explique o motivo do cancelamento em pelo menos 10 caracteres.",
     ],
     ["SAFRA_CANCEL_REASON_TOO_LONG", "O motivo passou de 1.000 caracteres. Resuma um pouco."],
+    ["SAFRA_UNDO_FORBIDDEN", "Só quem concluiu a parte pode desfazer."],
+    ["SAFRA_UNDO_NOTHING_TO_UNDO", "Não há conclusão sua para desfazer neste protocolo."],
+    ["SAFRA_UNDO_WINDOW_EXPIRED", "Passaram os 5 minutos para desfazer."],
+    [
+      "SAFRA_UNDO_BLOCKED_BY_NEW_PROTOCOL",
+      "Você já abriu outro protocolo neste card. Conclua ou cancele o novo antes de desfazer.",
+    ],
   ];
   const hit = known.find(([code]) => message.includes(code));
   return hit ? hit[1] : fallback;

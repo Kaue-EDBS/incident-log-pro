@@ -1,5 +1,14 @@
-import { useState } from "react";
-import { Ban, CheckCircle2, CircleDot, Clock3, Hourglass, Loader2, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Ban,
+  CheckCircle2,
+  CircleDot,
+  Clock3,
+  Hourglass,
+  Loader2,
+  Undo2,
+  XCircle,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -14,7 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useCancelTreatment, useCloseMyPart } from "@/lib/queries";
+import { useCancelTreatment, useCloseMyPart, useUndoMyPart } from "@/lib/queries";
 import { SITUATION_LABEL, safraErrorMessage } from "@/lib/safra";
 import type { SafraSituation, SafraTreatment } from "@/lib/safra";
 import { cn } from "@/lib/utils";
@@ -51,7 +60,25 @@ export function SituationBadge({ situation }: { situation: SafraSituation }) {
 
 const MIN_REASON = 10;
 
-/** Concluído e Cancelar (D-64/D-66), cada um com confirmação explícita. */
+function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+/** Mostra o "Desfazer" só até o prazo (D-99); o banco confere de novo ao desfazer. */
+function useUndoStillOpen(undoUntil: string | null, serverTime: string) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!undoUntil) return;
+    const id = window.setInterval(() => setNow(Date.now()), 15000);
+    return () => window.clearInterval(id);
+  }, [undoUntil]);
+  if (!undoUntil) return false;
+  // Corrige a diferença entre o relógio do computador e o do servidor.
+  const skew = new Date(serverTime).getTime() - Date.now();
+  return now + skew < new Date(undoUntil).getTime();
+}
+
+/** Concluído, Desfazer e Cancelar (D-64/D-66/D-99), cada um com confirmação explícita. */
 export function TreatmentActions({
   treatment,
   onChanged,
@@ -60,13 +87,30 @@ export function TreatmentActions({
   onChanged?: (updated: SafraTreatment) => void;
 }) {
   const closePart = useCloseMyPart();
+  const undoPart = useUndoMyPart();
   const cancel = useCancelTreatment();
+  const undoOpen = useUndoStillOpen(
+    treatment.can_undo_my_part ? treatment.undo_until : null,
+    treatment.server_time,
+  );
   const [reason, setReason] = useState("");
   const [cancelOpen, setCancelOpen] = useState(false);
-  const busy = closePart.isPending || cancel.isPending;
+  const busy = closePart.isPending || cancel.isPending || undoPart.isPending;
   const isOwner = treatment.my_role === "OWNER";
 
-  if (!treatment.can_close_my_part && !treatment.can_cancel) return null;
+  const canUndo = treatment.can_undo_my_part && undoOpen;
+
+  if (!treatment.can_close_my_part && !treatment.can_cancel && !canUndo) return null;
+
+  const confirmUndo = async () => {
+    try {
+      const updated = await undoPart.mutateAsync(treatment.treatment_id);
+      onChanged?.(updated);
+      toast.success(`Sua conclusão do protocolo ${updated.protocol_number} foi desfeita.`);
+    } catch (error) {
+      toast.error(safraErrorMessage(error, "Não foi possível desfazer agora. Tente de novo."));
+    }
+  };
 
   const confirmClose = async () => {
     try {
@@ -118,7 +162,7 @@ export function TreatmentActions({
                 {isOwner
                   ? "Você confirma, como dono do card, que o problema foi resolvido."
                   : "Você confirma que o problema foi resolvido do seu lado. O dono do card também confirma a parte dele."}{" "}
-                Esta ação não pode ser desfeita.
+                Você pode desfazer em até 5 minutos, enquanto a outra parte não concluir.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -129,6 +173,23 @@ export function TreatmentActions({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+      ) : null}
+
+      {canUndo && treatment.undo_until ? (
+        <Button
+          size="lg"
+          variant="outline"
+          className="min-h-11 px-6"
+          disabled={busy}
+          onClick={() => void confirmUndo()}
+        >
+          {undoPart.isPending ? (
+            <Loader2 className="animate-spin" aria-hidden="true" />
+          ) : (
+            <Undo2 aria-hidden="true" />
+          )}
+          Desfazer conclusão (até {formatTime(treatment.undo_until)})
+        </Button>
       ) : null}
 
       {treatment.can_cancel ? (
