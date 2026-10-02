@@ -121,10 +121,25 @@ test.afterEach(async ({}, testInfo) => {
     .innerText()
     .catch(() => "");
   for (const line of text.split("\n").filter(Boolean).slice(0, 60)) console.log(`PAGE: ${line}`);
-  const binding =
-    await sql`select display_name, user_id is not null as bound from private.safra_principals
-                            where display_name in ('Jiane Rodrigues', 'Kaue Pastrello')`;
+  const binding = await sql`
+    select p.display_name, p.user_id, p.is_active,
+           (select array_agg(g.role || case when g.revoked_at is null then '' else ' (revoked)' end)
+              from private.safra_role_grants g where g.principal_id = p.id) as roles
+    from private.safra_principals p
+    where p.display_name in ('Jiane Rodrigues', 'Kaue Pastrello')`;
   console.log(`PAGE: principals ${JSON.stringify(binding)}`);
+  console.log(`PAGE: e2e people ${JSON.stringify(people)}`);
+  const roles = await lastPage
+    .evaluate(async () => {
+      const key = Object.keys(localStorage).find((k) => k.endsWith("-auth-token"));
+      const token = key
+        ? (JSON.parse(localStorage.getItem(key) ?? "{}").access_token as string)
+        : "";
+      const url = (window as unknown as { __E2E_URL?: string }).__E2E_URL ?? "";
+      return { key, hasToken: Boolean(token), url };
+    })
+    .catch(() => null);
+  console.log(`PAGE: storage ${JSON.stringify(roles)}`);
 });
 
 test.afterAll(async () => {
@@ -232,7 +247,7 @@ test("owner: sees own card protocols and closes the last part", async ({ browser
   await expectAccessible(page, "protocolos dos meus cards");
   await mine.getByRole("button", { name: "Concluído" }).click();
   await page.getByRole("button", { name: "Sim, concluir" }).click();
-  await expect(mine.getByText("Encerrado")).toBeVisible();
+  await expect(mine.getByText("Encerrado", { exact: true })).toBeVisible();
 });
 
 test("admin: Modo Camaleão previews other audiences, read-only", async ({ browser }) => {
