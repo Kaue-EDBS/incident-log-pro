@@ -52,7 +52,7 @@
 - Tabelas em `public`: 21 (inclui o registro técnico `ops_events`, D-95), todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido pela D-73; SLA pela D-75).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Protocolos registrados: 4 em 02/10/2026 (03-0001, demonstração do owner, fora do analytics pela D-115; 01-0001, 04-0001 e 09-0001, cancelados pelo owner).
-- Migrations: **63 no PRIMARY e 64 no repositório** (D-137 aguarda o CI), mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Migrations: **64 no PRIMARY e 64 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---

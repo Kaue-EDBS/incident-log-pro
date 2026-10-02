@@ -1496,3 +1496,12 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - Envio: rodada de 40 s (o agendador espera 60 s).
 - Tela: "Tentar de novo" no login quando a conexão falha; resumo nos títulos das seções fechadas; confirmação em publicar/aprovar/recusar/"Não aceito"; aviso de proposta já em andamento; botões de 44 px; textos sem códigos internos.
 
+### D-138 — Nomes nas telas e menu do celular
+**APPROVED — 02/10/2026** — owner: Kaue (respostas 1 a 5 da auditoria de UX).
+
+1. "Novo card" passa a ser **"Sugerir card"** (menu, título e uso das telas), para não ser confundido com abrir protocolo.
+2. "Analytics" passa a ser **"Indicadores"**; as colunas dizem o que é cada sigla: Tempo para perceber (MTTD), Tempo para resolver (MTTR), Tempo entre falhas (MTBF), Tempo funcionando (MTTF).
+3. Na faixa "Agora", o bloco de todos os protocolos ativos passa a ser **"Abertos agora"** (o selo "Em andamento" continua sendo só o protocolo que ninguém concluiu).
+4. Um nome só para a ação: **"Abrir protocolo"**.
+5. Celular: o menu de baixo mostra até 5 itens; quando há mais, os 4 primeiros e **"Mais"** com o resto.
+

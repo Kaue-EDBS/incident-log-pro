@@ -8,7 +8,7 @@ import { cardDisplayName, cardNumber } from "@/lib/safra";
 import { CollapsibleSection } from "@/components/CollapsibleSection";
 
 export const Route = createFileRoute("/analytics")({
-  head: () => ({ meta: [{ title: "Analytics | Painel Safra" }] }),
+  head: () => ({ meta: [{ title: "Indicadores | Painel Safra" }] }),
   component: Analytics,
 });
 
@@ -132,7 +132,7 @@ function Analytics() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Indicadores</h1>
         <p className="text-sm text-muted-foreground">
           {data?.scope === "ALL" ? "Todos os cards" : "Os seus cards"} na Safra corrente
           {data ? `, desde ${formatDateTime(data.season_start)}` : ""}. Conta só protocolo
@@ -168,16 +168,16 @@ function Analytics() {
                     Falhas
                   </th>
                   <th scope="col" className="py-2 pr-3 font-medium">
-                    MTTD
+                    Tempo para perceber (MTTD)
                   </th>
                   <th scope="col" className="py-2 pr-3 font-medium">
-                    MTTR
+                    Tempo para resolver (MTTR)
                   </th>
                   <th scope="col" className="py-2 pr-3 font-medium">
-                    MTBF
+                    Tempo entre falhas (MTBF)
                   </th>
                   <th scope="col" className="py-2 font-medium">
-                    MTTF
+                    Tempo funcionando (MTTF)
                   </th>
                 </tr>
               </thead>

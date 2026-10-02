@@ -19,7 +19,7 @@ export const Route = createFileRoute("/todos-os-protocolos")({
 
 const STATUS_OPTIONS = [
   { value: "", label: "Todas as situações" },
-  { value: "ACTIVE", label: "Em andamento (inclui aguardando)" },
+  { value: "ACTIVE", label: "Abertos agora (todas as etapas)" },
   { value: "RESOLVED", label: "Encerrados" },
   { value: "CANCELLED", label: "Cancelados" },
 ] as const;
@@ -39,12 +39,12 @@ function NowStrip({ summary }: { summary: NowSummary }) {
   return (
     <CollapsibleSection
       id="now-title"
-      title={`Agora, em todos os cards: ${summary.active} em andamento · ${summary.closing_within_24h} fecham sozinhos em 24 h`}
+      title={`Agora, em todos os cards: ${summary.active} abertos agora · ${summary.closing_within_24h} fecham sozinhos em 24 h`}
       className="space-y-3 p-4"
       titleClassName="text-sm"
     >
       <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <NowTile label="Em andamento" value={summary.active} />
+        <NowTile label="Abertos agora" value={summary.active} />
         <NowTile label="Ninguém concluiu" value={summary.nobody_closed} />
         <NowTile label="Aguardando o dono" value={summary.waiting_owner} />
         <NowTile label="Aguardando quem abriu" value={summary.waiting_requester} />

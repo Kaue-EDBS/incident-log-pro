@@ -20,7 +20,7 @@ import { ConfirmButton } from "@/components/ConfirmButton";
 export const Route = createFileRoute("/propostas")({
   head: () => ({
     meta: [
-      { title: "Novo card | Painel Safra" },
+      { title: "Sugerir card | Painel Safra" },
       { name: "description", content: "Proponha um card novo para a Safra." },
     ],
   }),
@@ -525,7 +525,7 @@ function Proposals() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Novo card</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Sugerir card</h1>
         <p className="text-sm text-muted-foreground">
           Viu um problema da Safra que ainda não tem card? Proponha. O Jair encaminha aos donos de
           card, um deles aceita ser o dono, você escreve o conteúdo, o Jair aprova e um

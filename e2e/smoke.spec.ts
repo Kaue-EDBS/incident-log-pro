@@ -197,7 +197,7 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   await expect(page.getByRole("heading", { name: "Qual é o problema?" })).toHaveCount(0);
   await expectAccessible(page, "card aberto");
 
-  const start = page.getByRole("button", { name: "Iniciar protocolo" });
+  const start = page.getByRole("button", { name: "Abrir protocolo", exact: true });
   await expect(start).toBeDisabled();
   await page.getByLabel("O que está acontecendo? (obrigatório)").fill("curto");
   await expect(start).toBeDisabled();
@@ -243,7 +243,7 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   await expect(mine08.getByRole("button", { name: "Ver histórico" })).toHaveCount(0);
 
   // M10: qualquer pessoa propõe um card novo (nome e e-mail vêm da sessão).
-  await page.getByRole("link", { name: "Novo card" }).first().click();
+  await page.getByRole("link", { name: "Sugerir card" }).first().click();
   await expand(page, "Propor um card novo");
   await page.getByLabel("Título").fill("E2E: card proposto pelo teste");
   await page.getByLabel("Qual é o problema?").fill("Problema descrito pelo teste automático.");
@@ -267,7 +267,7 @@ test("requester: cancel needs a reason", async ({ browser }) => {
   await page
     .getByLabel("O que está acontecendo? (obrigatório)")
     .fill("Pedidos sem movimentação há mais de 48 horas na transportadora");
-  await page.getByRole("button", { name: "Iniciar protocolo" }).click();
+  await page.getByRole("button", { name: "Abrir protocolo", exact: true }).click();
   await page.getByRole("button", { name: "Sim, abrir" }).click();
   const toast03 = page.getByText(opened).first();
   await expect(toast03).toBeVisible();
@@ -342,7 +342,7 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await page.getByRole("list", { name: "Cards disponíveis" }).getByRole("button").first().click();
   await expect(page.getByText(/Modo Camaleão: só visualização/)).toBeVisible();
   // D-109: no Camaleão o botão some em vez de ficar cinza.
-  await expect(page.getByRole("button", { name: "Iniciar protocolo" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Abrir protocolo", exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Fechar e voltar a todos os cards" }).click();
 
   // Protocolos dos cards da Jiane, sem botões de ação.
@@ -352,7 +352,7 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
 
   // Visões de gestão e administração.
   await select.selectOption("gestao");
-  await page.getByRole("link", { name: "Analytics" }).first().click();
+  await page.getByRole("link", { name: "Indicadores" }).first().click();
   // D-117: indicadores por card, com o consolidado para a gestão.
   const metrics = page.getByRole("table", { name: /Indicadores por card/ });
   await expect(metrics.getByRole("rowheader", { name: "Consolidado" })).toBeVisible();

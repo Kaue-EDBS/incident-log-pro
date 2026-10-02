@@ -477,7 +477,7 @@ function StartForm({ card }: { card: SafraStartCatalogItem }) {
               ) : (
                 <PlayCircle aria-hidden="true" />
               )}
-              Iniciar protocolo
+              Abrir protocolo
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

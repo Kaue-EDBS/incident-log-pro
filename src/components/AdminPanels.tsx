@@ -23,9 +23,9 @@ const SCREEN_LABEL: Record<string, string> = {
   "/protocolos-dos-meus-cards": "Protocolos dos meus cards",
   "/todos-os-protocolos": "Todos os protocolos",
   "/cards-e-donos": "Cards e donos",
-  "/analytics": "Analytics",
+  "/analytics": "Indicadores",
   "/administracao": "Administração",
-  "/propostas": "Novo card",
+  "/propostas": "Sugerir card",
 };
 
 function Loading() {

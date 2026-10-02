@@ -6,12 +6,13 @@ import {
   Eye,
   Inbox,
   Lightbulb,
+  MoreHorizontal,
   ListChecks,
   Table2,
   LayoutGrid,
   Settings,
 } from "lucide-react";
-import { useEffect, useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { BrandMark } from "@/components/BrandMark";
 import { useAuth } from "@/integrations/supabase/AuthProvider";
@@ -110,6 +111,20 @@ export function AppLayout({ children }: { children: ReactNode }) {
     if (pathname === to) window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Celular: até 5 itens no menu de baixo; o resto fica em "Mais".
+  const [moreOpen, setMoreOpen] = useState(false);
+  useEffect(() => {
+    setMoreOpen(false);
+  }, [pathname]);
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMoreOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [moreOpen]);
+
   // D-124: conta cada tela aberta, sem identificar a pessoa.
   useEffect(() => {
     logScreenView(pathname);
@@ -119,7 +134,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const nav: NavItem[] = [
     { to: "/", label: "Início", short: "Início", icon: LayoutGrid },
     { to: "/meus-protocolos", label: "Meus protocolos", short: "Meus", icon: ClipboardList },
-    { to: "/propostas", label: "Novo card", short: "Novo card", icon: Lightbulb },
+    { to: "/propostas", label: "Sugerir card", short: "Sugerir", icon: Lightbulb },
     ...(viewer.isOwner
       ? [
           {
@@ -144,12 +159,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
       ? [{ to: "/cards-e-donos", label: "Cards e donos", short: "Cards", icon: Table2 }]
       : []),
     ...(viewer.canSeeAnalytics
-      ? [{ to: "/analytics", label: "Analytics", short: "Analytics", icon: BarChart3 }]
+      ? [{ to: "/analytics", label: "Indicadores", short: "Indicadores", icon: BarChart3 }]
       : []),
     ...(viewer.canSeeAdmin
       ? [{ to: "/administracao", label: "Administração", short: "Admin", icon: Settings }]
       : []),
   ];
+
+  const mobileMain = nav.length > 5 ? nav.slice(0, 4) : nav;
+  const mobileMore = nav.length > 5 ? nav.slice(4) : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -239,11 +257,37 @@ export function AppLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
+      {moreOpen ? (
+        <div
+          id="menu-mais"
+          className="fixed inset-x-0 bottom-14 z-30 border-t border-border bg-card p-2 shadow-lg lg:hidden"
+        >
+          <ul aria-label="Mais opções" className="grid gap-1">
+            {mobileMore.map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  onClick={() => onNavClick(item.to)}
+                  aria-current={isActive(pathname, item.to) ? "page" : undefined}
+                  className={cn(
+                    "flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium text-foreground hover:bg-accent",
+                    isActive(pathname, item.to) && "text-primary",
+                  )}
+                >
+                  <item.icon className="size-4" aria-hidden="true" />
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       <nav
         aria-label="Principal"
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-border bg-card lg:hidden"
       >
-        {nav.map((item) => (
+        {mobileMain.map((item) => (
           <Link
             key={item.to}
             to={item.to}
@@ -258,6 +302,21 @@ export function AppLayout({ children }: { children: ReactNode }) {
             {item.short}
           </Link>
         ))}
+        {mobileMore.length ? (
+          <button
+            type="button"
+            aria-expanded={moreOpen}
+            aria-controls={moreOpen ? "menu-mais" : undefined}
+            onClick={() => setMoreOpen((value) => !value)}
+            className={cn(
+              "flex min-h-14 flex-1 flex-col items-center justify-center gap-1 py-2 text-xs font-medium text-muted-foreground",
+              mobileMore.some((item) => isActive(pathname, item.to)) && "text-primary",
+            )}
+          >
+            <MoreHorizontal className="size-4" aria-hidden="true" />
+            Mais
+          </button>
+        ) : null}
       </nav>
     </div>
   );
