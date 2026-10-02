@@ -93,6 +93,16 @@
 | D-78 | Dono desativado ou sem papel bloqueia o card temporariamente até nova definição; nesta Safra não haverá troca de dono | APPROVED — aplicada em 01/10/2026 |
 | D-79 | START segue publicado enquanto ninguém tem acesso; END/CANCEL e aviso ao dono precisam existir antes de liberar o acesso | APPROVED — risco aceito com condição |
 | D-80 | Repositório segue público | APPROVED — risco aceito pelo owner |
+| D-81 | Fluxo único de abertura: o card se expande (dono, protocolo, Iniciar; depois Concluído/Cancelar), os outros somem; o X faz todos voltarem | APPROVED — C08.2 |
+| D-82 | Número do protocolo = número do card + sequência do card (08-0001), sem zerar | APPROVED — C08.1 |
+| D-83 | Resumo do problema obrigatório (mínimo 10 caracteres) para orientar o dono | APPROVED — C08.1 |
+| D-84 | Telas pensadas primeiro para o computador, funcionando no celular | APPROVED — C08.2 |
+| D-85 | Criticidade escondida na tela da operação (os 11 são CRITICAL) | APPROVED — C08.2 |
+| D-86 | Contador de tempo só em "Meus protocolos" | APPROVED — C08.2 |
+| D-87 | Encerrar (duas partes) e cancelar (F01/F02) entram no C08 | APPROVED — C08.1/C08.2 |
+| D-88 | Visões cumulativas por audiência: usuário → dono (+ analytics dos seus cards) → Jair/Bruno (+ todos os cards e consolidado) → admins (+ cadastros, uso, melhoria); 12º card depois das visões | APPROVED — M09/F04/M10 |
+| D-89 | Abertura pergunta "quando o problema começou?" (padrão: agora) para o MTTD | APPROVED — C08.1 |
+| D-90 | Dados de uso das telas (onde as pessoas param) serão anônimos | APPROVED — visão de administração |
 
 ## 3. ADRs
 
@@ -1287,3 +1297,17 @@ Migration `20261001234000_aud_geral_tenant_owner_audit.sql`:
 - A-16: resumo do START com horário do servidor.
 
 Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram a criar a identidade Microsoft dos usuários sintéticos. CI verde (App Smoke #252, Database Disposable #290); aplicada no PRIMARY, 40 = 40.
+
+### D-81 a D-90 — UX do COMEÇO e visões (C08)
+**APPROVED — 01–02/10/2026** — owner: Kaue.
+
+- **D-81:** fluxo único. Tocar no card o expande e esconde os demais; o card mostra dono, protocolo e **Iniciar**; depois de aberto, **Concluído** e **Cancelar**; o **X** fecha e todos voltam.
+- **D-82:** número do protocolo `NN-SSSS` (número do card + sequência do card), sem zerar. Ex.: 1º do SAFRA-08 = `08-0001`.
+- **D-83:** o resumo "O que está acontecendo?" é obrigatório, com pelo menos 10 caracteres. O mesmo mínimo vale para o motivo do cancelamento.
+- **D-84:** computador primeiro; o celular continua funcionando.
+- **D-85:** criticidade fora da tela da operação.
+- **D-86:** contador "tempo desde a abertura" só em "Meus protocolos".
+- **D-87:** encerrar em duas partes (D-64/D-66/D-72) e cancelar com motivo entram no C08 (F01/F02 antecipadas). O aviso por e-mail continua na M05; até lá, o dono vê os protocolos em "Protocolos dos meus cards".
+- **D-88:** visões cumulativas: **usuário**; **dono do card** (+ "Protocolos dos meus cards" + analytics dos seus cards); **Jair e Bruno** (+ analytics de todos os cards e consolidado, com tempos tipo MTTR/MTTD); **admins** (+ painel de cadastrados e papéis, uso das telas, melhoria do app). O **12º card** vem depois das visões.
+- **D-89:** a abertura pergunta "Quando o problema começou?" (padrão: agora; não aceita futuro, com tolerância de 5 minutos para relógio adiantado). Base do MTTD: abertura − início do problema.
+- **D-90:** dados de uso das telas são **anônimos**.

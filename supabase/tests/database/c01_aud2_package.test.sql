@@ -110,7 +110,7 @@ select is(
 select is(
   public.safra_start_treatment(
     (select id from public.scenarios where code='SAFRA-02'),
-    '01a20000-0000-4000-8000-000000000101'::uuid, null, '{}'::uuid[])->>'status',
+    '01a20000-0000-4000-8000-000000000101'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[])->>'status',
   'ACTIVE',
   'D-57: first START by person A succeeds'
 );
@@ -118,7 +118,7 @@ select is(
 select is(
   public.safra_start_treatment(
     (select id from public.scenarios where code='SAFRA-02'),
-    '01a20000-0000-4000-8000-000000000101'::uuid, null, '{}'::uuid[])->>'idempotent_replay',
+    '01a20000-0000-4000-8000-000000000101'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[])->>'idempotent_replay',
   'true',
   'D-57: retry with the same key is an idempotent replay, not a second opening'
 );
@@ -126,7 +126,7 @@ select is(
 select throws_ok(
   $$ select public.safra_start_treatment(
        (select id from public.scenarios where code='SAFRA-02'),
-       '01a20000-0000-4000-8000-000000000102'::uuid, null, '{}'::uuid[]) $$,
+       '01a20000-0000-4000-8000-000000000102'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[]) $$,
   'P0001',
   'SAFRA_START_ACTIVE_EXISTS',
   'D-57: person A cannot open a second ACTIVE treatment of the same scenario'
@@ -135,7 +135,7 @@ select throws_ok(
 select is(
   public.safra_start_treatment(
     (select id from public.scenarios where code='SAFRA-03'),
-    '01a20000-0000-4000-8000-000000000103'::uuid, null, '{}'::uuid[])->>'status',
+    '01a20000-0000-4000-8000-000000000103'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[])->>'status',
   'ACTIVE',
   'D-57: person A may hold ACTIVE treatments in different scenarios'
 );
@@ -149,7 +149,7 @@ select set_config('request.jwt.claims', json_build_object(
 select is(
   public.safra_start_treatment(
     (select id from public.scenarios where code='SAFRA-02'),
-    '01a20000-0000-4000-8000-000000000201'::uuid, null, '{}'::uuid[])->>'status',
+    '01a20000-0000-4000-8000-000000000201'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[])->>'status',
   'ACTIVE',
   'D-57: person B may open the same scenario while A has one ACTIVE'
 );
@@ -171,7 +171,7 @@ select set_config('request.jwt.claims', json_build_object(
 select is(
   public.safra_start_treatment(
     (select id from public.scenarios where code='SAFRA-02'),
-    '01a20000-0000-4000-8000-000000000104'::uuid, null, '{}'::uuid[])->>'status',
+    '01a20000-0000-4000-8000-000000000104'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[])->>'status',
   'ACTIVE',
   'D-57: after closing, person A can open the same scenario again'
 );

@@ -58,7 +58,7 @@ select ok(
 select ok(
   not has_function_privilege(
     'anon',
-    'public.safra_start_treatment(uuid,uuid,text,uuid[])',
+    'public.safra_start_treatment(uuid,uuid,text,uuid[],timestamptz)',
     'EXECUTE'
   ),
   'anon cannot call START command'
@@ -72,7 +72,7 @@ select ok(
 select ok(
   has_function_privilege(
     'authenticated',
-    'public.safra_start_treatment(uuid,uuid,text,uuid[])',
+    'public.safra_start_treatment(uuid,uuid,text,uuid[],timestamptz)',
     'EXECUTE'
   ),
   'authenticated can call governed START command'
@@ -231,7 +231,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='SAFRA-01'),
       '08080808-0000-4000-8000-000000000011'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       '{}'::uuid[]
     );
   $$,
@@ -245,7 +245,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='SAFRA-01'),
       '08080808-0000-4000-8000-000000000012'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       array['08080808-0000-4000-8000-000000000099'::uuid]
     );
   $$,
@@ -277,7 +277,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='TEST-C08-DRAFT'),
       '08080808-0000-4000-8000-000000000013'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       '{}'::uuid[]
     );
   $$,
@@ -295,7 +295,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='SAFRA-11'),
       '08080808-0000-4000-8000-000000000014'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       '{}'::uuid[]
     );
   $$,
@@ -322,7 +322,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='SAFRA-02'),
       '08080808-0000-4000-8000-000000000015'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       '{}'::uuid[]
     );
   $$,
@@ -333,10 +333,10 @@ select throws_ok(
 
 select is(
   pg_get_function_identity_arguments(
-    'public.safra_start_treatment(uuid,uuid,text,uuid[])'::regprocedure
+    'public.safra_start_treatment(uuid,uuid,text,uuid[],timestamptz)'::regprocedure
   ),
-  'p_scenario_id uuid, p_idempotency_key uuid, p_impact_summary text, p_impacted_area_ids uuid[]',
-  'START payload exposes no owner/version/criticality/timestamp override'
+  'p_scenario_id uuid, p_idempotency_key uuid, p_impact_summary text, p_impacted_area_ids uuid[], p_problem_started_at timestamp with time zone',
+  'START payload exposes no owner/version/criticality/opening-time override (problem start is user-reported, D-89)'
 );
 
 select ok(

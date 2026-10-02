@@ -50,7 +50,8 @@ trap 'rm -f "${out_end}" "${out_cancel}"' EXIT
   psql "${DB_URL}" -X -v ON_ERROR_STOP=1 -qAt >"${out_end}" 2>&1 <<SQL
 begin;
 update public.treatments
-   set status='RESOLVED', closed_by='${USER_ID}'::uuid, closed_at=clock_timestamp()
+   set status='RESOLVED', closed_by='${USER_ID}'::uuid, closed_at=clock_timestamp(),
+       requester_closed_at=clock_timestamp(), owner_closed_at=clock_timestamp(), owner_closed_by='${USER_ID}'::uuid
  where id='${TREATMENT_ID}'::uuid;
 select pg_sleep(2);
 commit;

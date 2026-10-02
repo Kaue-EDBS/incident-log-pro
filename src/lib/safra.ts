@@ -42,7 +42,9 @@ export type SafraStartCatalogItem = z.infer<typeof SafraStartCatalogItemSchema>;
 export const SafraStartResultSchema = z.object({
   treatment_id: z.string().uuid(),
   status: z.enum(["ACTIVE", "RESOLVED", "CANCELLED"]),
+  protocol_number: z.string(),
   opened_at: z.string(),
+  problem_started_at: z.string(),
   server_time: z.string(),
   opened_by_user_id: z.string().uuid(),
   start_correlation_id: z.string().uuid(),

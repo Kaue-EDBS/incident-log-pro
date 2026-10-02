@@ -31,7 +31,7 @@ select set_config('request.jwt.claims', json_build_object(
 select throws_ok(
   $$ select public.safra_start_treatment(
        (select id from public.scenarios where code='SAFRA-01'),
-       '02a20000-0000-4000-8000-000000000101'::uuid, null, '{}'::uuid[]) $$,
+       '02a20000-0000-4000-8000-000000000101'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[]) $$,
   'P0001',
   'SAFRA_START_OWNER_OWN_CARD',
   'D-65: the owner cannot open a protocol of their own card'
@@ -47,7 +47,7 @@ select is(
 select is(
   public.safra_start_treatment(
     (select id from public.scenarios where code='SAFRA-04'),
-    '02a20000-0000-4000-8000-000000000102'::uuid, null, '{}'::uuid[])->>'status',
+    '02a20000-0000-4000-8000-000000000102'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[])->>'status',
   'ACTIVE',
   'D-65: the same owner may open a card owned by someone else'
 );

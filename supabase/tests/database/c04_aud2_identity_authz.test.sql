@@ -66,7 +66,7 @@ select set_config('request.jwt.claims', (select claims from c04_claims where who
 
 select throws_ok(
   $$ select public.safra_start_treatment((select id from public.scenarios where code='SAFRA-02'),
-       '04a20000-0000-4000-8000-000000000101'::uuid, null, '{}'::uuid[]) $$,
+       '04a20000-0000-4000-8000-000000000101'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[]) $$,
   '42501', 'SAFRA_START_FORBIDDEN',
   'C04 item 2: expired token cannot open a protocol'
 );
@@ -75,7 +75,7 @@ select set_config('request.jwt.claims', (select claims from c04_claims where who
 
 select throws_ok(
   $$ select public.safra_start_treatment((select id from public.scenarios where code='SAFRA-02'),
-       '04a20000-0000-4000-8000-000000000102'::uuid, null, '{}'::uuid[]) $$,
+       '04a20000-0000-4000-8000-000000000102'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[]) $$,
   '42501', 'SAFRA_START_FORBIDDEN',
   'C04 item 2: revoked/missing session cannot open a protocol'
 );

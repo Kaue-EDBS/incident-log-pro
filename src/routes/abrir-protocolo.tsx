@@ -76,6 +76,12 @@ function errorMessage(error: unknown) {
     if (message.includes("SAFRA_START_ACTIVE_EXISTS")) {
       return "Você já tem um protocolo em andamento para este card. Encerre-o antes de abrir outro.";
     }
+    if (message.includes("SAFRA_IMPACT_SUMMARY_REQUIRED")) {
+      return "Explique o problema em pelo menos 10 caracteres para orientar o dono do card.";
+    }
+    if (message.includes("SAFRA_PROBLEM_START_IN_FUTURE")) {
+      return "O horário de início do problema não pode estar no futuro.";
+    }
     if (message.includes("SAFRA_START_IDEMPOTENCY_CONFLICT")) {
       return "A tentativa anterior usou a mesma chave com dados diferentes. Revise e tente novamente.";
     }
@@ -116,7 +122,7 @@ function ResultCard({ result, onReset }: { result: SafraStartResult; onReset: ()
             </span>
           </div>
           <p className="break-all text-xs text-muted-foreground">
-            Número do protocolo: {result.treatment_id}
+            Protocolo nº {result.protocol_number}
           </p>
           {result.idempotent_replay ? (
             <p className="text-xs text-muted-foreground">
@@ -186,6 +192,11 @@ function StartSafraTreatment() {
   const handleStart = async () => {
     if (!selected) {
       toast.error("Selecione um cenário publicado.");
+      return;
+    }
+
+    if (impactSummary.trim().length < 10) {
+      toast.error("Explique o problema em pelo menos 10 caracteres para orientar o dono do card.");
       return;
     }
 
@@ -426,7 +437,7 @@ function StartSafraTreatment() {
             )}
 
             <label className="mt-5 block space-y-2">
-              <span className="text-sm font-medium">Resumo do impacto observado</span>
+              <span className="text-sm font-medium">O que está acontecendo? (obrigatório)</span>
               <Textarea
                 value={impactSummary}
                 maxLength={2000}

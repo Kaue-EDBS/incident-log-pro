@@ -31,7 +31,7 @@ select ok(not public.safra_is_corporate_user(), 'A-01: foreign Microsoft tenant 
 
 select throws_ok(
   $$ select public.safra_start_treatment((select id from public.scenarios where code='SAFRA-01'),
-       'a9e00000-0000-4000-8000-0000000000b1'::uuid, null, '{}'::uuid[]) $$,
+       'a9e00000-0000-4000-8000-0000000000b1'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[]) $$,
   '42501', 'SAFRA_START_FORBIDDEN',
   'A-01: foreign tenant cannot START'
 );
@@ -114,7 +114,7 @@ select ok(
 
 select throws_ok(
   $$ select public.safra_start_treatment((select id from public.scenarios where code='SAFRA-09'),
-       'a9e00000-0000-4000-8000-0000000000b2'::uuid, null, '{}'::uuid[]) $$,
+       'a9e00000-0000-4000-8000-0000000000b2'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[]) $$,
   'P0001', 'SAFRA_SCENARIO_OWNER_UNAVAILABLE',
   'D-78: START of a card with a deactivated owner is blocked'
 );
@@ -133,7 +133,7 @@ select is(
 
 select throws_ok(
   $$ select public.safra_start_treatment((select id from public.scenarios where code='SAFRA-04'),
-       'a9e00000-0000-4000-8000-0000000000b3'::uuid, null, '{}'::uuid[]) $$,
+       'a9e00000-0000-4000-8000-0000000000b3'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[]) $$,
   'P0001', 'SAFRA_SCENARIO_OWNER_UNAVAILABLE',
   'D-78: START of a card whose owner lost the role is blocked'
 );
@@ -178,7 +178,7 @@ select set_config('request.jwt.claims', json_build_object(
 select ok(
   (select (r->>'server_time')::timestamptz >= (r->>'opened_at')::timestamptz
    from (select public.safra_start_treatment((select id from public.scenarios where code='SAFRA-01'),
-           'a9e00000-0000-4000-8000-0000000000b4'::uuid, null, '{}'::uuid[]) r) x),
+           'a9e00000-0000-4000-8000-0000000000b4'::uuid, 'Resumo de teste: pedidos parados no fluxo', '{}'::uuid[]) r) x),
   'A-16: START result carries the server time'
 );
 

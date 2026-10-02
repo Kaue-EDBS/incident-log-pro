@@ -66,7 +66,9 @@ describe("SAFRA START RPC contracts", () => {
     const parsed = SafraStartResultSchema.parse({
       treatment_id: "55555555-5555-4555-8555-555555555555",
       status: "ACTIVE",
+      protocol_number: "01-0001",
       opened_at: "2026-09-27T20:00:00Z",
+      problem_started_at: "2026-09-27T19:30:00Z",
       server_time: "2026-09-27T20:00:01Z",
       opened_by_user_id: "66666666-6666-4666-8666-666666666666",
       start_correlation_id: "77777777-7777-4777-8777-777777777777",

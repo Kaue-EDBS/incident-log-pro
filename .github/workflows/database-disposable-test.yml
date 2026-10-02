@@ -69,6 +69,9 @@ jobs:
       - name: Test concurrent END x CANCEL
         run: bash .github/scripts/test-safra-end-cancel-concurrency.sh
 
+      - name: Test concurrent close x cancel (RPC)
+        run: bash .github/scripts/test-safra-close-cancel-rpc-concurrency.sh
+
       - name: Test direct Data API denial
         run: bash .github/scripts/test-safra-direct-api.sh
 

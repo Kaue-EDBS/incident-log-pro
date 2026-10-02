@@ -725,6 +725,13 @@ export type Database = {
           target_role: string
         }[]
       }
+      safra_cancel_treatment: {
+        Args: { p_reason: string; p_treatment_id: string }
+        Returns: Json
+      }
+      safra_close_my_part: { Args: { p_treatment_id: string }; Returns: Json }
+      safra_get_my_treatments: { Args: never; Returns: Json }
+      safra_get_owner_treatments: { Args: never; Returns: Json }
       safra_get_start_catalog: { Args: never; Returns: Json }
       safra_has_role: { Args: { requested_role: string }; Returns: boolean }
       safra_is_corporate_user: { Args: never; Returns: boolean }
@@ -734,6 +741,7 @@ export type Database = {
           p_idempotency_key: string
           p_impact_summary?: string
           p_impacted_area_ids?: string[]
+          p_problem_started_at?: string
           p_scenario_id: string
         }
         Returns: Json
