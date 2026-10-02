@@ -101,13 +101,24 @@ async function openAs(browser: Browser, key: string): Promise<Page> {
 }
 
 async function expectAccessible(page: Page, where: string) {
+  // Toasts fade in: wait for running transitions so axe reads the final colors.
+  await page.waitForFunction(() =>
+    document.getAnimations().every((a) => a.playState !== "running"),
+  );
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
     .analyze();
   const serious = results.violations.filter(
     (v) => v.impact === "serious" || v.impact === "critical",
   );
-  expect(serious.map((v) => `${where}: ${v.id} — ${v.help}`)).toEqual([]);
+  expect(
+    serious.map(
+      (v) =>
+        `${where}: ${v.id} — ${v.help} — ${v.nodes
+          .map((n) => `${n.target.join(" ")} ${n.failureSummary ?? ""}`)
+          .join(" | ")}`,
+    ),
+  ).toEqual([]);
 }
 
 test.beforeAll(async () => {
