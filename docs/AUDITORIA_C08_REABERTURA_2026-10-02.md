@@ -4,7 +4,7 @@
 **Bloco:** SAFRA-C08 — UX do COMEÇO (com F01/F02 antecipadas, D-87)  
 **Data:** 01–02/10/2026  
 **Estado:** CONCLUÍDA no banco e no código; **falta o owner publicar no Lovable e homologar com login real**  
-**Migration:** `20261002000000_c08_1_protocol_lifecycle.sql` (CI verde: App Smoke #258, Database Disposable #296; aplicada no PRIMARY em 5 transações, 42 = 42)  
+**Migration:** `20261002000000_c08_1_protocol_lifecycle.sql` (CI verde: App Smoke #258, Database Disposable #296; aplicada no PRIMARY em 5 transações, 42 = 42). Telas C08.2: CI verde App Smoke #259, Database Disposable #297  
 **Decisões:** D-81 a D-90
 
 ---
