@@ -10,7 +10,7 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { AppLayout } from "@/components/AppLayout";
@@ -44,7 +44,10 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error: rawError, reset }: ErrorComponentProps) {
-  const error = rawError instanceof Error ? rawError : new Error(String(rawError));
+  const error = useMemo(
+    () => (rawError instanceof Error ? rawError : new Error(String(rawError))),
+    [rawError],
+  );
   console.error(error);
   const router = useRouter();
   useEffect(() => {
