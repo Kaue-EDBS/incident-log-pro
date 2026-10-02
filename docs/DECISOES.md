@@ -1475,3 +1475,17 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - O agendamento só existe no banco de produção: o banco do CI e o local não chamam mais a função de produção.
 - Tela: o Painel não se desmonta ao voltar para a aba (o texto digitado sumia); no Modo Camaleão a Administração respeita a visão escolhida e não mostra botões de ação; o painel de e-mails mostra erro e "Atualizando...".
 
+### D-135 — Regras da proposta de card novo (respostas do owner à auditoria)
+**APPROVED — 02/10/2026** — owner: Kaue. Migration `20261002340000_d135_proposal_rules.sql`. Atualiza a D-126.
+
+- **Os donos precisam aceitar; o Jair só orquestra.** Ele registra o dono só entre quem aceitou (com 2 ou mais aceites, depois da reunião dos donos). Sem nenhum aceite, não há dono: a proposta fica na consulta (os donos podem mudar a resposta) ou o Jair recusa.
+- **Histórico da proposta só para gestão, executivo e admins**, como o do protocolo (D-108): respostas dos donos, andamento e a nota da decisão. Quem propôs vê a etapa e, se recusada, o motivo; o dono consultado vê a própria resposta.
+- **Uma proposta em andamento por pessoa**: a próxima depois que a anterior for publicada ou recusada.
+
+### D-136 — Seções das telas começam fechadas
+**APPROVED — 02/10/2026** — owner: Kaue ("todos os menus fechados com opção de expandir"; escolheu as seções das telas).
+
+- Começam fechadas e abrem com um clique no título: na Administração (Safra, Fila de e-mails, Saúde do sistema, Painel de cadastrados, Trilha de papéis, Uso das telas), em Analytics (cards que mais falham), em Todos os protocolos ("Agora") e em Novo card ("Propor um card novo"). O histórico do protocolo já abria por botão.
+- O título é um botão que o leitor de tela anuncia como aberto ou fechado; o conteúdo só carrega aberto.
+- O menu lateral e os cards do Início ficam como estão.
+

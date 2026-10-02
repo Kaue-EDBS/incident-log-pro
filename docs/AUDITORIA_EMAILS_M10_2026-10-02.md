@@ -43,9 +43,9 @@
 
 | # | Ponto | Situação |
 |---|---|---|
-| Q1 | O Jair pode registrar o dono antes de todos os donos consultados responderem (e até escolher quem não aceitou) | **pergunta ao owner**: vale só depois de todos responderem? E se alguém não responder? |
-| Q2 | Histórico da proposta (quem fez o quê, comentários) aparece para quem propôs e para os donos consultados | **pergunta ao owner**: a D-108 (histórico só para gestão/admins) vale também para propostas? |
-| Q3 | Sem limite de propostas por pessoa | **pergunta ao owner**: limitar (ex.: 3 abertas por pessoa)? |
+| Q1 | O Jair pode registrar o dono antes de todos os donos consultados responderem (e até escolher quem não aceitou) | **decidido (D-135)**: o dono precisa aceitar; o Jair só registra entre quem aceitou |
+| Q2 | Histórico da proposta (quem fez o quê, comentários) aparece para quem propôs e para os donos consultados | **decidido (D-135)**: sim, só gestão, executivo e admins |
+| Q3 | Sem limite de propostas por pessoa | **decidido (D-135)**: uma proposta em andamento por pessoa |
 | R1 | A aprovação não confere se o conteúdo mudou entre a leitura do Jair e o clique | baixo risco; quem propõe pode corrigir até a aprovação (D-127) |
 | R2 | A função de envio é pública | aceito (D-133): só devolve contagens; travas evitam e-mail repetido |
 | R3 | Pelo navegador, o envio usa sempre a conexão Outlook | tema da GI-SAFRA-017 (aplicativo do TI) |

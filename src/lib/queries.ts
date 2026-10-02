@@ -434,6 +434,7 @@ const ProposalSchema = z.object({
   can_forward: z.boolean(),
   can_respond: z.boolean(),
   can_define_owner: z.boolean(),
+  accepted_principal_ids: z.array(z.string().uuid()).default([]),
   can_submit_content: z.boolean(),
   can_approve: z.boolean(),
   can_publish: z.boolean(),

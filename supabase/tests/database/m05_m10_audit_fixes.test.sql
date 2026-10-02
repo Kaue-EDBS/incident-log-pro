@@ -56,15 +56,7 @@ update public.notifications_log set locked_until = clock_timestamp() - interval 
 select public.safra_notifications_report((pg_temp.row_of('next')).id, true, null);
 select is((pg_temp.row_of('next')).delivery_status, 'QUEUED', 'A2: a result after the lock expired does not count');
 
--- A4. A long proposal fits in the e-mail limit ----------------------------------------------
 select pg_temp.act_as('0a');
-select lives_ok($$ insert into ctx values ('long', public.safra_submit_proposal('Proposta com textos longos',
-  repeat('Problema muito detalhado. ', 115), repeat('Efeito muito detalhado. ', 125))::text) $$,
-  'A4: a proposal with 3000 + 3000 characters is accepted');
-select ok((select max(length(body)) <= 6000 and count(*) >= 1 from public.notifications_log
-           where proposal_id = (select v::uuid from ctx where k = 'long')),
-  'A4: its notices stay within 6000 characters');
-
 -- A5. Card owners only see a proposal after Jair forwards it --------------------------------
 insert into ctx values ('quiet', public.safra_submit_proposal('Proposta recusada sem encaminhar',
   'Problema de teste para recusar.', 'Efeito de teste para recusar.')::text);
@@ -74,6 +66,15 @@ select pg_temp.act_as('d1');
 select ok(not exists (select 1 from jsonb_array_elements(public.safra_get_proposals()->'items') x
                       where x->>'proposal_id' = (select v from ctx where k = 'quiet')),
   'A5: a proposal rejected before forwarding is not shown to card owners');
+
+-- A4. A long proposal fits in the e-mail limit ----------------------------------------------
+select pg_temp.act_as('0a');
+select lives_ok($$ insert into ctx values ('long', public.safra_submit_proposal('Proposta com textos longos',
+  repeat('Problema muito detalhado. ', 115), repeat('Efeito muito detalhado. ', 125))::text) $$,
+  'A4: a proposal with 3000 + 3000 characters is accepted');
+select ok((select max(length(body)) <= 6000 and count(*) >= 1 from public.notifications_log
+           where proposal_id = (select v::uuid from ctx where k = 'long')),
+  'A4: its notices stay within 6000 characters');
 
 -- A7. The disposable database never calls the production sender -----------------------------
 select is((select count(*)::int from cron.job where jobname = 'safra-send-notifications'), 0,

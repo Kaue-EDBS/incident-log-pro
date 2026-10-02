@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(36);
+select plan(39);
 
 -- P = proposer (regular), X = another regular person, J = Jair, K = Kaue, M = Amanda (admin),
 -- D/R/I = Daniel, Renato, Jiane (card owners consulted).
@@ -142,6 +142,8 @@ select lives_ok($$ select public.safra_start_treatment(pg_temp.t('pub'), 'a01000
 -- 6. Two accepts: the owners meet outside the Painel and Jair records it (D-126) ----------
 select pg_temp.act_as('0a');
 insert into ctx values ('p2', public.safra_submit_proposal('Falha no envio de notas fiscais', 'Notas fiscais não chegam ao cliente por e-mail.', 'Cliente não recebe a nota e trava o pagamento.')::text);
+select throws_ok($$ select public.safra_submit_proposal('Segunda proposta ao mesmo tempo', 'Outro problema para teste.', 'Outro efeito para teste.') $$,
+  'P0001', 'SAFRA_PROPOSAL_ONE_OPEN', 'D-135: one proposal in progress per person');
 select pg_temp.act_as('0c');
 select public.safra_forward_proposal(pg_temp.t('p2'));
 select pg_temp.act_as('d1'); select public.safra_respond_proposal(pg_temp.t('p2'), true, null);
@@ -151,7 +153,14 @@ select is(pg_temp.status('p2'), 'OWNER_CONSULTATION', 'D-126: two accepts do not
 select pg_temp.act_as('0c');
 select throws_ok($$ select public.safra_define_proposal_owner(pg_temp.t('p2'), pg_temp.principal('Renato de Paulo'), '') $$,
   '22023', 'SAFRA_PROPOSAL_NOTE_REQUIRED', 'D-126: Jair records how the meeting decided');
+select throws_ok($$ select public.safra_define_proposal_owner(pg_temp.t('p2'), pg_temp.principal('Jiane Rodrigues'), 'Decidido em reunião dos donos em 02/10.') $$,
+  '22023', 'SAFRA_PROPOSAL_OWNER_NOT_ACCEPTED', 'D-135: Jair cannot pick an owner who did not accept');
 select public.safra_define_proposal_owner(pg_temp.t('p2'), pg_temp.principal('Renato de Paulo'), 'Decidido em reunião dos donos em 02/10.');
+select pg_temp.act_as('0a');
+select ok((select jsonb_array_length(x->'events') = 0 and jsonb_array_length(x->'responses') = 0 and x->>'owner_note' is null
+           from jsonb_array_elements(public.safra_get_proposals()->'items') x where x->>'proposal_id' = pg_temp.t('p2')::text),
+  'D-135: the proposer does not see the proposal history');
+select pg_temp.act_as('0c');
 select ok((select owner_decision = 'GOVERNANCE_DECISION' and owner_principal_id = pg_temp.principal('Renato de Paulo')
            from public.scenario_proposals where id = pg_temp.t('p2')), 'D-126: the owner chosen in the meeting is recorded');
 
@@ -171,7 +180,7 @@ select throws_ok($$ select public.safra_publish_proposal(pg_temp.t('p3')) $$,
   '42501', 'SAFRA_PROPOSAL_SEPARATION_OF_DUTIES', 'D-68: who approved does not publish');
 
 -- 8. Rejection with reason (D-130) ----------------------------------------------------------
-select pg_temp.act_as('0a');
+select pg_temp.act_as('0b');
 insert into ctx values ('p4', public.safra_submit_proposal('Proposta para recusar', 'Problema que não é da Safra, para teste.', 'Não afeta a Safra de verdade, só teste.')::text);
 select throws_ok($$ select public.safra_reject_proposal(pg_temp.t('p4'), 'Não é um problema da Safra.') $$,
   '42501', 'SAFRA_PROPOSAL_FORBIDDEN', 'D-130: the proposer cannot reject');

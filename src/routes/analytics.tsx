@@ -5,6 +5,7 @@ import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
 import { useReliabilityMetrics, type MetricPair, type ReliabilityRow } from "@/lib/queries";
 import { cardDisplayName, cardNumber } from "@/lib/safra";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 
 export const Route = createFileRoute("/analytics")({
   head: () => ({ meta: [{ title: "Analytics | Painel Safra" }] }),
@@ -80,13 +81,12 @@ function Ranking({
     .sort((a, b) => b.failures - a.failures || (b.mttr.mean ?? 0) - (a.mttr.mean ?? 0))
     .slice(0, 5);
   return (
-    <section
-      aria-labelledby="ranking-title"
-      className="rounded-xl border border-border bg-card p-4"
+    <CollapsibleSection
+      id="ranking-title"
+      title="Cards que mais falham na Safra"
+      className="p-4"
+      titleClassName="text-sm"
     >
-      <h2 id="ranking-title" className="text-sm font-semibold">
-        Cards que mais falham na Safra
-      </h2>
       {top.length === 0 ? (
         <p className="mt-2 text-sm text-muted-foreground">Nenhuma falha registrada ainda.</p>
       ) : (
@@ -104,7 +104,7 @@ function Ranking({
           ))}
         </ol>
       )}
-    </section>
+    </CollapsibleSection>
   );
 }
 

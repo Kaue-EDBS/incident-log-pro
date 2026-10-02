@@ -5,6 +5,7 @@ import { SeasonPanel } from "@/components/SeasonPanel";
 import { PeoplePanel, RbacTrailPanel, ScreenUsagePanel } from "@/components/AdminPanels";
 import { NotificationsPanel } from "@/components/NotificationsPanel";
 import { Button } from "@/components/ui/button";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
 import { useOpsSummary } from "@/lib/queries";
@@ -38,15 +39,12 @@ function SystemHealth() {
   if (!isPlatformAdmin) return null;
 
   return (
-    <section
-      aria-labelledby="health-title"
-      className="space-y-4 rounded-xl border border-border bg-card p-5"
+    <CollapsibleSection
+      id="health-title"
+      title="Saúde do sistema (últimas 24 h)"
+      icon={<Activity className="size-5 text-primary" aria-hidden="true" />}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="health-title" className="flex items-center gap-2 text-lg font-semibold">
-          <Activity className="size-5 text-primary" aria-hidden="true" />
-          Saúde do sistema (últimas 24 h)
-        </h2>
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <Button variant="outline" onClick={() => void refetch()}>
           Atualizar
         </Button>
@@ -155,7 +153,7 @@ function SystemHealth() {
           </div>
         </>
       )}
-    </section>
+    </CollapsibleSection>
   );
 }
 

@@ -2,6 +2,7 @@ import { Loader2, ScrollText, Users, Eye } from "lucide-react";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
 import { useAdminPeople, useRbacTrail, useScreenUsage } from "@/lib/queries";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 
 const ROLE_LABEL: Record<string, string> = {
   safra_platform_admin: "Admin da plataforma",
@@ -45,14 +46,13 @@ export function PeoplePanel() {
   if (!isPlatformAdmin) return null;
 
   return (
-    <section
-      aria-labelledby="people-title"
-      className="space-y-3 rounded-xl border border-border bg-card p-5"
+    <CollapsibleSection
+      id="people-title"
+      title="Painel de cadastrados"
+      icon={<Users className="size-5 text-primary" aria-hidden="true" />}
+      className="space-y-3"
+      titleClassName="text-lg"
     >
-      <h2 id="people-title" className="flex items-center gap-2 text-lg font-semibold">
-        <Users className="size-5 text-primary" aria-hidden="true" />
-        Painel de cadastrados
-      </h2>
       {query.isLoading ? (
         <Loading />
       ) : query.isError || !query.data ? (
@@ -108,7 +108,7 @@ export function PeoplePanel() {
           </p>
         </>
       )}
-    </section>
+    </CollapsibleSection>
   );
 }
 
@@ -119,14 +119,13 @@ export function RbacTrailPanel() {
   if (!isPlatformAdmin) return null;
 
   return (
-    <section
-      aria-labelledby="trail-title"
-      className="space-y-3 rounded-xl border border-border bg-card p-5"
+    <CollapsibleSection
+      id="trail-title"
+      title="Trilha de papéis"
+      icon={<ScrollText className="size-5 text-primary" aria-hidden="true" />}
+      className="space-y-3"
+      titleClassName="text-lg"
     >
-      <h2 id="trail-title" className="flex items-center gap-2 text-lg font-semibold">
-        <ScrollText className="size-5 text-primary" aria-hidden="true" />
-        Trilha de papéis
-      </h2>
       {query.isLoading ? (
         <Loading />
       ) : query.isError || !query.data ? (
@@ -148,7 +147,7 @@ export function RbacTrailPanel() {
           ))}
         </ul>
       )}
-    </section>
+    </CollapsibleSection>
   );
 }
 
@@ -159,14 +158,13 @@ export function ScreenUsagePanel() {
   if (!isPlatformAdmin) return null;
 
   return (
-    <section
-      aria-labelledby="usage-title"
-      className="space-y-3 rounded-xl border border-border bg-card p-5"
+    <CollapsibleSection
+      id="usage-title"
+      title="Uso das telas (últimos 30 dias, anônimo)"
+      icon={<Eye className="size-5 text-primary" aria-hidden="true" />}
+      className="space-y-3"
+      titleClassName="text-lg"
     >
-      <h2 id="usage-title" className="flex items-center gap-2 text-lg font-semibold">
-        <Eye className="size-5 text-primary" aria-hidden="true" />
-        Uso das telas (últimos 30 dias, anônimo)
-      </h2>
       {query.isLoading ? (
         <Loading />
       ) : query.isError || !query.data ? (
@@ -192,6 +190,6 @@ export function ScreenUsagePanel() {
       <p className="text-xs text-muted-foreground">
         Conta só quantas vezes cada tela foi aberta por dia; não guarda quem abriu (D-90).
       </p>
-    </section>
+    </CollapsibleSection>
   );
 }

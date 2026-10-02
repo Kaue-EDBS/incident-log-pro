@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Loader2, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 import { useAuth } from "@/integrations/supabase/AuthProvider";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
@@ -49,15 +50,12 @@ export function NotificationsPanel() {
   }
 
   return (
-    <section
-      aria-labelledby="notif-title"
-      className="space-y-4 rounded-xl border border-border bg-card p-5"
+    <CollapsibleSection
+      id="notif-title"
+      title="Fila de e-mails"
+      icon={<Mail className="size-5 text-primary" aria-hidden="true" />}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="notif-title" className="flex items-center gap-2 text-lg font-semibold">
-          <Mail className="size-5 text-primary" aria-hidden="true" />
-          Fila de e-mails
-        </h2>
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <div className="flex gap-2">
           <Button variant="outline" onClick={refresh} disabled={isFetching || queue.isFetching}>
             {isFetching || queue.isFetching ? "Atualizando..." : "Atualizar"}
@@ -107,7 +105,7 @@ export function NotificationsPanel() {
         Remetente: painel.safra@editoradobrasil.com.br. O servidor envia sozinho a cada 2 minutos;
         os totais são das últimas 24 h e a lista mostra os 50 e-mails mais recentes.
       </p>
-    </section>
+    </CollapsibleSection>
   );
 }
 

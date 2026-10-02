@@ -253,6 +253,14 @@ export function safraErrorMessage(error: unknown, fallback: string): string {
     ["SAFRA_PROPOSAL_AREA_REQUIRED", "Escolha a área responsável."],
     ["SAFRA_PROPOSAL_INVALID_OWNER", "O dono precisa ser um dos donos de card consultados."],
     [
+      "SAFRA_PROPOSAL_OWNER_NOT_ACCEPTED",
+      "O dono precisa ter aceitado. Escolha entre quem aceitou.",
+    ],
+    [
+      "SAFRA_PROPOSAL_ONE_OPEN",
+      "Você já tem uma proposta em andamento. Envie a próxima depois que ela for publicada ou recusada.",
+    ],
+    [
       "SAFRA_PROPOSAL_NOTE_REQUIRED",
       "Escreva o motivo ou como foi decidido (pelo menos 10 caracteres).",
     ],

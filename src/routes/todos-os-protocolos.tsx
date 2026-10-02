@@ -5,6 +5,7 @@ import { useViewer } from "@/lib/chameleon";
 import { useAllTreatments, useSafraStartCatalog, type NowSummary } from "@/lib/queries";
 import { formatDateTime } from "@/lib/metrics";
 import { cardDisplayName, cardNumber } from "@/lib/safra";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 
 export const Route = createFileRoute("/todos-os-protocolos")({
   head: () => ({
@@ -36,13 +37,12 @@ function NowTile({ label, value, hint }: { label: string; value: number | string
 /** Números do momento, de todos os cards (D-120: no lugar da Torre de Controle). */
 function NowStrip({ summary }: { summary: NowSummary }) {
   return (
-    <section
-      aria-labelledby="now-title"
-      className="space-y-3 rounded-xl border border-border bg-card p-4"
+    <CollapsibleSection
+      id="now-title"
+      title="Agora, em todos os cards"
+      className="space-y-3 p-4"
+      titleClassName="text-sm"
     >
-      <h2 id="now-title" className="text-sm font-semibold">
-        Agora, em todos os cards
-      </h2>
       <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <NowTile label="Em andamento" value={summary.active} />
         <NowTile label="Ninguém concluiu" value={summary.nobody_closed} />
@@ -61,7 +61,7 @@ function NowStrip({ summary }: { summary: NowSummary }) {
         Hoje: {summary.opened_today} {summary.opened_today === 1 ? "aberto" : "abertos"} e{" "}
         {summary.closed_today} {summary.closed_today === 1 ? "encerrado" : "encerrados"}.
       </p>
-    </section>
+    </CollapsibleSection>
   );
 }
 

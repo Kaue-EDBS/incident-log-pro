@@ -17,6 +17,7 @@ import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
 import { useEndSeason, useSeason, useStartSeason, useUndoEndSeason } from "@/lib/queries";
 import { safraErrorMessage } from "@/lib/safra";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 
 const CONFIRM = "ENCERRAR SAFRA";
 
@@ -45,14 +46,13 @@ export function SeasonPanel() {
   const busy = endSeason.isPending || undoEnd.isPending || startSeason.isPending;
 
   return (
-    <section
-      aria-labelledby="season-title"
-      className="space-y-4 rounded-xl border border-border bg-card p-5"
+    <CollapsibleSection
+      id="season-title"
+      title="Safra"
+      icon={<CalendarCheck2 className="size-5 text-primary" aria-hidden="true" />}
+      className="space-y-4"
+      titleClassName="text-lg"
     >
-      <h2 id="season-title" className="flex items-center gap-2 text-lg font-semibold">
-        <CalendarCheck2 className="size-5 text-primary" aria-hidden="true" />
-        Safra
-      </h2>
       <p className="text-sm">
         {data.open ? (
           <>
@@ -148,7 +148,7 @@ export function SeasonPanel() {
           </Button>
         </div>
       )}
-    </section>
+    </CollapsibleSection>
   );
 }
 

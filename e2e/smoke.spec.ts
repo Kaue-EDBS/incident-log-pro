@@ -100,6 +100,14 @@ async function openAs(browser: Browser, key: string): Promise<Page> {
   return page;
 }
 
+/** As seções das telas começam fechadas: abre a seção pelo título, se ainda estiver fechada. */
+async function expand(page: Page, title: string | RegExp) {
+  const toggle = page.getByRole("button", { name: title, exact: typeof title === "string" });
+  await expect(toggle).toHaveAttribute("aria-expanded", /true|false/);
+  if ((await toggle.getAttribute("aria-expanded")) === "false") await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+}
+
 async function expectAccessible(page: Page, where: string) {
   // Toasts fade in: wait for running transitions so axe reads the final colors.
   await page.waitForFunction(() =>
@@ -236,6 +244,7 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
 
   // M10: qualquer pessoa propõe um card novo (nome e e-mail vêm da sessão).
   await page.getByRole("link", { name: "Novo card" }).first().click();
+  await expand(page, "Propor um card novo");
   await page.getByLabel("Título").fill("E2E: card proposto pelo teste");
   await page.getByLabel("Qual é o problema?").fill("Problema descrito pelo teste automático.");
   await page.getByLabel("Como ele afeta a Safra?").fill("Efeito na Safra descrito pelo teste.");
@@ -360,12 +369,16 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   // D-59: só o Kaue vê a marcação da Safra (o teste não encerra a Safra).
   await expect(page.getByRole("heading", { name: "Safra", exact: true })).toBeVisible();
   // No Modo Camaleão nada se faz: o botão só aparece na visão real.
+  await expand(page, "Safra");
+  await expect(page.getByText(/Modo Camaleão: só visualização/)).toBeVisible();
   await expect(page.getByRole("button", { name: "Encerrar Safra" })).toHaveCount(0);
   // M05: Saúde do sistema mostra a fila de avisos.
+  await expand(page, "Saúde do sistema (últimas 24 h)");
   await expect(page.getByText("Avisos na fila")).toBeVisible();
   await expect(page.getByText("Avisos com falha")).toBeVisible();
 
   await select.selectOption("real");
   await expect(page.getByText(/Você está vendo como/)).toHaveCount(0);
+  await expand(page, "Safra");
   await expect(page.getByRole("button", { name: "Encerrar Safra" })).toBeVisible();
 });

@@ -14,6 +14,7 @@ import {
   type ProposalsData,
 } from "@/lib/queries";
 import { safraErrorMessage } from "@/lib/safra";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 
 export const Route = createFileRoute("/propostas")({
   head: () => ({
@@ -73,13 +74,12 @@ function NewProposalForm({ me }: { me: ProposalsData["me"] }) {
     title.trim().length >= 5 && problem.trim().length >= 10 && impact.trim().length >= 10;
 
   return (
-    <section
-      aria-labelledby="new-title"
-      className="space-y-4 rounded-xl border border-border bg-card p-5"
+    <CollapsibleSection
+      id="new-title"
+      title="Propor um card novo"
+      className="space-y-4"
+      titleClassName="text-lg"
     >
-      <h2 id="new-title" className="text-lg font-semibold">
-        Propor um card novo
-      </h2>
       <p className="text-sm text-muted-foreground">
         Em nome de <strong className="text-foreground">{me.name}</strong> ({me.email}). O Jair
         recebe a proposta e pede aos donos de card que digam quem assume.
@@ -135,7 +135,7 @@ function NewProposalForm({ me }: { me: ProposalsData["me"] }) {
         )}
         Enviar proposta
       </Button>
-    </section>
+    </CollapsibleSection>
   );
 }
 
@@ -333,8 +333,8 @@ function GovernanceActions({
       {item.can_define_owner ? (
         <div className="w-full space-y-2 rounded-lg border border-border p-3">
           <p className="text-sm">
-            Mais de um aceite, ou nenhum: os donos decidem em reunião fora do Painel e você registra
-            o resultado aqui.
+            Mais de um dono aceitou: eles decidem em reunião fora do Painel e você registra quem
+            ficou. Só aparece aqui quem aceitou (D-135).
           </p>
           <div className="flex flex-wrap items-end gap-3">
             <label className="block space-y-1 text-sm">
@@ -345,11 +345,13 @@ function GovernanceActions({
                 onChange={(e) => setOwner(e.target.value)}
               >
                 <option value="">Escolha</option>
-                {candidates.map((c) => (
-                  <option key={c.principal_id} value={c.principal_id}>
-                    {c.name}
-                  </option>
-                ))}
+                {candidates
+                  .filter((c) => item.accepted_principal_ids.includes(c.principal_id))
+                  .map((c) => (
+                    <option key={c.principal_id} value={c.principal_id}>
+                      {c.name}
+                    </option>
+                  ))}
               </select>
             </label>
             <label className="block min-w-60 flex-1 space-y-1 text-sm">
