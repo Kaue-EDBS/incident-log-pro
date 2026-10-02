@@ -1444,6 +1444,12 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - Primeiro envio real em 02/10/2026 18:36 (protocolos 01-0001 e 04-0001: 4 avisos SENT).
 - Continua previsto: trocar pelo App Registration do TI (Mail.Send restrito à caixa compartilhada) com envio agendado no banco, sem depender de navegador aberto. A Edge Function `safra-send-notifications` segue pronta para isso; as duas podem conviver, porque a fila trava cada aviso antes de enviar.
 
+### D-132 — Envio provisório de avisos pela sessão de quem está no Painel (M05)
+**APPROVED — 02/10/2026** — owner: Kaue. Atualiza a D-131: o site publicado não tem a chave de sistema, então a fila é esvaziada com a sessão de quem está logado (`safra_notifications_claim_for_session` / `safra_notifications_report_for_session`, migration `20261002300000`).
 
-### D-130 — Envio provisório de avisos pela sessão do usuário (M05)
-Enquanto a TI não entrega o registro de aplicativo (Mail.Send), o Painel aberto por um usuário corporativo esvazia a fila de avisos com a própria sessão, pelas funções `safra_notifications_claim_for_session` / `safra_notifications_report_for_session` (exigem `safra_is_corporate_user()`; anon bloqueado; as funções originais seguem só para service_role). O envio sai pela conexão Outlook do Kaue com remetente painel.safra@editoradobrasil.com.br. Limites: sem Painel aberto, nada sai (aviso expira em 24 h); depende da conexão do Kaue. Substituição: GI-SAFRA-017.
+- **Ninguém lê aviso de outra pessoa.** Gestão e admins (Jair, Bruno, platform admins), que já veem todos os protocolos e avisos (D-108), entregam a **fila inteira**, inclusive lembretes 24/12/1 h, encerramento automático e cancelamento de 72 h. As demais pessoas entregam **só os avisos que a própria ação gerou** (protocolo aberto, encerrado, cancelado, desfeito; etapas da proposta).
+- Só quem pegou o aviso informa o resultado; visitante e conta não corporativa são recusados; as funções originais seguem só para service_role.
+- O envio sai pela conexão Outlook do Kaue no Lovable, com remetente painel.safra@editoradobrasil.com.br.
+- **Limite:** os avisos do sistema só saem com alguém da gestão/admin com o Painel aberto (o owner deixa o próprio PC ligado no Painel como solução temporária). Sem isso, expiram em 24 h.
+- **Próximo passo pedido pelo owner: e-mails automáticos de verdade**, com envio agendado no servidor, sem depender de navegador aberto (GI-SAFRA-017).
+- Alternativa recusada: deixar qualquer usuário corporativo pegar a fila inteira (exporia o conteúdo dos avisos de todos e permitiria marcar aviso como enviado sem enviar).

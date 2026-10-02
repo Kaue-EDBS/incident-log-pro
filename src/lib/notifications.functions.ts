@@ -1,6 +1,7 @@
 // SAFRA-M05 — entrega imediata dos avisos que o banco colocou na fila.
-// PROVISÓRIO (D-130): usa a sessão do próprio usuário corporativo para pegar a fila
-// (funções *_for_session, que exigem conta corporativa) e envia pela conexão Outlook
+// PROVISÓRIO (D-132): usa a sessão do próprio usuário corporativo para pegar a fila
+// (funções *_for_session: gestão/admins entregam a fila inteira; os demais, só os avisos da
+// própria ação) e envia pela conexão Outlook
 // vinculada ao projeto, assinando como a caixa compartilhada oficial.
 // Será trocado pelo App Registration da TI.
 import { createServerFn } from "@tanstack/react-start";
@@ -75,7 +76,8 @@ export const deliverQueuedNotifications = createServerFn({ method: "POST" })
         p_ok: ok,
         p_error: reason,
       });
-      if (rep.error) console.error("notification report failed:", rep.error.code, rep.error.message);
+      if (rep.error)
+        console.error("notification report failed:", rep.error.code, rep.error.message);
       if (ok) sent += 1;
       else failed += 1;
     }
