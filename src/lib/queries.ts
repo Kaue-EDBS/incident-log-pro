@@ -157,6 +157,51 @@ export function useAllTreatments(
   });
 }
 
+const MetricPairSchema = z.object({ mean: z.number().nullable(), median: z.number().nullable() });
+const ReliabilityRowSchema = z.object({
+  failures: z.number(),
+  protocols: z.number(),
+  mttd: MetricPairSchema,
+  mttr: MetricPairSchema,
+  mtbf: MetricPairSchema,
+  mttf: MetricPairSchema,
+});
+const ReliabilitySchema = z.object({
+  scope: z.enum(["ALL", "OWNER"]),
+  season_start: z.string(),
+  as_of: z.string(),
+  excluded: z.number(),
+  consolidated: ReliabilityRowSchema,
+  cards: z.array(
+    ReliabilityRowSchema.extend({
+      scenario_id: z.string().uuid(),
+      code: z.string(),
+      name: z.string(),
+    }),
+  ),
+});
+
+export type MetricPair = z.infer<typeof MetricPairSchema>;
+export type ReliabilityRow = z.infer<typeof ReliabilityRowSchema>;
+
+/** MTTD, MTTR, MTBF e MTTF da Safra corrente (D-117); o banco decide o escopo (D-88). */
+export function useReliabilityMetrics(enabled: boolean, previewOwnerPrincipalId: string | null) {
+  return useQuery({
+    queryKey: ["safra-reliability-metrics", previewOwnerPrincipalId],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_get_reliability_metrics", () =>
+        supabase.rpc(
+          "safra_get_reliability_metrics",
+          previewOwnerPrincipalId ? { p_owner_principal_id: previewOwnerPrincipalId } : {},
+        ),
+      );
+      if (error) throw error;
+      return ReliabilitySchema.parse(data);
+    },
+  });
+}
+
 export function useSafraStartTreatment() {
   const invalidate = useInvalidateProtocols();
 

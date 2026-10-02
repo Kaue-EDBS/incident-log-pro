@@ -784,6 +784,7 @@ export type Database = {
       safra_can_use_chameleon: { Args: never; Returns: boolean }
       safra_undo_my_part: { Args: { p_treatment_id: string }; Returns: Json }
       safra_get_treatment_timeline: { Args: { p_treatment_id: string }; Returns: Json }
+      safra_get_reliability_metrics: { Args: { p_owner_principal_id?: string }; Returns: Json }
       safra_get_all_treatments: {
         Args: { p_limit?: number; p_scenario_id?: string; p_status?: string }
         Returns: Json

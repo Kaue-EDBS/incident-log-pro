@@ -223,6 +223,10 @@ export function safraErrorMessage(error: unknown, fallback: string): string {
     ["SAFRA_UNDO_FORBIDDEN", "Só quem concluiu a parte pode desfazer."],
     ["SAFRA_TIMELINE_FORBIDDEN", "Você não tem acesso ao histórico deste protocolo."],
     ["SAFRA_INVALID_FILTER", "Filtro inválido. Recarregue a página e tente de novo."],
+    [
+      "SAFRA_ANALYTICS_FORBIDDEN",
+      "Os indicadores são para donos de card, gestão e administradores.",
+    ],
     ["SAFRA_UNDO_NOTHING_TO_UNDO", "Não há conclusão sua para desfazer neste protocolo."],
     ["SAFRA_UNDO_WINDOW_EXPIRED", "Passaram os 5 minutos para desfazer."],
     [

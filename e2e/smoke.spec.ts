@@ -315,7 +315,11 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   // Visões de gestão e administração.
   await select.selectOption("gestao");
   await page.getByRole("link", { name: "Analytics" }).first().click();
-  await expect(page.getByText("Em construção")).toBeVisible();
+  // D-117: indicadores por card, com o consolidado para a gestão.
+  const metrics = page.getByRole("table", { name: /Indicadores por card/ });
+  await expect(metrics.getByRole("rowheader", { name: "Consolidado" })).toBeVisible();
+  await expect(metrics.getByRole("columnheader", { name: "MTTR" })).toBeVisible();
+  await expectAccessible(page, "analytics");
   await select.selectOption("admin");
   await page.getByRole("link", { name: "Administração" }).first().click();
   await expect(page.getByText("Painel de cadastrados", { exact: false })).toBeVisible();

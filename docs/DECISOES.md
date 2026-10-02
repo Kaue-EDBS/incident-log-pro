@@ -1392,3 +1392,11 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **Nada muda.** GI-SAFRA-013: a instância do banco fica no tamanho atual (Tiny), e o risco do pico de 400 pessoas abrindo protocolo no mesmo minuto é aceito. GI-SAFRA-014: os dados ficam na AWS eu-west-2 (Londres). GI-SAFRA-015: o Painel fica em `painelsafra.lovable.app`, sem domínio próprio nem cabeçalhos customizados.
 - O runbook §4.6 continua valendo se houver lentidão (aumentar a instância pelo painel em 2 a 5 minutos).
 
+### D-117 — MTTD, MTTR, MTBF e MTTF dos protocolos
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **MTTD** = abertura − início do problema. **MTTR** = última parte concluída − abertura (o dono só sabe quando o protocolo abre); no encerramento automático, até a parte que concluiu (D-113).
+- **Falha** = protocolo encerrado; cancelados e os fora do analytics (D-115) não contam. Protocolos do **mesmo card que se sobrepõem no tempo** contam como **uma** falha.
+- **MTTF** = abertura da falha − fim da falha anterior do mesmo card; **MTBF** = abertura da falha − abertura da anterior (= MTTF + MTTR).
+- **Média e mediana** da Safra corrente. Dono vê os seus cards; Jair, Bruno e admins veem todos e o consolidado (D-88). Voltam como indicadores dos protocolos da Safra, não de incidente de TI (ressalva à D-50).
+

@@ -379,6 +379,16 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+reliability_metrics:
+  decision: "D-117"
+  migration: "20261002250000_d117_reliability_metrics.sql"
+  read: "safra_get_reliability_metrics (owner: own cards; governance + platform admin: all + consolidated)"
+  metrics: ["MTTD open - problem start", "MTTR last part - open", "MTBF open - previous open", "MTTF open - previous end"]
+  failure: "RESOLVED only; overlapping protocols of a card = one failure; excludes D-115"
+  stats: ["mean", "median"]
+  season: "from 2026-10-01 (D-69) to now; end marking D-59/D-70 not built yet"
+  audit_document: "docs/AUDITORIA_D117_INDICADORES_2026-10-02.md"
+
 analytics_exclusions:
   decision: "D-115"
   migration: "20261002230000_analytics_exclusions.sql"
