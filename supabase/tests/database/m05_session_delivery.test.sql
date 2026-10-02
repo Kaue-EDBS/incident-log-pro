@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(11);
 
 -- R and X = regular people; K = Kaue (platform admin).
 insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
@@ -70,38 +70,33 @@ select pg_temp.notice('r', pg_temp.uid('0a'));
 select pg_temp.notice('x', pg_temp.uid('0b'));
 select pg_temp.notice('sys', null);
 
--- 3. A regular person delivers only the notices of their own action -------------------------
+-- 3. D-134: a regular person no longer claims or marks anything --------------------------
 select pg_temp.act_as('0a');
-select is(pg_temp.ids(public.safra_notifications_claim_for_session(20)), 'd132:r',
-  'R claims only the notice that R''s action generated');
-
-select pg_temp.act_as('0b');
+select throws_ok('select public.safra_notifications_claim_for_session(20)', '42501', 'SAFRA_DELIVERY_FORBIDDEN',
+  'D-134: a regular person cannot claim, not even the notices of their own action');
 select public.safra_notifications_report_for_session(
   (select id from public.notifications_log where idempotency_key = 'd132:r'), true, null);
-select is(pg_temp.status('r'), 'QUEUED', 'X cannot mark R''s notice as sent');
+select is(pg_temp.status('r'), 'QUEUED', 'a regular person cannot mark a notice as sent');
 
-select pg_temp.act_as('0a');
-select public.safra_notifications_report_for_session(
-  (select id from public.notifications_log where idempotency_key = 'd132:r'), true, null);
-select is(pg_temp.status('r'), 'SENT', 'R reports R''s delivery');
-
-select pg_temp.act_as('0b');
-select is(pg_temp.ids(public.safra_notifications_claim_for_session(20)), 'd132:x',
-  'X claims only X''s notice, never the system ones');
-
--- 4. Governance and admins deliver the rest, including system notices ----------------------
+-- 4. Governance and admins deliver the whole queue ("Forçar envio agora") ------------------
 select pg_temp.act_as('0c');
-select is(pg_temp.ids(public.safra_notifications_claim_for_session(20)), 'd132:sys',
-  'Kaue (admin) claims the system notice; X''s notice is locked by X''s round');
+select is(pg_temp.ids(public.safra_notifications_claim_for_session(20)), 'd132:r,d132:sys,d132:x',
+  'Kaue (admin) claims the whole queue, including system notices');
+
+select pg_temp.act_as('0b');
+select public.safra_notifications_report_for_session(
+  (select id from public.notifications_log where idempotency_key = 'd132:x'), true, null);
+select is(pg_temp.status('x'), 'QUEUED', 'someone who did not claim cannot report');
+
+select pg_temp.act_as('0c');
 select public.safra_notifications_report_for_session(
   (select id from public.notifications_log where idempotency_key = 'd132:sys'), false, 'HTTP 503');
 select ok((select delivery_status = 'QUEUED' and last_error = 'HTTP 503' and locked_until is null
            from public.notifications_log where idempotency_key = 'd132:sys'),
   'a failed delivery goes back to the queue with the reason');
-
-select pg_temp.act_as('0a');
-select is(pg_temp.ids(public.safra_notifications_claim_for_session(20)), '',
-  'R gets nothing more: X''s and the system notices are not R''s');
+select public.safra_notifications_report_for_session(
+  (select id from public.notifications_log where idempotency_key = 'd132:r'), true, null);
+select is(pg_temp.status('r'), 'SENT', 'the claimer reports the delivery');
 
 select * from finish();
 rollback;
