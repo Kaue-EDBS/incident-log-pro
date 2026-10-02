@@ -1270,6 +1270,7 @@ Auditoria detalhada do SLA: migration `20261001233000_c07_aud2b_close_times_seco
 
 - O app segue publicado com o START ligado porque **ninguém tem acesso ainda**.
 - **Condição:** antes de liberar o acesso às pessoas, precisam existir o encerramento e o cancelamento (F01/F02) e o aviso ao dono (M05). Sem isso, quem abrir um protocolo fica travado no card (D-57) e o dono não é avisado.
+- **Condição (01/10/2026):** publicar no Lovable a versão atual do GitHub antes de liberar o acesso. A versão publicada é de antes do C07 e espera campos de SLA que o banco não tem mais; o catálogo dela não carrega.
 
 ### D-80 — Repositório público
 **APPROVED — 01/10/2026** — owner: Kaue (A-03). Risco aceito: e-mails corporativos, papéis e o threat model ficam visíveis. Nenhuma chave secreta está no repositório.

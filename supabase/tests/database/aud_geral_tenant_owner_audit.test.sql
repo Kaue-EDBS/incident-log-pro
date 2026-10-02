@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(20);
+select plan(21);
 
 -- Users: A = corporate tenant requester; F = foreign tenant using a corporate-looking e-mail.
 insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
@@ -189,6 +189,13 @@ select ok(to_regclass('public.treatments_scenario_version_idx') is null, 'A-12: 
 select ok(
   (select count(*) = 0 from information_schema.columns where table_schema = 'public' and column_name ilike '%tenant%'),
   'tenant is never stored in public tables; it is read from auth.identities'
+);
+
+select ok(
+  exists(select 1 from public.governance_issues
+         where issue_key = 'GI-SAFRA-012' and status = 'OPEN' and resolved_at is null
+           and description like '%D-23%' and description like '%PITR%'),
+  'GI-SAFRA-012 (backup x RPO) is mirrored as OPEN'
 );
 
 select * from finish();

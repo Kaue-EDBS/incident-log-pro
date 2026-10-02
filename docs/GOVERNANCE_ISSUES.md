@@ -37,6 +37,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 009 | Eventos dos SLAs textuais | RESOLVED (D-62) — sem cronômetro de SLA |
 | 010 | Liberação de START por card | RESOLVED (D-63) |
 | 011 | Avisos também pelo Teams? Para pessoa ou canal? | OPEN — DEFERRED_TO_M05 |
+| 012 | Backup diário atende a meta de RPO 5 min / RTO 30 min (D-23)? | OPEN — DEFERRED_TO_C09 |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -305,3 +306,18 @@ Perguntas em aberto:
 Até a decisão, a M05 deve considerar apenas e-mail.
 
 > **Atualização 01/10/2026 (C06-AUD2):** as descrições das pendências abertas (002, 003, 005, 006, 007) e a resolução da 009 foram atualizadas também no banco (migration `20261001220000`), com o mesmo conteúdo deste documento. Nenhum status mudou.
+
+## GI-SAFRA-012 — Backup diário x meta de RPO 5 min / RTO 30 min
+
+**Status:** OPEN — DEFERRED_TO_C09
+**Fase:** SAFRA-C09 (fundação operacional).
+**Bloqueia START/C08:** não.
+**Origem:** auditoria somente leitura do lado do Lovable (L-01), 01/10/2026.
+
+O Lovable Cloud informou **backup diário**, sem restauração ponto a ponto (PITR) no plano atual. A D-23 promete **RPO de 5 minutos** (perda máxima de dados) e **RTO de 30 minutos** (tempo para voltar). Com backup diário, a perda pode chegar a 24 horas.
+
+Decidir no C09:
+1. melhorar o plano no Lovable/Supabase para ter PITR; ou
+2. rever a meta da D-23.
+
+Nenhum valor é assumido até a decisão.
