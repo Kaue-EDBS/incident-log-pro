@@ -61,6 +61,7 @@ export type Database = {
           attempts: number
           body: string | null
           channel: string | null
+          claimed_by: string | null
           correlation_id: string
           created_at: string
           delivery_status: string
@@ -84,11 +85,13 @@ export type Database = {
           subject: string | null
           template_version: number | null
           treatment_id: string | null
+          triggered_by: string | null
         }
         Insert: {
           attempts?: number
           body?: string | null
           channel?: string | null
+          claimed_by?: string | null
           correlation_id: string
           created_at?: string
           delivery_status: string
@@ -112,11 +115,13 @@ export type Database = {
           subject?: string | null
           template_version?: number | null
           treatment_id?: string | null
+          triggered_by?: string | null
         }
         Update: {
           attempts?: number
           body?: string | null
           channel?: string | null
+          claimed_by?: string | null
           correlation_id?: string
           created_at?: string
           delivery_status?: string
@@ -140,6 +145,7 @@ export type Database = {
           subject?: string | null
           template_version?: number | null
           treatment_id?: string | null
+          triggered_by?: string | null
         }
         Relationships: [
           {
@@ -1113,7 +1119,15 @@ export type Database = {
       }
       safra_log_screen_view: { Args: { p_route: string }; Returns: undefined }
       safra_notifications_claim: { Args: { p_limit?: number }; Returns: Json }
+      safra_notifications_claim_for_session: {
+        Args: { p_limit?: number }
+        Returns: Json
+      }
       safra_notifications_report: {
+        Args: { p_error?: string; p_id: string; p_ok: boolean }
+        Returns: undefined
+      }
+      safra_notifications_report_for_session: {
         Args: { p_error?: string; p_id: string; p_ok: boolean }
         Returns: undefined
       }
