@@ -33,7 +33,10 @@ export type SenderResult =
   | { status: "disabled"; missing: string[] }
   | { status: "ok"; claimed: number; sent: number; failed: number };
 
-const REQUIRED = ["MS_TENANT_ID", "MS_CLIENT_ID", "MS_CLIENT_SECRET", "MAIL_SENDER"] as const;
+/** Caixa oficial de envio de todos os avisos do Painel (donos de card, usuários etc.). */
+export const DEFAULT_MAIL_SENDER = "painel.safra@editoradobrasil.com.br";
+
+const REQUIRED = ["MS_TENANT_ID", "MS_CLIENT_ID", "MS_CLIENT_SECRET"] as const;
 
 /** Lê a configuração; devolve o que falta em vez de inventar valores. */
 export function readConfig(env: (name: string) => string | undefined): SenderConfig | string[] {
@@ -43,7 +46,7 @@ export function readConfig(env: (name: string) => string | undefined): SenderCon
     tenantId: env("MS_TENANT_ID")!.trim(),
     clientId: env("MS_CLIENT_ID")!.trim(),
     clientSecret: env("MS_CLIENT_SECRET")!.trim(),
-    mailbox: env("MAIL_SENDER")!.trim(),
+    mailbox: env("MAIL_SENDER")?.trim() || DEFAULT_MAIL_SENDER,
   };
 }
 
