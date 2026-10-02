@@ -151,7 +151,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 | C06 | Seed canônico da Matriz v3 | CONCLUÍDO (+ C06-AUD2 em 01/10, planilha = banco) | `AUDITORIA_C06_*`, `data-contracts/` |
 | C07 | Engine de SLA → regras de tempo | CONCLUÍDO; C07-AUD2 em 01/10: SLA aposentado (D-75), escada e tempos do analytics (D-76/D-77) | `C07_REGRAS_DE_TEMPO.md`, `AUDITORIA_C07_*` |
 | C08 | UX do COMEÇO | **EM EXECUÇÃO** — START implementado; homologação com sessão real pendente | abaixo |
-| C09 | Fundação operacional | EM EXECUÇÃO (02/10): meta D-93, registro técnico D-95, capacidade D-94, ensaio de restauração, runbook | `RUNBOOK_RECUPERACAO.md`, `AUDITORIA_C09_*` |
+| C09 | Fundação operacional | CONCLUÍDA (02/10): G5.5 aprovado com pendências externas; meta D-93, capacidade D-94, registro técnico D-95, ensaio de restauração, runbook | `RUNBOOK_RECUPERACAO.md`, `AUDITORIA_C09_*` |
 
 ## EIXO 2 — MEIO
 
@@ -281,8 +281,8 @@ Depois da homologação:
 ```text
 service_class = CRITICO
 SLO = 99.95%
-RTO = 30 min
-RPO = 5 min
+RTO = 4 h    (D-93; era 30 min na D-23)
+RPO = 24 h   (D-93; era 5 min na D-23)
 replica_enabled = false
 ```
 

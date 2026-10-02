@@ -379,6 +379,23 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+c09_ops_foundation:
+  status: "G5_5_APPROVED_PENDING_EXTERNAL"
+  date: "2026-10-02"
+  migration: "20261002120000_c09_ops_foundation.sql"
+  decisions: ["D-93", "D-94", "D-95"]
+  rpo: "24h"
+  rto: "4h"
+  backup: "Lovable Cloud daily backup; PITR not active (future improvement)"
+  restore_drill: ".github/scripts/test-safra-restore-drill.sh (PASS, 31 s, data identical)"
+  capacity_test: ".github/scripts/test-safra-load.ts (400 people, 1000 protocols + spike of 400; 0 errors; sustained p95 215 ms, spike p95 738 ms; at most 64 requests in flight)"
+  ops_log: "public.ops_events (90 days, admin-only read, secrets redacted)"
+  ops_rpcs: ["safra_log_ops_event", "safra_admin_get_ops_summary"]
+  primary_smoke: "PASS 2026-10-02 (transaction rolled back, nothing persisted)"
+  runbook: "docs/RUNBOOK_RECUPERACAO.md"
+  pending: ["Lovable: real restore time, plan capacity, PITR cost", "TI: e-mail alerts", "owner: publish and homologate with real login"]
+  audit_document: "docs/AUDITORIA_C09_REABERTURA_2026-10-02.md"
+
 c08_reaudit:
   status: "APPROVED_PENDING_PUBLISH_AND_HOMOLOGATION"
   date: "2026-10-02"
