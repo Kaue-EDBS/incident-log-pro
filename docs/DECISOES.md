@@ -1462,4 +1462,5 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - A função é pública, mas só esvazia a fila e devolve contagens: nunca devolve conteúdo de aviso.
 - O envio pelo Painel aberto (D-132) fica como reforço; a fila trava cada aviso antes de enviar, então ninguém recebe o mesmo aviso duas vezes.
 - Condição: a conexão Outlook precisa estar disponível para a função do servidor (`LOVABLE_API_KEY` e `MICROSOFT_OUTLOOK_API_KEY`). Enquanto não estiver, a função responde "disabled" e a fila segue pelo D-132.
+- **Comprovado no PRIMARY em 02/10/2026:** migrations `20261002300000` e `20261002310000` aplicadas (60 = repositório); função publicada pelo Lovable a pedido (segredos da conexão Outlook disponíveis no servidor); e-mail de teste para o Kaue colocado na fila às 16:30 e **enviado sozinho pelo agendamento às 16:32** (resposta da função: 1 pego, 1 enviado, 0 falhas).
 
