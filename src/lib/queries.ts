@@ -15,6 +15,7 @@ const KEYS = {
   mine: ["safra-my-treatments"],
   owner: ["safra-owner-treatments"],
   roles: ["safra-my-roles"],
+  chameleon: ["safra-can-use-chameleon"],
 } as const;
 
 function useInvalidateProtocols() {
@@ -93,6 +94,21 @@ export function useMySafraRoles() {
       );
       if (error) throw error;
       return Array.isArray(data) ? data.map(String) : [];
+    },
+  });
+}
+
+/** Modo Camaleão (D-96): o banco decide quem vê o seletor (hoje Kaue e Vinicius). */
+export function useCanUseChameleon(enabled: boolean) {
+  return useQuery({
+    queryKey: KEYS.chameleon,
+    enabled,
+    queryFn: async (): Promise<boolean> => {
+      const { data, error } = await measured("safra_can_use_chameleon", () =>
+        supabase.rpc("safra_can_use_chameleon"),
+      );
+      if (error) throw error;
+      return data === true;
     },
   });
 }

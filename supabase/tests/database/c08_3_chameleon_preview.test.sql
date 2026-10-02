@@ -1,12 +1,15 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(7);
+select plan(14);
 
--- A = platform admin (Amanda), R = requester, O = owner of SAFRA-09 (Renato).
+-- A = Kaue, V = Vinicius, M = Amanda (platform admin without Chameleon, D-96),
+-- R = requester, O = owner of SAFRA-09 (Renato).
 insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
 select v.id::uuid, coalesce(p.corporate_email, v.email), '{"provider":"azure"}', true, false, clock_timestamp(), clock_timestamp()
 from (values
-  ('c0830000-0000-4000-8000-00000000000a', null, 'Amanda Bueno'),
+  ('c0830000-0000-4000-8000-00000000000a', null, 'Kaue Pastrello'),
+  ('c0830000-0000-4000-8000-00000000000c', null, 'Vinicius Moraes'),
+  ('c0830000-0000-4000-8000-00000000000e', null, 'Amanda Bueno'),
   ('c0830000-0000-4000-8000-00000000000b', 'c083.requester@editoradobrasil.com.br', null),
   ('c0830000-0000-4000-8000-00000000000d', null, 'Renato de Paulo')
 ) as v(id, email, who)
@@ -38,8 +41,9 @@ select 't1', r->>'treatment_id'
 from (select public.safra_start_treatment((select id from public.scenarios where code = 'SAFRA-09'),
         'c0830000-0000-4000-8000-000000000901'::uuid, 'Camaleão: protocolo de teste', '{}'::uuid[]) r) x;
 
--- Platform admin previews Renato's cards.
+-- Kaue previews Renato's cards.
 select pg_temp.act_as('0a');
+select ok(public.safra_can_use_chameleon(), 'D-96: Kaue can use Chameleon');
 select is(
   jsonb_array_length(public.safra_admin_get_owner_treatments(
     (select id from private.safra_principals where display_name = 'Renato de Paulo'))),
@@ -55,11 +59,28 @@ select throws_ok(
   $$ select public.safra_close_my_part((select v::uuid from ctx where k = 't1')) $$,
   '42501', 'SAFRA_CLOSE_FORBIDDEN', 'D-92: the admin cannot act as the owner');
 
+-- Vinicius can too.
+select pg_temp.act_as('0c');
+select ok(public.safra_can_use_chameleon(), 'D-96: Vinicius can use Chameleon');
+select is(
+  jsonb_array_length(public.safra_admin_get_owner_treatments(
+    (select id from private.safra_principals where display_name = 'Renato de Paulo'))),
+  1, 'D-96: Vinicius sees the protocols of the chosen owner');
+
+-- Amanda is platform admin but not in the Chameleon list.
+select pg_temp.act_as('0e');
+select ok(private.safra_has_role('safra_platform_admin'), 'Amanda is still a platform admin');
+select ok(not public.safra_can_use_chameleon(), 'D-96: Amanda cannot use Chameleon');
+select throws_ok(
+  $$ select public.safra_admin_get_owner_treatments((select id from private.safra_principals where display_name = 'Renato de Paulo')) $$,
+  '42501', 'SAFRA_PREVIEW_FORBIDDEN', 'D-96: Amanda cannot read the preview');
+
 -- Requester and owner (not platform admins) cannot preview.
 select pg_temp.act_as('0b');
 select throws_ok(
   $$ select public.safra_admin_get_owner_treatments((select id from private.safra_principals where display_name = 'Renato de Paulo')) $$,
   '42501', 'SAFRA_PREVIEW_FORBIDDEN', 'a regular user cannot use the preview');
+select ok(not public.safra_can_use_chameleon(), 'a regular user does not get the Chameleon selector');
 
 select pg_temp.act_as('0d');
 select throws_ok(

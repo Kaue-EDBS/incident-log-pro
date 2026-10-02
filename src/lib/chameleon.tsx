@@ -1,8 +1,8 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import { useMySafraRoles } from "@/lib/queries";
+import { useCanUseChameleon, useMySafraRoles } from "@/lib/queries";
 
 /**
- * Modo Camaleão (D-92): um admin da plataforma escolhe "ver como" outra audiência
+ * Modo Camaleão (D-92, D-96): Kaue e Vinicius escolhem "ver como" outra audiência
  * (D-88) para conferir as telas. Só muda o que a tela mostra; tudo fica só leitura e as
  * permissões continuam sendo decididas no banco.
  */
@@ -16,6 +16,7 @@ export type ViewAs =
 type Viewer = {
   roles: string[];
   isPlatformAdmin: boolean;
+  canUseChameleon: boolean;
   viewAs: ViewAs;
   setViewAs: (next: ViewAs) => void;
   readOnly: boolean;
@@ -44,9 +45,10 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
   const [stored, setStored] = useState<ViewAs>(readStored);
   const roles = useMemo(() => rolesQuery.data ?? [], [rolesQuery.data]);
   const isPlatformAdmin = roles.includes("safra_platform_admin");
+  const canUseChameleon = useCanUseChameleon(isPlatformAdmin).data === true;
   const viewAs = useMemo<ViewAs>(
-    () => (isPlatformAdmin ? stored : { mode: "real" }),
-    [isPlatformAdmin, stored],
+    () => (canUseChameleon ? stored : { mode: "real" }),
+    [canUseChameleon, stored],
   );
 
   const value = useMemo<Viewer>(() => {
@@ -66,6 +68,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
         return {
           roles,
           isPlatformAdmin,
+          canUseChameleon,
           viewAs,
           setViewAs,
           readOnly: true,
@@ -79,6 +82,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
         return {
           roles,
           isPlatformAdmin,
+          canUseChameleon,
           viewAs,
           setViewAs,
           readOnly: true,
@@ -92,6 +96,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
         return {
           roles,
           isPlatformAdmin,
+          canUseChameleon,
           viewAs,
           setViewAs,
           readOnly: true,
@@ -105,6 +110,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
         return {
           roles,
           isPlatformAdmin,
+          canUseChameleon,
           viewAs,
           setViewAs,
           readOnly: true,
@@ -118,6 +124,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
         return {
           roles,
           isPlatformAdmin,
+          canUseChameleon,
           viewAs,
           setViewAs,
           readOnly: false,
@@ -128,7 +135,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
           label: "Minha visão",
         };
     }
-  }, [roles, isPlatformAdmin, viewAs]);
+  }, [roles, isPlatformAdmin, canUseChameleon, viewAs]);
 
   return <ViewerContext.Provider value={value}>{children}</ViewerContext.Provider>;
 }

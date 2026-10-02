@@ -1321,7 +1321,7 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 **APPROVED — 02/10/2026** — owner: Kaue.
 
 - **D-91:** paleta da Editora do Brasil: azul-marinho `#19286E` (textos, botões, menu), verde-água `#00C3B3` e verde-limão `#93D50A` (destaques, estados, símbolo). Verde-água e limão nunca como cor de texto (contraste WCAG AA). Na tela, o card não mostra o código `SAFRA-NN` e o título perde o que está entre parênteses (ex.: "Pedido pago não integrado"); o banco continua com o nome literal da Matriz v3 (D-74) e o número do protocolo continua `NN-SSSS` (D-82).
-- **D-92:** "Modo Camaleão" para quem tem o papel `safra_platform_admin` (hoje Kaue, Amanda, João e Vinicius): um seletor "ver como" mostra as telas de usuário, dono de card (escolhendo o dono), Jair/Bruno e administração. É **só leitura**: abrir, concluir e cancelar ficam desligados, e o banco recusa qualquer ação em nome de outra pessoa. A leitura dos protocolos de um dono usa `safra_admin_get_owner_treatments`, liberada só para platform admin.
+- **D-92** (revista pela D-96): "Modo Camaleão" para quem tem o papel `safra_platform_admin` (hoje Kaue, Amanda, João e Vinicius): um seletor "ver como" mostra as telas de usuário, dono de card (escolhendo o dono), Jair/Bruno e administração. É **só leitura**: abrir, concluir e cancelar ficam desligados, e o banco recusa qualquer ação em nome de outra pessoa. A leitura dos protocolos de um dono usa `safra_admin_get_owner_treatments`, liberada só para platform admin.
 
 ### D-93 a D-95 — Fundação operacional (C09)
 **APPROVED — 02/10/2026** — owner: Kaue.
@@ -1329,3 +1329,9 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-93:** a meta da D-23 passa a ser **RPO de até 24 h** (perda máxima de dados) e **RTO de até 4 h** (tempo para voltar), compatível com o backup diário do Lovable Cloud. A restauração ponto a ponto (PITR) fica como melhoria futura, a pedir orçamento ao Lovable. Resolve a GI-SAFRA-012. O SLO de 99,95% e a classe CRITICO seguem.
 - **D-94:** a capacidade é dimensionada para o **pior caso: 400 pessoas e 1.000 protocolos**, com teste contínuo e de pico no CI.
 - **D-95:** observabilidade mínima no próprio Painel: erros de tela, respostas lentas (≥ 2 s), logins recusados e falhas técnicas de ação vão para `public.ops_events`, guardados por **90 dias**, lidos só por platform admins em Administração → Saúde do sistema. Guarda só o código do usuário (nunca nome ou e-mail) e nunca tokens, chaves ou senhas (o banco descarta o que parecer segredo). Até existirem alertas por e-mail (M05/TI), um admin confere a Saúde do sistema uma vez por dia na Safra.
+
+### D-96 — Modo Camaleão só para Kaue e Vinicius (revisa a D-92)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- O seletor "ver como" e a leitura `safra_admin_get_owner_treatments` ficam só para **Kaue Pastrello** e **Vinicius Moraes**: é preciso ser `safra_platform_admin` **e** estar logado com um desses dois e-mails corporativos. Amanda e João seguem platform admins (Administração e Saúde do sistema), sem o Modo Camaleão.
+- Quem decide é o banco (`private.safra_can_use_chameleon`); a tela só pergunta (`safra_can_use_chameleon`). Mudar a lista exige nova migration.

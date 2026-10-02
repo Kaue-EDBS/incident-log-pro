@@ -25,7 +25,7 @@ function ChameleonBar() {
     return [...seen.entries()].sort((a, b) => a[1].localeCompare(b[1]));
   }, [catalog.data]);
 
-  if (!viewer.isPlatformAdmin) return null;
+  if (!viewer.canUseChameleon) return null;
 
   const current =
     viewer.viewAs.mode === "dono" ? `dono:${viewer.viewAs.ownerPrincipalId}` : viewer.viewAs.mode;

@@ -81,7 +81,11 @@ Teste no PRIMARY (transação desfeita no fim, 0 registros gravados): sessão co
 
 ---
 
-## 7. Gate G5.5
+## 7. Ajuste do Modo Camaleão (D-96)
+
+A pedido do owner, o Modo Camaleão deixou de valer para todos os platform admins e ficou só para **Kaue e Vinicius** (migration `20261002140000_c09_chameleon_kaue_vinicius.sql`). O banco confere papel **e** e-mail; Amanda e João continuam admins, sem o "ver como". Teste: `c08_3_chameleon_preview.test.sql` (14 verificações, inclui Amanda recusada).
+
+## 8. Gate G5.5
 
 | Critério | Estado |
 |---|---|
