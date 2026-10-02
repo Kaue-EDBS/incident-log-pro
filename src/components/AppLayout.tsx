@@ -1,5 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BarChart3, ClipboardList, Eye, Inbox, LayoutGrid, Settings } from "lucide-react";
+import {
+  BarChart3,
+  ClipboardList,
+  Eye,
+  Inbox,
+  ListChecks,
+  LayoutGrid,
+  Settings,
+} from "lucide-react";
 import { useMemo, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { BrandMark } from "@/components/BrandMark";
@@ -98,6 +106,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
             label: "Protocolos dos meus cards",
             short: "Meus cards",
             icon: Inbox,
+          },
+        ]
+      : []),
+    ...(viewer.canSeeAllProtocols
+      ? [
+          {
+            to: "/todos-os-protocolos",
+            label: "Todos os protocolos",
+            short: "Todos",
+            icon: ListChecks,
           },
         ]
       : []),

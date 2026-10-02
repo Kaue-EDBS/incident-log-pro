@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SituationBadge, TreatmentActions } from "@/components/TreatmentActions";
+import { TreatmentTimeline } from "@/components/TreatmentTimeline";
 import { analyticsLocalInputToIso, formatDateTime, toLocalInput } from "@/lib/metrics";
 import { useSafraStartCatalog, useSafraStartTreatment } from "@/lib/queries";
 import { useViewer } from "@/lib/chameleon";
@@ -295,6 +296,7 @@ function ExpandedCard({ card, onClose }: { card: SafraStartCatalogItem; onClose:
                 estiver resolvido do seu lado, toque em Concluído.
               </p>
               <TreatmentActions treatment={card.my_open_treatment} />
+              <TreatmentTimeline treatmentId={card.my_open_treatment.treatment_id} />
               <Link to="/meus-protocolos" className="inline-block text-sm text-primary underline">
                 Ver em Meus protocolos
               </Link>

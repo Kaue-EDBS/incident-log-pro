@@ -388,6 +388,10 @@ m02_m03_history:
   read: "safra_get_treatment_timeline (requester, current owner, owner who closed, governance, platform admin)"
   tests: ["m02_protocol_history.test.sql (20)", "test-safra-stress.sh history rebuild check"]
   audit_document: "docs/AUDITORIA_M02_M03_2026-10-02.md"
+  m03_all_protocols_migration: "20261002200000_m03_all_protocols.sql"
+  m03_all_protocols_read: "safra_get_all_treatments (governance + platform admin, read-only, max 500)"
+  m03_route: "/todos-os-protocolos"
+  m03_audit_document: "docs/AUDITORIA_M03_2026-10-02.md"
 
 m01_state_machine:
   status: "APPROVED"

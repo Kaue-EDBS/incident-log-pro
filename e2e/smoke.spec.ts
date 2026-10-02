@@ -228,6 +228,7 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   // Um usuário comum não vê o Modo Camaleão nem a área de donos.
   await expect(page.getByLabel("Modo Camaleão")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Protocolos dos meus cards" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Todos os protocolos" })).toHaveCount(0);
 });
 
 test("requester: cancel needs a reason", async ({ browser }) => {
@@ -270,6 +271,16 @@ test("owner: sees own card protocols and closes the last part", async ({ browser
 
 test("admin: Modo Camaleão previews other audiences, read-only", async ({ browser }) => {
   const page = await openAs(browser, "admin");
+
+  // M03: a gestão e os admins veem todos os protocolos, só leitura, com histórico.
+  await page.getByRole("link", { name: "Todos os protocolos" }).first().click();
+  const anyProtocol = page.getByRole("article", { name: `Protocolo ${protocol08}` });
+  await expect(anyProtocol).toBeVisible();
+  await expect(anyProtocol.getByRole("button", { name: "Concluído" })).toHaveCount(0);
+  await anyProtocol.getByRole("button", { name: "Ver histórico" }).click();
+  await expect(anyProtocol.getByRole("list", { name: "Histórico do protocolo" })).toBeVisible();
+  await expectAccessible(page, "todos os protocolos");
+
   const select = page.getByLabel("Modo Camaleão");
   await expect(select).toBeVisible();
 

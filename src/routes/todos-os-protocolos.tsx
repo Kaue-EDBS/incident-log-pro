@@ -1,0 +1,119 @@
+import { useMemo, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { TreatmentList } from "@/components/TreatmentList";
+import { useViewer } from "@/lib/chameleon";
+import { useAllTreatments, useSafraStartCatalog } from "@/lib/queries";
+import { cardDisplayName, cardNumber } from "@/lib/safra";
+
+export const Route = createFileRoute("/todos-os-protocolos")({
+  head: () => ({
+    meta: [
+      { title: "Todos os protocolos | Painel Safra" },
+      { name: "description", content: "Protocolos de todos os cards, para a gestão da Safra." },
+    ],
+  }),
+  component: AllProtocols,
+});
+
+const STATUS_OPTIONS = [
+  { value: "", label: "Todas as situações" },
+  { value: "ACTIVE", label: "Em andamento (inclui aguardando)" },
+  { value: "RESOLVED", label: "Encerrados" },
+  { value: "CANCELLED", label: "Cancelados" },
+] as const;
+
+/** Visão da gestão (D-104): todos os protocolos, só leitura, com o histórico de cada um. */
+function AllProtocols() {
+  const viewer = useViewer();
+  const [status, setStatus] = useState("");
+  const [scenarioId, setScenarioId] = useState("");
+  const catalog = useSafraStartCatalog();
+  const query = useAllTreatments(viewer.canSeeAllProtocols, {
+    status: status || null,
+    scenarioId: scenarioId || null,
+  });
+
+  const cards = useMemo(
+    () =>
+      (catalog.data ?? [])
+        .map((card) => ({
+          id: card.scenario_id,
+          label: `${cardNumber(card.code)} · ${cardDisplayName(card.name)}`,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
+    [catalog.data],
+  );
+
+  if (!viewer.canSeeAllProtocols) {
+    return (
+      <div className="mx-auto max-w-5xl">
+        <p className="rounded-xl border border-dashed border-border bg-card p-6 text-sm text-muted-foreground">
+          Esta área é para a gestão da Safra e para os administradores.
+        </p>
+      </div>
+    );
+  }
+
+  const items = query.data?.items ?? [];
+  const total = query.data?.total ?? 0;
+
+  return (
+    <div className="mx-auto max-w-5xl space-y-6">
+      <header className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Todos os protocolos</h1>
+        <p className="text-sm text-muted-foreground">
+          Protocolos de todos os cards. Abra "Ver histórico" para ver o que aconteceu em cada um. Só
+          quem abriu e o dono do card concluem ou cancelam.
+        </p>
+      </header>
+
+      <div className="flex flex-wrap items-end gap-4 rounded-xl border border-border bg-card p-4">
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="font-medium">Situação</span>
+          <select
+            className="min-h-10 rounded-md border border-input bg-background px-3"
+            value={status}
+            onChange={(event) => setStatus(event.target.value)}
+          >
+            {STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="font-medium">Card</span>
+          <select
+            className="min-h-10 rounded-md border border-input bg-background px-3"
+            value={scenarioId}
+            onChange={(event) => setScenarioId(event.target.value)}
+          >
+            <option value="">Todos os cards</option>
+            {cards.map((card) => (
+              <option key={card.id} value={card.id}>
+                {card.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        {query.data ? (
+          <p role="status" className="ml-auto text-sm text-muted-foreground">
+            {items.length < total
+              ? `Mostrando os ${items.length} mais recentes de ${total} protocolos.`
+              : `${total} ${total === 1 ? "protocolo" : "protocolos"}.`}
+          </p>
+        ) : null}
+      </div>
+
+      <TreatmentList
+        items={items}
+        isLoading={query.isLoading}
+        isError={query.isError}
+        onRetry={() => void query.refetch()}
+        emptyText="Nenhum protocolo com esses filtros."
+        showRequester
+      />
+    </div>
+  );
+}

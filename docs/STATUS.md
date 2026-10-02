@@ -24,7 +24,7 @@
 | C08 — UX do COMEÇO + encerrar/cancelar (C08.1 banco, C08.2 telas) | CONCLUÍDA no banco e no código em 02/10; falta publicar e homologar com login real | `AUDITORIA_C08_REABERTURA_2026-10-02.md` |
 | C09 — fundação operacional (backup, restauração, capacidade, observabilidade, runbook) | CONCLUÍDA em 02/10; G5.5 aprovado com pendências externas (Lovable, TI) | `AUDITORIA_C09_REABERTURA_2026-10-02.md`, `RUNBOOK_RECUPERACAO.md` |
 | M01 — regras de mudança de situação (sem reabrir, desfazer em 5 min, cancelamento automático em 72 h) | CONCLUÍDA em 02/10 | `AUDITORIA_M01_2026-10-02.md` |
-| M02 + M03 — histórico e linha do tempo do protocolo | CONCLUÍDA em 02/10 | `AUDITORIA_M02_M03_2026-10-02.md` |
+| M02 + M03 — histórico e linha do tempo do protocolo; tela "Todos os protocolos" | CONCLUÍDA em 02/10 | `AUDITORIA_M02_M03_2026-10-02.md`, `AUDITORIA_M03_2026-10-02.md` |
 | C02-AUD e C02-AUD2 — threat model | CONCLUÍDAS em 01/10; G3.5, THREAT-001 e AUTHZ-001 recertificados | `AUDITORIA_C02_REABERTURA_2026-10-01.md` |
 
 ---
@@ -46,7 +46,7 @@
 - Tabelas em `public`: 16 (inclui o registro técnico `ops_events`, D-95), todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido pela D-73; SLA pela D-75).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Tratativas registradas: 0.
-- Migrations: **48 no PRIMARY e 48 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Migrations: **49 no PRIMARY e 49 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---

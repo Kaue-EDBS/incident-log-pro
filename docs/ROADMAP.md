@@ -384,7 +384,7 @@ Registrar apenas eventos relevantes ao governo da contingência:
 
 ## SAFRA-M03 — Timeline operacional
 
-> **CONCLUÍDO em 02/10/2026**: "Ver histórico" em cada protocolo (D-104, D-105). SLAs e escalonamento não se aplicam.
+> **CONCLUÍDO em 02/10/2026**: "Ver histórico" em cada protocolo e tela "Todos os protocolos" para a gestão e os admins (D-104, D-105). SLAs e escalonamento não se aplicam. Auditoria própria: `AUDITORIA_M03_2026-10-02.md`.
 
 A timeline une:
 

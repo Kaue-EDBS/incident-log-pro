@@ -24,6 +24,7 @@ type Viewer = {
   previewOwnerPrincipalId: string | null;
   canSeeAnalytics: boolean;
   canSeeAdmin: boolean;
+  canSeeAllProtocols: boolean;
   label: string;
 };
 
@@ -76,6 +77,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
           previewOwnerPrincipalId: null,
           canSeeAnalytics: false,
           canSeeAdmin: false,
+          canSeeAllProtocols: false,
           label: "Usuário",
         };
       case "dono":
@@ -90,6 +92,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
           previewOwnerPrincipalId: viewAs.ownerPrincipalId,
           canSeeAnalytics: true,
           canSeeAdmin: false,
+          canSeeAllProtocols: false,
           label: `Dono do card: ${viewAs.ownerName}`,
         };
       case "gestao":
@@ -104,6 +107,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
           previewOwnerPrincipalId: null,
           canSeeAnalytics: true,
           canSeeAdmin: false,
+          canSeeAllProtocols: true,
           label: "Governança e diretoria (Jair e Bruno)",
         };
       case "admin":
@@ -118,6 +122,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
           previewOwnerPrincipalId: null,
           canSeeAnalytics: true,
           canSeeAdmin: true,
+          canSeeAllProtocols: true,
           label: "Administração",
         };
       default:
@@ -132,6 +137,7 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
           previewOwnerPrincipalId: null,
           canSeeAnalytics: governance || isPlatformAdmin || roles.includes("scenario_owner"),
           canSeeAdmin: isPlatformAdmin,
+          canSeeAllProtocols: governance || isPlatformAdmin,
           label: "Minha visão",
         };
     }

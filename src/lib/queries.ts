@@ -26,6 +26,7 @@ function useInvalidateProtocols() {
     void qc.invalidateQueries({ queryKey: KEYS.mine });
     void qc.invalidateQueries({ queryKey: KEYS.owner });
     void qc.invalidateQueries({ queryKey: ["safra-treatment-timeline"] });
+    void qc.invalidateQueries({ queryKey: ["safra-all-treatments"] });
   };
 }
 
@@ -126,6 +127,32 @@ export function useTreatmentTimeline(treatmentId: string, enabled: boolean) {
       );
       if (error) throw error;
       return SafraTimelineSchema.parse(data);
+    },
+  });
+}
+
+const AllTreatmentsSchema = z.object({
+  total: z.number(),
+  items: SafraTreatmentListSchema,
+});
+
+/** Todos os protocolos, para a gestão e os admins (M03, D-104). */
+export function useAllTreatments(
+  enabled: boolean,
+  filters: { status: string | null; scenarioId: string | null },
+) {
+  return useQuery({
+    queryKey: ["safra-all-treatments", filters.status, filters.scenarioId],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_get_all_treatments", () =>
+        supabase.rpc("safra_get_all_treatments", {
+          ...(filters.status ? { p_status: filters.status } : {}),
+          ...(filters.scenarioId ? { p_scenario_id: filters.scenarioId } : {}),
+        }),
+      );
+      if (error) throw error;
+      return AllTreatmentsSchema.parse(data);
     },
   });
 }

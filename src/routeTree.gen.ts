@@ -16,6 +16,7 @@ import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MeusProtocolosRouteImport } from './routes/meus-protocolos'
 import { Route as ProtocolosDosMeusCardsRouteImport } from './routes/protocolos-dos-meus-cards'
+import { Route as TodosOsProtocolosRouteImport } from './routes/todos-os-protocolos'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const ProtocolosDosMeusCardsRoute = ProtocolosDosMeusCardsRouteImport.update({
   path: '/protocolos-dos-meus-cards',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TodosOsProtocolosRoute = TodosOsProtocolosRouteImport.update({
+  id: '/todos-os-protocolos',
+  path: '/todos-os-protocolos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
+  '/todos-os-protocolos': typeof TodosOsProtocolosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
+  '/todos-os-protocolos': typeof TodosOsProtocolosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
+  '/todos-os-protocolos': typeof TodosOsProtocolosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
+    | '/todos-os-protocolos'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
+    | '/todos-os-protocolos'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
+    | '/todos-os-protocolos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   MeusProtocolosRoute: typeof MeusProtocolosRoute
   ProtocolosDosMeusCardsRoute: typeof ProtocolosDosMeusCardsRoute
+  TodosOsProtocolosRoute: typeof TodosOsProtocolosRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtocolosDosMeusCardsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/todos-os-protocolos': {
+      id: '/todos-os-protocolos'
+      path: '/todos-os-protocolos'
+      fullPath: '/todos-os-protocolos'
+      preLoaderRoute: typeof TodosOsProtocolosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   MeusProtocolosRoute: MeusProtocolosRoute,
   ProtocolosDosMeusCardsRoute: ProtocolosDosMeusCardsRoute,
+  TodosOsProtocolosRoute: TodosOsProtocolosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
