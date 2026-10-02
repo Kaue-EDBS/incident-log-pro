@@ -1,10 +1,73 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ScenarioCatalog } from "@/components/ScenarioCatalog";
+import { SituationBadge } from "@/components/TreatmentActions";
+import { useViewer } from "@/lib/chameleon";
+import { useMyTreatments } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
-  beforeLoad: () => {
-    throw redirect({
-      to: "/tratativas/nova",
-      replace: true,
-    });
-  },
+  head: () => ({
+    meta: [
+      { title: "Início | Painel Safra" },
+      {
+        name: "description",
+        content: "Abra e acompanhe os protocolos da Safra da Editora do Brasil.",
+      },
+      { property: "og:title", content: "Início | Painel Safra" },
+      {
+        property: "og:description",
+        content: "Abra e acompanhe os protocolos da Safra da Editora do Brasil.",
+      },
+    ],
+  }),
+  component: Home,
 });
+
+function MyOpenProtocols() {
+  const { data = [] } = useMyTreatments();
+  const { readOnly } = useViewer();
+  const open = data.filter((item) => item.status === "ACTIVE");
+
+  if (readOnly || open.length === 0) return null;
+
+  return (
+    <section
+      aria-labelledby="my-open-title"
+      className="rounded-xl border border-primary/30 bg-primary/5 p-4"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 id="my-open-title" className="text-sm font-semibold">
+          Seus protocolos em andamento ({open.length})
+        </h2>
+        <Link to="/meus-protocolos" className="text-sm font-medium text-primary underline">
+          Ver todos
+        </Link>
+      </div>
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {open.slice(0, 6).map((item) => (
+          <li
+            key={item.treatment_id}
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm"
+          >
+            <span className="font-semibold">{item.protocol_number}</span>
+            <SituationBadge situation={item.situation} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function Home() {
+  return (
+    <div className="mx-auto max-w-6xl space-y-6">
+      <header className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Painel Safra</h1>
+        <p className="text-sm text-muted-foreground">
+          Algo deu errado na operação? Escolha o card, explique o problema e inicie o protocolo.
+        </p>
+      </header>
+      <MyOpenProtocols />
+      <ScenarioCatalog />
+    </div>
+  );
+}

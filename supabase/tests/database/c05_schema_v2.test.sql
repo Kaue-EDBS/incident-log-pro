@@ -18,14 +18,14 @@ select is(
     where schemaname = 'public'
       and tablename in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
-  17::bigint,
-  'all 17 SAFRA v2 domain tables exist'
+  15::bigint,
+  'all 15 SAFRA v2 domain tables exist (treatment_escalations retired by D-73, scenario_slas by D-75)'
 );
 
 select is(
@@ -36,13 +36,13 @@ select is(
       and rowsecurity
       and tablename in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
-  17::bigint,
+  15::bigint,
   'RLS is enabled on all SAFRA v2 domain tables'
 );
 
@@ -54,9 +54,9 @@ select is(
       and grantee = 'anon'
       and table_name in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
@@ -72,9 +72,9 @@ select is(
       and grantee = 'authenticated'
       and table_name in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
@@ -101,8 +101,9 @@ select ok(
       and tablename = 'treatments'
       and indexdef ilike '%unique%'
       and indexdef ilike '%active%'
+      and indexdef not ilike '%opened_by%'
   ),
-  'C05 does not invent one-ACTIVE-treatment-per-scenario uniqueness'
+  'no one-ACTIVE-per-scenario uniqueness; only per person and scenario (D-57)'
 );
 
 select is(
@@ -125,9 +126,9 @@ select is(
       and privilege_type = 'TRUNCATE'
       and table_name in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
@@ -169,9 +170,9 @@ select has_trigger(
   'impact measurements are append-only'
 );
 
-select has_trigger(
-  'public', 'scenario_slas', 'trg_scenario_slas_freeze',
-  'published scenario SLA content is version-frozen'
+select hasnt_table(
+  'public', 'scenario_slas',
+  'scenario_slas retired with the SLA engine (D-75)'
 );
 
 
@@ -186,9 +187,9 @@ select is(
       and n.nspname = 'public'
       and cl.relname in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
       and c.confdeltype = 'c'

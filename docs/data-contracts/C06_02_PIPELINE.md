@@ -109,4 +109,13 @@ A Data API também testa acesso direto a `scenario_owners`.
 - migration nova: não necessária;
 - reconciliação PRIMARY: PASS.
 
-Próxima fase após CI verde: `SAFRA-C07`.
+## Reexecução C06-AUD2 — 01/10/2026
+
+- planilha fornecida pelo owner; assinatura igual à aprovada;
+- staging idêntico ao registrado (`242a31fc…`); validação `PASS` (0 erros, 5 avisos de GI); diff `NO_DIFF`;
+- PRIMARY conferido na versão vigente (v2 CRITICAL): 11 cenários × 18 campos iguais à fonte;
+- a criticidade `CRITICAL` vem da decisão D-55 do owner, não da planilha (a Matriz v3 não tem coluna de criticidade);
+- novo registro: `c06_aud2_reconciliation_2026-10-01.json`. Os arquivos de 25/09 ficam como histórico do estado v1;
+- novo verificador no CI: `.github/scripts/check-c06-staging-integrity.py` (assinatura do staging, cadeia de hashes e igualdade com os dados embutidos nos testes).
+
+A planilha não é guardada no repositório. Ela fica com o owner, em local controlado; o repositório guarda só a assinatura.

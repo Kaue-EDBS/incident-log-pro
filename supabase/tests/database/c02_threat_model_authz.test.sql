@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(26);
+select plan(24);
 
 insert into auth.users(
   id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at
@@ -14,6 +14,13 @@ values(
   clock_timestamp(),
   clock_timestamp()
 );
+
+-- AUD-GERAL A-01: Microsoft identity of the corporate tenant for synthetic azure users.
+insert into auth.identities(provider_id,user_id,identity_data,provider,created_at,updated_at)
+select u.id::text,u.id,jsonb_build_object('sub',u.id::text,'email',u.email,'custom_claims',jsonb_build_object('tid','45ba725f-d260-45c3-ac85-11f433471277')),'azure',clock_timestamp(),clock_timestamp()
+from auth.users u
+where u.raw_app_meta_data->>'provider'='azure'
+  and not exists(select 1 from auth.identities i where i.user_id=u.id and i.provider='azure');
 
 insert into auth.sessions(id,user_id,created_at,updated_at)
 values(
@@ -189,25 +196,15 @@ select ok(
   'expired token fails canonical corporate predicate'
 );
 
--- Trigger helpers are internal-only and cannot be invoked through browser roles.
+-- Legacy trigger helpers were retired by C00-AUD2 (D-50), so browser roles cannot reach them.
 select ok(
-  not has_function_privilege('anon','public.set_updated_at()','EXECUTE'),
-  'anon cannot execute legacy set_updated_at trigger helper'
+  to_regprocedure('public.set_updated_at()') is null,
+  'legacy set_updated_at trigger helper is retired'
 );
 
 select ok(
-  not has_function_privilege('authenticated','public.set_updated_at()','EXECUTE'),
-  'authenticated cannot execute legacy set_updated_at trigger helper'
-);
-
-select ok(
-  not has_function_privilege('anon','public.validate_incident_timestamps()','EXECUTE'),
-  'anon cannot execute legacy timestamp validation trigger helper'
-);
-
-select ok(
-  not has_function_privilege('authenticated','public.validate_incident_timestamps()','EXECUTE'),
-  'authenticated cannot execute legacy timestamp validation trigger helper'
+  to_regprocedure('public.validate_incident_timestamps()') is null,
+  'legacy timestamp validation trigger helper is retired'
 );
 
 -- Restore a valid session for START idempotency threat tests.
@@ -278,10 +275,13 @@ select is(
     from pg_proc p
     join pg_namespace n on n.oid=p.pronamespace
     where n.nspname='public'
-      and p.proname in ('safra_end_treatment','safra_cancel_treatment')
+      and p.proname in ('safra_close_my_part','safra_cancel_treatment')
+      and p.prosecdef
+      and has_function_privilege('authenticated', p.oid, 'EXECUTE')
+      and not has_function_privilege('anon', p.oid, 'EXECUTE')
   ),
-  0::bigint,
-  'END/CANCEL RPCs remain unexposed until their governed implementation phase'
+  2::bigint,
+  'END/CANCEL RPCs are governed SECURITY DEFINER commands, closed to anon (C08.1, D-87)'
 );
 
 select is(
@@ -292,14 +292,14 @@ select is(
       and grantee='anon'
       and table_name in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
   0::bigint,
-  'anon has no direct grants on the 17-table Safra domain surface'
+  'anon has no direct grants on the 15-table Safra domain surface'
 );
 
 select is(
@@ -310,14 +310,14 @@ select is(
       and grantee='authenticated'
       and table_name in (
         'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-        'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+        'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
-        'treatment_events','treatment_escalations','scenario_proposals',
+        'treatment_events','scenario_proposals',
         'scenario_proposal_owner_responses','notifications_log','governance_issues'
       )
   ),
   0::bigint,
-  'authenticated has no direct grants on the 17-table Safra domain surface'
+  'authenticated has no direct grants on the 15-table Safra domain surface'
 );
 
 select is(

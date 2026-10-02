@@ -35,3 +35,10 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Local Claude Code launch config (absolute local paths)
+.claude/
+
+# Playwright output
+test-results/
+playwright-report/

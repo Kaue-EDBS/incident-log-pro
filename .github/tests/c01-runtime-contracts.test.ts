@@ -1,5 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { SafraStartCatalogSchema, SafraStartResultSchema } from "../../src/lib/safra";
+import {
+  SafraStartCatalogSchema,
+  SafraStartResultSchema,
+  SafraTreatmentSchema,
+  cardDisplayName,
+  cardNumber,
+  safraErrorMessage,
+} from "../../src/lib/safra";
 import { assertBrowserSafeSupabaseKey } from "../../src/lib/supabase-key-safety";
 
 const area = {
@@ -29,8 +36,9 @@ describe("SAFRA START RPC contracts", () => {
         expected_impact_summary: null,
         responsible_area: area,
         owner,
+        is_my_card: false,
+        my_open_treatment: null,
         potential_impacted_areas: [area],
-        structured_sla_count: 0,
         active_treatment_count: 1,
       },
     ]);
@@ -53,8 +61,9 @@ describe("SAFRA START RPC contracts", () => {
         expected_impact_summary: null,
         responsible_area: area,
         owner,
+        is_my_card: false,
+        my_open_treatment: null,
         potential_impacted_areas: [],
-        structured_sla_count: 0,
         active_treatment_count: 0,
       },
     ]);
@@ -66,7 +75,10 @@ describe("SAFRA START RPC contracts", () => {
     const parsed = SafraStartResultSchema.parse({
       treatment_id: "55555555-5555-4555-8555-555555555555",
       status: "ACTIVE",
+      protocol_number: "01-0001",
       opened_at: "2026-09-27T20:00:00Z",
+      problem_started_at: "2026-09-27T19:30:00Z",
+      server_time: "2026-09-27T20:00:01Z",
       opened_by_user_id: "66666666-6666-4666-8666-666666666666",
       start_correlation_id: "77777777-7777-4777-8777-777777777777",
       start_idempotency_key: "88888888-8888-4888-8888-888888888888",
@@ -86,10 +98,64 @@ describe("SAFRA START RPC contracts", () => {
       owner,
       responsible_area: area,
       impacted_areas: [],
-      slas: [],
     });
 
     expect(parsed.status).toBe("ACTIVE");
+  });
+});
+
+describe("SAFRA protocol lifecycle contracts (C08)", () => {
+  const treatment = {
+    treatment_id: "99999999-9999-4999-8999-999999999999",
+    protocol_number: "08-0001",
+    status: "ACTIVE",
+    situation: "AGUARDANDO_DONO",
+    scenario: { id: "33333333-3333-4333-8333-333333333333", code: "SAFRA-08", name: "NF-e" },
+    owner,
+    requester_email: "pessoa@editoradobrasil.com.br",
+    impact_summary: "Notas rejeitadas pela SEFAZ desde as 9h",
+    impacted_areas: [area],
+    problem_started_at: "2026-10-02T12:00:00Z",
+    opened_at: "2026-10-02T12:10:00Z",
+    requester_closed_at: "2026-10-02T13:00:00Z",
+    owner_closed_at: null,
+    closed_at: null,
+    cancelled_at: null,
+    cancellation_reason: null,
+    server_time: "2026-10-02T13:05:00Z",
+    my_role: "REQUESTER",
+    can_close_my_part: false,
+    can_cancel: true,
+  };
+
+  test("accepts a treatment view in a waiting situation", () => {
+    expect(SafraTreatmentSchema.parse(treatment).situation).toBe("AGUARDANDO_DONO");
+  });
+
+  test("rejects an unknown situation", () => {
+    expect(SafraTreatmentSchema.safeParse({ ...treatment, situation: "OK" }).success).toBe(false);
+  });
+
+  test("maps database errors to plain Portuguese", () => {
+    expect(safraErrorMessage({ message: "SAFRA_IMPACT_SUMMARY_REQUIRED" }, "x")).toContain(
+      "10 caracteres",
+    );
+    expect(safraErrorMessage({ message: "something else" }, "padrão")).toBe("padrão");
+  });
+
+  test("D-91: display name drops parentheses and line breaks", () => {
+    expect(cardDisplayName('Pedido pago não integrado\n("limbo" de entrada)')).toBe(
+      "Pedido pago não integrado",
+    );
+    expect(cardDisplayName("Ruptura de estoque de título (curva A)")).toBe(
+      "Ruptura de estoque de título",
+    );
+    expect(cardDisplayName("Insucesso de entrega")).toBe("Insucesso de entrega");
+  });
+
+  test("derives the card number used in protocol numbers", () => {
+    expect(cardNumber("SAFRA-08")).toBe("08");
+    expect(cardNumber("TEST-X")).toBe("TEST-X");
   });
 });
 

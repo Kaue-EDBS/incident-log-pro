@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Activity, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { BrandMark } from "@/components/BrandMark";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/integrations/supabase/AuthProvider";
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Entrar | Painel Safra" },
       {
         property: "og:description",
-        content: "Acesso ao painel de confiabilidade das aplicações da Editora do Brasil.",
+        content: "Acesso ao Painel Safra da Editora do Brasil.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -41,7 +42,7 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && session && corporateAuthorized === true) {
-      void navigate({ to: "/tratativas/nova", replace: true });
+      void navigate({ to: "/", replace: true });
     }
   }, [corporateAuthorized, loading, session, navigate]);
 
@@ -61,9 +62,7 @@ function AuthPage() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-sm">
         <div className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-xl bg-primary">
-            <Activity className="size-5 text-primary-foreground" />
-          </span>
+          <BrandMark className="h-10" />
           <div className="leading-tight">
             <p className="text-sm font-semibold text-foreground">Painel Safra</p>
             <p className="text-xs text-muted-foreground">Editora do Brasil</p>

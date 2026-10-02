@@ -1,23 +1,11 @@
 # GLOSSÁRIO DE DOMÍNIO — Painel Safra
 
-**Versão:** 1.2  
-**Data:** 28/09/2026  
-**Status:** CANÔNICO — SAFRA-C03 / PÓS-C05–C08 / C03-AUD IMPLEMENTADA — AGUARDANDO CI  
-**Última revalidação:** 28/09/2026 às 06:54 BRT  
-**Implementação de referência:** C05 schema v2; C06 catálogo/seed; C07 contratos temporais; C08 START end-to-end  
+**Versão:** 2.0  
+**Data:** 01/10/2026  
+**Status:** CANÔNICO — SAFRA-C03 / C03-AUD2  
+**Versão anterior:** `docs/historico/GLOSSARIO_DOMINIO_v1.1_ate_2026-10-01.md` (25/09/2026), preservada sem alteração.  
+**O que mudou na 2.0:** decisões D-50 a D-73 (produto único, criticidade, trava por pessoa, encerramento em duas partes, avisos, Safra corrente, solicitante, escalonamento fora do Painel).  
 **Autoridade:** este documento congela o vocabulário funcional do Painel Safra. Alteração material exige decisão registrada.
-
-> **C03-AUD aberta em 28/09/2026 às 06:13 BRT.** A autoridade conceitual deste glossário permanece válida durante a reauditoria. Foram autorizadas correções de nomenclatura de rota, retirada da identidade Reliability da UX durante sua transformação progressiva em Painel Safra, separação de hooks por domínio técnico e atualização dos metadados/estado pós-C05–C08. Fonte de acompanhamento: `docs/AUDITORIA_C03_REABERTURA_2026-09-28.md`.
-
-> **C03-AUD-01 implementada em 28/09/2026:** o destino canônico de START passa a ser `/tratativas/nova`; `/novo-incidente` existe apenas como redirect temporário de compatibilidade. Validação CI permanece pendente pela indisponibilidade de minutos do GitHub Actions.
-
-> **C03-AUD-02 refinada em 28/09/2026 às 06:34 BRT:** `Painel Safra` é a única identidade de produto visível. O antigo Reliability Monitor nunca teve adoção operacional e permanece apenas como base técnica transitória a ser absorvida gradualmente; suas rotas não aparecem na navegação funcional. Isso não transforma `incident` legado em sinônimo de `treatment`: a distinção técnica continua válida durante a migração.
-
-> **C03-AUD-03 implementada em 28/09/2026:** o frontend/runtime do Reliability foi removido em vez de reorganizado. Hooks Safra agora vivem em `src/lib/safra-queries.ts`; utilitários temporais compartilhados permanecem em `src/lib/analytics-time.ts`. As tabelas legadas `applications`/`incidents` continuam apenas como persistência histórica até decisão/migration própria de retirada.
-
-> **C03-AUD-04 implementada em 28/09/2026 às 06:54 BRT:** metadados promovidos para versão 1.2 pós-C05–C08. A antiga seção `READY_FOR_C05` foi convertida em registro do contrato materializado no C05; linguagem futura foi reconciliada com o schema vigente sem alterar nenhuma regra de negócio.
-
-> **Estado consolidado em 28/09/2026 às 07:00 BRT:** C03-AUD-01, 02 e 03 estão implementadas; C03-AUD-04 está CLOSED/PASS. A auditoria não possui mais pendência funcional, documental ou de domínio. A única pendência é executar os gates de CI quando a cota do GitHub Actions estiver disponível; somente então o C03-AUD será recertificado formalmente.
 
 ## 1. Objetivo
 
@@ -69,7 +57,7 @@ Pode conter:
 - modo de ativação;
 - criticidade;
 - protocolo;
-- SLAs;
+- prazos da Matriz v3 como texto de referência (não são SLA medido, D-75);
 - observações e regras vigentes.
 
 **Regra:** uma versão publicada não é sobrescrita. Alteração material exige nova versão.
@@ -128,23 +116,26 @@ A detecção responde:
 
 ### 2.5 START
 
-**Definição:** ação humana auditável que ativa formalmente um cenário publicado no Painel Safra e cria uma tratativa.
+**Definição:** ação humana auditável que ativa formalmente um cenário publicado no Painel Safra e cria uma tratativa. Na interface: **"Abrir protocolo"**.
 
 Efeitos mínimos:
 - cria a tratativa;
-- persiste ator;
-- persiste timestamp oficial server-side;
+- registra o **solicitante** (2.20) e o horário oficial do servidor;
 - congela `scenario_version_id`;
-- inicia os SLAs cujo `start_event` corresponda ao START;
-- gera evento de auditoria;
-- dispara comunicações aplicáveis de forma idempotente.
+- gera evento de auditoria (`TREATMENT_OPENED`);
+- inicia a escada de avisos (2.22) e o aviso de abertura, quando a M05 existir.
 
-**Quem pode:** qualquer usuário Microsoft autenticado, conforme regras de autorização vigentes.
+**Quem pode:** qualquer usuário Microsoft corporativo autenticado (D-63), **exceto o dono vigente daquele card** (D-65).
+
+**Trava:** cada pessoa tem no máximo uma tratativa em andamento por cenário; outra só depois de fechar a parte dela (D-57/D-66).
+
+**Não inicia cronômetro de SLA** (D-62).
 
 **Não é:**
 - detecção;
 - gatilho;
 - aprovação de cenário;
+- abertura de chamado (D-05);
 - início informal do trabalho operacional fora do Painel.
 
 ---
@@ -167,50 +158,57 @@ O protocolo pertence ao conhecimento do cenário/versionamento e é executado pe
 
 ### 2.7 Tratativa
 
-**Definição:** instância real e auditável criada quando um cenário publicado recebe START.
+**Definição:** instância real e auditável criada quando um cenário publicado recebe START. Na interface: **"protocolo"** (aberto).
 
 A tratativa representa **uma ocorrência operacional específica daquele cenário** dentro do Painel.
 
-Estados mínimos:
-- ACTIVE;
-- RESOLVED;
-- CANCELLED.
+**Situações (D-72):**
+
+| Situação | Condição |
+|---|---|
+| Em andamento | nenhuma parte fechada |
+| Aguardando dono | só o solicitante fechou a parte dele |
+| Aguardando solicitante | só o dono fechou a parte dele |
+| Encerrado | as duas partes fechadas |
+| Cancelado | o solicitante ou o dono cancelou, com motivo |
 
 Pode possuir:
 - versão congelada;
-- ator de abertura;
-- tempos;
+- solicitante;
+- dono no momento do START (snapshot);
+- horários de abertura e de fechamento de cada parte;
 - áreas efetivamente impactadas;
 - eventos;
-- SLAs;
-- escalonamentos;
+- avisos enviados;
 - END ou CANCEL.
 
 **Não é:**
 - cenário;
-- protocolo;
+- protocolo como procedimento (2.6);
 - proposta;
 - chamado externo.
 
 ---
 
-### 2.8 Owner
+### 2.8 Owner (dono do card)
 
-**Definição:** pessoa formalmente responsável pelo card/cenário e pela condução do protocolo operacional com sua equipe.
+**Definição:** pessoa formalmente responsável pelo card/cenário e pela condução do protocolo operacional com sua equipe. Na interface: **"dono do card"**.
 
-O owner:
+O dono:
 - responde pelo conteúdo/procedimento do card;
-- recebe comunicações do próprio card;
+- recebe o aviso de abertura e a escada de avisos do próprio card (D-58/D-67);
+- fecha a **parte do dono** de cada tratativa do seu card (D-66);
+- pode cancelar a tratativa, com motivo (D-66);
 - participa da governança relacionada ao cenário.
 
-**Regra:** ownership depende de vínculo explícito com o cenário.
-
-**Regra adicional:** owner não possui exclusividade sobre START, END ou CANCEL.
+**Regras:**
+- ownership depende de vínculo explícito com o cenário;
+- o dono **não abre** protocolo dos próprios cards; pode abrir de cards de outros donos, e nesse caso é o solicitante (D-65);
+- platform/governance/executive admin não viram dono por herança.
 
 **Não é:**
 - sinônimo de administrador;
-- papel herdado automaticamente por platform admin;
-- usuário que necessariamente executou o START.
+- o solicitante do próprio card.
 
 ---
 
@@ -242,25 +240,17 @@ Existem dois níveis distintos:
 
 ### 2.11 SLA
 
-**Definição:** compromisso temporal do protocolo medido entre eventos definidos.
+**Definição:** compromisso temporal medido entre eventos definidos (`start_event`, `end_event`, alvo, unidade, aplicabilidade).
 
-Cada SLA deve possuir:
-- `start_event`;
-- `end_event`;
-- valor-alvo;
-- unidade;
-- regra de aplicabilidade.
+**No MVP, nenhum card usa SLA (D-62).** Não existe cronômetro de prazo nem "prazo estourado" nos 11 cards. Os prazos da Matriz v3 permanecem apenas como **texto de referência** no protocolo. As 4 horas da escada de avisos (2.22) **não são SLA**.
 
-**Regra:** duração é derivada de timestamps persistidos; não deve existir como número manual quando puder ser calculada.
-
-**Regra:** um cenário pode ter múltiplos SLAs simultâneos.
+A engine do C07 e a tabela `scenario_slas` foram aposentadas em 01/10/2026 (D-75). Uma volta do SLA exige decisão nova.
 
 **Não é:**
 - SLO do software;
-- RTO;
-- RPO;
+- RTO/RPO;
 - criticidade;
-- simples cronômetro visual.
+- aviso (2.22).
 
 ---
 
@@ -268,80 +258,59 @@ Cada SLA deve possuir:
 
 **Definição:** classificação de severidade do cenário/protocolo para fins de governança e comunicação.
 
-Valores canônicos:
-- CRITICAL;
-- HIGH;
-- MODERATE.
+Valores canônicos: CRITICAL, HIGH, MODERATE.
 
-**Regra:** criticidade é atributo versionado do cenário.
+**Situação atual (D-55):** os 11 cenários são **CRITICAL** (versão 2). Cenário novo vindo do 12º card nasce CRITICAL (D-60).
+
+**Regra:** criticidade é atributo versionado do cenário; mudar exige nova versão.
 
 **Não é:**
-- `service_class` da aplicação;
-- `application_criticality`;
-- nível de escalonamento;
+- `service_class` ou `application_criticality` da aplicação;
 - status da tratativa.
 
 ---
 
 ### 2.13 END
 
-**Definição:** ação humana auditável que encerra uma tratativa ACTIVE porque a necessidade que motivou sua ativação foi concluída.
+**Definição:** ação humana auditável que fecha uma **parte** da tratativa porque a necessidade foi atendida. Na interface: **"Encerrar"** / botão **"Resolvido"**.
 
-Efeito principal:
-- transição `ACTIVE -> RESOLVED`;
-- persiste ator e timestamp server-side;
-- gera evento de auditoria;
-- fecha somente os SLAs cujo `end_event` corresponda ao evento de resolução;
-- dispara comunicação aplicável.
+O END tem **duas partes** (D-66):
+- **parte do solicitante** — fechada pelo solicitante;
+- **parte do dono** — fechada pelo dono do card.
 
-**Quem pode:** qualquer usuário Microsoft autenticado, conforme regras vigentes.
+Regras:
+- cada parte é fechada pela própria pessoa, logada no próprio perfil (D-64);
+- o botão "Resolvido" do aviso só abre o Painel e pede confirmação;
+- cada parte grava autor e horário do servidor;
+- quando o solicitante fecha a parte dele, a trava (D-57) é liberada e os avisos param (D-67);
+- a tratativa só fica **Encerrada** quando as duas partes estão fechadas.
 
 **Não é:**
 - CANCEL;
-- exclusão;
-- garantia automática de que todo SLA foi cumprido.
+- exclusão.
 
 ---
 
 ### 2.14 CANCEL
 
-**Definição:** ação humana auditável usada quando a tratativa não deve ser considerada resolução válida, por exemplo abertura incorreta, duplicada ou cenário inadequado.
+**Definição:** ação humana auditável usada quando a tratativa não deve ser considerada resolução válida, por exemplo abertura incorreta ou duplicada. Na interface: **"Cancelar"**.
 
-Efeito principal:
-- transição `ACTIVE -> CANCELLED`;
-- exige justificativa;
-- preserva histórico;
-- persiste ator e timestamp;
-- gera evento de auditoria.
-
-**Regra:** CANCEL não equivale a SLA cumprido.
+Regras (D-66):
+- **o solicitante ou o dono** pode cancelar, sozinho, logado no próprio perfil;
+- motivo **sempre obrigatório**;
+- preserva o histórico; grava autor e horário;
+- não conta como resolvido.
 
 **Não é:**
 - END;
 - delete físico;
-- mecanismo para limpar métricas desfavoráveis.
+- forma de parar avisos sem justificativa.
 
 ---
 
-### 2.15 Escalonamento
+### 2.15 Escalonamento — FORA DO PAINEL
 
-**Definição:** elevação formal da governança de uma tratativa quando o contexto exige envolvimento técnico, de negócio ou executivo adicional.
-
-Níveis previstos:
-- NONE;
-- TECHNICAL_CRISIS;
-- BUSINESS_CRISIS;
-- EXECUTIVE.
-
-**Regra:** escalonamento é estrutura separada do status da tratativa.
-
-**Regra:** recorrência sozinha não promove escalonamento automaticamente.
-
-**Não é:**
-- criticidade;
-- status;
-- START;
-- nova tratativa.
+**D-73 (01/10/2026):** o escalonamento é feito pelos **donos de card, em conjunto**, por avaliação própria, **fora do Painel**. O termo não faz parte do vocabulário do produto e a fase M06 foi cancelada.
 
 ---
 
@@ -355,7 +324,7 @@ Pode possuir:
 - conclusão;
 - causa-raiz;
 - ação preventiva;
-- SLA próprio.
+- prazo próprio, quando o protocolo do card prever (por exemplo, "pós-mortem ≤ 48h"), como texto de referência; não é SLA medido no MVP (D-62).
 
 **Não é:**
 - requisito automático de todas as tratativas, salvo decisão de negócio;
@@ -378,7 +347,7 @@ Pode possuir:
 
 **Não é:**
 - criticidade;
-- breach de SLA;
+- aviso da escada (2.22);
 - nova categoria de status.
 
 ---
@@ -388,69 +357,103 @@ Pode possuir:
 **Definição:** submissão de um possível novo cenário pelo 12º card para avaliação de governança.
 
 A proposta:
-- possui proponente identificado pela sessão Microsoft;
+- possui **proponente** identificado pela sessão Microsoft;
 - registra problema e impacto na Safra;
-- passa por triagem;
-- recebe definição de ownership;
-- precisa de governança antes de publicação.
+- passa por triagem e definição do dono (ADR-014);
+- tem o conteúdo escrito pelo próprio proponente (D-60).
 
 **Regra:** proposta não é cenário produtivo e não aceita START.
 
 **Não é:**
 - cenário publicado;
-- tratativa;
-- protocolo genérico.
+- tratativa.
 
 ---
 
 ### 2.19 Publicação de cenário
 
-**Definição complementar:** ato de governança que torna uma versão de cenário elegível para uso operacional.
+**Definição:** ato de governança que torna uma versão de cenário elegível para uso operacional.
+
+Fluxo (D-60/D-68): proponente escreve → **Jair aprova** → **um admin técnico publica**. Quem propõe não aprova nem publica; proposta do Jair é aprovada pelo Kaue; aprovador e publicador são pessoas diferentes. Nasce CRITICAL.
 
 Somente cenário/versão em estado publicado pode receber START.
 
-**Regra:** proposta aprovada não deve ser tratada como publicada até cumprir o fluxo formal de governança definido em M10.
+---
+
+### 2.20 Solicitante
+
+**Definição (D-71):** pessoa que abriu o protocolo (executou o START). Fonte: `treatments.opened_by`.
+
+O solicitante:
+- fecha a **parte do solicitante** (D-66);
+- recebe a pergunta "foi resolvido?" na escada de avisos até fechar a parte dele (D-67);
+- pode cancelar, com motivo.
+
+**Não é:** o dono do card (D-65) nem "usuário" em geral (qualquer pessoa autenticada).
+
+---
+
+### 2.21 Parte do solicitante / parte do dono
+
+**Definição (D-66):** as duas metades do encerramento de uma tratativa. Cada parte tem autor e horário próprios e alimenta os relatórios: tempo de encerramento pelo solicitante, tempo de encerramento pelo dono e a visão consolidada com a diferença entre os dois.
+
+---
+
+### 2.22 Aviso e escada de avisos
+
+**Aviso:** comunicação enviada pelo servidor sobre uma tratativa, com destinatários decididos no servidor.
+
+- **Aviso de abertura (D-58):** ao abrir, avisa o dono do card e o Jair.
+- **Escada de avisos (D-67):** em **2h** e **4h** desde a abertura, enquanto o solicitante não fechar a parte dele: e-mail ao dono pedindo que cobre o solicitante e pergunta "foi resolvido?" ao solicitante. Depois que o solicitante fecha, nenhum aviso a mais. Tempo corrido, 24h por dia.
+
+Canal: e-mail decidido; Teams em aberto (GI-SAFRA-011).
+
+**Não é:** SLA (2.11); a hora do último aviso não marca prazo estourado.
+
+---
+
+### 2.23 Safra corrente
+
+**Definição (D-59/D-69):** período operacional que começa quando o Kaue marca "Safra iniciada" e termina quando ele marca "Safra encerrada". A Safra corrente começou em **01/10/2026**.
+
+Proteções (D-70): encerrar exige digitar `ENCERRAR SAFRA`; 7 dias para reabrir sem apagar dados. O encerramento é o marco da política de retenção.
+
+---
+
+### 2.24 Card
+
+**Definição:** representação visual de um cenário (ou da proposta, no 12º card) na interface. Não é entidade de domínio própria. "Dono do card" = owner do cenário.
 
 ---
 
 ## 3. Relações canônicas
 
 ```text
-PROPOSTA DE CENÁRIO
-        |
+PROPOSTA DE CENÁRIO (12º card)
+        |   proponente escreve -> Jair aprova -> admin técnico publica (D-60/D-68)
         v
-governança / aprovação / publicação
+CENÁRIO --- dono do card (1 vigente)
         |
-        v
-CENÁRIO
-        |
-        +--> VERSION 1
-        |      +-- gatilho
-        |      +-- detecção
-        |      +-- protocolo
-        |      +-- criticidade
-        |      +-- SLA(s)
-        |
-        +--> VERSION 2 ...
-               |
+        +--> VERSION 1 (RETIRED)
+        +--> VERSION 2 (PUBLISHED, CRITICAL)
+               |   gatilho, detecção, protocolo, criticidade
                v
-              START
+             START  (solicitante; nunca o dono do card)
                |
                v
            TRATATIVA
-        ACTIVE
+        Em andamento
+          |  aviso de abertura + escada 2h/4h
           |
-          +--> escalonamento(s)
-          +--> áreas efetivamente impactadas
-          +--> eventos / SLA(s)
+          +--> parte do solicitante fechada --> Aguardando dono
+          +--> parte do dono fechada --------> Aguardando solicitante
+          |            (as duas) ------------> Encerrado
           |
-          +--> END -----> RESOLVED
-          |
-          +--> CANCEL --> CANCELLED
+          +--> CANCEL (solicitante ou dono, com motivo) --> Cancelado
                          |
                          v
                  histórico / analytics
-                         |
+                         +--> tempos por parte e consolidado
                          +--> recorrência
                          +--> pós-mortem quando aplicável
 ```
@@ -466,24 +469,30 @@ CENÁRIO
 | gatilho × detecção | condição × forma de perceber |
 | START × detecção | ativação humana × percepção do sinal |
 | protocolo × tratativa | procedimento × instância real |
-| owner × ator do START | responsável formal × quem executou a ação |
+| dono do card × solicitante | responsável formal do card × quem abriu o protocolo (nunca a mesma pessoa no mesmo card) |
+| protocolo × chamado | procedimento/ocorrência governada pelo Painel × atendimento em sistema operacional (OTRS etc.); "chamado" não é termo do Painel (D-05) |
+| aviso × SLA | comunicação de acompanhamento × compromisso temporal medido (sem uso nos cards, D-62) |
+| parte do solicitante × parte do dono | fechamento de quem abriu × fechamento do dono; o protocolo só encerra com as duas |
 | área responsável × área impactada | responsabilidade × consequência |
 | SLA × SLO/RTO/RPO | compromisso do protocolo × objetivos técnicos do software |
-| criticidade × escalonamento | classificação do cenário × nível de governança da ocorrência |
+| criticidade × escalonamento | classificação do cenário × avaliação conjunta dos donos fora do Painel (D-73) |
 | END × CANCEL | resolução válida × invalidação/encerramento não resolutivo |
 | recorrência × crise | indicador histórico × decisão de escalonamento |
 | proposta × cenário | candidato em governança × entidade publicada |
-| incidente TI × tratativa Safra | domínio legado de confiabilidade × domínio de contingência |
+| incidente TI × tratativa Safra | domínio legado retirado pela D-50 × domínio de contingência; "incidente" não é termo do Painel Safra |
 
 ---
 
 ## 5. Termos de interface permitidos
 
-- “Abrir protocolo” pode ser usado como rótulo de UX para START, desde que o domínio continue registrando a ação como START.
-- “Encerrar” pode ser usado como rótulo de UX para END.
-- “Cancelar” corresponde a CANCEL.
-- “Card” é apenas representação visual de cenário/proposta e não entidade de domínio.
-- “Geral” é visão agregada, não área.
+- **"Abrir protocolo"** = START.
+- **"Encerrar"** e o botão **"Resolvido"** = END da parte de quem clica.
+- **"Cancelar"** = CANCEL.
+- **"Em andamento", "Aguardando dono", "Aguardando solicitante", "Encerrado", "Cancelado"** = situações da tratativa (D-72).
+- **"Dono do card"** = owner; **"Solicitante"** = quem abriu.
+- **"Card"** = representação visual de cenário/proposta, não entidade de domínio.
+- **"Geral"** = visão agregada, não área.
+- **Proibido na interface:** "chamado" (D-05), "incidente" (D-50) e "escalonamento" (D-73).
 
 ---
 
@@ -570,7 +579,7 @@ medido_em = timestamp
 - criticidade;
 - escalonamento;
 - estado da tratativa;
-- cumprimento de SLA.
+- avisos da escada.
 
 Qualquer automação futura baseada em limiar exige regra de negócio própria e versionada.
 
@@ -586,9 +595,9 @@ O C03 **não** cria:
 
 Esses itens só podem existir quando houver fonte de negócio e decisão explícita.
 
-### 7.5 Modelo conceitual implementado e extensível
+### 7.5 Modelo conceitual recomendado
 
-[IMPLEMENTADO EM C05 — extensível em F04 sem alterar a distinção qualitativo × quantitativo]
+[DERIVADO — desenho para implementação futura em C05/F04]
 
 ```text
 treatments
@@ -623,9 +632,9 @@ Uma tratativa pode possuir zero, uma ou várias medições quantitativas.
 
 ---
 
-## 8. Contrato físico derivado do C03 — materializado no SAFRA-C05
+## 8. Contrato de handoff para SAFRA-C05
 
-Esta seção preserva o contrato de domínio que orientou o SAFRA-C05 e registra como ele foi materializado. Os detalhes físicos já implementados podem evoluir por migrations futuras, mas estas fronteiras não podem ser alteradas sem nova decisão de domínio.
+Esta seção transforma o glossário em contrato de implementação. O C05 pode decidir detalhes físicos de PostgreSQL, índices, tipos e estratégia de migration, mas não pode alterar estas fronteiras sem nova decisão de domínio.
 
 ### 8.1 Fonte de verdade por conceito
 
@@ -637,13 +646,13 @@ Esta seção preserva o contrato de domínio que orientou o SAFRA-C05 e registra
 | área responsável atual | `scenarios.responsible_area_id` | governada; histórico operacional deve ser preservado na tratativa |
 | áreas potencialmente impactáveis | relação da `scenario_version` | versionada |
 | sistemas/ferramentas associados | relação da `scenario_version` | versionada |
-| SLAs | `scenario_slas` vinculados à `scenario_version` | versionados |
+| prazos da Matriz v3 | texto em `scenario_versions.source_reference` | versionado; **não é SLA medido** — tabela de SLA removida (D-75) |
 | ocorrência real | `treatments` | estado controlado |
 | áreas realmente impactadas | `treatment_impacted_areas` | pertencem à tratativa |
 | impacto qualitativo observado | `treatments.impact_summary` | auditável |
 | impacto quantitativo observado | `treatment_impact_measurements` | append/auditável |
 | eventos operacionais | `treatment_events` | append-only |
-| escalonamento | `treatment_escalations` | entidade separada do status |
+| ~~escalonamento~~ | — | **removido em 01/10/2026 (D-73)** |
 | proposta de novo cenário | `scenario_proposals` | nunca equivale a cenário publicado |
 | decisão aberta de governança | `governance_issues` | permanece explícita até resolução |
 
@@ -652,14 +661,12 @@ Esta seção preserva o contrato de domínio que orientou o SAFRA-C05 e registra
 ```text
 scenario 1 ---- N scenario_versions
 scenario 1 ---- N scenario_owners (histórico temporal)
-scenario_version 1 ---- N scenario_slas
 scenario_version 1 ---- N potential_impacted_areas
 scenario_version 1 ---- N associated_systems
 scenario 1 ---- N treatments
 scenario_version 1 ---- N treatments
 treatment 1 ---- N treatment_events
 treatment 1 ---- N treatment_impacted_areas
-treatment 1 ---- N treatment_escalations
 treatment 1 ---- N treatment_impact_measurements
 scenario_proposal 1 ---- N owner_responses
 ```
@@ -670,8 +677,6 @@ Para um cenário publicado, deve existir **exatamente um owner ativo** no instan
 
 #### Cenário — catálogo
 
-[IMPLEMENTADO EM C05 — contrato técnico vigente]
-
 ```text
 ACTIVE
 INACTIVE
@@ -680,8 +685,6 @@ INACTIVE
 `ACTIVE` significa que o cenário pertence ao catálogo operacional. Isso não basta para START: precisa também existir uma versão corrente `PUBLISHED`.
 
 #### Versão de cenário
-
-[IMPLEMENTADO EM C05 — contrato técnico vigente]
 
 ```text
 DRAFT
@@ -693,10 +696,11 @@ Regras:
 - apenas `PUBLISHED` pode ser usada em START;
 - no máximo uma versão `PUBLISHED` corrente por cenário;
 - `PUBLISHED` nunca é editada in-place;
-- nova publicação aposenta/substitui a versão corrente sem reescrever histórico;
-- o termo antigo `VALIDATED` não é estado canônico do banco; validação é parte do processo de governança anterior à publicação.
+- nova publicação aposenta a versão corrente sem reescrever histórico (aplicado na versão 2 CRITICAL, D-55).
 
 #### Tratativa
+
+Status técnico:
 
 ```text
 ACTIVE
@@ -704,24 +708,35 @@ RESOLVED
 CANCELLED
 ```
 
-Transições permitidas:
+Partes do encerramento (D-66/D-72), registradas separadamente enquanto o status é `ACTIVE`:
 
 ```text
-START  -> ACTIVE
-ACTIVE -> RESOLVED   via END
-ACTIVE -> CANCELLED  via CANCEL + motivo
+parte do solicitante: aberta | fechada (autor + horário)
+parte do dono:        aberta | fechada (autor + horário)
+```
+
+Transições:
+
+```text
+START                          -> ACTIVE (Em andamento)
+ACTIVE + fecha parte solicitante -> ACTIVE (Aguardando dono)
+ACTIVE + fecha parte dono        -> ACTIVE (Aguardando solicitante)
+ACTIVE + as duas partes fechadas -> RESOLVED (Encerrado)
+ACTIVE + CANCEL (solicitante ou dono, motivo) -> CANCELLED (Cancelado)
 ```
 
 Não existe transição silenciosa de `RESOLVED` ou `CANCELLED` para `ACTIVE`.
 
 ### 8.4 Elegibilidade para START
 
-START é permitido somente quando todas as condições estruturais forem verdadeiras:
+START é permitido somente quando todas as condições forem verdadeiras:
 
 ```text
 scenario.lifecycle_status = ACTIVE
 AND scenario.current_version_id aponta para version.status = PUBLISHED
-AND sessão/autorização válida
+AND sessão corporativa válida
+AND solicitante ≠ dono vigente do cenário (D-65)
+AND o solicitante não tem outra tratativa ACTIVE com a parte dele aberta nesse cenário (D-57/D-66)
 ```
 
 O client não escolhe uma versão histórica. O backend resolve a versão corrente e persiste `scenario_version_id`.
@@ -730,7 +745,7 @@ O client não escolhe uma versão histórica. O backend resolve a versão corren
 
 A tratativa deve preservar contexto suficiente para não depender de relações futuras mutáveis.
 
-[IMPLEMENTADO EM C05 — requisito de auditabilidade vigente]
+[DERIVADO — requisito de auditabilidade para C05]
 
 Persistir no START:
 
@@ -741,7 +756,7 @@ Persistir no START:
 - `owner_id_at_start`;
 - `responsible_area_id_at_start`.
 
-A criticidade, gatilho, protocolo e SLAs históricos são obtidos da `scenario_version_id` congelada e não precisam ser duplicados na tratativa.
+A criticidade, gatilho, protocolo e prazos de referência históricos são obtidos da `scenario_version_id` congelada e não precisam ser duplicados na tratativa.
 
 Se owner ou área responsável mudar depois, a tratativa antiga continua mostrando quem respondia no momento do START. O vínculo atual do cenário continua separado para operação futura.
 
@@ -776,67 +791,47 @@ Contrato:
 - pode ser subconjunto, conjunto igual ou diferente do potencial previsto;
 - não deve reescrever a versão do cenário.
 
-Implementado em C05 como relação versionada `scenario_version_impacted_areas`; o nome ambíguo `scenario_impacted_areas` não faz parte do modelo canônico.
+Para C05, usar relação versionada, preferencialmente nomeada `scenario_version_impacted_areas`, evitando o nome ambíguo `scenario_impacted_areas`.
 
 ### 8.8 Sistemas/ferramentas associados
 
 Ferramentas de detecção, origem, apoio ou monitoramento podem mudar entre versões.
 
-Implementado em C05 como relação versionada `scenario_version_systems`.
+Para C05, a relação deve ser versionada, preferencialmente `scenario_version_systems`.
 
 Uma tratativa histórica não deve passar a mostrar uma ferramenta nova apenas porque a versão atual do cenário mudou.
 
 ### 8.9 Criticidade
 
-Valores válidos quando definidos:
+Valores válidos: `CRITICAL`, `HIGH`, `MODERATE`.
 
-```text
-CRITICAL
-HIGH
-MODERATE
-```
+- `scenario_versions.criticality` **não recebe default**;
+- os 11 cenários estão em `CRITICAL` na versão 2 (D-55); a versão 1 preserva `NULL` como histórico;
+- cenário novo nasce `CRITICAL` (D-60);
+- mudar criticidade exige nova versão.
 
-Por causa de `GI-SAFRA-001`:
+### 8.10 SLA e regras de tempo
 
-- `scenario_versions.criticality` **não pode receber default**;
-- deve aceitar ausência explícita enquanto a classificação nominal não estiver resolvida;
-- quando não nula, deve aceitar somente os três valores canônicos;
-- ausência não equivale a `MODERATE`;
-- C06 não pode preencher criticidade por inferência.
+Não há SLA no produto: a engine e a tabela `scenario_slas` foram aposentadas (D-75) e o START não inicia relógio. O que mede tempo são as **regras de tempo** (`docs/C07_REGRAS_DE_TEMPO.md`): escada de avisos (D-76) e tempos de encerramento (D-77), sempre calculados a partir dos horários do servidor, sem duração gravada, com parte aberta "em aberto" e cancelado fora dos tempos.
 
-### 8.10 SLA
-
-SLA pertence à versão do cenário.
-
-Cada registro precisa referenciar:
-- `scenario_version_id`;
-- `start_event`;
-- `end_event`;
-- alvo;
-- unidade;
-- aplicabilidade.
-
-Regras:
-- timestamps oficiais são a fonte primária;
-- duração é calculada;
-- CANCEL não equivale a SLA cumprido;
-- ausência do evento necessário significa SLA **não mensurável**, não `OK`;
-- múltiplos SLAs podem coexistir.
+Uma volta do SLA exige decisão nova.
 
 ### 8.11 END e CANCEL — semântica de persistência
 
-#### RESOLVED
-Quando `status = RESOLVED`:
-- `closed_by` obrigatório;
-- `closed_at` obrigatório e server-side;
-- campos de cancelamento devem permanecer nulos.
+**Contrato para F01/F02 (D-66/D-72):**
+
+#### Partes do END
+- parte do solicitante: autor (= solicitante) e horário do servidor;
+- parte do dono: autor (= dono vigente) e horário do servidor;
+- só quem é dono da parte pode fechá-la;
+- `RESOLVED` exige as duas partes fechadas; o horário de `RESOLVED` é o da segunda parte;
+- os campos atuais `closed_by/closed_at` (um só fechamento) **não bastam** e precisam ser substituídos ou complementados na F01.
 
 #### CANCELLED
-Quando `status = CANCELLED`:
-- `cancelled_by` obrigatório;
-- `cancelled_at` obrigatório e server-side;
+- `cancelled_by` = solicitante ou dono;
+- `cancelled_at` server-side;
 - `cancellation_reason` obrigatório;
-- `closed_by/closed_at` não representam resolução e devem permanecer nulos.
+- campos das partes do END permanecem como estavam (não representam resolução).
 
 CANCEL preserva START e todo o histórico anterior.
 
@@ -844,29 +839,32 @@ CANCEL preserva START e todo o histórico anterior.
 
 `treatment_events` é append-only.
 
-Eventos mínimos canônicos:
+Eventos canônicos:
 
 ```text
 TREATMENT_OPENED
 NOTE_ADDED
 IMPACT_AREA_ADDED
 IMPACT_AREA_REMOVED
-ESCALATION_CHANGED
-SLA_BREACHED
-TREATMENT_RESOLVED
+REQUESTER_PART_CLOSED     (parte do solicitante — F01)
+OWNER_PART_CLOSED         (parte do dono — F01)
+TREATMENT_RESOLVED        (as duas partes fechadas)
 TREATMENT_CANCELLED
+REMINDER_SENT             (aviso enviado — M05)
 ADMIN_CORRECTION_RECORDED
 ```
+
+Removidos: `ESCALATION_CHANGED` (D-73) e `SLA_BREACHED` (D-75).
 
 Regras:
 - evento possui ator quando houver ação humana;
 - `occurred_at` oficial é server-side;
-- `correlation_id` deve ser persistido para mutations críticas;
+- `correlation_id` persistido para mutations críticas;
 - correção administrativa cria novo evento; não altera evento passado.
 
 ### 8.13 Impacto quantitativo — contrato físico mínimo
 
-C05 materializou `treatment_impact_measurements` para receber medições quantitativas sem inventar métricas de negócio.
+C05 deve criar estrutura capaz de receber medições futuras sem inventar métricas de negócio.
 
 ```text
 treatment_impact_measurements
@@ -893,74 +891,60 @@ Invariantes:
 
 Recorrência é **métrica derivada**, não entidade transacional obrigatória.
 
-C05 não criou status ou tabela de `recorrência` como fonte primária. A recorrência permanece métrica derivada de tratativas por cenário e janela temporal definida posteriormente.
+C05 não deve criar status ou tabela de “recorrência” como fonte primária. Ela será calculada a partir de tratativas por cenário e janela temporal definida posteriormente.
 
 ### 8.15 Pós-mortem
 
 Pós-mortem está no domínio, mas seu workflow pertence ao F03.
 
-C05 não materializou como regra:
+C05 não deve presumir:
 - que toda tratativa exige pós-mortem;
 - enum/status final do pós-mortem;
-- tabela obrigatória de pós-mortem.
+- tabela obrigatória nesta migration inicial.
 
 Quando formalizado, deve referenciar a tratativa original e não alterar seu END.
 
 ### 8.16 Múltiplas tratativas simultâneas
 
-A regra ainda está deferida para M01.
-
-Portanto, **C05 não criou constraint de unicidade que impeça duas tratativas ACTIVE do mesmo cenário**; a decisão permanece deferida para M01.
+**Decidido (D-57/D-66):** uma pessoa tem no máximo uma tratativa em andamento por cenário, contada pela parte dela (solicitante); pessoas diferentes podem ter tratativas simultâneas do mesmo cenário. Hoje aplicado por `treatments_one_active_per_person_scenario` (status `ACTIVE`); na F01 a trava passa a considerar a parte do solicitante.
 
 ### 8.17 Proposta de cenário
 
 `scenario_proposals` é entidade separada.
 
-C05 materializou estruturalmente que:
+C05 deve garantir estruturalmente:
 - proposta não possui `scenario_id` produtivo por default;
 - proposta não recebe START;
 - conversão/publicação depende do fluxo M10;
-- o lifecycle completo da proposta permanece deferido a M10, sem estados finais inventados.
+- enum completo do lifecycle da proposta pode permanecer deferido a M10, sem inventar estados finais agora.
 
 ### 8.18 Governance issue
 
-`governance_issues` registra pendência material sem preencher default.
+`governance_issues` registra pendência material sem preencher default. Fonte oficial do texto e do status: `docs/GOVERNANCE_ISSUES.md` (D-53); o banco espelha.
 
-Para `GI-SAFRA-001`:
-- issue permanece OPEN;
-- seed C06 não define os quatro CRITICAL;
-- resolução futura gera decisão registrada e versão de cenário apropriada.
+### 8.19 Itens ainda sem decisão (não inventar)
 
-### 8.19 Itens que permaneceram explicitamente fora do C05
+- thresholds dos cenários 2, 4, 10 e 11 e mínimo da curva A — V2 do produto (D-56);
+- métricas/thresholds quantitativos de impacto — F04;
+- avisos pelo Teams e formato (GI-SAFRA-011) — M05;
+- período do resumo da governança semanal — F05.
 
-C05 não decidiu por conta própria:
-- os quatro cenários CRITICAL;
-- thresholds dos cenários 2, 4, 10 e 11;
-- mínimo oficial da curva A;
-- regra de múltiplas tratativas simultâneas;
-- métricas/thresholds quantitativos específicos;
-- fluxo final de publicação do 12º card;
-- provider/canal de e-mail;
-- janela semanal de governança.
+### 8.20 Checklist de aceite
 
-### 8.20 Checklist histórico de aceite do C05 — preservado como invariantes
-
-O checklist usado para aceitar a implementação do C05 permanece como teste conceitual do modelo:
+O implementador deve conseguir responder sem interpretação:
 
 - qual entidade representa identidade do cenário? → `scenarios`;
 - qual entidade guarda conteúdo mutável? → `scenario_versions`;
 - qual entidade representa ocorrência real? → `treatments`;
 - qual versão vale na tratativa? → `scenario_version_id` congelada no START;
+- quem é o solicitante? → `opened_by`;
+- o dono pode abrir protocolo do próprio card? → não (D-65);
 - owner histórico vem de onde? → `owner_id_at_start`;
-- área responsável histórica vem de onde? → `responsible_area_id_at_start`;
-- áreas potenciais vêm de onde? → versão do cenário;
-- áreas reais vêm de onde? → tratativa;
-- criticidade desconhecida vira MODERATE? → não;
-- CANCEL usa `closed_at`? → não;
-- impacto quantitativo desconhecido vira zero? → não;
-- recorrência é tabela transacional? → não;
-- múltiplos ACTIVE do mesmo cenário são proibidos no C05? → não, decisão M01;
+- criticidade atual dos 11? → CRITICAL (D-55);
+- há cronômetro de SLA nos cards? → não (D-62);
+- a tratativa encerra com um clique? → não; precisa das duas partes (D-66);
+- quem cancela? → solicitante ou dono, com motivo;
+- mesma pessoa pode ter duas tratativas ativas do mesmo cenário? → não (D-57);
+- escalonamento é registrado no Painel? → não (D-73);
 - proposta é cenário? → não;
 - versão publicada pode ser UPDATE in-place? → não.
-
-Se qualquer evolução futura responder de forma diferente, a mudança precisa voltar ao domínio antes de ser codificada.

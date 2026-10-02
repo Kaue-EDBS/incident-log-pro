@@ -106,7 +106,6 @@ select is(
       and table_name in (
         'treatments',
         'treatment_events',
-        'treatment_escalations',
         'notifications_log',
         'governance_issues'
       )

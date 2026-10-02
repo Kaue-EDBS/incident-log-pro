@@ -4,7 +4,7 @@
 **Bloco:** SAFRA-C02 — Threat model e abuso de negócio  
 **Data de abertura da rodada corretiva:** 27/09/2026  
 **Horário:** 18:37 BRT  
-**Estado:** EM EXECUÇÃO  
+**Estado:** CONCLUÍDA — fechamento registrado em 01/10/2026 pela C02-AUD2 (`docs/AUDITORIA_C02_REABERTURA_2026-10-01.md`)  
 **Natureza:** reauditoria de ameaças, autorização, integridade temporal, duplicidade, controles e testes contra o estado atual do código e do Lovable Cloud PRIMARY
 
 ---
@@ -155,4 +155,4 @@ A reauditoria somente poderá ser marcada como concluída quando:
 - os gates `G3.5`, `THREAT-001` e `AUTHZ-001` puderem ser recertificados por evidência atual;
 - documentação e `PROJECT_PROFILE` refletirem o estado real.
 
-> **C02 permanece historicamente fechado; C02-AUD está EM EXECUÇÃO e não está recertificado.**
+> **C02-AUD concluída.** As correções foram executadas em 27/09/2026 (migration `20260927214303`, PR mesclado às 19:48) e conferidas no código e no PRIMARY em 01/10/2026. Evidências por achado em `docs/AUDITORIA_C02_REABERTURA_2026-10-01.md` §2.

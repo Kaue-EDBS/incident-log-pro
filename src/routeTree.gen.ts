@@ -10,13 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AbrirProtocoloRouteImport } from './routes/abrir-protocolo'
+import { Route as AdministracaoRouteImport } from './routes/administracao'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as NovoIncidenteRouteImport } from './routes/novo-incidente'
-import { Route as TratativasNovaRouteImport } from './routes/tratativas.nova'
+import { Route as MeusProtocolosRouteImport } from './routes/meus-protocolos'
+import { Route as ProtocolosDosMeusCardsRouteImport } from './routes/protocolos-dos-meus-cards'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AbrirProtocoloRoute = AbrirProtocoloRouteImport.update({
+  id: '/abrir-protocolo',
+  path: '/abrir-protocolo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdministracaoRoute = AdministracaoRouteImport.update({
+  id: '/administracao',
+  path: '/administracao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -24,49 +42,83 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NovoIncidenteRoute = NovoIncidenteRouteImport.update({
-  id: '/novo-incidente',
-  path: '/novo-incidente',
+const MeusProtocolosRoute = MeusProtocolosRouteImport.update({
+  id: '/meus-protocolos',
+  path: '/meus-protocolos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TratativasNovaRoute = TratativasNovaRouteImport.update({
-  id: '/tratativas/nova',
-  path: '/tratativas/nova',
+const ProtocolosDosMeusCardsRoute = ProtocolosDosMeusCardsRouteImport.update({
+  id: '/protocolos-dos-meus-cards',
+  path: '/protocolos-dos-meus-cards',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/abrir-protocolo': typeof AbrirProtocoloRoute
+  '/administracao': typeof AdministracaoRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
-  '/novo-incidente': typeof NovoIncidenteRoute
-  '/tratativas/nova': typeof TratativasNovaRoute
+  '/meus-protocolos': typeof MeusProtocolosRoute
+  '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/abrir-protocolo': typeof AbrirProtocoloRoute
+  '/administracao': typeof AdministracaoRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
-  '/novo-incidente': typeof NovoIncidenteRoute
-  '/tratativas/nova': typeof TratativasNovaRoute
+  '/meus-protocolos': typeof MeusProtocolosRoute
+  '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/abrir-protocolo': typeof AbrirProtocoloRoute
+  '/administracao': typeof AdministracaoRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
-  '/novo-incidente': typeof NovoIncidenteRoute
-  '/tratativas/nova': typeof TratativasNovaRoute
+  '/meus-protocolos': typeof MeusProtocolosRoute
+  '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/novo-incidente' | '/tratativas/nova'
+  fullPaths:
+    | '/'
+    | '/abrir-protocolo'
+    | '/administracao'
+    | '/analytics'
+    | '/auth'
+    | '/meus-protocolos'
+    | '/protocolos-dos-meus-cards'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/novo-incidente' | '/tratativas/nova'
-  id: '__root__' | '/' | '/auth' | '/novo-incidente' | '/tratativas/nova'
+  to:
+    | '/'
+    | '/abrir-protocolo'
+    | '/administracao'
+    | '/analytics'
+    | '/auth'
+    | '/meus-protocolos'
+    | '/protocolos-dos-meus-cards'
+  id:
+    | '__root__'
+    | '/'
+    | '/abrir-protocolo'
+    | '/administracao'
+    | '/analytics'
+    | '/auth'
+    | '/meus-protocolos'
+    | '/protocolos-dos-meus-cards'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AbrirProtocoloRoute: typeof AbrirProtocoloRoute
+  AdministracaoRoute: typeof AdministracaoRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
-  NovoIncidenteRoute: typeof NovoIncidenteRoute
-  TratativasNovaRoute: typeof TratativasNovaRoute
+  MeusProtocolosRoute: typeof MeusProtocolosRoute
+  ProtocolosDosMeusCardsRoute: typeof ProtocolosDosMeusCardsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -78,6 +130,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/abrir-protocolo': {
+      id: '/abrir-protocolo'
+      path: '/abrir-protocolo'
+      fullPath: '/abrir-protocolo'
+      preLoaderRoute: typeof AbrirProtocoloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/administracao': {
+      id: '/administracao'
+      path: '/administracao'
+      fullPath: '/administracao'
+      preLoaderRoute: typeof AdministracaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -85,18 +158,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/novo-incidente': {
-      id: '/novo-incidente'
-      path: '/novo-incidente'
-      fullPath: '/novo-incidente'
-      preLoaderRoute: typeof NovoIncidenteRouteImport
+    '/meus-protocolos': {
+      id: '/meus-protocolos'
+      path: '/meus-protocolos'
+      fullPath: '/meus-protocolos'
+      preLoaderRoute: typeof MeusProtocolosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tratativas/nova': {
-      id: '/tratativas/nova'
-      path: '/tratativas/nova'
-      fullPath: '/tratativas/nova'
-      preLoaderRoute: typeof TratativasNovaRouteImport
+    '/protocolos-dos-meus-cards': {
+      id: '/protocolos-dos-meus-cards'
+      path: '/protocolos-dos-meus-cards'
+      fullPath: '/protocolos-dos-meus-cards'
+      preLoaderRoute: typeof ProtocolosDosMeusCardsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -104,9 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AbrirProtocoloRoute: AbrirProtocoloRoute,
+  AdministracaoRoute: AdministracaoRoute,
+  AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
-  NovoIncidenteRoute: NovoIncidenteRoute,
-  TratativasNovaRoute: TratativasNovaRoute,
+  MeusProtocolosRoute: MeusProtocolosRoute,
+  ProtocolosDosMeusCardsRoute: ProtocolosDosMeusCardsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

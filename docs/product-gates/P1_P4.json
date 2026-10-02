@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "rule": "P1-P4 may never be published as PASS by inference.",
   "allowed_status": [
     "NOT_PUBLISHED",
@@ -33,7 +33,7 @@
         "START_TRANSACTIONAL_IDEMPOTENT",
         "VERSION_FROZEN",
         "START_AUDIT_EVENT_EXISTS",
-        "SLA_STARTS_CORRECTLY",
+        "REMINDER_LADDER_STARTS_CORRECTLY",
         "START_COMMUNICATION_DEDUPLICATED"
       ],
       "evidence": {}
@@ -46,8 +46,7 @@
         "TIMELINE_RELIABLE",
         "EVENTS_AUDITABLE",
         "CONCURRENCY_HANDLED",
-        "SLA_RUNTIME_CORRECT",
-        "ESCALATION_AUDITABLE",
+        "REMINDER_LADDER_RUNTIME_CORRECT",
         "NO_OPERATIONAL_CHECKLIST_DEPENDENCY"
       ],
       "evidence": {}
@@ -58,10 +57,11 @@
       "human_approval": false,
       "required_criteria": [
         "AUTHENTICATED_END_WORKS",
+        "TWO_PART_CLOSE_WORKS",
         "CANCEL_WITH_REASON_WORKS",
         "END_CANCEL_CONCURRENCY_SAFE",
         "HISTORY_IMMUTABLE_AUDITABLE",
-        "SLA_CLIENT_TAMPER_RESISTANT",
+        "CLOSE_TIMESTAMPS_TAMPER_RESISTANT",
         "END_CANCEL_COMMUNICATION_IDEMPOTENT"
       ],
       "evidence": {}
@@ -77,5 +77,20 @@
     "phase_completion_is_not_gate_pass": true,
     "commit_name_is_not_evidence": true,
     "llm_judgement_is_not_evidence": true
+  },
+  "criteria_revision": {
+    "date": "2026-10-01",
+    "source": "C06-AUD2",
+    "changes": [
+      "P2 SLA_STARTS_CORRECTLY -> REMINDER_LADDER_STARTS_CORRECTLY (D-62/D-67: sem cronômetro de SLA; escada de avisos)",
+      "P3 SLA_RUNTIME_CORRECT -> REMINDER_LADDER_RUNTIME_CORRECT (D-67)",
+      "P3 ESCALATION_AUDITABLE removido (D-73: escalonamento fora do Painel)",
+      "P4 SLA_CLIENT_TAMPER_RESISTANT -> CLOSE_TIMESTAMPS_TAMPER_RESISTANT (D-66: horário do servidor por parte)",
+      "P4 TWO_PART_CLOSE_WORKS incluído (D-66)"
+    ],
+    "forbidden_criteria_prefixes": [
+      "SLA_",
+      "ESCALATION_"
+    ]
   }
 }
