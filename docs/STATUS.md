@@ -30,7 +30,7 @@
 | D-118/D-119 — marcação da Safra (iniciar, encerrar com "ENCERRAR SAFRA", desfazer em 7 dias; só o Kaue) | CONCLUÍDA em 02/10 | `DECISOES.md` D-118/D-119 |
 | D-120 — M08 cancelada; faixa "Agora" em Todos os protocolos | CONCLUÍDA em 02/10 | `DECISOES.md` D-120 |
 | M09 — visões por audiência (Cards e donos, ranking, cadastrados, trilha de papéis, uso das telas) | CONCLUÍDA em 02/10 | `AUDITORIA_M09_2026-10-02.md` |
-| M10 — governança do 12º card (tela Novo card) | CONCLUÍDA em 02/10 | `AUDITORIA_M10_2026-10-02.md` |
+| M10 — governança do 12º card (tela Sugerir card) | CONCLUÍDA em 02/10 (regras D-135) | `AUDITORIA_M10_2026-10-02.md` |
 | C02-AUD e C02-AUD2 — threat model | CONCLUÍDAS em 01/10; G3.5, THREAT-001 e AUTHZ-001 recertificados | `AUDITORIA_C02_REABERTURA_2026-10-01.md` |
 
 ---
@@ -80,6 +80,7 @@
 
 ## 6. Próximo passo
 
-Próximo: M11 (fontes reais futuras). E-mails automáticos desde 02/10 (D-133/D-134); troca pelo aplicativo do TI na GI-SAFRA-017. M04, M06, M07 e M08 canceladas. Publicar e homologar com login real fica para o final (decisão do owner, 02/10/2026).
+**Continuar por `docs/HANDOFF_2026-10-03.md`:** conferir o CI do D-138, o owner publica o site, teste real de e-mail a partir da abertura de protocolo (card escolhido e dono avisado pelo owner). Depois: M11 (fontes reais futuras). E-mails automáticos desde 02/10 (D-133/D-134); troca pelo aplicativo do TI na GI-SAFRA-017. M04, M06, M07 e M08 canceladas.
 
 - 2026-10-02 — M05 provisório (D-132): envio pela sessão de quem está no Painel (gestão/admins: fila inteira; demais: só os avisos da própria ação). Migration `20261002300000_m05_session_delivery.sql`. D-133: envio agendado no servidor a cada 2 minutos (migration `20261002310000_m05_scheduled_delivery.sql`).
+- 2026-10-02 — D-134 a D-138: auditorias (e-mails/M10 e frontend/backend/UX), regras da proposta, seções fechadas, nomes novos. PRIMARY com 64 migrations.
