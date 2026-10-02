@@ -69,7 +69,13 @@ jobs:
         run: supabase db reset --local
 
       - name: Run database tests
-        run: supabase test db
+        run: |
+          supabase test db > /tmp/pgtap.log 2>&1 || {
+            cat /tmp/pgtap.log
+            python3 .github/scripts/annotate-log.py /tmp/pgtap.log "Database tests"
+            exit 1
+          }
+          cat /tmp/pgtap.log
 
       - name: Test concurrent START idempotency
         run: bash .github/scripts/test-safra-start-concurrency.sh
