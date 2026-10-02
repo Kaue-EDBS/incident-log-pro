@@ -14,33 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      applications: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          is_active: boolean
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_active?: boolean
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_active?: boolean
-          name?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       governance_issues: {
         Row: {
           created_at: string
@@ -82,68 +55,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
-      }
-      incidents: {
-        Row: {
-          application_id: string
-          category: string | null
-          cause: string | null
-          created_at: string
-          detected_at: string
-          failure_started_at: string | null
-          id: string
-          notes: string | null
-          recovered_at: string | null
-          resolution: string | null
-          response_started_at: string | null
-          responsible: string | null
-          status: string
-          type: string | null
-          updated_at: string
-        }
-        Insert: {
-          application_id: string
-          category?: string | null
-          cause?: string | null
-          created_at?: string
-          detected_at?: string
-          failure_started_at?: string | null
-          id?: string
-          notes?: string | null
-          recovered_at?: string | null
-          resolution?: string | null
-          response_started_at?: string | null
-          responsible?: string | null
-          status?: string
-          type?: string | null
-          updated_at?: string
-        }
-        Update: {
-          application_id?: string
-          category?: string | null
-          cause?: string | null
-          created_at?: string
-          detected_at?: string
-          failure_started_at?: string | null
-          id?: string
-          notes?: string | null
-          recovered_at?: string | null
-          resolution?: string | null
-          response_started_at?: string | null
-          responsible?: string | null
-          status?: string
-          type?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "incidents_application_id_fkey"
-            columns: ["application_id"]
-            isOneToOne: false
-            referencedRelation: "applications"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       notifications_log: {
         Row: {
@@ -241,6 +152,39 @@ export type Database = {
           is_active?: boolean
           name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      ops_events: {
+        Row: {
+          actor_user_id: string | null
+          code: string | null
+          detail: Json
+          duration_ms: number | null
+          id: string
+          kind: string
+          occurred_at: string
+          route: string | null
+        }
+        Insert: {
+          actor_user_id?: string | null
+          code?: string | null
+          detail?: Json
+          duration_ms?: number | null
+          id?: string
+          kind: string
+          occurred_at?: string
+          route?: string | null
+        }
+        Update: {
+          actor_user_id?: string | null
+          code?: string | null
+          detail?: Json
+          duration_ms?: number | null
+          id?: string
+          kind?: string
+          occurred_at?: string
+          route?: string | null
         }
         Relationships: []
       }
@@ -358,65 +302,6 @@ export type Database = {
           title?: string
         }
         Relationships: []
-      }
-      scenario_slas: {
-        Row: {
-          applicability_text: string | null
-          code: string
-          created_at: string
-          end_event: string
-          id: string
-          label: string
-          scenario_version_id: string
-          start_event: string
-          target_text: string
-          target_unit: string
-          target_value: number
-          tolerance_documentation: string | null
-          tolerance_unit: string | null
-          tolerance_value: number | null
-        }
-        Insert: {
-          applicability_text?: string | null
-          code: string
-          created_at?: string
-          end_event: string
-          id?: string
-          label: string
-          scenario_version_id: string
-          start_event: string
-          target_text: string
-          target_unit: string
-          target_value: number
-          tolerance_documentation?: string | null
-          tolerance_unit?: string | null
-          tolerance_value?: number | null
-        }
-        Update: {
-          applicability_text?: string | null
-          code?: string
-          created_at?: string
-          end_event?: string
-          id?: string
-          label?: string
-          scenario_version_id?: string
-          start_event?: string
-          target_text?: string
-          target_unit?: string
-          target_value?: number
-          tolerance_documentation?: string | null
-          tolerance_unit?: string | null
-          tolerance_value?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "scenario_slas_scenario_version_id_fkey"
-            columns: ["scenario_version_id"]
-            isOneToOne: false
-            referencedRelation: "scenario_versions"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       scenario_version_impacted_areas: {
         Row: {
@@ -627,50 +512,6 @@ export type Database = {
         }
         Relationships: []
       }
-      treatment_escalations: {
-        Row: {
-          changed_by: string | null
-          correlation_id: string
-          created_at: string
-          id: string
-          level: string
-          reason: string | null
-          treatment_id: string
-          valid_from: string
-          valid_to: string | null
-        }
-        Insert: {
-          changed_by?: string | null
-          correlation_id: string
-          created_at?: string
-          id?: string
-          level: string
-          reason?: string | null
-          treatment_id: string
-          valid_from?: string
-          valid_to?: string | null
-        }
-        Update: {
-          changed_by?: string | null
-          correlation_id?: string
-          created_at?: string
-          id?: string
-          level?: string
-          reason?: string | null
-          treatment_id?: string
-          valid_from?: string
-          valid_to?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "treatment_escalations_treatment_id_fkey"
-            columns: ["treatment_id"]
-            isOneToOne: false
-            referencedRelation: "treatments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       treatment_events: {
         Row: {
           actor_user_id: string | null
@@ -825,7 +666,13 @@ export type Database = {
           impact_summary: string | null
           opened_at: string
           opened_by: string
+          owner_closed_at: string | null
+          owner_closed_by: string | null
           owner_id_at_start: string
+          problem_started_at: string
+          protocol_number: string
+          protocol_seq: number
+          requester_closed_at: string | null
           responsible_area_id_at_start: string
           scenario_id: string
           scenario_version_id: string
@@ -845,7 +692,13 @@ export type Database = {
           impact_summary?: string | null
           opened_at?: string
           opened_by: string
+          owner_closed_at?: string | null
+          owner_closed_by?: string | null
           owner_id_at_start: string
+          problem_started_at: string
+          protocol_number: string
+          protocol_seq: number
+          requester_closed_at?: string | null
           responsible_area_id_at_start: string
           scenario_id: string
           scenario_version_id: string
@@ -865,7 +718,13 @@ export type Database = {
           impact_summary?: string | null
           opened_at?: string
           opened_by?: string
+          owner_closed_at?: string | null
+          owner_closed_by?: string | null
           owner_id_at_start?: string
+          problem_started_at?: string
+          protocol_number?: string
+          protocol_seq?: number
+          requester_closed_at?: string | null
           responsible_area_id_at_start?: string
           scenario_id?: string
           scenario_version_id?: string
@@ -917,20 +776,41 @@ export type Database = {
           target_role: string
         }[]
       }
+      safra_admin_get_ops_summary: { Args: { p_hours?: number }; Returns: Json }
+      safra_admin_get_owner_treatments: {
+        Args: { p_owner_principal_id: string }
+        Returns: Json
+      }
+      safra_can_use_chameleon: { Args: never; Returns: boolean }
+      safra_undo_my_part: { Args: { p_treatment_id: string }; Returns: Json }
+      safra_cancel_treatment: {
+        Args: { p_reason: string; p_treatment_id: string }
+        Returns: Json
+      }
+      safra_close_my_part: { Args: { p_treatment_id: string }; Returns: Json }
+      safra_get_my_treatments: { Args: never; Returns: Json }
+      safra_get_owner_treatments: { Args: never; Returns: Json }
+      safra_get_start_catalog: { Args: never; Returns: Json }
       safra_has_role: { Args: { requested_role: string }; Returns: boolean }
       safra_is_corporate_user: { Args: never; Returns: boolean }
-      safra_log_access_denied: {
-        Args: { p_reason?: string; p_resource: string }
-        Returns: string
+      safra_log_ops_event: {
+        Args: {
+          p_code?: string
+          p_detail?: Json
+          p_duration_ms?: number
+          p_kind: string
+          p_route?: string
+        }
+        Returns: undefined
       }
       safra_session_is_live: { Args: never; Returns: boolean }
-      safra_get_start_catalog: { Args: never; Returns: Json }
       safra_start_treatment: {
         Args: {
-          p_scenario_id: string
           p_idempotency_key: string
-          p_impact_summary?: string | null
+          p_impact_summary?: string
           p_impacted_area_ids?: string[]
+          p_problem_started_at?: string
+          p_scenario_id: string
         }
         Returns: Json
       }

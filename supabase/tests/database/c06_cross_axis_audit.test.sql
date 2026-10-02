@@ -7,14 +7,14 @@ select is(
    where c.relnamespace='public'::regnamespace
      and c.relname in (
       'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-      'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+      'scenario_version_impacted_areas','scenario_version_systems',
       'treatments','treatment_impacted_areas','treatment_impact_measurements',
-      'treatment_events','treatment_escalations','scenario_proposals',
+      'treatment_events','scenario_proposals',
       'scenario_proposal_owner_responses','notifications_log','governance_issues'
      )
      and c.relrowsecurity),
-  17::bigint,
-  'all 17 SAFRA domain tables keep RLS enabled'
+  15::bigint,
+  'all 15 SAFRA domain tables keep RLS enabled'
 );
 
 select is(
@@ -25,9 +25,9 @@ select is(
      and c.confdeltype='c'
      and cl.relname in (
       'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-      'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+      'scenario_version_impacted_areas','scenario_version_systems',
       'treatments','treatment_impacted_areas','treatment_impact_measurements',
-      'treatment_events','treatment_escalations','scenario_proposals',
+      'treatment_events','scenario_proposals',
       'scenario_proposal_owner_responses','notifications_log','governance_issues'
      )),
   0::bigint,
@@ -40,9 +40,9 @@ select is(
    where table_schema='public'
      and table_name in (
       'operational_areas','systems','scenarios','scenario_versions','scenario_owners',
-      'scenario_version_impacted_areas','scenario_version_systems','scenario_slas',
+      'scenario_version_impacted_areas','scenario_version_systems',
       'treatments','treatment_impacted_areas','treatment_impact_measurements',
-      'treatment_events','treatment_escalations','scenario_proposals',
+      'treatment_events','scenario_proposals',
       'scenario_proposal_owner_responses','notifications_log','governance_issues'
      )
      and grantee in ('anon','authenticated')),
@@ -73,7 +73,7 @@ select is(
    where sc.code ~ '^SAFRA-(0[1-9]|1[01])$'
      and sv.criticality is null),
   11::bigint,
-  'criticality stays unresolved for all 11 while GI-SAFRA-001 is open'
+  'v1 history keeps null criticality for all 11 (D-55 applies to v2 only)'
 );
 
 select is(
@@ -91,12 +91,8 @@ select is(
 
 
 select ok(
-  not has_function_privilege(
-    'authenticated',
-    'public.safra_log_access_denied(text,text)',
-    'EXECUTE'
-  ),
-  'access-denied audit writer is backend-only'
+  to_regprocedure('public.safra_log_access_denied(text,text)') is null,
+  'unreachable access-denied writer was removed (AUD-GERAL A-11)'
 );
 
 select * from finish();

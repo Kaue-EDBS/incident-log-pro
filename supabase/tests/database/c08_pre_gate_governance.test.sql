@@ -2,10 +2,10 @@ begin;
 create extension if not exists pgtap with schema extensions;
 select plan(12);
 
-select is(
-  (select status from public.governance_issues where issue_key='GI-SAFRA-001'),
-  'OPEN',
-  'GI-001 remains OPEN because nominal CRITICAL list is still unknown'
+select ok(
+  (select status='OPEN' or (status='RESOLVED' and resolution_text like 'D-55%')
+   from public.governance_issues where issue_key='GI-SAFRA-001'),
+  'GI-001 is OPEN, or RESOLVED only by the owner decision D-55'
 );
 
 select matches(
@@ -50,10 +50,10 @@ select matches(
   'GI-003 defines manual START fallback'
 );
 
-select is(
-  (select status from public.governance_issues where issue_key='GI-SAFRA-009'),
-  'OPEN',
-  'GI-009 stays OPEN until productive versioning materializes structured SLA'
+select ok(
+  (select status='OPEN' or (status='RESOLVED' and resolution_text like 'D-62%')
+   from public.governance_issues where issue_key='GI-SAFRA-009'),
+  'GI-009 is OPEN, or RESOLVED only by the owner decision D-62'
 );
 
 select matches(

@@ -15,6 +15,13 @@ values(
   clock_timestamp()
 );
 
+-- AUD-GERAL A-01: Microsoft identity of the corporate tenant for synthetic azure users.
+insert into auth.identities(provider_id,user_id,identity_data,provider,created_at,updated_at)
+select u.id::text,u.id,jsonb_build_object('sub',u.id::text,'email',u.email,'custom_claims',jsonb_build_object('tid','45ba725f-d260-45c3-ac85-11f433471277')),'azure',clock_timestamp(),clock_timestamp()
+from auth.users u
+where u.raw_app_meta_data->>'provider'='azure'
+  and not exists(select 1 from auth.identities i where i.user_id=u.id and i.provider='azure');
+
 insert into auth.sessions(id,user_id,created_at,updated_at)
 values(
   '08080808-0000-4000-8000-000000000002'::uuid,
@@ -51,7 +58,7 @@ select ok(
 select ok(
   not has_function_privilege(
     'anon',
-    'public.safra_start_treatment(uuid,uuid,text,uuid[])',
+    'public.safra_start_treatment(uuid,uuid,text,uuid[],timestamptz)',
     'EXECUTE'
   ),
   'anon cannot call START command'
@@ -65,7 +72,7 @@ select ok(
 select ok(
   has_function_privilege(
     'authenticated',
-    'public.safra_start_treatment(uuid,uuid,text,uuid[])',
+    'public.safra_start_treatment(uuid,uuid,text,uuid[],timestamptz)',
     'EXECUTE'
   ),
   'authenticated can call governed START command'
@@ -81,10 +88,10 @@ select is(
   (
     select count(*)::bigint
     from jsonb_array_elements(public.safra_get_start_catalog()) item
-    where item->>'criticality' is null
+    where item->>'criticality' = 'CRITICAL'
   ),
   11::bigint,
-  'undefined criticality is preserved as null in START catalog'
+  'START catalog exposes CRITICAL for the 11 scenarios (D-55)'
 );
 
 create temporary table c08_start_result as
@@ -219,19 +226,18 @@ select is(
   'retry does not duplicate TREATMENT_OPENED'
 );
 
-select is(
-  (
+select throws_ok(
+  $$
     select public.safra_start_treatment(
-      sc.id,
+      (select id from public.scenarios where code='SAFRA-01'),
       '08080808-0000-4000-8000-000000000011'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       '{}'::uuid[]
-    )->>'status'
-    from public.scenarios sc
-    where sc.code='SAFRA-01'
-  ),
-  'ACTIVE',
-  'non-owner corporate user may START a second treatment while GI-004 is open'
+    );
+  $$,
+  'P0001',
+  'SAFRA_START_ACTIVE_EXISTS',
+  'same person cannot START a second ACTIVE treatment of the same scenario (D-57)'
 );
 
 select throws_ok(
@@ -239,7 +245,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='SAFRA-01'),
       '08080808-0000-4000-8000-000000000012'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       array['08080808-0000-4000-8000-000000000099'::uuid]
     );
   $$,
@@ -271,7 +277,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='TEST-C08-DRAFT'),
       '08080808-0000-4000-8000-000000000013'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       '{}'::uuid[]
     );
   $$,
@@ -289,7 +295,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='SAFRA-11'),
       '08080808-0000-4000-8000-000000000014'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       '{}'::uuid[]
     );
   $$,
@@ -316,7 +322,7 @@ select throws_ok(
     select public.safra_start_treatment(
       (select id from public.scenarios where code='SAFRA-02'),
       '08080808-0000-4000-8000-000000000015'::uuid,
-      null,
+      'Resumo de teste: pedidos parados no fluxo',
       '{}'::uuid[]
     );
   $$,
@@ -327,16 +333,15 @@ select throws_ok(
 
 select is(
   pg_get_function_identity_arguments(
-    'public.safra_start_treatment(uuid,uuid,text,uuid[])'::regprocedure
+    'public.safra_start_treatment(uuid,uuid,text,uuid[],timestamptz)'::regprocedure
   ),
-  'p_scenario_id uuid, p_idempotency_key uuid, p_impact_summary text, p_impacted_area_ids uuid[]',
-  'START payload exposes no owner/version/criticality/timestamp override'
+  'p_scenario_id uuid, p_idempotency_key uuid, p_impact_summary text, p_impacted_area_ids uuid[], p_problem_started_at timestamp with time zone',
+  'START payload exposes no owner/version/criticality/opening-time override (problem start is user-reported, D-89)'
 );
 
-select is(
-  (select count(*)::bigint from public.scenario_slas),
-  0::bigint,
-  'START does not infer or publish structured SLA configuration'
+select ok(
+  to_regclass('public.scenario_slas') is null,
+  'START has no structured SLA configuration (D-75)'
 );
 
 select * from finish();

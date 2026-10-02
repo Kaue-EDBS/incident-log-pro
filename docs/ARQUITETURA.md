@@ -148,14 +148,13 @@ Regras:
 - uma versão publicada não é reescrita;
 - uma versão retired é imutável;
 - apenas uma versão PUBLISHED pode estar corrente por cenário;
-- criticidade pode permanecer nula enquanto houver governance issue aberta;
+- criticidade sem default; os 11 cenários estão `CRITICAL` na versão 2 (D-55) e a versão 1 preserva `NULL` como histórico;
 - valores não nulos: `CRITICAL | HIGH | MODERATE`.
 
 #### Relações versionadas
 
 - `scenario_version_impacted_areas`;
-- `scenario_version_systems`;
-- `scenario_slas`.
+- `scenario_version_systems`.
 
 Essas relações pertencem à **versão**, não ao cenário estável, para preservar a fotografia histórica.
 
@@ -171,24 +170,16 @@ Regras:
 
 O START grava snapshot de owner e área responsável na tratativa para impedir reescrita histórica quando o cenário mudar depois.
 
-### 4.5 SLAs
+### 4.5 Regras de tempo (C07-AUD2)
 
-`scenario_slas` pertence a `scenario_version`.
+A engine de SLA e a tabela `scenario_slas` foram removidas (D-75). Os prazos da Matriz v3 ficam como texto em `source_reference`.
 
-Cada SLA define:
-- código;
-- rótulo;
-- `start_event`;
-- `end_event`;
-- alvo estruturado quando aplicável;
-- texto-alvo;
-- regra de aplicabilidade.
+As regras de tempo são cálculos puros, sem gravar duração, e não são chamáveis pelo navegador:
+- `private.safra_reminder_steps` — escada de avisos (D-76);
+- `private.safra_close_times` — tempos do solicitante, do dono e consolidado (D-77);
+- `private.safra_local_day` — dia do relatório em `America/Sao_Paulo`.
 
-Princípios:
-- um cenário pode ter múltiplos SLAs;
-- duração é derivada de eventos/timestamps;
-- SLA operacional não é SLO/RTO/RPO da aplicação;
-- thresholds não aprovados permanecem ausentes, nunca inventados.
+Elas recebem os horários como parâmetro; a F01 liga as colunas de cada parte fechada.
 
 ### 4.6 Treatments
 
@@ -218,9 +209,11 @@ Relações:
 
 Regras:
 - tratamento encerrado não reabre;
-- CANCEL usa campos próprios e justificativa;
+- END em duas partes (solicitante e dono), com autor e horário por parte (D-66/D-72); hoje o schema tem um único `closed_by/closed_at`, a adequar na F01;
+- CANCEL pelo solicitante ou pelo dono, com campos próprios e motivo (D-66);
 - END e CANCEL não são delete;
-- múltiplos ACTIVE do mesmo cenário continuam sem bloqueio estrutural até decisão M01.
+- uma tratativa `ACTIVE` por pessoa e cenário (`treatments_one_active_per_person_scenario`, D-57); pessoas diferentes podem ter tratativas simultâneas;
+- o dono vigente não abre tratativa do próprio cenário (D-65).
 
 ### 4.7 Eventos
 
@@ -232,8 +225,8 @@ Eventos canônicos iniciais:
 - `NOTE_ADDED`;
 - `IMPACT_AREA_ADDED`;
 - `IMPACT_AREA_REMOVED`;
-- `ESCALATION_CHANGED`;
-- `SLA_BREACHED`;
+- `REQUESTER_PART_CLOSED` e `OWNER_PART_CLOSED` (F01);
+- `REMINDER_SENT` (M05);
 - `TREATMENT_RESOLVED`;
 - `TREATMENT_CANCELLED`;
 - `ADMIN_CORRECTION_RECORDED`.
@@ -249,24 +242,11 @@ Cada evento registra:
 
 Eventos não são editados para corrigir histórico. Correções administrativas geram novo evento.
 
-### 4.8 Escalonamentos
+Removidos: `ESCALATION_CHANGED` (D-73) e `SLA_BREACHED` (D-75); o banco não aceita mais esses tipos.
 
-`treatment_escalations` representa elevação formal da governança da ocorrência.
+### 4.8 Escalonamentos — FORA DO PAINEL (D-73)
 
-Níveis:
-
-~~~text
-NONE
-TECHNICAL_CRISIS
-BUSINESS_CRISIS
-EXECUTIVE
-~~~
-
-Regras:
-- escalonamento não altera o status do treatment;
-- criticidade de cenário não é escalonamento;
-- no máximo um escalonamento vigente por treatment;
-- histórico é preservado por validade temporal.
+O escalonamento é feito pelos donos de card, em conjunto, fora do Painel. A tabela `treatment_escalations` foi removida em 01/10/2026 (migration `20261001200000`).
 
 ### 4.9 Notificações
 
@@ -287,7 +267,7 @@ Campos estruturais incluem:
 - timestamps de fila/envio/falha;
 - motivo de falha.
 
-Provider e canal produtivos permanecem decisão de M05.
+Destinatários decididos (D-58 aviso de abertura; D-67 escada 2h/4h). Canal: e-mail; Teams em aberto (GI-SAFRA-011). Provider produtivo na M05.
 
 A mesma idempotency key não pode gerar duas entregas lógicas.
 
@@ -304,14 +284,13 @@ A proposta:
 
 `scenario_proposal_owner_responses` registra aceite/recusa dos candidatos a owner.
 
-A publicação de um novo cenário ocorre somente após o fluxo de governança previsto para M10.
+A publicação de um novo cenário segue D-60/D-68 (proponente escreve, Jair aprova, admin técnico publica, separação de funções) e será implementada na M10.
 
 ### 4.11 Governance issues
 
 `governance_issues` registra decisões materiais ainda abertas.
 
-Exemplo vigente:
-- `GI-SAFRA-001` — identificação formal dos quatro cenários CRITICAL.
+Fonte oficial do texto e do status: `docs/GOVERNANCE_ISSUES.md` (D-53); o banco espelha.
 
 Regra:
 - questão aberta não pode ser convertida em default de implementação;
@@ -332,14 +311,12 @@ operational_areas --> scenarios --> scenario_versions
                           |              |
                           |              +--> scenario_version_impacted_areas
                           |              +--> scenario_version_systems --> systems
-                          |              +--> scenario_slas
                           |
                           +--> treatments
                                   |
                                   +--> treatment_impacted_areas
                                   +--> treatment_impact_measurements
                                   +--> treatment_events
-                                  +--> treatment_escalations
                                   +--> notifications_log
 
 scenario_proposals
@@ -369,7 +346,7 @@ governance_issues
 
 ## 7. Segurança e exposição
 
-As 17 tabelas novas do domínio C05 foram criadas com:
+As tabelas do domínio Safra (17 criadas no C05; 15 desde a remoção de `treatment_escalations` pela D-73 e de `scenario_slas` pela D-75) têm:
 - RLS habilitada;
 - deny-by-default para `anon` e `authenticated`;
 - acesso técnico de `service_role` sem `TRUNCATE`.
@@ -384,7 +361,8 @@ Estado atual:
 
 - START está implementado no C08 por `public.safra_start_treatment(...)` e catálogo governado `public.safra_get_start_catalog()`;
 - END/CANCEL permanecem para as fases de fechamento correspondentes e não devem ser antecipados;
-- escalonamento e mutações auxiliares continuam sujeitos às fases próprias;
+- o START recusa o dono vigente do card (D-65) e a segunda tratativa ativa da mesma pessoa no mesmo cenário (D-57);
+- mutações auxiliares continuam sujeitas às fases próprias; escalonamento está fora do Painel (D-73);
 - o browser não recebe acesso direto às tabelas Safra para substituir RPCs governadas.
 
 As operações críticas implementadas/devem ser implementadas de forma transacional e concentrar:
@@ -399,13 +377,11 @@ As operações críticas implementadas/devem ser implementadas de forma transaci
 
 Operações críticas não devem depender de `.insert()`/`.update()` genérico no navegador.
 
-## 9. Legado TI
+## 9. Legado TI — RETIRADO
 
-`applications` e `incidents` continuam preservados como domínio legado de confiabilidade de TI.
+Pela D-50 (30/09/2026), o Reliability Monitor/MTTR foi descontinuado. A migration `20260930120000_c00_aud2_retire_reliability_monitor.sql` remove `public.applications`, `public.incidents`, `public.validate_incident_timestamps()` e `public.set_updated_at()`.
 
-Eles não são substitutos de `scenarios`/`treatments`.
-
-Ponte futura entre incidentes TI e tratativas Safra só deve ser criada quando houver regra explícita de integração.
+O único domínio do repositório é o Safra (`scenarios`/`treatments`). Não há ponte com incidentes de TI.
 
 ## 10. REPLICA, backup e recovery
 
@@ -442,3 +418,10 @@ Mudança material de domínio/arquitetura deve:
 4. atualizar testes derivados;
 5. validar em banco descartável;
 6. preservar histórico já publicado.
+
+## Atualização 01/10/2026 — auditoria geral
+
+- **Identidade:** além do domínio do e-mail, o acesso exige o tenant Microsoft da Editora, lido de `auth.identities` (`private.safra_session_in_corporate_tenant`). O vínculo login ↔ cadastro acontece quando a identidade Microsoft chega (`trg_bind_safra_principal_from_identity`).
+- **Dono indisponível (D-78):** `private.safra_owner_is_available` decide se o card aparece no catálogo e se aceita START.
+- **Auditoria:** `trg_safra_audit_principal_change` grava vínculo, desativação e mudanças de cadastro em `private.safra_rbac_audit_events`.
+- **Front:** o catálogo traz `is_my_card`; o resumo do START traz `server_time`. Só 5 componentes de UI permanecem (alert-dialog, button, sonner, textarea, tooltip).

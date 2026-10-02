@@ -28,9 +28,9 @@ select is(
    from public.scenarios sc
    join public.scenario_versions sv on sv.id=sc.current_version_id
    where sc.code ~ '^SAFRA-(0[1-9]|1[01])$'
-     and sv.criticality is null),
+     and sv.criticality = 'CRITICAL'),
   11::bigint,
-  'criticality remains null for all 11 while source does not support nominal classification'
+  'current version of all 11 is CRITICAL by owner decision D-55'
 );
 
 select is(
@@ -43,14 +43,9 @@ select is(
   'SLA textual is preserved for all 11 scenarios'
 );
 
-select is(
-  (select count(*)::bigint
-   from public.scenario_slas sl
-   join public.scenario_versions sv on sv.id=sl.scenario_version_id
-   join public.scenarios sc on sc.id=sv.scenario_id
-   where sc.code ~ '^SAFRA-(0[1-9]|1[01])$'),
-  0::bigint,
-  'no structured SLA is inferred before C07'
+select ok(
+  to_regclass('public.scenario_slas') is null,
+  'no structured SLA is inferred; SLA engine retired (D-75)'
 );
 
 select is(

@@ -1,17 +1,18 @@
-# Roadmap de Reformulação — Painel Safra / incident-log-pro
+# Roadmap — Painel Safra / incident-log-pro
 
-**Versão:** 2.2  
-**Data:** 27/09/2026  
-**Status:** roadmap consolidado em execução — SAFRA-C08 em andamento; C01-AUD e C02-AUD concluídas e recertificadas  
+**Versão:** 3.0  
+**Data:** 30/09/2026  
 **Projeto:** `Kaue-EDBS/incident-log-pro`  
-**Produto-alvo:** Painel Safra — Torre de Governança de Contingências  
+**Produto:** Painel Safra — Torre de Governança de Contingências (único produto do repositório, D-50)  
 **Regra de execução:** GitHub-first; não reescrever histórico publicado; documentação viva ao fim de cada etapa.
+
+> **Sobre esta versão (D-54).** O roadmap guarda só o **plano**: fases, estado, gates e critérios. Relatos de fases já concluídas, evidências e decisões estão nos documentos donos (mapa abaixo). A versão 2.2 completa, sem alteração, está em `docs/historico/ROADMAP_v2.2_ate_2026-09-30.md`. A numeração das seções foi preservada da v2.2 para não quebrar referências.
 
 ---
 
 # 0. Resumo executivo
 
-O `incident-log-pro` nasceu como um monitor de confiabilidade de aplicações de TI, centrado em `applications`, `incidents`, MTTD, MTTR, MTBF, downtime e disponibilidade. Esse núcleo permanece útil como legado técnico e referência temporal, mas não representa sozinho o domínio do Painel Safra.
+O `incident-log-pro` nasceu como um monitor de confiabilidade de aplicações de TI, centrado em `applications`, `incidents`, MTTD, MTTR, MTBF, downtime e disponibilidade. Por decisão D-50 (30/09/2026), esse núcleo foi descontinuado: o Painel Safra é o único produto do repositório, e as tabelas e telas do Reliability Monitor foram removidas.
 
 O Painel Safra será uma **torre corporativa de governança de contingências**. O produto deve tornar uma contingência visível, temporizada, auditável, comunicável e analisável, sem substituir a execução operacional de cada área.
 
@@ -27,16 +28,6 @@ OCORRÊNCIA / NECESSIDADE
     -> histórico, métricas e governança
 ```
 
-## 0.1 Mudanças centrais da versão 2.1
-
-1. **START / END / CANCEL não são exclusivos do owner.** Qualquer usuário autenticado pelo Microsoft Entra ID pode executar essas ações, com auditoria, idempotência e controles server-side.
-2. **O Painel não acompanha checklist operacional passo a passo.** A execução do protocolo ocorre com o owner e sua equipe; o Painel governa o ciclo, os tempos, as comunicações, o histórico e o aprendizado.
-3. **Papéis administrativos foram separados por responsabilidade**, sem herança automática de ownership.
-4. **12º card é proposta de novo cenário**, com fluxo próprio de triagem e ownership; não é protocolo genérico.
-5. **C00 e C01 permanecem historicamente concluídos.** A fase funcional atual é C08; a reauditoria corretiva C01-AUD foi concluída em 27/09/2026 com `unknown_material_count = 0` recertificado.
-6. **C02 modela controles; não os implementa.** RLS, autorização server-side, versionamento, audit trail, constraints e role mapping são definidos como resposta às ameaças e implementados nas fases C04/C05 e seguintes.
-7. **REPLICA está desabilitada**, sem eliminar backup/restore.
-8. **Retenção, service class, application criticality e RTO/RPO estão decididos.**
 
 ---
 
@@ -80,14 +71,13 @@ Quando o Framework EBSA exigir um controle técnico, ele pode bloquear uma imple
 ## 2.1 O Painel Safra faz
 
 - mantém catálogo dos cenários publicados;
-- apresenta gatilho, owner, protocolo, criticidade, SLA e contexto;
+- apresenta gatilho, owner, protocolo, criticidade, prazos de referência da Matriz v3 e contexto;
 - permite START manual por usuário autenticado;
 - registra ator, data e hora oficiais;
 - mantém vínculo imutável com a versão de cenário usada no START;
 - mantém status da tratativa;
-- mede tempos e SLAs a partir de eventos persistidos;
+- mede tempos de encerramento a partir dos horários do servidor (D-77) e envia a escada de avisos (D-76); não há SLA (D-75);
 - envia comunicações operacionais aprovadas;
-- registra escalonamentos;
 - permite END e CANCEL auditáveis;
 - preserva histórico;
 - calcula indicadores e recorrência;
@@ -120,1571 +110,62 @@ AUTHENTICATION != AUTHORIZATION
 
 ---
 
-# 3. Estado técnico consolidado
+---
 
-## 3.1 Stack
+# Mapa de documentos — quem é dono de cada assunto
 
-- React 19;
-- TanStack Start / Router / Query;
-- Vite;
-- TypeScript;
-- Tailwind;
-- Recharts;
-- Lovable Cloud como backend provider;
-- PostgreSQL / Supabase como stack do banco;
-- banco Lovable Cloud como `PRIMARY`;
-- Supabase Auth/Data API;
-- GitHub branch `main`.
+| Assunto | Documento dono |
+|---|---|
+| Onde estamos agora | `docs/STATUS.md` |
+| Decisões e ADRs | `docs/DECISOES.md` |
+| Pendências de governança (GI) | `docs/GOVERNANCE_ISSUES.md` |
+| Ficha técnica do projeto | `docs/PROJECT_PROFILE.yaml` |
+| Arquitetura e modelo de dados | `docs/ARQUITETURA.md` |
+| Vocabulário e modelo de domínio | `docs/GLOSSARIO_DOMINIO.md` |
+| Regras de negócio (RB-SAFRA) | `docs/REGRAS_NEGOCIO.md` |
+| Privacidade e ameaças | `docs/PRIVACIDADE_THREAT_MODEL.md` |
+| Destino das capacidades | `docs/MATRIZ_PARIDADE.md` |
+| Regras de tempo (SLA aposentado, D-75) | `docs/C07_REGRAS_DE_TEMPO.md` |
+| Rollback e banco descartável | `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md` |
+| Auditorias por fase | `docs/AUDITORIA_*.md` |
+| Histórico | `docs/historico/` |
 
-## 3.2 Estado de segurança após C00
-
-- `.env` fora do tracking;
-- `anon` sem acesso às tabelas internas protegidas;
-- RLS habilitada;
-- policies permissivas antigas removidas;
-- `service_role` não exposto no browser;
-- `app_metadata.safra_access` removido;
-- RBAC definitivo implementado em C04 com `private.safra_principals` + `private.safra_role_grants`;
-- sessão corporativa validada por provider Azure, JWT válido, `auth.sessions` viva e domínio corporativo aprovado;
-- domínios aprovados: `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com`.
-
-## 3.3 Estado de migrations
-
-O drift histórico C00/C04/C05 foi reconciliado. Até a abertura da C01-AUD, GitHub e PRIMARY estavam alinhados inclusive com `20260927154505_c00_restore_legacy_least_privilege.sql`.
-
-A migration `20260927204325_c01_corporate_domains_and_profile_alignment.sql` pertence à rodada C01-AUD e somente poderá ser considerada alinhada após passar no banco descartável, entrar em `main` e ser promovida/verificada no PRIMARY.
+As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis, decisões, modelo de domínio, baseline dos 11 cenários, dívida de decisão e contratos de regras) foram substituídas por este mapa: o conteúdo vive nos documentos acima.
 
 ---
 
-# 4. PROJECT_PROFILE aprovado
+# 11. Estado das fases
 
-```yaml
-project_name: Painel Safra
-project_type: internal_operational_control
-exposure: internal
-backend_provider: lovable_cloud
-database_role: PRIMARY
-database_engine: postgresql
-database_stack: supabase
-service_class: CRITICO
-application_criticality: MEDIUM
-slo: 99.95%
-rto_minutes: 30
-rpo_minutes: 5
-replica_enabled: false
-backup_restore_required: true
-auth_required: true
-identity_provider: MICROSOFT_ENTRA_ID
-auth_method: CORPORATE_SSO
-local_password_login: false
-personal_data: true
-sensitive_personal_data_intentional: false
-children_or_adolescents_data: false
-storage_files_currently_enabled: false
-external_integrations_in_mvp: false
-public_api: false
-automated_decisioning: false
-```
+> **Atenção (01/10/2026):** as especificações das fases futuras **M01, M04, M05, F01, F02 e F04** foram escritas antes das decisões D-55 a D-73 e ainda não foram revistas. Elas serão auditadas uma a uma, quando chegar a vez de cada fase. Até lá, em caso de conflito, valem `DECISOES.md`, `REGRAS_NEGOCIO.md` e `GLOSSARIO_DOMINIO.md` v2.0.
 
-## 4.1 Retenção aprovada
+## EIXO 1 — COMEÇO
 
-- dados pessoais identificáveis: até o encerramento formal da Safra e enquanto necessários para auditoria/pós-mortem;
-- depois: eliminar ou anonimizar;
-- histórico operacional e métricas podem permanecer para comparação entre Safras sem identificação pessoal quando ela não for necessária.
+| Fase | Tema | Estado | Onde ver |
+|---|---|---|---|
+| C00 | Baseline e contenção P0 | CONCLUÍDO (+ C00-AUD e C00-AUD2 concluídas) | `AUDITORIA_C00_*` |
+| C01 | Documentação canônica e PROJECT_PROFILE | CONCLUÍDO (+ C01-AUD e C01-AUD2 concluídas) | `AUDITORIA_C01_*` |
+| C02 | Threat model e abuso de negócio | CONCLUÍDO (+ C02-AUD e C02-AUD2 concluídas em 01/10) | `AUDITORIA_C02_*` |
+| C03 | Glossário e modelo de domínio | CONCLUÍDO (+ C03-AUD2 em 01/10, glossário v2.0) | `GLOSSARIO_DOMINIO.md`, `AUDITORIA_C03_*` |
+| C04 | Identidade, RBAC e RLS | CONCLUÍDO (+ C04-AUD2 em 01/10) | `DECISOES.md` ADR-023 a 033, `AUDITORIA_C04_*` |
+| C05 | Schema v2, migrations e invariantes | CONCLUÍDO (+ C05-AUD2 em 01/10, drift zerado) | `ARQUITETURA.md`, `AUDITORIA_C05_*` |
+| C06 | Seed canônico da Matriz v3 | CONCLUÍDO (+ C06-AUD2 em 01/10, planilha = banco) | `AUDITORIA_C06_*`, `data-contracts/` |
+| C07 | Engine de SLA → regras de tempo | CONCLUÍDO; C07-AUD2 em 01/10: SLA aposentado (D-75), escada e tempos do analytics (D-76/D-77) | `C07_REGRAS_DE_TEMPO.md`, `AUDITORIA_C07_*` |
+| C08 | UX do COMEÇO | **EM EXECUÇÃO** — START implementado; homologação com sessão real pendente | abaixo |
+| C09 | Fundação operacional | CONCLUÍDA (02/10): G5.5 aprovado com pendências externas; meta D-93, capacidade D-94, registro técnico D-95, ensaio de restauração, runbook | `RUNBOOK_RECUPERACAO.md`, `AUDITORIA_C09_*` |
 
-## 4.2 REPLICA
+## EIXO 2 — MEIO
 
-```text
-replica_enabled = false
-```
+M01: CONCLUÍDO em 02/10/2026 (D-98 a D-101, `AUDITORIA_M01_2026-10-02.md`). M02 a M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
 
-Isso **não** significa ausência de backup. Recovery continua obrigatório e deve ser comprovado no C09.
+## EIXO 3 — FIM
 
----
-
-# 5. Modelo de pessoas e responsabilidades
-
-## 5.1 Usuário autenticado — capacidade base
-
-Qualquer usuário autenticado pelo Microsoft Entra ID pode:
-
-- visualizar os cards;
-- executar START em cenário publicado;
-- executar END em tratativa ativa;
-- executar CANCEL com justificativa obrigatória;
-- enviar proposta pelo 12º card.
-
-Todas as ações críticas precisam ser auditáveis, idempotentes e validadas no backend.
-
-## 5.2 `scenario_owner`
-
-Responsável formal pelo card e pelo protocolo operacional com sua equipe.
-
-Não possui exclusividade sobre START/END/CANCEL.
-
-Owners atuais dos 11 cards:
-
-- Daniel Garcia — 1, 2, 3, 7, 10, 11;
-- Jiane Rodrigues — 4, 5, 6, 8;
-- Renato de Paulo — 9.
-
-## 5.3 `safra_platform_admin`
-
-Administração técnica da plataforma.
-
-Membros permanentes:
-
-- Kaue Pastrello;
-- Amanda Bueno;
-- Vinicius Moraes;
-- João Jurado.
-
-Admin técnico não recebe ownership de cenário por herança.
-
-## 5.4 `safra_governance_admin`
-
-Governança funcional global.
-
-Membro atual:
-
-- Jair Silva.
-
-Responsabilidades:
-
-- supervisionar cards e governança;
-- acessar relatórios de governança;
-- conduzir o fluxo do 12º card;
-- receber comunicações operacionais de governança;
-- tomar decisões de ownership quando o fluxo exigir;
-- não administrar tecnicamente a plataforma.
-
-## 5.5 `safra_executive_admin`
-
-Visão executiva e analytics.
-
-Membro atual:
-
-- Bruno Palhão.
-
-Regras:
-
-- visão de todos os cards e métricas;
-- sem manutenção técnica;
-- sem e-mails operacionais normais;
-- pode ser acionado no fluxo excepcional do 12º card.
-
-## 5.6 Princípio de papéis
-
-```text
-papel administrativo != ownership automático
-ownership = vínculo explícito ao cenário
-```
-
----
-
-# 6. Decisões de negócio consolidadas
-
-## D-01 — Evoluir o projeto existente
-
-Não criar aplicação paralela.
-
-## D-02 — Preservar domínio legado de TI
-
-`applications/incidents` continuam representando confiabilidade de TI onde fizer sentido, sem serem forçados a representar todo o Safra.
-
-## D-03 — Geral é visão, não área
-
-`Geral` é agregação; não é entidade operacional.
-
-## D-04 — Detecção e ativação são separadas
-
-No MVP, integrações podem futuramente gerar sinal, mas não criam `treatment` automaticamente.
-
-## D-05 — Protocolo não é chamado
-
-O Painel governa contingência; não substitui sistemas de atendimento operacional.
-
-## D-06 — START / END / CANCEL
-
-- qualquer usuário autenticado pode START;
-- qualquer usuário autenticado pode END;
-- qualquer usuário autenticado pode CANCEL;
-- CANCEL exige motivo;
-- ator e timestamp são persistidos no backend;
-- nenhuma ação crítica depende apenas do frontend.
-
-## D-07 — Sem delete físico para “corrigir histórico”
-
-Abertura errada vira `CANCELLED`.
-
-## D-08 — Novo cenário exige governança
-
-Proposta não vira cenário produtivo automaticamente.
-
-## D-09 — Criticidade de cenário
-
-Valores:
-
-```text
-CRITICAL
-HIGH
-MODERATE
-```
-
-A lista exata dos quatro cenários `CRITICAL` não possui evidência nominal suficiente nas fontes revisadas e está registrada como `GI-SAFRA-001` em `docs/GOVERNANCE_ISSUES.md`. Não inferir.
-
-## D-10 — Recorrência não cria crise automaticamente
-
-Recorrência é indicador; crise depende de avaliação humana e contexto.
-
-## D-11 — Comitê é escalonamento
-
-Escalonamento não substitui `status` da tratativa.
-
-## D-12 — Sem checklist operacional no Painel
-
-O protocolo é executado pelo owner com sua equipe. O Painel não exige controle passo a passo da execução.
-
----
-
-# 7. Modelo de domínio alvo — v2.1
-
-## 7.1 Catálogo
-
-### `operational_areas`
-
-```text
-id
-code
-name
-is_active
-created_at
-updated_at
-```
-
-### `systems`
-
-```text
-id
-code
-name
-description
-system_type
-is_active
-created_at
-updated_at
-```
-
-### `scenarios`
-
-Identidade estável do cenário.
-
-```text
-id
-code
-name
-responsible_area_id
-lifecycle_status
-current_version_id
-created_at
-updated_at
-```
-
-### `scenario_versions`
-
-Conteúdo mutável/versionado do cenário.
-
-```text
-id
-scenario_id
-version
-trigger_description
-detection_mode
-activation_mode
-criticality
-protocol_text
-monitoring_description
-mapping_code
-validation_notes
-valid_from
-valid_to
-status
-created_by
-approved_by
-approved_at
-created_at
-```
-
-### `scenario_owners`
-
-```text
-id
-scenario_id
-user_id
-valid_from
-valid_to
-created_at
-```
-
-### `scenario_impacted_areas`
-
-Relação N:N das áreas potencialmente impactadas.
-
-### `scenario_systems`
-
-Relação N:N entre cenário e sistemas.
-
-### `scenario_slas`
-
-```text
-id
-scenario_version_id
-code
-name
-start_event
-end_event
-target_value
-target_unit
-required
-sort_order
-```
-
-## 7.2 Identidade e papéis
-
-### `safra_user_roles`
-
-[DERIVADO — desenho técnico a homologar em C04/C05]
-
-```text
-id
-user_id
-role
-valid_from
-valid_to
-created_by
-created_at
-```
-
-Roles previstos:
-
-```text
-safra_platform_admin
-safra_governance_admin
-safra_executive_admin
-scenario_owner  # ownership também possui vínculo explícito em scenario_owners
-```
-
-## 7.3 Operação
-
-### `treatments`
-
-```text
-id
-scenario_id
-scenario_version_id
-status
-opened_by
-opened_at
-closed_by
-closed_at
-cancelled_by
-cancelled_at
-cancellation_reason
-scope_description
-impact_summary
-resolution_summary
-current_escalation_level
-related_incident_id
-created_at
-updated_at
-```
-
-Estados mínimos:
-
-```text
-ACTIVE
-RESOLVED
-CANCELLED
-```
-
-### `treatment_impacted_areas`
-
-Áreas efetivamente impactadas naquela ocorrência.
-
-### `treatment_events`
-
-Trilha append-only.
-
-Eventos mínimos previstos:
-
-```text
-TREATMENT_OPENED
-NOTE_ADDED
-IMPACT_AREA_ADDED
-IMPACT_AREA_REMOVED
-ESCALATION_CHANGED
-SLA_BREACHED
-TREATMENT_RESOLVED
-TREATMENT_CANCELLED
-ADMIN_CORRECTION_RECORDED
-```
-
-Campos:
-
-```text
-id
-treatment_id
-event_type
-actor_id
-occurred_at
-payload_json
-correlation_id
-created_at
-```
-
-### `treatment_escalations`
-
-```text
-id
-treatment_id
-level
-reason
-opened_by
-opened_at
-closed_by
-closed_at
-notes
-```
-
-Níveis:
-
-```text
-NONE
-TECHNICAL_CRISIS
-BUSINESS_CRISIS
-EXECUTIVE
-```
-
-### `notifications_log`
-
-```text
-id
-treatment_id
-notification_type
-recipient_id
-recipient_email
-correlation_id
-status
-provider_message_id
-sent_at
-error_code
-created_at
-```
-
-## 7.4 Governança
-
-### `scenario_proposals`
-
-O 12º card cria proposta, não cenário produtivo.
-
-Campos do formulário aprovado:
-
-```text
-id
-submitted_by
-submitted_name_snapshot
-submitted_email_snapshot
-title
-problem_description
-safra_impact_description
-status
-created_at
-updated_at
-```
-
-### `scenario_proposal_owner_responses`
-
-[DERIVADO — necessário para representar o fluxo aprovado]
-
-```text
-id
-proposal_id
-candidate_user_id
-response  # ACCEPTED | DECLINED
-responded_at
-```
-
-### `governance_issues`
-
-Registra decisões abertas sem transformá-las em default.
-
-```text
-id
-entity_type
-entity_id
-issue_type
-description
-owner
-status
-due_date
-resolution
-created_at
-updated_at
-```
-
----
-
-# 8. Baseline dos 11 cenários
-
-A carga canônica virá da Matriz v3, sem redigitação manual.
-
-| # | Cenário | Área | Owner | SLA resumido | Pendência material |
-|---:|---|---|---|---|---|
-| 1 | Insucesso de entrega | Logística | Daniel Garcia | falha <=2h; tratativa <=48h | nenhuma estrutural |
-| 2 | Transportadora fora do ar | Logística | Daniel Garcia | plano B <=4h | definir `X h` |
-| 3 | Atraso (+48h) sem causa | Logística | Daniel Garcia | retorno <=4h | regra de 48h já existe |
-| 4 | Pedido pago não integrado | TI | Jiane Rodrigues | tratativa <=2h | definir `X min` |
-| 5 | Tracking falso | TI | Jiane Rodrigues | correção <=4h | validação físico x sistêmico |
-| 6 | ERP indisponível/travado | TI | Jiane Rodrigues | continuidade <=30min; pós-mortem <=48h | ponte semântica com incidents TI |
-| 7 | Divergência saldo físico x virtual | Logística | Daniel Garcia | correção <=24h | detecção MIXED |
-| 8 | Falha NF-e / bloqueio fiscal | TI | Jiane Rodrigues | liberação <=4h | preservar owner correto da Matriz v3 |
-| 9 | Ruptura estoque curva A | PCP | Renato de Paulo | realocação no dia | fonte oficial do mínimo curva A |
-| 10 | Colapso picking/esteira | Logística | Daniel Garcia | normalizar no turno | limite lead time/fila |
-| 11 | Pico de volume > capacidade | Logística | Daniel Garcia | plano de pico no dia | capacidade/limiar |
-
-Nenhum P1-P4 deve ser publicado por inferência.
-
----
-
-# 9. Dívida de decisão — com fase responsável
-
-Nada nesta seção deve voltar a aparecer como `UNKNOWN` genérico.
-
-| Decisão | Estado | Fase responsável |
-|---|---|---|
-| quatro cenários CRITICAL | GOVERNANCE_ISSUE GI-SAFRA-001 | decisão humana + C06 |
-| threshold cenário 2 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
-| threshold cenário 4 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
-| threshold cenário 10 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
-| threshold cenário 11 | GOVERNANCE_ISSUE GI-SAFRA-002 | C06/C07 |
-| fonte mínima curva A cenário 9 | GOVERNANCE_ISSUE GI-SAFRA-003 | C06/C07 |
-| regra para múltiplas tratativas simultâneas do mesmo cenário | GOVERNANCE_ISSUE GI-SAFRA-004 | M01 |
-| provider/canal de e-mail | GOVERNANCE_ISSUE GI-SAFRA-005 | M05 |
-| comportamento de e-mail dos platform admins | GOVERNANCE_ISSUE GI-SAFRA-005 | M05 |
-| período exato da “Safra corrente” para métricas em e-mail | GOVERNANCE_ISSUE GI-SAFRA-006 | M05/F04 |
-| publicação formal após ownership do 12º card | GOVERNANCE_ISSUE GI-SAFRA-007 | M10 |
-| janela oficial de governança semanal | GOVERNANCE_ISSUE GI-SAFRA-008 | F05 |
-| métricas/thresholds quantitativos específicos | DEFERRED | C06/F04 |
-| estratégia canônica de migrations (Drizzle x supabase/migrations) | DEFERRED | C05 |
-
----
-
-# 10. Contratos de regras de negócio — baseline
-
-## RB-SAFRA-001 — Cenário publicado
-
-Somente cenário `PUBLISHED` pode originar tratativa real.
-
-## RB-SAFRA-002 — Ativação humana
-
-Nenhum sinal externo cria `treatment` automaticamente no MVP.
-
-## RB-SAFRA-003 — START
-
-Qualquer usuário Microsoft autenticado pode iniciar cenário publicado. Ator, timestamp server-side e versão vigente devem ser persistidos.
-
-## RB-SAFRA-004 — END
-
-Qualquer usuário Microsoft autenticado pode encerrar tratativa `ACTIVE` quando a necessidade estiver concluída. Ator e timestamp server-side são obrigatórios.
-
-## RB-SAFRA-005 — Execução do protocolo
-
-Owner e equipe executam o protocolo fora do controle passo a passo do Painel. O Painel não cria papel `scenario_updater`.
-
-## RB-SAFRA-006 — CANCEL
-
-CANCEL exige justificativa; não existe delete físico para esconder uma tratativa.
-
-## RB-SAFRA-007 — Versão congelada
-
-`scenario_version_id` é congelado no START.
-
-## RB-SAFRA-008 — Áreas impactadas reais
-
-A tratativa registra suas áreas impactadas, distintas das áreas potencialmente impactáveis do cenário.
-
-## RB-SAFRA-009 — Criticidade do cenário
-
-`CRITICAL | HIGH | MODERATE`.
-
-## RB-SAFRA-010 — Protocolo != chamado
-
-Sem workflow de ticket obrigatório.
-
-## RB-SAFRA-011 — Escalonamento separado
-
-Crise/comitê é estrutura própria, não status da tratativa.
-
-## RB-SAFRA-012 — SLA múltiplo
-
-Duração é derivada de eventos/timestamps; não salvar minuto calculado como fonte primária.
-
-## RB-SAFRA-013 — Fonte ausente
-
-Ausência de integração não pode aparecer como “OK”.
-
-## RB-SAFRA-014 — 12º card
-
-Proposta não publica cenário automaticamente.
-
-## RB-SAFRA-015 — Recorrência
-
-Recorrência informa governança; não promove crise automaticamente.
-
-## RB-SAFRA-016 — Integridade temporal
-
-Sequência temporal inválida deve ser bloqueada ou corrigida por evento administrativo auditável.
-
-## RB-SAFRA-017 — Idempotência
-
-Retry, refresh e double submit não podem duplicar START/END/CANCEL/eventos/notificações.
-
----
-
-# 11. EIXO 1 — COMEÇO
-
-## Objetivo
-
-Garantir que cenário, identidade, versão, SLA, segurança e fundação estejam corretos antes da abertura operacional.
-
----
-
-## SAFRA-C00 — Baseline e contenção P0 — CONCLUÍDO
-
-### Entregas concluídas
-
-- baseline registrada;
-- `.env` removido do tracking;
-- anon bloqueado;
-- RLS habilitada;
-- policies abertas removidas;
-- acesso direto não autorizado testado;
-- histórico Git preservado.
-
-### Gate
-
-```text
-P0 security = PASS
-```
-
----
-
-## SAFRA-C01 — Documentação canônica e PROJECT_PROFILE — CONCLUÍDO
-
-### Resultado
-
-```text
-G3 = PASS
-G3.25 = PASS
-unknown_material_count = 0
-```
-
-### Reauditoria C01-AUD — CONCLUÍDA / RECERTIFICADA em 27/09/2026
-
-A conclusão histórica de 24/09 permanece preservada. A reauditoria atual encontrou drift documental e uma ampliação de domínio corporativo a implementar.
-
-Decisões materiais da reauditoria:
-- acesso funcional exclusivamente interno;
-- domínios Microsoft permitidos: `editoradobrasil.com.br` e `editoradobrasil1.onmicrosoft.com`;
-- gate de privacidade/base legal confirmado como atendido;
-- questões abertas classificadas/deferidas não contam como UNKNOWN.
-
-A recertificação de `unknown_material_count = 0` foi concluída após testes, merge do PR #5, validação no PRIMARY e reconciliação final do `PROJECT_PROFILE`.
-
-### Decisões fechadas
-
-- `service_class = CRITICO`;
-- `application_criticality = MEDIUM`;
-- `RTO = 30 min`;
-- `RPO = 5 min`;
-- Microsoft Entra ID / SSO;
-- `replica_enabled = false`;
-- retenção;
-- responsabilidades administrativas.
-
----
-
-## SAFRA-C02 — Threat model e abuso de negócio — CONCLUÍDO
-
-### Objetivo
-
-Modelar abuso antes de codificar autorização e schema.
-
-### Threats modelados
-
-- START indevido/duplicado;
-- END prematuro/repetido;
-- CANCEL para mascarar histórico;
-- alteração indevida de owner;
-- alteração de criticidade para manipular comunicação;
-- adulteração de timestamps;
-- edição retroativa de cenário;
-- nova versão afetando tratamento ativo;
-- bypass de UI pela Data API/RPC;
-- enumeração de dados;
-- vazamento de dados internos;
-- duplicidade por retry;
-- manipulação para “parar SLA”;
-- proposta do 12º card entrando em operação sem governança.
-
-### Controles definidos — ainda não implementar nesta fase
-
-- RLS;
-- autorização server-side;
-- versionamento de cenário;
-- audit trail append-only;
-- constraints;
-- role mapping;
-- event correlation;
-- idempotência;
-- minimização de dados;
-- revisão administrativa.
-
-### Testes derivados
-
-Quatro classes obrigatórias:
-
-1. positivos;
-2. negativos;
-3. concorrência/retry;
-4. limites/bordas temporais.
-
-### Critérios de evidência
-
-Cada teste deve registrar:
-
-```text
-ator
-correlation_id
-estado anterior
-ação
-resultado
-estado posterior
-eventos de auditoria
-timestamps oficiais
-notificações
-mutações colaterais
-```
-
-### Critério de saída do C02
-
-Fechar somente quando:
-
-- todas as ameaças materiais possuírem controle;
-- todo controle possuir fase de implementação;
-- testes positivos/negativos/concorrência/limite estiverem derivados;
-- riscos residuais estiverem explícitos;
-- `G3.5`, `THREAT-001` e `AUTHZ-001` tiverem evidência suficiente.
-
-### Gate
-
-```text
-G3.5 = PASS
-THREAT-001 = PASS
-AUTHZ-001 = PASS
-```
-
-**Fechamento em 25/09/2026:** riscos residuais classificados, sem bloqueador material sem destino. Implementação dos controles permanece nas fases responsáveis.
-
-### Reauditoria C02-AUD — CONCLUÍDA / RECERTIFICADA em 28/09/2026
-
-A reauditoria posterior a C04–C08 fechou C02-AUD-01 a C02-AUD-10, reconciliou abuse cases, autorização, Data API/RPC, idempotência, concorrência, matriz de paridade e integridade histórica. Gates atuais: `G3.5 = PASS`, `THREAT-001 = PASS`, `AUTHZ-001 = PASS`. END/CANCEL permanecem não implementados e governados por contrato futuro em F01/F02.
-
----
-
-## SAFRA-C03 — Glossário e modelo de domínio
-
-### Objetivo
-
-Congelar o vocabulário antes de criar schema v2.
-
-### Termos obrigatórios
-
-- cenário;
-- versão de cenário;
-- gatilho;
-- detecção;
-- START;
-- protocolo;
-- tratativa;
-- owner;
-- área responsável;
-- área impactada;
-- SLA;
-- criticidade;
-- END;
-- CANCEL;
-- escalonamento;
-- pós-mortem;
-- recorrência;
-- proposta de cenário;
-- publicação de cenário.
-
-### C03.1 — Vocabulário canônico congelado
-
-**CONCLUÍDO em 25/09/2026.**
-
-Termos congelados: cenário, versão de cenário, gatilho, detecção, START, protocolo, tratativa, owner, área responsável, área impactada, SLA, criticidade, END, CANCEL, escalonamento, pós-mortem, recorrência, proposta de cenário e publicação de cenário.
-
-Fonte canônica: `docs/GLOSSARIO_DOMINIO.md`.
-
-### C03.2 — Cenário, versão, tratativa e impacto — CONCLUÍDO
-
-Congelado em 25/09/2026:
-
-- cenário = identidade estável do tipo de contingência;
-- versão = conteúdo imutável vigente daquele cenário;
-- tratativa = ocorrência real criada por START;
-- impacto qualitativo = descrição contextual das consequências;
-- impacto quantitativo = medição estruturada com métrica + valor + unidade + fonte + referência temporal;
-- cenário/versão pode conter impacto esperado;
-- tratativa contém impacto observado;
-- impacto não altera automaticamente criticidade, escalonamento ou SLA;
-- score/threshold quantitativo permanece proibido sem regra e fonte explícitas.
-
-Desenho técnico de medições quantitativas fica para C05/F04.
-
-### C03.3 — Quatro CRITICAL: evidência insuficiente — CONCLUÍDO
-
-Revisão das fontes em 25/09/2026:
-
-- a Matriz v3 não possui coluna de criticidade nem valores CRITICAL/HIGH/MODERATE;
-- a reunião confirma três níveis e menciona quatro temas “super pesados”, mas não nomeia os quatro;
-- o PDF v2 é preliminar e usa “crítica” em descrições operacionais, sem formalizar a criticidade dos cenários.
-
-Resultado:
-
-- nenhuma lista foi inferida;
-- criado `GI-SAFRA-001`;
-- classificação produtiva dos quatro CRITICAL permanece bloqueada até evidência/decisão humana formal;
-- C06 deve preservar a pendência no seed.
-
-### C03.4 — Handoff sem ambiguidades para C05 — CONCLUÍDO
-
-`docs/GLOSSARIO_DOMINIO.md` v1.1 foi promovido a `READY_FOR_C05`.
-
-Contratos adicionados:
-- fonte de verdade e mutabilidade por conceito;
-- cardinalidades;
-- estados canônicos;
-- elegibilidade de START;
-- snapshots de owner/área no START;
-- áreas e sistemas potencialmente associados por versão;
-- criticidade nullable sem default enquanto GI-SAFRA-001 estiver aberto;
-- semântica física de END/CANCEL;
-- audit trail append-only;
-- estrutura mínima para impacto quantitativo;
-- recorrência como derivação;
-- múltiplos ACTIVE não bloqueados por constraint antes de M01;
-- lista explícita de decisões que C05 não pode inventar.
-
-### Decisões que C03 deve deixar explícitas
-
-- `Geral` = visão agregada;
-- protocolo operacional não é checklist do Painel;
-- diferença entre cenário, versão e tratativa;
-- definição de impacto qualitativo e caminho para impacto quantitativo;
-- lista dos quatro `CRITICAL` se houver evidência suficiente; caso contrário, permanecer governance issue para C06.
-
-### Entrega
-
-`docs/GLOSSARIO_DOMINIO.md`
-
-### Critério de saída
-
-Nenhuma entidade de C05 pode possuir nome ambíguo ou duas definições concorrentes.
-
----
-
-## SAFRA-C04 — Identidade, RBAC e RLS
-
-### Objetivo
-
-Implementar autenticação corporativa e autorização definitiva conforme o modelo aprovado.
-
-### C04.1 — Microsoft Entra ID / SSO — HOMOLOGADO
-
-Implementado no frontend:
-- gate global de sessão;
-- login exclusivamente via Lovable Cloud Auth com provider `microsoft`, que estabelece a sessão Supabase;
-- escopo `email`;
-- persistência/restauração de sessão Supabase;
-- logout;
-- bearer token anexado às server functions pelo middleware existente;
-- middleware server-side valida token e expõe `sub`/user id;
-- nenhum fluxo funcional de senha local foi adicionado.
-
-Homologação concluída em 25/09/2026:
-- provider Microsoft configurado via Lovable Cloud Auth;
-- primeiro login corporativo realizado com sucesso;
-- sessão persistida no Supabase Auth;
-- identidade registrada com provider Azure;
-- cadeia Microsoft -> Lovable Auth -> Supabase session validada;
-- login local por senha permanece proibido pela decisão do projeto;
-- evidência runtime: usuário Azure presente em `auth.users` com `last_sign_in_at` preenchido.
-
-### Identidade
-
-```text
-Microsoft Entra ID
-    -> SSO
-    -> Lovable Cloud Auth (provider microsoft)
-    -> Supabase Auth session
-    -> auth.uid()
-```
-
-Sem login local por senha.
-
-### C04.2 — Role mapping sem herança de ownership — IMPLEMENTADO
-
-Implementado no PRIMARY em 25/09/2026:
-
-- cadastro governado de principals em `private.safra_principals`;
-- grants em `private.safra_role_grants`;
-- pré-provisionamento por e-mail corporativo;
-- binding automático para `auth.uid()` no login;
-- funções de consulta de role isoladas em schema `private`;
-- wrappers públicos `SECURITY INVOKER`;
-- nenhum papel administrativo confere ownership de cenário;
-- `scenario_owner` indica elegibilidade/responsabilidade, não vínculo com card específico.
-
-Pessoas pré-provisionadas:
-- platform admin: Kaue, Amanda, Vinicius, João;
-- governance admin: Jair;
-- executive admin: Bruno;
-- scenario_owner: Daniel, Jiane, Renato.
-
-Validação:
-- usuário autenticado Kaue -> `safra_platform_admin = true`;
-- `scenario_owner = false`;
-- nenhuma tabela scenario→owner existe ainda;
-- ownership específico permanece para C05/C06.
-
-Estado do C04:
-- `app_metadata.safra_access` foi removido;
-- RLS usa o predicado canônico `safra_is_corporate_user()`;
-- role mapping permanece em tabelas governadas;
-- testes dependentes de cenário/tratativa foram movidos para as fases executáveis correspondentes.
-
-### Role mapping alvo
-
-| Ação | Usuário autenticado | Scenario owner | Governance admin | Executive admin | Platform admin |
-|---|---:|---:|---:|---:|---:|
-| ver cards | sim | sim | sim | sim | sim |
-| START | sim | sim | sim | sim* | sim* |
-| END | sim | sim | sim | sim* | sim* |
-| CANCEL com motivo | sim | sim | sim | sim* | sim* |
-| receber comunicação do próprio card | não por default | sim | conforme governança | não | DEFERRED M05 |
-| gerir ownership | não | não | sim | não | suporte técnico, sem decisão de negócio |
-| publicar cenário | não | não | conforme fluxo M10 | não | não por herança |
-| analytics global | não | seus cards | governança | sim | técnico conforme necessidade |
-| manutenção técnica | não | não | não | não | sim |
-
-`*` capacidade base de usuário autenticado; papel não é necessário para START/END/CANCEL.
-
-### Regras de segurança
-
-- nunca confiar em `user_metadata` para autorização;
-- `app_metadata`/tabelas governadas para papéis;
-- RLS para dados expostos à Data API;
-- browser não define role, owner ou criticidade;
-- sessão inválida não produz efeito;
-- acesso por API deve ter o mesmo resultado de segurança da UI.
-
-### C04.3 — RLS e autorização equivalente entre UI, REST/Data API, RPC e servidor — IMPLEMENTADO
-
-Concluído em 25/09/2026:
-
-- removido o gate temporário `app_metadata.safra_access`;
-- criado `public.safra_is_corporate_user()` como predicado único de acesso base;
-- RLS de `applications` e `incidents` usa o mesmo predicado;
-- middleware server-side consulta o mesmo RPC;
-- UI/Data API permanecem sujeitas às mesmas policies;
-- RPCs usam o mesmo contexto autenticado;
-- `user_metadata` não participa de autorização;
-- roles continuam em tabelas governadas.
-
-Validação:
-- corporativo Azure: acesso permitido;
-- outsider autenticado: zero linhas;
-- anon: sem SELECT/EXECUTE;
-- `safra_access` removido de app_metadata.
-
-Migration canônica versionada em `supabase/migrations/20260925133200_c04_role_mapping_and_corporate_rls.sql`. O único item administrativo remanescente é o migration repair do histórico remoto.
-
-### Testes obrigatórios do C04
-
-Executar ainda no C04:
-- anon não lê/escreve;
-- sessão inválida/expirada não produz autorização;
-- usuário autenticado não consegue alterar principals/roles governados;
-- platform admin não herda scenario_owner;
-- acesso direto por REST/RPC obedece à mesma regra-base da UI/server.
-
-Os testes que dependem do domínio real ficam explicitamente deferidos:
-- ownership por cenário + separação Jair/Bruno/Jiane/platform admins -> C06.1, após seed dos 11 cenários;
-- START autenticado -> C08.1, após fluxo START existir;
-- END/CANCEL autenticado -> F02.1, após state machine + END + CANCEL existirem.
-
-Não marcar esses testes como PASS antes da entidade/mutation existir.
-
-### C04.4 — Gate review G5 / ID-001 / ID-002 / AUDIT-001 — CONCLUÍDO NO ESCOPO DA APLICAÇÃO
-
-Framework EBSA aplicado literalmente:
-
-- **ID-001 / G5:** exige criação, recuperação, troca de papel, revogação, desligamento e contas de serviço;
-- **ID-002 / G5.25:** exige revisão de acessos privilegiados e MFA conforme risco;
-- **AUDIT-001 / G5:** exige ator, ação, recurso, data, resultado e correlação para ações sensíveis.
-
-Evidências já disponíveis:
-- Microsoft Entra ID / SSO homologado;
-- primeiro usuário corporativo criado/autenticado;
-- role mapping governado;
-- RLS positiva/negativa;
-- anon bloqueado;
-- outsider corporativo inválido bloqueado;
-- platform admin não herda ownership;
-- usuário authenticated não altera principals/role grants;
-- REST/RPC/server usam predicado corporativo equivalente.
-
-Evidências ainda faltantes:
-- teste formal de troca de papel;
-- teste formal de revogação;
-- cenário de desligamento/sessão antiga;
-- decisão/escopo para contas de serviço;
-- evidência de recuperação de acesso via Entra corporativo;
-- revisão de MFA para papéis privilegiados;
-- trilha de auditoria completa com ator + ação + recurso + data + resultado + correlation_id para ações sensíveis.
-
-Resultado:
-- `G5 = PARTIAL`;
-- `ID-001 = BLOCKED_EVIDENCE`;
-- `ID-002 = BLOCKED_EVIDENCE`;
-- `AUDIT-001 = BLOCKED_EVIDENCE`.
-
-Não fechar por inferência.
-
-### C04.5 — Fechamento controlado via Lovable — CONCLUÍDO
-
-Objetivo: usar o ambiente do próprio Lovable Cloud para concluir os controles de identidade/RBAC que ficaram bloqueados pelos conectores externos, sem antecipar C05/C06/C08/F02.
-
-#### Prioridade 0 — limpeza obrigatória
-
-Antes de qualquer novo teste:
-- localizar qualquer grant ativo com `source = C04_ID001_TEMP_TEST`;
-- revogar/remover o grant temporário de teste;
-- comprovar que Kaue permanece apenas com o papel permanente `safra_platform_admin`;
-- registrar evidência antes/depois.
-
-Nenhuma evolução deve continuar enquanto esse estado não estiver confirmado.
-
-#### Escopo Lovable
-
-1. **Troca de papel controlada**
-   - usar fixture/principal de teste ou mudança temporária reversível;
-   - provar alteração imediata de autorização com o mesmo `auth.uid()`;
-   - não remover acesso técnico permanente de produção sem rollback explícito.
-
-2. **Revogação de papel**
-   - revogar grant governado;
-   - comprovar que a RPC de role deixa de autorizar imediatamente;
-   - garantir ausência de dependência de `user_metadata` ou cache do browser.
-
-3. **Sessão antiga / desligamento**
-   - validar `session_id` contra `auth.sessions` nas operações sensíveis;
-   - token com assinatura/expiração válidas, mas sessão inexistente/revogada, deve falhar;
-   - preservar o teste já aprovado de `exp` vencido.
-
-4. **AUDIT-001 para RBAC**
-   - registrar ator, ação, recurso, data/hora, resultado e `correlation_id`;
-   - cobrir grant, troca e revogação de papel;
-   - auditoria deve ser server-side e não controlada pelo browser;
-   - histórico não pode ser apagado silenciosamente por usuário comum.
-
-5. **Contas de serviço**
-   - registrar `NOT_APPLICABLE_MVP` se não existir identidade de serviço funcional no produto;
-   - `service_role` técnico do backend não é tratado como usuário humano nem como conta funcional do Painel;
-   - qualquer futura conta de integração reabre ID-001.
-
-#### Fora do escopo Lovable
-
-Dependências do Microsoft Entra/TI:
-- evidência do processo corporativo de recuperação de acesso;
-- política de MFA/Conditional Access dos usuários privilegiados.
-
-O Lovable não deve simular nem substituir essas evidências.
-
-#### Restrições
-
-- não criar `scenarios`, `scenario_versions`, `treatments` ou mutations START/END/CANCEL nesta etapa;
-- não alterar ownership dos 11 cenários;
-- não mudar a regra de negócio de acesso base;
-- não introduzir login local por senha;
-- não usar `user_metadata` para autorização;
-- não expor service role/secret ao browser;
-- toda mudança permanente deve ser versionada em `supabase/migrations`;
-- ao final, GitHub deve refletir integralmente o estado produzido no Lovable.
-
-#### Evidências esperadas
-
-```text
-TEMP_GRANT_CLEANUP = PASS
-ROLE_CHANGE = PASS
-ROLE_REVOCATION = PASS
-REVOKED_SESSION = PASS
-SERVICE_ACCOUNT_SCOPE = N/A_MVP
-RBAC_AUDIT_TRAIL = PASS
-ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL|PASS
-PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL|PASS
-```
-
-Somente após essas evidências reavaliar:
-- `G5`;
-- `ID-001`;
-- `ID-002`;
-- `AUDIT-001`.
-
-### Gate
-
-```text
-G5 = PASS
-ID-001 = PASS_APP_SCOPE
-ID-002 = PASS_APP_SCOPE
-AUDIT-001 = PASS
-SAFRA-C04 = CONCLUIDO
-```
-
-Fronteira de responsabilidade:
-- recuperação de acesso Microsoft = EXTERNAL_CORPORATE_CONTROL;
-- MFA/Conditional Access privilegiado = EXTERNAL_CORPORATE_CONTROL;
-- esses controles não são simulados nem certificados pelo Painel Safra.
-
----
-
-## SAFRA-C05 — Schema v2, migrations e invariantes
-
-### Objetivo
-
-Materializar o domínio aprovado sem quebrar imediatamente o legado de TI.
-
-### C05.0 — Autoridade de migrations e captura do C04 — CONCLUÍDO
-
-Decisão:
-- `supabase/migrations` é a fonte canônica de migrations;
-- Drizzle permanece como tooling/ORM auxiliar e não cria uma segunda trilha de schema;
-- migration canônica do C04 criada em:
-  `supabase/migrations/20260925133200_c04_role_mapping_and_corporate_rls.sql`.
-
-Estado:
-- conteúdo equivalente ao estado live validado do C04;
-- role mapping, predicado corporativo e RLS capturados em código;
-- histórico remoto reconciliado em 25/09/2026; sem drift conhecido de C00/C04/C05.
-
-### Antes de criar migration
-1. autoridade canônica definida: `supabase/migrations`; Drizzle não é fonte de verdade de schema — **CONCLUÍDO**;
-2. reconciliar drift da migration de hardening — **CONCLUÍDO**;
-3. documentar rollback — **CONCLUÍDO** em `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
-4. garantir banco descartável para teste — **IMPLEMENTADO** via Supabase local + pgTAP + GitHub Actions.
-
-### C05.1 — Schema v2 canônico — IMPLEMENTADO
-
-Migration:
-`supabase/migrations/20260925170000_c05_schema_v2_canonical_base.sql`
-
-Concluído:
-- entidades canônicas materializadas no PRIMARY;
-- RBAC existente reutilizado, sem tabela concorrente;
-- RLS deny-by-default;
-- invariantes de publicação/versionamento/owner/snapshot/append-only implementadas;
-- GI-SAFRA-001 preservada OPEN;
-- legado applications/incidents preservado;
-- self-tests positivos/negativos executados com rollback integral de fixtures.
-
-Não incluído:
-- seed C06;
-- RPCs START/END/CANCEL;
-- decisão de múltiplos ACTIVE;
-- criticidade inferida;
-- notificações produtivas.
-
-### C05.2 — Rollback e banco descartável — IMPLEMENTADO
-
-Artefatos:
-- `docs/ROLLBACK_E_BANCO_DESCARTAVEL.md`;
-- `supabase/seed.sql` sem dados produtivos;
-- `supabase/tests/database/c05_schema_v2.test.sql`;
-- `.github/workflows/database-disposable-test.yml`.
-
-Contrato:
-```text
-supabase start
--> supabase db reset --local
--> supabase test db
--> supabase db lint --local --level error
--> supabase stop --no-backup
-```
-
-O PRIMARY nunca é tratado como banco descartável. Após C06, rollback padrão passa a ser forward fix, preservando histórico operacional.
-
-### C05.3 — Domínio canônico por agregados — CONCLUÍDO
-
-A estrutura física já materializada em C05.1 foi validada como contrato de domínio:
-
-- áreas: `operational_areas` + relações potenciais/reais;
-- sistemas: `systems` + relação versionada;
-- papéis: reutilizar `private.safra_principals` + `private.safra_role_grants`;
-- cenários/versionamento: `scenarios` + `scenario_versions`;
-- owners: `scenario_owners`;
-- SLAs: `scenario_slas`;
-- treatments: `treatments` + impacto;
-- eventos: `treatment_events`;
-- escalonamentos: `treatment_escalations`;
-- notificações: `notifications_log`;
-- propostas: `scenario_proposals` + respostas de owners;
-- governance issues: `governance_issues`.
-
-Regras:
-- nenhuma tabela concorrente de roles;
-- ownership explícito e separado de papel administrativo;
-- versionamento preserva fotografia histórica;
-- proposta permanece separada de cenário produtivo;
-- governance issue não vira default;
-- `GI-SAFRA-001` continua aberta;
-- documentação arquitetural reconciliada com o schema real.
-
-Resultado:
-
-```text
-C05_DOMAIN_MODEL = PASS
-schema_change_required_this_round = false
-```
-
-### C05.4 — Invariantes técnicos e contratos transacionais — CONCLUÍDO NO ESCOPO C05
-
-Os invariantes, timestamps, idempotência estrutural, correlation_id, rollback e guardas de persistência foram fechados no C05. As mutações funcionais de START/END/CANCEL permanecem deliberadamente nas fases próprias (C08/F02), sem antecipação.
-
-### Ordem recomendada
-
-1. `operational_areas`;
-2. `systems`;
-3. reutilizar `private.safra_principals` + `private.safra_role_grants` (sem `safra_user_roles` concorrente);
-4. `scenarios`;
-5. `scenario_versions`;
-6. `scenario_owners`;
-7. `scenario_version_impacted_areas`;
-8. `scenario_version_systems`;
-9. `scenario_slas`;
-10. `treatments`;
-11. `treatment_impacted_areas`;
-12. `treatment_impact_measurements`;
-13. `treatment_events`;
-14. `treatment_escalations`;
-15. `notifications_log`;
-16. `scenario_proposals`;
-17. `scenario_proposal_owner_responses`;
-18. `governance_issues`;
-19. mapeamentos para `incidents` quando aplicável.
-
-### Invariantes mínimos
-
-- FK explícita;
-- enums/status via constraints ou tipo governado;
-- timestamp oficial server-side;
-- `scenario_version` publicada não é reescrita;
-- tratamento congela `scenario_version_id`;
-- snapshot de owner e área responsável no START;
-- criticidade sem decisão aceita ausência explícita e não possui default;
-- audit events append-only;
-- sem cascade destrutivo em histórico operacional;
-- CANCEL exige razão;
-- END/CANCEL somente em `ACTIVE`;
-- idempotência para mutations críticas;
-- correlation id persistido;
-- constraints de integridade temporal;
-- não criar unicidade de ACTIVE por cenário antes da decisão M01;
-- views expostas devem respeitar RLS/security invoker quando aplicável.
-
-### Testes
-
-- migration em banco descartável;
-- positive/negative constraints;
-- double submit;
-- concorrência END x CANCEL;
-- version freeze;
-- rollback ensaiado;
-- API direto;
-- RLS positiva/negativa.
-
-### Gate
-
-```text
-G5 = PASS_C05_SCHEMA_BASE
-G6 = PARTIAL_SCHEMA_READY
-```
-
-C05 continua aberto para passos seguintes de RPCs/constraints/idempotência adicionais previstos, mas a **base canônica do schema v2 está concluída**.
-
----
-
-## SAFRA-C06 — Seed canônico da Matriz v3
-
-### Pipeline
-
-```text
-XLSX v3
- -> parser versionado
- -> staging
- -> validação
- -> preview diff
- -> aprovação humana
- -> seed/migration
- -> reconciliação
-```
-
-### Validar
-
-- exatamente 11 cenários publicados no seed inicial;
-- owner conforme Matriz v3;
-- área responsável;
-- áreas impactáveis;
-- protocolo completo;
-- criticidade quando suportada por fonte/decisão;
-- SLA textual preservado;
-- sistemas/ferramentas;
-- mapeamentos EDB05/EDB06;
-- P1-P4 não publicados por inferência.
-
-### Campos abertos
-
-`X h`, `X min`, capacidade, curva A e outras lacunas entram em `governance_issues`.
-
-### Saída
-
-Reconciliação 100% dos campos importados contra a Matriz v3.
-
-### SAFRA-C06.1 — Teste de ownership real
-
-**Estado: CONCLUÍDO — reauditoria integral em 27/09/2026.**
-
-Evidência canônica:
-`docs/AUDITORIA_C06_1_OWNERSHIP_2026-09-27.md`.
-
-#### Ação 1 — ownership real dos 11 cenários
-
-Fonte técnica:
-`scenarios -> scenario_owners -> safra_principals -> safra_role_grants`.
-
-Resultado:
-- 11/11 cenários com vínculo ativo;
-- exatamente 1 owner ativo por cenário;
-- 3 owners distintos;
-- 0 vínculos órfãos;
-- 0 duplicidade ativa;
-- 0 owner sem role `scenario_owner`;
-- 0 overlap com papéis administrativos;
-- `assignment_reason` presente em todos;
-- validação humana cenário a cenário: **APROVADA**.
-
-Teste:
-`supabase/tests/database/c06_02_real_ownership_persistence.test.sql`.
-
-```text
-C06_1_ACTION_01_TECHNICAL = PASS
-C06_1_ACTION_01_HUMAN_VALIDATION = APPROVED
-```
-
-#### Ação 2 — owner sem herança administrativa e sem fallback silencioso
-
-Resultado:
-- 10/10 testes PASS;
-- admin não herda ownership;
-- role `scenario_owner` isolada não substitui vínculo explícito;
-- cenário PUBLISHED exige exatamente 1 owner ativo e elegível;
-- ausência de owner não escolhe fallback;
-- owner administrativo inelegível não substitui o vínculo real.
-
-Teste:
-`supabase/tests/database/c06_1_owner_no_inheritance_no_fallback.test.sql`.
-
-```text
-C06_1_ACTION_02 = PASS
-ADMIN_ROLE_INHERITANCE = 0
-SILENT_OWNER_FALLBACK = 0
-```
-
-#### Ação 3 — leitura e autorização coerentes entre UI, REST/RPC e banco
-
-Evidência:
-`docs/data-contracts/C06_1_READ_AUTHORIZATION_EVIDENCE.md`.
-
-Resultado revalidado:
-- RLS/grants = PASS;
-- App Smoke Run 87 = SUCCESS;
-- Database Disposable Run 125 = SUCCESS;
-- REST/Data API anônimo = DENIED;
-- RPC anônimo = DENIED;
-- browser sem acesso às tabelas privadas de RBAC;
-- nenhuma leitura direta de `scenarios`/`scenario_owners` pela UI;
-- nenhum RPC público de leitura de scenario/owner nesta fase.
-
-```text
-C06_1_ACTION_03 = PASS
-AUTHORIZATION_COHERENCE = PASS
-SAFRA_UI_CATALOG_READ = NOT_IMPLEMENTED_YET
-UI_VS_API_DATASET_PARITY = NOT_APPLICABLE_UNTIL_GOVERNED_READ_API
-```
-
-#### Ação 4 — impedir autoatribuição/mutação direta de owner
-
-Critério formalizado a partir do contrato já existente do C06.1:
-- usuário comum não pode se autoatribuir owner por payload, REST/Data API ou RPC;
-- vínculo histórico não pode ser reescrito ou apagado;
-- nenhuma superfície pública de mutação de owner pode existir por acidente.
-
-Testes:
-- `supabase/tests/database/c06_1_owner_mutation_governance.test.sql`;
-- `.github/scripts/test-safra-direct-api.sh`.
-
-Resultado:
-- pgTAP Action 4 = 13/13;
-- `anon` sem INSERT/UPDATE/DELETE em `scenario_owners`;
-- `authenticated` sem INSERT/UPDATE/DELETE em `scenario_owners`;
-- 0 grants de browser nas fontes privadas de RBAC;
-- 0 RPC público de assign/reassign/set/change owner;
-- POST direto em `scenario_owners` = DENIED;
-- PATCH direto em `scenario_owners` = DENIED;
-- alteração de `owner_id` em vínculo existente = DENIED;
-- delete físico de histórico = DENIED.
-
-```text
-C06_1_ACTION_04 = PASS
-DIRECT_OWNER_MUTATION = DENIED
-OWNER_HISTORY_REWRITE = DENIED
-OWNER_HISTORY_DELETE = DENIED
-```
-
-Observação: o fluxo produtivo futuro de reatribuição de owner ainda não existe. Isso é
-deny-by-default e não um atalho. Quando implementado, deverá ser server-side, autorizado,
-auditável e preservar histórico temporal.
-
-#### Gate final do C06.1
-
-PRIMARY:
-- 11 cenários / 11 vínculos ativos;
-- exatamente 1 owner por cenário;
-- 0 órfãos;
-- 0 role mismatch;
-- 0 admin/owner overlap;
-- RLS ativa;
-- browser write grants = 0;
-- public owner mutation RPCs = 0;
-- GitHub x PRIMARY = 17/17 migrations, drift 0.
-
-CI:
-- App Smoke Run 87 / ID `36309242985` = SUCCESS;
-- Database Disposable Run 125 / ID `36309242956` = SUCCESS;
-- rebuild = PASS;
-- pgTAP = PASS;
-- Data API negativa = PASS;
-- RPC negativa = PASS;
-- rollback latest = PASS;
-- lint = PASS.
-
-```text
-SAFRA-C06.1 = CONCLUIDO
-MIGRATION_DRIFT = 0
-NEXT_PHASE = SAFRA-C07
-```
-
-### C06.02 — Pipeline reproduzível + regressão RBAC/ownership
-
-Estado: **CONCLUÍDO — pipeline, reconciliação integral e regressão de ownership validados em CI.**.
-
-Fluxo executado:
-
-```text
-XLSX v3 -> parser v1.0.0 -> staging -> validação -> preview diff
--> aprovação humana -> seed/migration canônica -> reconciliação
-```
-
-Resultado:
-- 11 registros;
-- 0 erros de validação;
-- 5 warnings convertidos/preservados como governance issues;
-- 0 diferenças no preview contra o PRIMARY;
-- migration canônica C06.01 permanece a autoridade do seed;
-- reconciliação 100%;
-- regressão de owner/admin/autorização versionada em pgTAP;
-- autoatribuição direta de owner permanece negada.
-
-Critério de saída — **ATENDIDO**:
-- Database Disposable Test = PASS;
-- reconciliação integral da Matriz v3 = 198/198, tolerância 0;
-- ownership real persistido = 11/11;
-- API direta de `scenario_owners` = negada;
-- C06 liberado para C07.
-
----
-
----
-
-## SAFRA-C07 — Engine de SLA
-
-**Estado: CONCLUÍDO — engine determinística, tolerância documentada e matriz adversarial validadas; App Smoke Run 112 e Database Disposable Run 150 = SUCCESS.**
-
-### Princípio
-
-SLA de protocolo é diferente do SLO/RTO/RPO do software.
-
-A engine é técnica e determinística. Ela não publica SLA estruturado sem `start_event`, `end_event` e alvo suportados por fonte/decisão explícita.
-
-### Modelo
-
-Cada SLA possui obrigatoriamente:
-
-```text
-start_event
-end_event
-target_value
-target_unit
-```
-
-O banco rejeita SLA estruturado incompleto. `target_text` permanece apenas como evidência textual e não substitui os quatro campos.
-
-### Regras
-
-- duração calculada por timestamps;
-- timezone técnico padronizado em UTC; analytics diário/horário usa explicitamente `America/Sao_Paulo` antes do bucket;
-- relógio negativo proibido; `remaining_seconds` é limitado a zero após o deadline e relógio anterior ao START é `NOT_MEASURABLE`;
-- CANCEL não equivale a SLA cumprido: antes/no deadline = `NOT_MEASURABLE`; após o deadline = `BREACHED`; nunca `COMPLETED_*`;
-- END só fecha o SLA quando `end_event = TREATMENT_RESOLVED`; qualquer outro END configurado é `NOT_MEASURABLE` e jamais `COMPLETED_*`;
-- múltiplos SLAs podem coexistir no mesmo cenário;
-- evento ausente => SLA não mensurável, não “OK”.
-
-### Testes
-
-- borda exata;
-- breach;
-- END no instante do breach;
-- timezone/DST;
-- evento ausente;
-- CANCEL;
-- dois SLAs simultâneos;
-- tentativa de alterar status/timestamp para parar relógio.
+F01 a F09: NÃO INICIADOS.
 
 ---
 
 ## SAFRA-C08 — UX do COMEÇO
+
+> **02/10/2026:** C08.1 (banco) e C08.2 (telas) concluídos, com encerrar e cancelar antecipados da F01/F02 (D-87) e o 12º card adiado para depois das visões (D-88). Ver `AUDITORIA_C08_REABERTURA_2026-10-02.md`. Falta publicar e homologar com login real.
 
 **Estado: EM EXECUÇÃO — START end-to-end implementado e promovido; pendente homologação UX com sessão Microsoft corporativa real antes das demais telas.**
 
@@ -1800,8 +281,8 @@ Depois da homologação:
 ```text
 service_class = CRITICO
 SLO = 99.95%
-RTO = 30 min
-RPO = 5 min
+RTO = 4 h    (D-93; era 30 min na D-23)
+RPO = 24 h   (D-93; era 5 min na D-23)
 replica_enabled = false
 ```
 
@@ -1844,29 +325,28 @@ O Painel **não** precisa saber em qual passo operacional a equipe está.
 
 ## SAFRA-M01 — State machine
 
-Estados:
+> **CONCLUÍDO em 02/10/2026** — revisto pelas decisões D-66, D-57, D-87 e D-98 a D-101. Detalhes em `AUDITORIA_M01_2026-10-02.md`.
 
-```text
-ACTIVE
-RESOLVED
-CANCELLED
-```
+Estados: `ACTIVE` (Em andamento, Aguardando dono, Aguardando solicitante), `RESOLVED` (Encerrado), `CANCELLED` (Cancelado).
 
 Transições:
 
 ```text
-NEW START -> ACTIVE
-ACTIVE -> RESOLVED   # END válido
-ACTIVE -> CANCELLED  # CANCEL válido + motivo
+START                     -> ACTIVE
+ACTIVE, uma parte conclui -> ACTIVE (aguardando a outra parte)
+ACTIVE, desfazer ≤ 5 min  -> ACTIVE (a parte volta a ficar aberta)          D-99
+ACTIVE, as duas concluem  -> RESOLVED                                       D-66
+ACTIVE, cancelar + motivo -> CANCELLED (quem abriu ou o dono)               D-66
+ACTIVE, 72 h sem nenhuma conclusão -> CANCELLED automático                  D-101
+RESOLVED / CANCELLED      -> definitivo (sem reabrir, sem correção admin)   D-98, D-100
 ```
 
 Regras:
 
-- qualquer usuário autenticado pode executar END/CANCEL;
-- backend valida estado atual;
-- `RESOLVED`/`CANCELLED` não voltam silenciosamente a `ACTIVE`;
-- concorrência END x CANCEL precisa resultar em uma única transição;
-- regra de múltiplas tratativas simultâneas do mesmo cenário deve ser decidida aqui.
+- só quem abriu e o dono do card concluem e cancelam (D-66), cada um no próprio login (D-64);
+- o banco valida o estado atual e o horário é sempre do servidor;
+- concorrência entre concluir, desfazer e cancelar resulta numa única transição (testes de concorrência e stress);
+- um protocolo em andamento por pessoa por card (D-57).
 
 ---
 
@@ -1925,6 +405,8 @@ Deve responder rapidamente:
 
 ## SAFRA-M04 — SLA em tempo real
 
+> **01/10/2026:** sem SLA nos cards (D-62) e engine aposentada (D-75). Esta fase será revista quando chegar (ver aviso da seção 11).
+
 Exibir:
 
 - tempo decorrido;
@@ -1965,7 +447,7 @@ NOT_APPLICABLE  # somente quando regra aprovada
 - autor;
 - card/cenário;
 - protocolo completo;
-- métricas aplicáveis: MTTD, MTTR, MTBF, disponibilidade e ocorrências;
+- métricas aplicáveis: métricas do protocolo Safra a definir em F04/M05 (MTTD/MTTR/MTBF/disponibilidade de TI retiradas pela D-50);
 - período: Safra corrente — janela exata ainda deve ser formalizada nesta fase/F04.
 
 ### Regras de destinatário
@@ -1989,7 +471,9 @@ NOT_APPLICABLE  # somente quando regra aprovada
 
 ---
 
-## SAFRA-M06 — Escalonamento e comitê
+## SAFRA-M06 — Escalonamento e comitê — CANCELADO (D-73)
+
+O escalonamento é feito pelos donos de card, em conjunto, fora do Painel. Texto abaixo mantido só como registro.
 
 Níveis:
 
@@ -2013,15 +497,9 @@ Recorrência sozinha não promove `EXECUTIVE`.
 
 ---
 
-## SAFRA-M07 — Ponte com incidents de TI
+## SAFRA-M07 — Ponte com incidents de TI — CANCELADO
 
-Regras:
-
-- incidente TI pode existir sem protocolo;
-- protocolo pode existir sem incidente;
-- incidente elegível pode ajudar a sugerir cenário no futuro;
-- MVP não cria protocolo automaticamente;
-- MTTD/MTTR/MTBF de TI não substituem duração do protocolo Safra.
+Cancelado pela D-50 (30/09/2026). O domínio de incidentes de TI foi removido; não há ponte a construir.
 
 ---
 
@@ -2241,12 +719,9 @@ Cenário 6 já possui referência de pós-mortem <=48h e deve ser tratado como S
 - críticos no período;
 - áreas impactadas.
 
-### Métricas de confiabilidade preservadas
+### Métricas de confiabilidade de TI — RETIRADAS
 
-- MTTD;
-- MTTR;
-- MTBF;
-- disponibilidade.
+MTTD, MTTR, MTBF e disponibilidade saíram com a D-50. As métricas do protocolo Safra serão definidas nesta fase, sem inferência.
 
 ### Audiências
 
@@ -2285,7 +760,7 @@ TRAINING
 NO_ACTION_JUSTIFIED
 ```
 
-Definir janela/ritual oficial nesta fase.
+O dia, o horário e o ritual da reunião ficam fora do Painel (D-61). O período coberto pelo resumo é definido no desenho desta fase.
 
 ---
 
@@ -2487,16 +962,18 @@ Gate: `G11`.
 - owner/criticidade/protocolo histórico permanecem congelados;
 - 12º card não vira cenário publicado sem governança.
 
-## 15.4 SLA
+## 15.4 Regras de tempo (SLA aposentado, D-75)
 
-- dois SLAs simultâneos;
-- borda exata;
-- breach;
-- END no instante do breach;
-- CANCEL;
-- evento ausente;
-- timezone/DST;
-- tentativa de alterar status/timestamp para parar SLA falha.
+- aviso no instante exato (2h00) e nenhum aviso antes;
+- sem aviso de 3h; de hora em hora após 4h;
+- fechamento ou cancelamento no instante exato do aviso;
+- dono que fecha primeiro deixa de receber; solicitante continua;
+- tempos do solicitante, do dono e consolidado (até a última parte);
+- cancelado fora dos tempos; parte aberta em aberto;
+- fuso e horário de verão;
+- horário antes da abertura recusado.
+
+Cobertura: `supabase/tests/database/c07_aud2_time_rules.test.sql`.
 
 ## 15.5 Segurança / API
 
@@ -2604,42 +1081,39 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 
 ---
 
+
 # 19. Ordem de execução canônica
 
 ## Bloco 0 — Fundação segura
-
 1. C00 — concluído;
-2. C01 — concluído;
-3. C02 — em andamento.
+2. C01 — concluído (reauditorias concluídas em 01/10);
+3. C02 — concluído (reauditorias concluídas em 01/10).
 
 ## Bloco 1 — Domínio e backend
-
-4. C03 — glossário/modelo;
-5. C04 — identidade/RBAC/RLS;
-6. C05 — schema v2/migrations;
-7. C06 — seed Matriz v3;
-8. C07 — engine SLA.
+4. C03 — concluído;
+5. C04 — concluído (C04-AUD2 em 01/10);
+6. C05 — concluído (C05-AUD2 em 01/10, drift zerado);
+7. C06 — concluído (C06-AUD2 em 01/10);
+8. C07 — concluído.
 
 ## Bloco 2 — COMEÇO utilizável
-
-9. C08 — UX START;
+9. C08 — UX START (em execução);
 10. C09 — backup/restore/capacidade.
-## Bloco 3 — MEIO
 
+## Bloco 3 — MEIO
 11. M01 — state machine;
 12. M02 — audit trail/acompanhamento mínimo;
 13. M03 — timeline;
-14. M04 — SLA runtime;
+14. M04 — SLA runtime (sem SLA desde a D-75; fase a rever);
 15. M05 — notificações;
-16. M06 — escalonamento;
-17. M07 — ponte TI;
+16. ~~M06 — escalonamento~~ — cancelado (D-73);
+17. ~~M07 — ponte TI~~ — cancelado (D-50);
 18. M08 — Torre de Controle;
 19. M09 — visões por audiência;
 20. M10 — governança de novos cenários;
 21. M11 — integrações futuras.
 
 ## Bloco 4 — FIM
-
 22. F01 — END;
 23. F02 — CANCEL;
 24. F03 — pós-mortem;
@@ -2648,12 +1122,9 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 27. F06 — relatório executivo.
 
 ## Bloco 5 — Homologação e release
-
 28. F07 — homologação;
 29. F08 — auditoria E2E;
-30. F09 — release/operação.
-
----
+30. F09 — release e operação.
 
 # 20. Gates de produto — melhorados
 
@@ -2689,7 +1160,7 @@ Só passa quando:
 - START é transacional/idempotente;
 - versão é congelada;
 - audit event existe;
-- SLA inicia corretamente;
+- escada de avisos começa corretamente (D-76);
 - comunicação START é deduplicada.
 
 ## P3 — IN-FLIGHT READY
@@ -2701,8 +1172,7 @@ Só passa quando:
 - timeline confiável;
 - eventos auditáveis;
 - concorrência tratada;
-- SLA runtime correto;
-- escalonamento auditável;
+- escada de avisos correta durante o protocolo (D-76);
 - nenhuma dependência de checklist operacional existe.
 
 ## P4 — CLOSE READY
@@ -2712,10 +1182,11 @@ Só passa quando:
 Só passa quando:
 
 - END por usuário autenticado funciona;
+- encerramento em duas partes funciona (D-66);
 - CANCEL com motivo funciona;
 - END x CANCEL concorrente é seguro;
 - histórico é imutável/auditável;
-- SLA não pode ser manipulado por status/timestamp do client;
+- horários de encerramento não podem ser manipulados pelo client (D-66);
 - comunicação END/CANCEL é idempotente.
 
 ## P5 — BUSINESS READY
@@ -2766,6 +1237,8 @@ Só passa quando:
 ---
 
 # 22. ADRs / decisões arquiteturais
+
+> Fonte oficial: `docs/DECISOES.md`. Lista abaixo mantida como referência de planejamento.
 
 | ADR | Decisão | Estado |
 |---|---|---|
@@ -2912,162 +1385,9 @@ O sistema sabe:
 
 ---
 
-# 28. Próximo passo exato
 
-Fase atual:
-
-```text
-SAFRA-C05 — CONCLUÍDO
-NEXT = SAFRA-C06 — Seed canônico da Matriz v3
-```
-
-C05 fechado com:
-- schema v2 e 17 tabelas de domínio;
-- migrations canônicas reconstruíveis do zero;
-- tracking PRIMARY reconciliado com as 10 migrations do GitHub;
-- FKs, constraints e integridade temporal;
-- timestamps server-side;
-- version freeze;
-- append-only;
-- proteção contra cascade destrutivo;
-- CANCEL com motivo obrigatório;
-- END/CANCEL somente a partir de ACTIVE;
-- double submit/idempotência estrutural;
-- RLS/API direta;
-- rollback em banco descartável;
-- lint;
-- GitHub Actions Run 27 = SUCCESS.
-
-### Próximo trabalho — SAFRA-C06
-
-Objetivo:
-carregar os 11 cenários oficiais da Matriz v3 por pipeline versionado e auditável.
-
-Fluxo obrigatório:
-
-```text
-XLSX v3
--> parser versionado
--> staging
--> validação
--> preview/diff
--> aprovação humana
--> seed/migration
-```
-
-Regras de entrada:
-- não inferir os quatro CRITICAL;
-- preservar `GI-SAFRA-001 = OPEN`;
-- respeitar owners já aprovados;
-- não criar regra de múltiplos ACTIVE;
-- não antecipar START/END/CANCEL funcionais;
-- toda mudança de dado canônico deve ser auditável e reproduzível.
-
-Gate esperado:
-```text
-C06 = DATA_CANONICALIZED
-G6 = PASS_C06_SEED
-```
-
-
-# 29. Conclusão
-
-A versão 2.1 corrige uma ambiguidade importante do roadmap anterior: **o Painel Safra não é um executor do protocolo operacional; é uma camada de governança da contingência**.
-
-A arquitetura alvo deve manter cinco compromissos simultaneamente:
-
-```text
-DOMÍNIO CORRETO
-+ IDENTIDADE REAL
-+ AUTORIZAÇÃO SERVER-SIDE
-+ TEMPO/AUDITORIA CONFIÁVEIS
-+ GOVERNANÇA/ANALYTICS
-```
-
-O próximo risco a evitar é antecipar implementação antes de concluir o C02/C03. A sequência permanece deliberada: primeiro ameaça e domínio; depois identidade/RLS; depois schema; depois dados; depois UX/operação.
 ---
 
-## SAFRA-C04 — CONCLUÍDO (25/09/2026)
+# 28. Próximo passo
 
-Entregue: limpeza do grant temporário, troca e revogação de papel validadas em tempo real,
-vínculo com sessão viva (`session_id` x `auth.sessions`), trilha de auditoria RBAC append-only,
-contas de serviço classificadas como N/A no MVP.
-
-Controles corporativos externos ao escopo da aplicação: `ENTRA_RECOVERY` e `PRIVILEGED_MFA`, sob responsabilidade da TI/Microsoft Entra.
-
-Não iniciado neste ciclo, conforme restrição: scenarios, scenario_versions, scenario_owners,
-treatments, START (C08.1), END/CANCEL (F02.1) e seed dos 11 cenários (C06.1).
-
-Próximo passo: SAFRA-C05 — Schema v2, migrations e invariantes.
-
-
-### C04.6 — Auditoria pós-Lovable
-
-Resultado técnico interno:
-- TEMP_GRANT_CLEANUP = PASS;
-- ROLE_CHANGE = PASS;
-- ROLE_REVOCATION = PASS;
-- REVOKED_SESSION = PASS;
-- SERVICE_ACCOUNT_SCOPE = NOT_APPLICABLE_MVP;
-- RBAC_AUDIT_TRAIL = PASS.
-
-Dependências externas:
-- ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL;
-- PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL.
-
-Gates:
-```text
-G5 = PASS
-ID-001 = PASS_APP_SCOPE
-ID-002 = PASS_APP_SCOPE
-AUDIT-001 = PASS
-```
-
-Não avançar o status para C05 por decisão automática; revisão humana permanece necessária.
-
-
-### C04.7 — Fronteira de responsabilidade Entra — APROVADA
-
-Decisão humana:
-- recuperação de acesso Microsoft pertence à TI/Microsoft Entra;
-- bloqueio, MFA e Conditional Access da identidade Microsoft pertencem à TI/Microsoft Entra;
-- o Painel Safra não implementa controles paralelos para esses processos.
-
-Logo:
-- `ENTRA_RECOVERY = EXTERNAL_CORPORATE_CONTROL`;
-- `PRIVILEGED_MFA = EXTERNAL_CORPORATE_CONTROL`;
-- esses itens não bloqueiam o encerramento do C04 no escopo da aplicação.
-
-Fechamento:
-```text
-G5 = PASS
-ID-001 = PASS_APP_SCOPE
-ID-002 = PASS_APP_SCOPE
-AUDIT-001 = PASS
-SAFRA-C04 = CONCLUIDO
-```
-
-Próxima etapa: SAFRA-C05.
-
-
-### C05.0.1 — Autoridade de migrations e drift — CONCLUÍDO
-
-- `supabase/migrations` é a única fonte canônica de schema/migrations;
-- Drizzle é tooling auxiliar sem autoridade de deploy;
-- drift de C00/C04/C05 reconciliado em `supabase_migrations.schema_migrations`;
-- nenhuma DDL foi reaplicada durante o repair;
-- migrations remotas diretas ficam proibidas fora de exceção formal documentada.
-
-
-#### C07 — tolerância temporal documentada — 27/09/2026
-
-- tolerância zero permanece o padrão;
-- tolerância implícita continua proibida;
-- tolerância temporal documentada implementada em `scenario_slas`;
-- campos: `tolerance_value`, `tolerance_unit`, `tolerance_documentation`;
-- valor positivo, unidade `MINUTE/HOUR/DAY` e documentação não vazia são obrigatórios;
-- configuração parcial => `NOT_MEASURABLE / TOLERANCE_CONFIGURATION_INVALID`;
-- tolerância estende somente o deadline efetivo;
-- migration `20260927120500_c07_documented_tolerance.sql`;
-- PRIMARY 18/18 PASS;
-- SAFRA-C07.1..C07.6 = PASS.
+Ver `docs/STATUS.md`.

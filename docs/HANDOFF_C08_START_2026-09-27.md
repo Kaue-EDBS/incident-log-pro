@@ -1,5 +1,12 @@
 # HANDOFF — Painel Safra — retomada após START end-to-end
 
+> **Atualização 01/10/2026 — leia antes do checklist.** Desde este handoff mudaram:
+> - endereço: `/novo-incidente` → **`/abrir-protocolo`**;
+> - os 11 cenários são **CRITICAL** (D-55), não mais "criticidade não definida";
+> - nenhum card tem SLA (D-62): o item 12 vira "não há bloco de SLA na tela";
+> - novos itens obrigatórios: a mesma pessoa não abre dois protocolos do mesmo card (D-57); o dono do card não abre protocolo do próprio card (D-65);
+> - os itens 11 (retry/duplo clique) e 13 (leitura pós-START) continuam valendo.
+
 **Data:** 27/09/2026  
 **Repositório:** `Kaue-EDBS/incident-log-pro`  
 **Branch:** `main`

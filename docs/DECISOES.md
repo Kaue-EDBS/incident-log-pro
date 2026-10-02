@@ -14,16 +14,16 @@
 | ID | Decisão | Status |
 |---|---|---|
 | D-01 | Evoluir `incident-log-pro`; não criar app paralelo | APPROVED |
-| D-02 | Preservar `applications/incidents` para TI | APPROVED |
+| D-02 | Preservar `applications/incidents` para TI | SUPERSEDED by D-50 (30/09/2026) |
 | D-03 | Geral é visão agregadora, não área | APPROVED |
 | D-04 | Detecção e ativação são conceitos separados | APPROVED |
 | D-05 | Protocolo não é chamado | APPROVED |
-| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — decisão vigente |
+| D-06 | Qualquer usuário Microsoft autenticado pode START/END/CANCEL; owner conduz o protocolo sem exclusividade sobre essas ações | APPROVED — **START ajustado pela D-65; END e CANCEL substituídos pelas D-64/D-66** (01/10/2026) |
 | D-07 | Tratativa errada é CANCELLED; não apagar | APPROVED |
 | D-08 | Novo cenário exige governança | APPROVED |
-| D-09 | Criticidade usa CRITICAL/HIGH/MODERATE | APPROVED; lista crítica pendente |
+| D-09 | Criticidade usa CRITICAL/HIGH/MODERATE | APPROVED; lista crítica resolvida pela D-55 (os 11 são CRITICAL) |
 | D-10 | Recorrência não define crise sozinha | APPROVED |
-| D-11 | Comitê é escalonamento, não status | APPROVED |
+| D-11 | Comitê é escalonamento, não status | SUPERSEDED by D-73 (escalonamento fora do Painel) |
 | D-12 | Lovable Cloud é backend provider e banco é PRIMARY | APPROVED |
 | D-13 | Stack do PRIMARY é PostgreSQL/Supabase | APPROVED |
 | D-14 | Histórico Git publicado não deve ser reescrito | APPROVED |
@@ -34,8 +34,8 @@
 | D-19 | safra_admin dividido em plataforma, governança e executivo | APPROVED |
 | D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico | APPROVED |
 | D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards | APPROVED |
-| D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | APPROVED |
-| D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED |
+| D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | SUPERSEDED by D-60/D-68 (fluxo de publicação) e D-73 (sem escalonamento) |
+| D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED — **RTO/RPO revistos pela D-93** (até 4 h / até 24 h) |
 | D-24 | Application criticality = MEDIUM | APPROVED |
 | D-25 | replica_enabled = false; backup/restore continua obrigatório | APPROVED |
 | D-26 | Política de retenção vinculada ao fim formal da Safra, com anonimização/eliminação posterior quando identidade não for necessária | APPROVED |
@@ -43,7 +43,7 @@
 | D-28 | SAFRA-C02 concluído; G3.5, THREAT-001 e AUTHZ-001 = PASS | APPROVED |
 | D-29 | Vocabulário canônico do domínio congelado em docs/GLOSSARIO_DOMINIO.md | APPROVED |
 | D-30 | Cenário, versão e tratativa formalmente distintos; impacto qualitativo/quantitativo formalizado sem score automático | APPROVED |
-| D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | APPROVED |
+| D-31 | Quatro cenários CRITICAL não serão inferidos; pendência registrada como GI-SAFRA-001 | SUPERSEDED by D-55 (decisão do owner: os 11 são CRITICAL) |
 | D-32 | Glossário de domínio v1.1 entregue READY_FOR_C05, com contratos de cardinalidade, estado, snapshot e null/default | APPROVED |
 | D-33 | Login funcional exclusivamente via Microsoft Entra ID; Lovable Cloud Auth cria sessão Supabase; login local por senha proibido | APPROVED / HOMOLOGATED |
 | D-34 | Role mapping governado no banco e ownership específico separado de papéis administrativos | APPROVED / IMPLEMENTED |
@@ -56,12 +56,58 @@
 | D-41 | Schema v2 canônico materializado no PRIMARY e versionado em supabase/migrations | APPROVED / IMPLEMENTED |
 | D-42 | supabase/migrations é a única autoridade de migrations; Drizzle fica sem autoridade de deploy; drift C00/C04/C05 reconciliado | APPROVED / IMPLEMENTED |
 | D-43 | Banco descartável padrão = Supabase local via CLI/Docker; rollback pós-C06 = forward fix por padrão | APPROVED / IMPLEMENTED |
-| D-44 | Criticidade ausente nos cenários v1 é estado explícito e não bloqueia START; nenhuma classificação será inferida | APPROVED |
+| D-44 | Criticidade ausente nos cenários v1 é estado explícito e não bloqueia START; nenhuma classificação será inferida | SUPERSEDED by D-55 (versão 2 CRITICAL); vale só como histórico da v1 |
 | D-45 | Cenários com threshold/fonte de gatilho ausente operam em START manual no MVP; automação permanece desabilitada | APPROVED |
 | D-46 | Cenário 9 permanece START manual enquanto não existir fonte oficial do mínimo curva A; ruptura automática fica desabilitada | APPROVED |
-| D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | APPROVED |
-| D-48 | Painel Safra é de audiência interna e aceita identidade Microsoft corporativa apenas dos domínios editoradobrasil.com.br e editoradobrasil1.onmicrosoft.com | APPROVED |
+| D-47 | SLA textual só vira relógio estruturado quando a cláusula for inequivocamente de tratativa, tiver alvo numérico e puder usar TREATMENT_OPENED → TREATMENT_RESOLVED sem inferência | SUPERSEDED — sem SLA (D-62); engine aposentada (D-75) |
+| D-48 | Painel Safra é de audiência interna e aceita identidade Microsoft corporativa apenas dos domínios editoradobrasil.com.br e editoradobrasil1.onmicrosoft.com | APPROVED — reforçada em 01/10/2026: exige também o tenant Microsoft da Editora (AUD-GERAL A-01) |
 | D-49 | Gate de privacidade/base legal exigido antes de usuários reais foi validado e está atendido | APPROVED / SATISFIED |
+| D-50 | Reliability Monitor/MTTR descontinuado; Painel Safra é o único produto do `incident-log-pro` | APPROVED |
+| D-51 | Os 11 cenários publicados permanecem liberados para START; governança de liberação por card fica para fase futura | SUPERSEDED by D-63 |
+| D-52 | Toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando o PRIMARY com o repositório | APPROVED |
+| D-53 | `GOVERNANCE_ISSUES.md` é a fonte oficial dos GI; `DECISOES.md` indexa e `public.governance_issues` espelha | APPROVED |
+| D-54 | `STATUS.md` guarda só o estado atual; histórico vai para `docs/historico/`; `ROADMAP.md` guarda só fases e gates | APPROVED |
+| D-55 | Os 11 cenários são CRITICAL; a comunicação de CRITICAL na abertura vai ao dono do card; diretoria fora do fluxo por ora (resolve GI-SAFRA-001) | APPROVED — aplicada em 01/10/2026 |
+| D-56 | Detecção/aviso automático de gatilho fica para versão futura do produto (V2/V3); thresholds do GI-SAFRA-002 e mínimo da curva A do GI-SAFRA-003 não são necessários no MVP | APPROVED |
+| D-57 | Cada pessoa pode ter no máximo uma tratativa ACTIVE por cenário; pessoas diferentes podem abrir o mesmo cenário (resolve GI-SAFRA-004) | APPROVED — aplicada em 01/10/2026 |
+| D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — implementação na M05 |
+| D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
+| D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
+| D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
+| D-62 | Sem cronômetro de SLA nos cards; escada de avisos 2h/3h/4h, 24h por dia, com pergunta "foi resolvido?" a quem abriu (resolve GI-SAFRA-009) | APPROVED — **escada substituída pela D-67**; "sem SLA" mantido |
+| D-63 | Mantida a liberação dos 11 cards para qualquer usuário corporativo autenticado; sem restrição por card (resolve GI-SAFRA-010) | APPROVED — com a exceção da D-65 |
+| D-64 | END só por quem abriu o protocolo ou pelo dono do card, cada um logado no próprio perfil; o botão "Resolvido" abre o Painel e exige confirmação | APPROVED — complementada pela D-66 |
+| D-65 | Dono de card não abre protocolo dos próprios cards; pode abrir de cards de outros donos | APPROVED — aplicada em 01/10/2026 (migration 20261001150000) |
+| D-66 | Encerramento em duas partes (usuário e dono do card, cada um com seu horário); CANCEL por qualquer um dos dois, com motivo; trava D-57 liberada quando o usuário fecha a parte dele | APPROVED — implementação na F01/F02 |
+| D-67 | Escada de avisos revista: 2h e 4h, ao dono do card (para cobrar o usuário) e ao usuário ("foi resolvido?"), até o usuário fechar a parte dele; sem Jair e sem aviso de 3h; 4h não é SLA | APPROVED — **completada pela D-76** (de hora em hora após 4h; dono para ao fechar a parte dele) |
+| D-68 | 12º card com separação de funções: quem propõe não aprova nem publica; proposta do Jair é aprovada pelo Kaue; proposta de admin técnico é publicada por outro admin | APPROVED — implementação na M10 |
+| D-69 | A Safra corrente começou em 01/10/2026 e termina quando o Kaue marcar o encerramento | APPROVED |
+| D-70 | Encerrar a Safra exige digitar "ENCERRAR SAFRA" e pode ser desfeito em 7 dias, sem apagar dados nesse prazo | APPROVED — implementação com a D-59 |
+| D-71 | "Solicitante" é o termo canônico para quem abriu o protocolo (START) | APPROVED |
+| D-72 | Situações do protocolo: Em andamento, Aguardando dono, Aguardando solicitante, Encerrado, Cancelado | APPROVED — implementação na F01/F02 |
+| D-73 | Escalonamento fica fora do Painel: é feito pelos donos de card, em conjunto, por avaliação própria; SAFRA-M06 cancelado | APPROVED |
+| D-74 | Nome do card é o texto literal da Matriz v3; sem nome curto; a forma de exibir fica para a C08 | APPROVED |
+| D-75 | Engine de SLA aposentada: funções, `scenario_slas` e `SLA_BREACHED` removidos | APPROVED — aplicada em 01/10/2026 |
+| D-76 | Escada de avisos: 2h, 4h e depois de hora em hora até o solicitante fechar a parte dele; o dono deixa de receber quando fecha a parte dele | APPROVED — regra de tempo pronta; envio na M05/F01 |
+| D-77 | Tempos do analytics: solicitante, dono e consolidado (até a última parte); cancelado não conta; parte aberta fica em aberto | APPROVED — regra de tempo pronta; uso na F01/F04 |
+| D-78 | Dono desativado ou sem papel bloqueia o card temporariamente até nova definição; nesta Safra não haverá troca de dono | APPROVED — aplicada em 01/10/2026 |
+| D-79 | START segue publicado enquanto ninguém tem acesso; END/CANCEL e aviso ao dono precisam existir antes de liberar o acesso | APPROVED — risco aceito com condição |
+| D-80 | Repositório segue público | APPROVED — risco aceito pelo owner |
+| D-81 | Fluxo único de abertura: o card se expande (dono, protocolo, Iniciar; depois Concluído/Cancelar), os outros somem; o X faz todos voltarem | APPROVED — C08.2 |
+| D-82 | Número do protocolo = número do card + sequência do card (08-0001), sem zerar | APPROVED — C08.1 |
+| D-83 | Resumo do problema obrigatório (mínimo 10 caracteres) para orientar o dono | APPROVED — C08.1 |
+| D-84 | Telas pensadas primeiro para o computador, funcionando no celular | APPROVED — C08.2 |
+| D-85 | Criticidade escondida na tela da operação (os 11 são CRITICAL) | APPROVED — C08.2 |
+| D-86 | Contador de tempo só em "Meus protocolos" | APPROVED — C08.2 |
+| D-87 | Encerrar (duas partes) e cancelar (F01/F02) entram no C08 | APPROVED — C08.1/C08.2 |
+| D-88 | Visões cumulativas por audiência: usuário → dono (+ analytics dos seus cards) → Jair/Bruno (+ todos os cards e consolidado) → admins (+ cadastros, uso, melhoria); 12º card depois das visões | APPROVED — M09/F04/M10 |
+| D-89 | Abertura pergunta "quando o problema começou?" (padrão: agora) para o MTTD | APPROVED — C08.1 |
+| D-90 | Dados de uso das telas (onde as pessoas param) serão anônimos | APPROVED — visão de administração |
+| D-91 | Identidade visual com a paleta da Editora (#19286E, #00C3B3, #93D50A); na tela, o card aparece sem o código SAFRA-NN e sem o texto entre parênteses (o banco segue literal, D-74) | APPROVED — C08.3 |
+| D-92 | Modo Camaleão: admins da plataforma podem ver as telas como usuário, dono de card, Jair/Bruno ou administração, só leitura | APPROVED — C08.3 |
+| D-93 | Meta de recuperação: RPO até 24 h e RTO até 4 h (backup diário do Lovable); PITR como melhoria futura | APPROVED — resolve GI-SAFRA-012 |
+| D-94 | Capacidade dimensionada para o pior caso: 400 pessoas e 1.000 protocolos | APPROVED — C09 |
+| D-95 | Registro técnico (erros, lentidão, login recusado, falhas): 90 dias, só admins, só o código do usuário, nunca segredos | APPROVED — C09 |
 
 ## 3. ADRs
 
@@ -126,19 +172,25 @@ Drizzle permanece como tooling/ORM auxiliar e não pode manter uma segunda trilh
 
 ## 4. Inventário atual de decisões abertas e classificadas
 
-Questão conhecida, registrada e com comportamento seguro/fase responsável **não é UNKNOWN**. O inventário vigente é:
+Questão conhecida, registrada e com comportamento seguro/fase responsável **não é UNKNOWN**.
+
+> **Fonte oficial dos GI-SAFRA:** `docs/GOVERNANCE_ISSUES.md` (C01-AUD2, 30/09/2026). A tabela abaixo é um índice; em caso de divergência, vale o `GOVERNANCE_ISSUES.md`.
+
+O inventário vigente é:
 
 | Item | Estado | Tratamento atual |
 |---|---|---|
-| GI-SAFRA-001 — quatro cenários CRITICAL | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-44 mantém criticidade `NULL`; não inferir; futura decisão cria nova versão |
-| GI-SAFRA-002 — thresholds 2/4/10/11 | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-45 mantém detecção automática `NOT_CONFIGURED`; START manual permitido |
-| GI-SAFRA-003 — fonte mínimo curva A | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-46 mantém automação desligada e START manual |
-| GI-SAFRA-004 — múltiplas tratativas simultâneas | OPEN / DEFERRED_TO_M01 | comportamento atual permite múltiplas ACTIVE; mudança exige decisão explícita |
-| GI-SAFRA-005 — canal/provider de notificações e platform admins | OPEN / DEFERRED_TO_M05 | nenhuma decisão de destinatário/provider é inferida |
-| GI-SAFRA-006 — janela temporal oficial da Safra | OPEN / DEFERRED_TO_F04_M05 | métricas/comunicações não devem inventar janela |
-| GI-SAFRA-007 — publicação formal do 12º card | OPEN / DEFERRED_TO_M10 | proposta não vira cenário produtivo automaticamente |
-| GI-SAFRA-008 — janela de governança semanal | OPEN / DEFERRED_TO_GOVERNANCE_PHASE | nenhuma cadência é inferida |
-| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | OPEN / NON_BLOCKING_BY_APPROVED_SAFE_BEHAVIOR | D-47 permite estruturar apenas cláusulas inequivocamente elegíveis; demais permanecem não estruturadas |
+| GI-SAFRA-001 — quatro cenários CRITICAL | RESOLVED (D-55) | os 11 são CRITICAL na versão 2 (migration 20261001120000) |
+| GI-SAFRA-002 — thresholds 2/4/10/11 | OPEN / DEFERRED_TO_PRODUCT_V2 (D-56) | D-45 mantém detecção automática `NOT_CONFIGURED`; START manual permitido |
+| GI-SAFRA-003 — fonte mínimo curva A | OPEN / DEFERRED_TO_PRODUCT_V2 (D-56) | D-46 mantém automação desligada e START manual |
+| GI-SAFRA-004 — múltiplas tratativas simultâneas | RESOLVED (D-57) | uma ACTIVE por pessoa e por cenário; trava ativa (migration 20261001120000) |
+| GI-SAFRA-005 — canal/provider de notificações e platform admins | DECIDED (D-58) / IMPLEMENTATION_IN_M05 | e-mail + Teams; destinatários definidos |
+| GI-SAFRA-006 — janela temporal oficial da Safra | DECIDED (D-59) / IMPLEMENTATION_IN_F04_M05 | abertura/encerramento manual pelo Kaue |
+| GI-SAFRA-007 — publicação formal do 12º card | DECIDED (D-60) / IMPLEMENTATION_IN_M10 | proponente escreve, Jair aprova, platform admin publica |
+| GI-SAFRA-008 — janela de governança semanal | RESOLVED (D-61) / OUT_OF_APP_SCOPE | ritual fora do Painel; F05 mantida |
+| GI-SAFRA-009 — mapeamento de eventos dos SLAs textuais | RESOLVED (D-62) | sem cronômetro de SLA; escada de avisos (revista pela D-67: 2h e 4h) é requisito da M05/F01 |
+| GI-SAFRA-010 — governança de liberação de START por card | RESOLVED (D-63) | 11 cenários liberados para qualquer usuário corporativo |
+| métricas do protocolo Safra (substitutas de MTTD/MTTR/MTBF) | DEFERRED_TO_F04_M05 | D-50 retirou as métricas de TI; nenhuma métrica de protocolo é inferida |
 | fechamento com passo incompleto/NA | DEFERRED_TO_F01 | não impacta START |
 | impacto quantitativo — métricas/thresholds | DEFERRED_TO_F04 | modelo conceitual aprovado; thresholds não inferidos |
 | matriz exata de permissões por papel | IMPLEMENTED_C04 | fonte: `private.safra_principals` + `private.safra_role_grants` e matriz C04 |
@@ -549,6 +601,8 @@ Decisão: toda concessão, troca, revogação e remoção de grant governado ger
 horário do servidor, resultado e `correlation_id`. O histórico é append-only por trigger
 (UPDATE/DELETE bloqueados inclusive para sessões privilegiadas). Tentativas negadas são
 registradas por `public.safra_log_access_denied`, com autoria e horário resolvidos no servidor.
+
+> **Correção 01/10/2026 (AUD-GERAL A-11):** a função nunca foi chamada e não conseguiria registrar, porque a recusa desfaz a transação inteira, inclusive o registro. Foi removida. Tentativas negadas não são gravadas no banco; ficam nos logs da plataforma (API/PostgreSQL). Concessões, revogações e mudanças de cadastro continuam auditadas.
 Secrets e tokens nunca são registrados.
 
 ### ADR-031 — Contas de serviço fora de escopo no MVP
@@ -704,7 +758,7 @@ Limites preservados:
 
 
 ### ADR-038 — Engine de SLA determinística e privada
-**APPROVED / IMPLEMENTED — 25/09/2026**.
+**APPROVED / IMPLEMENTED — 25/09/2026** — **SUPERSEDED em 01/10/2026 pela D-75** (engine removida). Mantido como histórico; os princípios de tempo (horário do servidor, sem inferência, funções privadas) continuam nas regras de tempo da D-76/D-77.
 
 Decisão:
 - o cálculo de SLA é derivado de timestamps/eventos server-side;
@@ -834,7 +888,7 @@ Enquanto não existir fonte/regra oficial do saldo mínimo:
 - futura automação exige fonte oficial + regra versionada.
 
 ### D-47 / GI-SAFRA-009 — política formal de estruturação dos SLAs textuais
-**APPROVED — 27/09/2026**.
+**APPROVED — 27/09/2026** — **SUPERSEDED**: sem SLA nos cards (D-62) e engine aposentada (D-75). Mantida como histórico.
 
 Uma cláusula textual só é elegível a `scenario_slas` quando cumprir **todos** os critérios:
 1. descreve explicitamente prazo da **tratativa**, não detecção, gatilho, milestone intermediário, janela operacional ou pós-mortem;
@@ -882,3 +936,417 @@ Consequências:
 - a pendência `DEFERRED_TO_PRIVACY_OWNER_BEFORE_REAL_USER_RELEASE` deve ser encerrada documentalmente;
 - continuam vigentes minimização, retenção, anonimização/eliminação posterior e as restrições de dados sensíveis;
 - esta decisão não altera a política de retenção aprovada.
+
+### D-50 — Reliability Monitor/MTTR descontinuado
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+Contexto: a reauditoria C00-AUD2 (`docs/AUDITORIA_C00_REABERTURA_2026-09-30.md`) mostrou que o START do C08 substituiu o fluxo "Novo Incidente" sem decisão registrada, contrariando D-02, `ARQUITETURA.md` §9 e o SAFRA-M07.
+
+Decisão:
+- o `incident-log-pro` passa a ter um único produto: o Painel Safra;
+- não existe mais "Novo Incidente"; a abertura é sempre "Abrir Protocolo" sobre um cenário publicado;
+- o Reliability Monitor inteiro sai: `applications`, `incidents`, MTTD, MTTR, MTBF, downtime, disponibilidade e os dados fictícios XPTO/ABC/SEP;
+- as tabelas `public.applications` e `public.incidents` e seus helpers são apagados por migration (`20260930120000_c00_aud2_retire_reliability_monitor.sql`); o conteúdo era apenas seed demo;
+- as telas de MTTR (Visão Geral, Incidentes, Aplicações, Indicadores) são removidas; a Visão Geral fica como "Em obras" até existir a versão Safra;
+- não haverá app paralelo (D-01 mantida).
+
+Alternativas descartadas: convivência dos dois produtos no mesmo app; separação em apps diferentes.
+
+Impacto:
+- D-02 passa a SUPERSEDED;
+- SAFRA-M07 (ponte com incidents de TI) é cancelado;
+- `MATRIZ_PARIDADE.md`, `ARQUITETURA.md` §9, `ROADMAP.md`, `REGRAS_NEGOCIO.md` e `GLOSSARIO_DOMINIO.md` são atualizados;
+- métricas de comunicação/analytics passam a ser métricas do protocolo Safra, a definir em F04/M05 sem inferência;
+- o histórico Git e as migrations antigas permanecem intactos como registro.
+
+### D-51 — START liberado para os 11 cenários publicados
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+Os 11 cenários publicados continuam startáveis, como já estão no C08. A regra de quais cards podem ser abertos, e por quem, será definida numa governança futura (`GI-SAFRA-010`). Até lá, nenhum card é bloqueado por inferência.
+
+### D-52 — Mudança de banco só a partir de arquivo no repositório
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+Contexto: três migrations foram aplicadas no PRIMARY em 28/09/2026 sem arquivo no repositório (achado C00-AUD2-07). O Lovable permite alterar o banco por vários caminhos (chat, editor SQL, conector), e só alguns salvam o arquivo.
+
+Decisão:
+- toda alteração de estrutura, permissão ou dado de referência no PRIMARY nasce como arquivo em `supabase/migrations/`, versionado no GitHub **antes** de ser aplicado;
+- ao aplicar fora do fluxo automático, a versão é registrada em `supabase_migrations.schema_migrations`;
+- no início de cada sessão de trabalho, compara-se a lista de versões do PRIMARY com os arquivos do repositório; qualquer diferença nova é reportada ao owner antes de seguir.
+
+### D-53 — Fonte oficial das pendências de governança
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+`docs/GOVERNANCE_ISSUES.md` passa a ser o único dono do texto e do status de cada GI-SAFRA. `DECISOES.md` mantém só o índice. `public.governance_issues` espelha o status. Havendo divergência, vale o `GOVERNANCE_ISSUES.md` e o banco é corrigido por migration (D-52).
+
+### D-54 — STATUS e ROADMAP enxutos
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+Aplica a regra de autoridade do C01 ("STATUS não é backlog histórico; ROADMAP não duplica regras"):
+- `STATUS.md` descreve só onde o projeto está agora;
+- o histórico integral até 30/09/2026 foi movido, sem alteração, para `docs/historico/`;
+- `ROADMAP.md` lista fases, estado e gates, e aponta para os documentos donos de regras, decisões, arquitetura e domínio.
+
+### D-55 — Os 11 cenários são CRITICAL; aviso vai ao dono do card
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-001.**
+
+Contexto: a reunião de 22/09/2026 falava em quatro temas "super pesados", sem nomeá-los, e em comunicar a diretoria na abertura de um CRITICAL. A criticidade de todos os cenários estava `NULL` (D-44).
+
+Decisão:
+- os 11 cenários publicados (SAFRA-01 a SAFRA-11) têm criticidade `CRITICAL`;
+- a comunicação de abertura de um CRITICAL vai para o **dono do card** (owner vigente do cenário);
+- a **diretoria fica fora** desse fluxo por ora; incluí-la exige decisão nova;
+- esta decisão prevalece sobre a menção a "quatro" da reunião de 22/09, pela regra de precedência (decisão humana posterior registrada).
+
+Aplicação técnica:
+- a criticidade é conteúdo da versão publicada, que é imutável; a mudança entra numa nova `scenario_version` (versão 2) de cada cenário, e a versão 1 passa a `RETIRED`;
+- tratativas já abertas continuariam na versão em que começaram (hoje não há nenhuma);
+- até a aplicação, o banco segue com `criticality = NULL` e o comportamento seguro da D-44;
+- a notificação em si só existe quando o SAFRA-M05 for implementado.
+
+### D-56 — Detecção automática de gatilho fora do MVP
+**APPROVED — 30/09/2026** — owner: Kaue.
+
+O aviso automático de que um gatilho foi atingido (a partir de integrações como Intelipost, Protheus ou WMS) fica para uma versão futura do produto (V2 ou V3). No MVP, todo START é manual (D-45 continua valendo). Por isso os números de disparo dos cenários 2, 4, 10 e 11 (GI-SAFRA-002) e a fonte do mínimo da curva A do cenário 9 (GI-SAFRA-003) não são necessários agora e ficam adiados, sem valor inferido.
+
+### D-57 — Uma tratativa ativa por pessoa e por cenário
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-004.**
+
+Regra:
+- uma pessoa (identidade Microsoft, `auth.uid()`) pode ter tratativas abertas em vários cenários ao mesmo tempo;
+- no mesmo cenário, a mesma pessoa só pode ter **uma** tratativa `ACTIVE`; outra só depois de encerrar (END) ou cancelar (CANCEL) a primeira;
+- pessoas diferentes podem ter, cada uma, uma tratativa `ACTIVE` do mesmo cenário ao mesmo tempo;
+- a retentativa do mesmo START (mesma chave de idempotência) continua devolvendo a mesma tratativa, sem contar como segunda abertura.
+
+Aplicação técnica pendente: trava no banco (unicidade de tratativa `ACTIVE` por pessoa e cenário) e mensagem na tela de Abrir Protocolo. Momento de ligar a trava a confirmar com o owner, porque END/CANCEL (F01/F02) ainda não existem.
+
+### D-58 — Canais e destinatários dos avisos
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-005.**
+
+Canais: **e-mail** (Microsoft 365) e **Microsoft Teams**, ambos enviados pelo servidor (nunca pelo navegador).
+
+Destinatários do aviso de abertura de protocolo:
+
+| Quem | Recebe? | Canal |
+|---|---|---|
+| Dono do card (owner vigente) | sim | e-mail e Teams |
+| Jair (`safra_governance_admin`) | sim, de todos os protocolos | só e-mail |
+| Platform admins (time técnico) | não, salvo se forem donos do card | — |
+| Bruno (`safra_executive_admin`) | não (sem e-mail operacional) | — |
+| Diretoria | fora do fluxo por ora (D-55) | — |
+
+Pré-requisito: autorização no Microsoft 365 da Editora para o Painel enviar e-mail e postar no Teams (TI/administrador do tenant). Detalhes (caixa remetente, canal ou chat do Teams, modelo da mensagem) ficam para a M05. Continuam valendo: envio server-side, template versionado, log de entrega, idempotência e deduplicação por e-mail.
+
+### D-59 — Início e fim da Safra por marcação manual
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-006.**
+
+- A "Safra corrente" não tem datas fixas: ela começa quando o Kaue marca **"Safra iniciada"** no sistema e termina quando ele marca **"Safra encerrada"**.
+- Os instantes são gravados pelo servidor, no fuso `America/Sao_Paulo` para exibição (C07, Regra 2), com autor registrado.
+- Métricas, e-mails e relatórios "da Safra corrente" usam esse intervalo.
+- O encerramento é o marco da política de retenção (ADR-016): a partir dele contam os prazos de eliminação/anonimização de dados pessoais.
+- Implementação quando a primeira funcionalidade precisar da janela (F04/M05). Incluir substitutos para a marcação exige decisão nova.
+
+### D-60 — Publicação de cenário novo vindo do 12º card
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-007.**
+
+Complementa ADR-014 (triagem e definição do dono pela proposta do 12º card):
+
+1. **Conteúdo:** o usuário que fez a proposta, por ter a necessidade, escreve o conteúdo do cenário (gatilho, protocolo e prazos).
+2. **Aprovação:** o Jair (`safra_governance_admin`) aprova.
+3. **Publicação:** depois da aprovação, um platform admin (`safra_platform_admin`) publica a primeira `scenario_version`.
+4. **Criticidade:** todo cenário novo nasce `CRITICAL`, como os 11 atuais (D-55).
+
+Sem as etapas 2 e 3 registradas, a proposta não vira cenário publicado (regra anterior mantida). Quem aprova e quem publica ficam gravados na trilha de auditoria.
+
+### D-61 — Ritual da governança semanal fora do Painel
+**APPROVED — 30/09/2026** — owner: Kaue. **Resolve GI-SAFRA-008.**
+
+- O **dia, o horário e o ritual** da reunião semanal de governança são responsabilidade da organização, **fora da alçada da aplicação**. O Painel não guarda nem controla a agenda.
+- A fase **SAFRA-F05 continua**: tela de resumo (cenários recorrentes, prazos estourados, protocolos ativos, tendência) e registro das ações decididas (`PROCESS_CHANGE`, `MASTER_DATA_FIX`, `CAPACITY_CHANGE`, `PARTNER_ACTION`, `SYSTEM_CHANGE`, `TRAINING`, `NO_ACTION_JUSTIFIED`).
+- O período coberto pelo resumo será definido no desenho da F05, sem inferir cadência.
+
+### D-62 — Escada de avisos no lugar de cronômetro de SLA
+**APPROVED — 01/10/2026** — owner: Kaue. **Resolve GI-SAFRA-009.**
+
+**Sem cronômetro de SLA.** Nenhum dos 11 cards terá relógio de prazo nem marcação de "prazo estourado" no MVP. `public.scenario_slas` continua vazio; a engine do C07 e a política D-47 ficam disponíveis, mas sem uso nos cards. Os prazos da Matriz v3 permanecem como texto de referência no protocolo.
+
+**Escada de avisos**, igual para os 11 cards, enquanto o protocolo estiver `ACTIVE`:
+
+| Tempo desde a abertura | Aviso para | Pergunta a quem abriu |
+|---|---|---|
+| 2h | dono do card | "Foi resolvido?" |
+| 3h | Jair | "Foi resolvido?" |
+| 4h (último) | Jair e dono do card | "Foi resolvido?" |
+
+Regras:
+- o tempo conta **24 horas por dia, todos os dias**, inclusive madrugada, fins de semana e feriados ("tempos de Safra");
+- canais conforme D-58: dono do card por e-mail e Teams; Jair só por e-mail; quem abriu recebe a pergunta por e-mail e Teams;
+- a pergunta traz um link para o protocolo no Painel, com dois botões: **"Resolvido"** encerra o protocolo na hora (END, registrado com autor e horário do servidor); **"Ainda não"** registra a resposta, o protocolo segue aberto e os avisos seguintes continuam;
+- quando o protocolo é encerrado ou cancelado, os avisos pendentes deixam de sair;
+- depois do aviso de 4h não há novos avisos; o protocolo segue aberto até ser encerrado;
+- cada aviso é enviado uma única vez por protocolo (idempotência e log de entrega, conforme M05).
+
+Implementação: depende do envio de avisos (SAFRA-M05) e do encerramento (SAFRA-F01). Não entra no pacote da versão 2 dos cards.
+
+### D-63 — Sem restrição de START por card
+**APPROVED — 01/10/2026** — owner: Kaue. **Resolve GI-SAFRA-010.**
+
+A regra da D-51 deixa de ser provisória: qualquer usuário corporativo autenticado (D-48) pode abrir qualquer um dos 11 cenários publicados, respeitada a trava da D-57 (uma tratativa ativa por pessoa e por cenário). Restringir por área, lista de pessoas ou suspensão de card exige decisão nova.
+
+### Aplicação do pacote C01-AUD2 — 01/10/2026
+
+Migration `20261001120000_c01_aud2_scenario_v2_critical_and_start_lock.sql`, com CI verde (App Smoke e Database Disposable) e aplicada no PRIMARY:
+- D-55: 11 cenários na versão 2 CRITICAL; 11 versões 1 RETIRED; áreas (20) e sistemas (11) copiados; nenhuma linha em `scenario_slas` (D-62);
+- D-57: índice `treatments_one_active_per_person_scenario` e erro `SAFRA_START_ACTIVE_EXISTS` no START;
+- GI-SAFRA-001/004/008/009/010 marcados RESOLVED no banco; 002/003/005/006/007 seguem OPEN.
+
+### D-64 — Quem pode encerrar (END) um protocolo
+**APPROVED — 01/10/2026** — owner: Kaue. **Substitui a parte de END da D-06.** Nasce da reauditoria C02-AUD2 (ameaça do botão "Resolvido" em e-mail encaminhado).
+
+- Só podem encerrar um protocolo:
+  1. **quem abriu** (`treatments.opened_by`);
+  2. **o dono do card** vigente (owner atual do cenário).
+- Cada um encerra **logado no próprio perfil** (login Microsoft corporativo, sessão viva). A verificação é feita no servidor, pelo `auth.uid()`, nunca pelo link ou pelo navegador.
+- O botão **"Resolvido"** do e-mail/Teams (D-62) **não encerra direto**: abre o protocolo no Painel, exige login e um clique de confirmação. Quem não for quem abriu nem o dono vê a mensagem de que não pode encerrar; o link encaminhado não dá poder a terceiros.
+- O encerramento grava autor e horário do servidor e para os avisos pendentes (D-62).
+- START continua liberado a qualquer usuário corporativo (D-63). CANCEL segue a D-06 até decisão própria.
+
+Implementação: SAFRA-F01 (END) junto com a M05 (avisos).
+
+### D-65 — Dono de card não abre protocolo do próprio card
+**APPROVED — 01/10/2026** — owner: Kaue.
+
+- O dono vigente de um card **não pode abrir protocolo daquele card**. O papel dele no protocolo é o de dono, não o de usuário.
+- O mesmo dono **pode** abrir protocolo de um card de **outro** dono; nesse protocolo ele é o usuário.
+- Por isso, quem abre nunca é o próprio dono do card, e o encerramento em duas partes (D-66) sempre envolve duas pessoas.
+- Ajusta a D-63 (liberação geral) e a D-06 (START por qualquer usuário).
+
+Implementação pendente: o START passa a recusar a abertura quando `auth.uid()` é o dono vigente do cenário, com mensagem própria na tela.
+
+### D-66 — Encerramento em duas partes e cancelamento
+**APPROVED — 01/10/2026** — owner: Kaue. Complementa a D-64.
+
+**Encerramento (END) em duas partes:**
+- o protocolo tem duas partes a fechar: a do **usuário** (quem abriu) e a do **dono do card**;
+- cada um fecha a própria parte, logado no próprio perfil (D-64), e cada fechamento grava o **seu horário** (servidor);
+- quando o **usuário** fecha a parte dele, a trava da D-57 é liberada para ele naquele card: ele já pode abrir outro protocolo do mesmo card;
+- se o **dono** fecha primeiro, o usuário continua travado até fechar a parte dele;
+- o protocolo só fica totalmente encerrado quando as duas partes estão fechadas.
+
+**Cancelamento (CANCEL):**
+- **qualquer um dos dois** (usuário ou dono do card) pode cancelar, sozinho, logado no próprio perfil;
+- **motivo obrigatório** sempre;
+- cancelamento não conta como resolvido e preserva o histórico (regras C02/C07 mantidas).
+
+**Relatórios (F04):** três medidas de tempo — tempo de encerramento pelo **dono do card**, tempo de encerramento pelo **usuário** e uma visão **consolidada** mostrando a diferença entre os dois.
+
+Implementação: F01 (END) e F02 (CANCEL). A trava da D-57 hoje usa `status = ACTIVE`; na F01 ela passa a considerar a parte do usuário.
+
+### D-67 — Escada de avisos revista
+**APPROVED — 01/10/2026** — owner: Kaue. **Substitui a escada da D-62** (a parte "sem cronômetro de SLA" continua valendo).
+
+| Momento desde a abertura | Condição | Aviso |
+|---|---|---|
+| 2h | usuário ainda não fechou a parte dele (D-66) | e-mail ao **dono do card**, pedindo que cobre o usuário; pergunta **"foi resolvido?"** ao **usuário** |
+| 4h | usuário ainda não fechou a parte dele | idem |
+| qualquer momento | usuário fechou a parte dele | **nenhum aviso a mais** |
+
+- O Jair saiu da escada e não há mais aviso de 3h.
+- As 4h são só o momento do último aviso. **Não existe "prazo estourado"**: o Painel continua sem cronômetro de SLA (D-62).
+- Tempo corrido, 24h por dia, todos os dias (D-62).
+- A pergunta ao usuário traz o link para o Painel, onde ele fecha a parte dele logado no próprio perfil (D-64/D-66).
+- Canal: **e-mail** decidido. **Teams** em dúvida, registrado como GI-SAFRA-011.
+- O aviso de abertura do protocolo segue a D-58 (dono do card e Jair), salvo decisão nova.
+
+### D-68 — Separação de funções no 12º card
+**APPROVED — 01/10/2026** — owner: Kaue. Complementa a D-60. Nasce da reauditoria C02-AUD2.
+
+- Quem **propõe** um cenário não pode **aprovar** nem **publicar** a própria proposta.
+- Se a proposta for do **Jair** (o aprovador habitual), quem aprova é o **Kaue**.
+- Se a proposta for de um **admin técnico**, a publicação é feita por **outro** admin técnico.
+- Quem aprova e quem publica também são pessoas diferentes; se o Kaue aprovar, outro admin técnico publica.
+- O servidor verifica essas regras pelo `auth.uid()` de cada etapa, e cada etapa fica na trilha de auditoria.
+
+Implementação: SAFRA-M10.
+
+### D-69 — Início da Safra corrente
+**APPROVED — 01/10/2026** — owner: Kaue. Aplica a D-59.
+
+- A Safra corrente **começou em 01/10/2026** (fuso `America/Sao_Paulo`).
+- Ela **termina quando o Kaue marcar** o encerramento no sistema; não há data prevista.
+- Enquanto a marcação da D-59 não existir no sistema (F04/M05), esta decisão é o registro oficial do início. Ao construir a marcação, o primeiro registro deve usar 01/10/2026 00:00 (São Paulo) como início, com referência a esta decisão.
+- O encerramento continua sendo o marco da política de retenção (ADR-016).
+
+### D-70 — Proteções contra encerrar a Safra por engano
+**APPROVED — 01/10/2026** — owner: Kaue. Complementa a D-59. Nasce da reauditoria C02-AUD2.
+
+- **Confirmação reforçada:** para marcar "Safra encerrada", é preciso digitar `ENCERRAR SAFRA`; um clique não basta.
+- **Prazo para desfazer:** por **7 dias** após o encerramento, a Safra pode ser **reaberta**. Nesse prazo, **nenhum dado pessoal é apagado ou anonimizado** pela política de retenção.
+- A contagem da retenção (ADR-016) começa só depois desses 7 dias sem reabertura.
+- Encerramento e reabertura ficam na trilha de auditoria, com autor e horário do servidor.
+
+Implementação: junto com a marcação da D-59 (F04/M05).
+
+### D-71 — Termo canônico "Solicitante"
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da reauditoria C03-AUD2.
+
+- **Solicitante** é a pessoa que abriu o protocolo (executou o START), identificada pela sessão Microsoft (`treatments.opened_by`).
+- Substitui "ator do START" e o uso informal de "usuário" nesse sentido. "Usuário" continua significando qualquer pessoa autenticada no Painel.
+- Relatórios e avisos usam: "tempo de encerramento pelo **solicitante**", "tempo de encerramento pelo **dono do card**" e a visão consolidada (D-66).
+- O dono do card nunca é o solicitante do próprio card (D-65).
+
+### D-72 — Situações do protocolo com encerramento em duas partes
+**APPROVED — 01/10/2026** — owner: Kaue. Detalha a D-66.
+
+| Situação (tela) | Condição | Efeitos |
+|---|---|---|
+| **Em andamento** | nenhuma parte fechada | trava do solicitante ativa (D-57); escada de avisos ativa (D-67) |
+| **Aguardando dono** | só o solicitante fechou a parte dele | trava do solicitante liberada; avisos encerrados |
+| **Aguardando solicitante** | só o dono fechou a parte dele | solicitante segue travado e recebendo a pergunta "foi resolvido?" |
+| **Encerrado** | as duas partes fechadas | horário de cada parte preservado para os relatórios |
+| **Cancelado** | o solicitante ou o dono cancelou, com motivo | histórico preservado; não conta como resolvido |
+
+Persistência (F01): o protocolo guarda separadamente quem fechou e quando, para o solicitante e para o dono. O estado técnico `RESOLVED` só é atingido com as duas partes fechadas; as duas situações "Aguardando" continuam `ACTIVE` no banco, distinguidas pelas partes já fechadas.
+
+### D-73 — Escalonamento fora do Painel
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da reauditoria C03-AUD2.
+
+- O escalonamento de um protocolo (crise técnica, de negócio ou executiva) **não é registrado nem controlado pelo Painel**. Ele é feito pelos **donos de card, em conjunto**, por avaliação própria.
+- A fase **SAFRA-M06 (Escalonamento e comitê) é cancelada**.
+- O termo "escalonamento" sai do vocabulário do produto (`GLOSSARIO_DOMINIO.md` v2.0).
+- A tabela `public.treatment_escalations` e o evento `ESCALATION_CHANGED`, criados no C05, deixam de ter uso. A remoção da tabela segue a D-52 (migration própria) e fica para o pacote da reauditoria do C05.
+
+### D-74 — Nome do card é o texto da Matriz v3
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da reauditoria C06-AUD2.
+
+- O nome de cada card (`scenarios.name`) é o texto **literal** da coluna "Cenário" da Matriz v3, inclusive a quebra de linha dentro dos nomes do SAFRA-04 (`Pedido pago não integrado` + `("limbo" de entrada)`) e do SAFRA-05 (`Tracking falso` + `(status ≠ físico)`).
+- Não existe "nome curto" no banco. Listas resumidas (como a do ROADMAP) são apenas referência e não são fonte.
+- Como a tela exibe a quebra de linha é decisão de UX, na C08.
+
+### Aplicação do pacote C06-AUD2 — 01/10/2026
+
+- Planilha fornecida pelo owner: assinatura `b0cca8cc…` igual à aprovada; o leitor gerou cópia idêntica à registrada; comparação sem diferenças (`NO_DIFF`); validação `PASS`.
+- Conferência de 100% dos campos no PRIMARY: `docs/data-contracts/c06_aud2_reconciliation_2026-10-01.json`.
+- Migration `20261001220000_c06_aud2_governance_issue_texts.sql` (CI verde #242/#280; aplicada no PRIMARY, 37 = 37): textos das pendências abertas e da resolução da GI-SAFRA-009 alinhados às decisões vigentes; nenhum status mudou.
+- Marcos P1–P4: critérios revistos (D-62/D-66/D-67/D-73); todos seguem `NOT_PUBLISHED`.
+
+### D-75 — Engine de SLA aposentada
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da reauditoria C07-AUD2. Aplica a D-62.
+
+- Como nenhum card usa SLA (D-62), a engine do C07 é **removida**, como foi feito com o escalonamento (D-73): as funções `safra_evaluate_sla`, `safra_evaluate_configured_sla` (2 versões), `safra_treatment_sla_state`, `safra_treatment_event_time` e `safra_sla_target_interval`, a tabela `scenario_slas` (vazia) e o tipo de evento `SLA_BREACHED` (nenhum registro).
+- O catálogo e o resumo do START deixam de trazer campos de SLA.
+- Os prazos da Matriz v3 continuam como **texto de referência** (`source_reference.sla_target`).
+- Se uma versão futura do produto quiser SLA, o código antigo está no histórico do GitHub, e a volta exige decisão nova.
+
+### D-76 — Escada de avisos completa
+**APPROVED — 01/10/2026** — owner: Kaue. Completa a D-67.
+
+| Momento desde a abertura | Solicitante | Dono do card |
+|---|---|---|
+| 2h | "foi resolvido?" | pedido para cobrar o solicitante, **se ainda não fechou a parte dele** |
+| 4h | idem | idem |
+| 5h, 6h, 7h… (de hora em hora) | idem | idem |
+
+- Os avisos param quando o **solicitante** fecha a parte dele ou quando o protocolo é **cancelado**.
+- Se o **dono** fecha a parte dele primeiro, ele **deixa de receber**; só o solicitante continua recebendo.
+- Tempo corrido em horas absolutas, 24h por dia (horário de verão não altera).
+- Bordas: o aviso vale no instante exato (2h00); quem fecha ou cancela exatamente nesse instante não recebe aquele aviso.
+- Regra de tempo: `private.safra_reminder_steps`. Envio: M05/F01.
+
+### D-77 — Tempos de encerramento do analytics
+**APPROVED — 01/10/2026** — owner: Kaue. Detalha a D-66.
+
+- **Tempo do solicitante:** da abertura até o solicitante fechar a parte dele.
+- **Tempo do dono:** da abertura até o dono fechar a parte dele.
+- **Consolidado:** da abertura até a **última** parte fechada (protocolo totalmente encerrado).
+- Parte ainda aberta: o tempo dela e o consolidado ficam **em aberto** (nunca zero nem "cumprido").
+- Protocolo **cancelado** não conta como resolvido: fica fora dos tempos (D-72).
+- Nada de duração gravada: os tempos são sempre calculados a partir dos horários do servidor.
+- Dia e hora dos relatórios no fuso `America/Sao_Paulo`.
+- Regras de tempo: `private.safra_close_times` e `private.safra_local_day`.
+
+### Aplicação do pacote C07-AUD2 — 01/10/2026
+
+Migration `20261001230000_c07_aud2_retire_sla_engine_and_time_rules.sql` (CI verde #244/#282; aplicada no PRIMARY, 38 = 38): engine de SLA removida (D-75); regras de tempo da escada (D-76) e do analytics (D-77) criadas como cálculos que recebem os horários (as colunas de cada parte chegam na F01); resolução da GI-SAFRA-009 atualizada. Teste: `c07_aud2_time_rules.test.sql` (31). O schema público passa de 16 para 15 tabelas.
+
+### Aplicação do pacote C07-AUD2b — 01/10/2026
+
+Auditoria detalhada do SLA: migration `20261001233000_c07_aud2b_close_times_seconds.sql` (CI verde #247/#285; aplicada no PRIMARY, 39 = 39) (tempos também em segundos; comentário sem SLA); D-47 e ADR-038 marcados SUPERSEDED; documentos vigentes sem SLA; Knowledge do Lovable atualizado com autorização do owner.
+
+### D-78 — Dono indisponível bloqueia o card
+**APPROVED — 01/10/2026** — owner: Kaue. Nasce da auditoria geral C00–C07 (A-04).
+
+- Se o dono vigente de um card for **desativado** ou perder o papel `scenario_owner`, o card fica **bloqueado temporariamente**: sai do catálogo e o START é recusado com `SAFRA_SCENARIO_OWNER_UNAVAILABLE`, até a definição de um novo dono.
+- O histórico de dono não muda sozinho; a troca de dono continua sendo um ato de governança.
+- **Nesta Safra não haverá troca de dono.**
+
+### D-79 — START publicado antes do acesso das pessoas
+**APPROVED — 01/10/2026** — owner: Kaue (A-02).
+
+- O app segue publicado com o START ligado porque **ninguém tem acesso ainda**.
+- **Condição:** antes de liberar o acesso às pessoas, precisam existir o encerramento e o cancelamento (F01/F02) e o aviso ao dono (M05). Sem isso, quem abrir um protocolo fica travado no card (D-57) e o dono não é avisado.
+- **Condição (01/10/2026):** publicar no Lovable a versão atual do GitHub antes de liberar o acesso. A versão publicada é de antes do C07 e espera campos de SLA que o banco não tem mais; o catálogo dela não carrega.
+
+### D-80 — Repositório público
+**APPROVED — 01/10/2026** — owner: Kaue (A-03). Risco aceito: e-mails corporativos, papéis e o threat model ficam visíveis. Nenhuma chave secreta está no repositório.
+
+### Aplicação do pacote da auditoria geral — 01/10/2026
+
+Migration `20261001234000_aud_geral_tenant_owner_audit.sql`:
+- A-01: o predicado corporativo e o vínculo login ↔ cadastro exigem o tenant Microsoft da Editora, lido de `auth.identities`; o vínculo também acontece quando a identidade chega;
+- A-04/D-78: dono indisponível bloqueia o card;
+- A-05: mudanças de cadastro auditadas;
+- A-08: o catálogo indica o card do próprio dono;
+- A-11: `safra_log_access_denied` removida;
+- A-12: índice redundante removido;
+- A-16: resumo do START com horário do servidor.
+
+Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram a criar a identidade Microsoft dos usuários sintéticos. CI verde (App Smoke #252, Database Disposable #290); aplicada no PRIMARY, 40 = 40.
+
+### D-81 a D-90 — UX do COMEÇO e visões (C08)
+**APPROVED — 01–02/10/2026** — owner: Kaue.
+
+- **D-81:** fluxo único. Tocar no card o expande e esconde os demais; o card mostra dono, protocolo e **Iniciar**; depois de aberto, **Concluído** e **Cancelar**; o **X** fecha e todos voltam.
+- **D-82:** número do protocolo `NN-SSSS` (número do card + sequência do card), sem zerar. Ex.: 1º do SAFRA-08 = `08-0001`.
+- **D-83:** o resumo "O que está acontecendo?" é obrigatório, com pelo menos 10 caracteres. O mesmo mínimo vale para o motivo do cancelamento.
+- **D-84:** computador primeiro; o celular continua funcionando.
+- **D-85:** criticidade fora da tela da operação.
+- **D-86:** contador "tempo desde a abertura" só em "Meus protocolos".
+- **D-87:** encerrar em duas partes (D-64/D-66/D-72) e cancelar com motivo entram no C08 (F01/F02 antecipadas). O aviso por e-mail continua na M05; até lá, o dono vê os protocolos em "Protocolos dos meus cards".
+- **D-88:** visões cumulativas: **usuário**; **dono do card** (+ "Protocolos dos meus cards" + analytics dos seus cards); **Jair e Bruno** (+ analytics de todos os cards e consolidado, com tempos tipo MTTR/MTTD); **admins** (+ painel de cadastrados e papéis, uso das telas, melhoria do app). O **12º card** vem depois das visões.
+- **D-89:** a abertura pergunta "Quando o problema começou?" (padrão: agora; não aceita futuro, com tolerância de 5 minutos para relógio adiantado). Base do MTTD: abertura − início do problema.
+- **D-90:** dados de uso das telas são **anônimos**.
+
+### D-91 e D-92 — Identidade visual e Modo Camaleão (C08.3)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-91:** paleta da Editora do Brasil: azul-marinho `#19286E` (textos, botões, menu), verde-água `#00C3B3` e verde-limão `#93D50A` (destaques, estados, símbolo). Verde-água e limão nunca como cor de texto (contraste WCAG AA). Na tela, o card não mostra o código `SAFRA-NN` e o título perde o que está entre parênteses (ex.: "Pedido pago não integrado"); o banco continua com o nome literal da Matriz v3 (D-74) e o número do protocolo continua `NN-SSSS` (D-82).
+- **D-92** (revista pela D-96): "Modo Camaleão" para quem tem o papel `safra_platform_admin` (hoje Kaue, Amanda, João e Vinicius): um seletor "ver como" mostra as telas de usuário, dono de card (escolhendo o dono), Jair/Bruno e administração. É **só leitura**: abrir, concluir e cancelar ficam desligados, e o banco recusa qualquer ação em nome de outra pessoa. A leitura dos protocolos de um dono usa `safra_admin_get_owner_treatments`, liberada só para platform admin.
+
+### D-93 a D-95 — Fundação operacional (C09)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-93:** a meta da D-23 passa a ser **RPO de até 24 h** (perda máxima de dados) e **RTO de até 4 h** (tempo para voltar), compatível com o backup diário do Lovable Cloud. A restauração ponto a ponto (PITR) fica como melhoria futura, a pedir orçamento ao Lovable. Resolve a GI-SAFRA-012. O SLO de 99,95% e a classe CRITICO seguem.
+- **D-94:** a capacidade é dimensionada para o **pior caso: 400 pessoas e 1.000 protocolos**, com teste contínuo e de pico no CI.
+- **D-95:** observabilidade mínima no próprio Painel: erros de tela, respostas lentas (≥ 2 s), logins recusados e falhas técnicas de ação vão para `public.ops_events`, guardados por **90 dias**, lidos só por platform admins em Administração → Saúde do sistema. Guarda só o código do usuário (nunca nome ou e-mail) e nunca tokens, chaves ou senhas (o banco descarta o que parecer segredo). Até existirem alertas por e-mail (M05/TI), um admin confere a Saúde do sistema uma vez por dia na Safra.
+
+### D-96 — Modo Camaleão só para Kaue e Vinicius (revisa a D-92)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- O seletor "ver como" e a leitura `safra_admin_get_owner_treatments` ficam só para **Kaue Pastrello** e **Vinicius Moraes**: é preciso ser `safra_platform_admin` **e** estar logado com um desses dois e-mails corporativos. Amanda e João seguem platform admins (Administração e Saúde do sistema), sem o Modo Camaleão.
+- Quem decide é o banco (`private.safra_can_use_chameleon`); a tela só pergunta (`safra_can_use_chameleon`). Mudar a lista exige nova migration.
+
+### D-97 — Sem monitor externo de disponibilidade
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- O TI **não** vai configurar um monitor externo que confere o Painel a cada minuto (sugestão do Lovable em 02/10/2026).
+- Consequência aceita: se o Painel ou o banco cair por inteiro, ninguém é avisado automaticamente; a queda é percebida por quem usa ou pela página de status do Lovable (https://status.lovable.dev, avisos por e-mail). Os erros parciais continuam na Saúde do sistema (D-95).
+
+### D-98 a D-101 — Regras de mudança de situação do protocolo (M01)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-98:** **sem reabrir.** Encerrado e Cancelado são definitivos; se o problema voltar, abre-se um protocolo novo.
+- **D-99:** quem concluiu a **própria parte** pode **desfazer em até 5 minutos**, enquanto o protocolo estiver em andamento (se a outra parte já concluiu, ele virou Encerrado e não volta). Fica registrado (`REQUESTER_PART_UNDONE` / `OWNER_PART_UNDONE`). Não vale se a pessoa já abriu outro protocolo no mesmo card (D-57).
+- **D-100:** **sem correção pelo admin.** Protocolo aberto errado é cancelado e aberto de novo.
+- **D-101:** protocolo **sem nenhuma parte concluída** é **cancelado automaticamente 72 horas depois da abertura**, sem autor, com o motivo "Cancelado automaticamente: 72 horas sem nenhuma conclusão (D-101)." Se uma das partes já concluiu, ele não é cancelado: continua aguardando a outra parte. Roda a cada 10 minutos.
+

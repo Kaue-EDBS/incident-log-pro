@@ -20,6 +20,11 @@ for gate_id in ("P1", "P2", "P3", "P4"):
     if status not in data["allowed_status"]:
         errors.append(f"{gate_id}: invalid status {status}")
 
+    forbidden = (data.get("criteria_revision") or {}).get("forbidden_criteria_prefixes") or []
+    for criterion in criteria:
+        if any(criterion.startswith(prefix) for prefix in forbidden):
+            errors.append(f"{gate_id}: criterion {criterion} refers to a retired concept (D-62/D-73)")
+
     if len(criteria) != len(set(criteria)):
         errors.append(f"{gate_id}: duplicate required criterion")
 

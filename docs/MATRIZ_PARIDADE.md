@@ -10,19 +10,19 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 |---|---|---|---|
 | React/TanStack/Vite | funcional | fundação web | KEEP |
 | layout responsivo | funcional | base da nova UX | REUSE |
-| applications | funcional | confiabilidade TI | KEEP |
-| incidents | funcional | TI; não representa todo Safra | KEEP |
-| abertura de incidente | funcional | START de treatment | REDESIGN |
-| cronômetro persistente | funcional | relógios/SLA | REUSE |
-| timestamps | funcional | eventos temporais | REUSE |
-| MTTD/MTTR/MTBF | funcional | indicadores TI | KEEP |
-| downtime/disponibilidade | funcional | métricas TI | KEEP |
-| histórico | funcional | histórico auditável Safra | REDESIGN |
-| indicadores | funcional | torre corporativa | REDESIGN |
-| filtros | funcional | cenário/área/status/criticidade | REDESIGN |
-| dados demo XPTO/ABC/SEP | seed | não representar operação real | PARK |
+| applications | funcional | removida pela D-50 | REMOVE |
+| incidents | funcional | removida pela D-50 | REMOVE |
+| abertura de incidente | funcional | removida; o único START é "Abrir Protocolo" (treatment) | REMOVE |
+| cronômetro persistente | funcional | `LiveTimer` reutilizado no START só como contador desde a abertura (não é prazo; sem SLA, D-75) | REUSE |
+| timestamps | funcional | regra de fuso horário (`src/lib/metrics.ts`) reutilizada; timestamps de incidente removidos | REUSE |
+| MTTD/MTTR/MTBF | funcional | removidos pela D-50; métricas do protocolo em F04/M05 | REMOVE |
+| downtime/disponibilidade | funcional | removidos pela D-50 | REMOVE |
+| histórico de incidentes | funcional | tela removida; histórico auditável Safra a construir | REMOVE + BUILD |
+| indicadores | funcional | tela removida; torre corporativa a construir | REMOVE + BUILD |
+| filtros | funcional | componente removido; filtros Safra a construir | REMOVE + BUILD |
+| dados demo XPTO/ABC/SEP | seed | apagados com as tabelas (D-50) | REMOVE |
 | RLS antiga aberta | insegura | removida | REMOVE |
-| RLS C00 safra_access | transitória | RBAC final | REDESIGN |
+| RLS C00 safra_access | transitória | substituída no C04; tabelas removidas na D-50 | REMOVE |
 | client Supabase browser | ativo | leitura/operação autorizada | KEEP |
 | mutations críticas no browser | atuais | RPC transacional | REDESIGN |
 | modo TV | inexistente | visão executiva | BUILD |
@@ -30,8 +30,13 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 | treatment | inexistente | operação | BUILD |
 | scenario owner | inexistente | autorização | BUILD |
 | áreas impactadas | inexistente | impacto real | BUILD |
-| SLA múltiplo | inexistente | engine temporal | BUILD |
-| escalonamento | inexistente | técnico/negócio/executivo | BUILD |
+| SLA múltiplo | inexistente | engine aposentada (D-75); no lugar, regras de tempo da escada e do analytics (D-76/D-77) | REMOVE |
+| escalonamento | inexistente | fora do Painel, feito pelos donos de card (D-73) | REMOVE |
+| trava de uma tratativa por pessoa e card | inexistente | D-57 — implementada (C01-AUD2) | BUILD — FEITO |
+| dono não abre o próprio card | inexistente | D-65 — implementada (C02-AUD2) | BUILD — FEITO |
+| encerramento em duas partes | inexistente | D-66/D-72 — F01 | BUILD |
+| avisos (abertura + escada 2h/4h) | inexistente | D-58/D-67 — M05 | BUILD |
+| Safra corrente (marcar início/fim) | inexistente | D-59/D-69/D-70 — F04/M05 | BUILD |
 | proposal workflow | inexistente | governança | BUILD |
 | trilha Safra | inexistente | auditoria | BUILD |
 | identidade corporativa | inexistente | obrigatória | BUILD |
@@ -55,7 +60,7 @@ Legenda: **KEEP**, **REUSE**, **REDESIGN**, **MERGE**, **REMOVE**, **PARK**, **B
 
 ## 3. Domínio
 
-### Legado
+### Legado — removido pela D-50
 
 ```text
 Application
@@ -64,6 +69,8 @@ Application
  -> reliability metrics
 ```
 
+Descontinuado em 30/09/2026. Mantido aqui só como registro.
+
 ### Alvo
 
 ```text
@@ -71,9 +78,9 @@ Operational Area
  -> Scenario
  -> Scenario Version
  -> Owner
- -> SLA / Steps / Impact
+ -> Steps / Impact
  -> Treatment
- -> Steps / Events / Escalations
+ -> Steps / Events / Reminders
  -> Closure / Governance
 ```
 
@@ -97,12 +104,16 @@ Antes de remover fluxo legado:
 - START RPC — CONCLUÍDO no C08;
 - END/CANCEL RPCs — DEFERRED_TO_F01/F02;
 - timeline;
-- SLA engine;
+- regras de tempo — CONCLUÍDO no C07-AUD2 (SLA aposentado, D-75);
 - notificações;
 - visão por área;
 - governança;
 - pós-mortem;
 - relatório executivo.
+
+## 5.1 Lição da reauditoria C00-AUD2
+
+Em 27/09/2026 a abertura de incidente foi trocada pelo START Safra sem decisão registrada, e o hook legado foi removido depois por "não ter consumidor". O critério da seção 4 não foi seguido. A partir de agora, remover ou substituir um fluxo exige decisão em `DECISOES.md` antes do código.
 
 ## 6. Regra de atualização
 
