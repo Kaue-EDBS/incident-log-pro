@@ -229,6 +229,8 @@ select is(
 select is(
   (select count(*)::bigint from information_schema.columns
    where table_schema = 'public'
+     -- ops_events.duration_ms is a measured response time (D-95), not a protocol duration.
+     and table_name <> 'ops_events'
      and (column_name ~* '(duration|elapsed|minutes|seconds)' or data_type = 'interval')),
   0::bigint,
   'no table stores a calculated duration (times are always derived)'

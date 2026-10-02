@@ -193,9 +193,9 @@ select ok(
 
 select ok(
   exists(select 1 from public.governance_issues
-         where issue_key = 'GI-SAFRA-012' and status = 'OPEN' and resolved_at is null
-           and description like '%D-23%' and description like '%PITR%'),
-  'GI-SAFRA-012 (backup x RPO) is mirrored as OPEN'
+         where issue_key = 'GI-SAFRA-012' and description like '%D-23%' and description like '%PITR%'
+           and ((status = 'OPEN' and resolved_at is null) or (status = 'RESOLVED' and resolution_text like 'D-93%'))),
+  'GI-SAFRA-012 (backup x RPO) is OPEN, or RESOLVED only by the owner decision D-93'
 );
 
 select * from finish();

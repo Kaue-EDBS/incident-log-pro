@@ -18,6 +18,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider, useAuth } from "@/integrations/supabase/AuthProvider";
 import { ChameleonProvider } from "@/lib/chameleon";
+import { installClientErrorLogging, logOpsEvent } from "@/lib/ops";
 
 function NotFoundComponent() {
   return (
@@ -46,6 +47,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    logOpsEvent("CLIENT_ERROR", error.name || "Error", {
+      detail: { message: String(error.message ?? "").slice(0, 300) },
+    });
   }, [error]);
 
   return (
@@ -171,6 +175,10 @@ function AuthedShell() {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    installClientErrorLogging();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

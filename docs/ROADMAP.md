@@ -151,7 +151,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 | C06 | Seed canônico da Matriz v3 | CONCLUÍDO (+ C06-AUD2 em 01/10, planilha = banco) | `AUDITORIA_C06_*`, `data-contracts/` |
 | C07 | Engine de SLA → regras de tempo | CONCLUÍDO; C07-AUD2 em 01/10: SLA aposentado (D-75), escada e tempos do analytics (D-76/D-77) | `C07_REGRAS_DE_TEMPO.md`, `AUDITORIA_C07_*` |
 | C08 | UX do COMEÇO | **EM EXECUÇÃO** — START implementado; homologação com sessão real pendente | abaixo |
-| C09 | Fundação operacional | NÃO INICIADO | abaixo |
+| C09 | Fundação operacional | EM EXECUÇÃO (02/10): meta D-93, registro técnico D-95, capacidade D-94, ensaio de restauração, runbook | `RUNBOOK_RECUPERACAO.md`, `AUDITORIA_C09_*` |
 
 ## EIXO 2 — MEIO
 

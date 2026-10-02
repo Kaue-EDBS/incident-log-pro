@@ -16,7 +16,7 @@ concurrency:
 jobs:
   db-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 50
 
     steps:
       - name: Checkout
@@ -116,6 +116,30 @@ jobs:
           }
           cat /tmp/stress.log
           python3 .github/scripts/annotate-log.py /tmp/stress.log "Stress smoke" notice
+
+      - name: Capacity test (400 people, 1,000 protocols, spike)
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          eval "$(supabase status -o env)"
+          E2E_SUPABASE_URL="${API_URL}" E2E_ANON_KEY="${ANON_KEY}" E2E_JWT_SECRET="${JWT_SECRET}" E2E_DB_URL="${DB_URL}"             bun .github/scripts/test-safra-load.ts > /tmp/load.log 2>&1 || {
+              cat /tmp/load.log
+              python3 .github/scripts/annotate-log.py /tmp/load.log "Capacity test"
+              exit 1
+            }
+          cat /tmp/load.log
+          python3 .github/scripts/annotate-log.py /tmp/load.log "Capacity test" notice
+
+      - name: Restore drill (timed)
+        if: ${{ !cancelled() }}
+        run: |
+          bash .github/scripts/test-safra-restore-drill.sh > /tmp/restore.log 2>&1 || {
+            cat /tmp/restore.log
+            python3 .github/scripts/annotate-log.py /tmp/restore.log "Restore drill"
+            exit 1
+          }
+          cat /tmp/restore.log
+          python3 .github/scripts/annotate-log.py /tmp/restore.log "Restore drill" notice
 
       - name: Rehearse rollback of latest migration
         run: |

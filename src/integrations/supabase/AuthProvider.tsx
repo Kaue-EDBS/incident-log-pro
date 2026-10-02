@@ -11,6 +11,7 @@ import {
 
 import { supabase } from "./client";
 import { lovable } from "@/integrations/lovable/index";
+import { logOpsEvent } from "@/lib/ops";
 
 type AuthContextValue = {
   session: Session | null;
@@ -80,6 +81,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
 
         if (error) {
+          logOpsEvent("ACTION_FAILED", "safra_is_corporate_user", {
+            detail: { error: String(error.code ?? "UNKNOWN") },
+          });
           setCorporateAuthorized(false);
           setAuthorizationError(
             "Não foi possível confirmar seu acesso agora. Verifique a conexão e tente novamente.",
@@ -88,6 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         if (data !== true) {
+          logOpsEvent("LOGIN_DENIED", "NOT_CORPORATE");
           setCorporateAuthorized(false);
           setAuthorizationError(
             "Acesso permitido somente para contas Microsoft corporativas da Editora do Brasil.",

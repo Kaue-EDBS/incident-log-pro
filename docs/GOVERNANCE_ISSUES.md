@@ -37,7 +37,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 009 | Eventos dos SLAs textuais | RESOLVED (D-62) — sem cronômetro de SLA |
 | 010 | Liberação de START por card | RESOLVED (D-63) |
 | 011 | Avisos também pelo Teams? Para pessoa ou canal? | OPEN — DEFERRED_TO_M05 |
-| 012 | Backup diário atende a meta de RPO 5 min / RTO 30 min (D-23)? | OPEN — DEFERRED_TO_C09 |
+| 012 | Backup diário atende a meta de RPO 5 min / RTO 30 min (D-23)? | RESOLVED (D-93) — meta revista: RPO até 24 h, RTO até 4 h |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -309,7 +309,7 @@ Até a decisão, a M05 deve considerar apenas e-mail.
 
 ## GI-SAFRA-012 — Backup diário x meta de RPO 5 min / RTO 30 min
 
-**Status:** OPEN — DEFERRED_TO_C09
+**Status:** RESOLVED (D-93, 02/10/2026) — meta revista para RPO até 24 h e RTO até 4 h; PITR como melhoria futura
 **Fase:** SAFRA-C09 (fundação operacional).
 **Bloqueia START/C08:** não.
 **Origem:** auditoria somente leitura do lado do Lovable (L-01), 01/10/2026. Espelhada no banco (migration `20261001235000`, CI verde #255/#293, aplicada no PRIMARY: 41 = 41).

@@ -35,7 +35,7 @@
 | D-20 | 12º card é formulário de proposta de novo cenário, não protocolo genérico | APPROVED |
 | D-21 | Jair é o único safra_governance_admin; Jiane recebe somente comunicações dos próprios cards | APPROVED |
 | D-22 | 12º card usa aceite dos owners e decisão final/escalonamento pelo Jair | SUPERSEDED by D-60/D-68 (fluxo de publicação) e D-73 (sem escalonamento) |
-| D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED |
+| D-23 | Service class da aplicação = CRITICO; SLO 99,95%; RTO 30 min; RPO 5 min | APPROVED — **RTO/RPO revistos pela D-93** (até 4 h / até 24 h) |
 | D-24 | Application criticality = MEDIUM | APPROVED |
 | D-25 | replica_enabled = false; backup/restore continua obrigatório | APPROVED |
 | D-26 | Política de retenção vinculada ao fim formal da Safra, com anonimização/eliminação posterior quando identidade não for necessária | APPROVED |
@@ -105,6 +105,9 @@
 | D-90 | Dados de uso das telas (onde as pessoas param) serão anônimos | APPROVED — visão de administração |
 | D-91 | Identidade visual com a paleta da Editora (#19286E, #00C3B3, #93D50A); na tela, o card aparece sem o código SAFRA-NN e sem o texto entre parênteses (o banco segue literal, D-74) | APPROVED — C08.3 |
 | D-92 | Modo Camaleão: admins da plataforma podem ver as telas como usuário, dono de card, Jair/Bruno ou administração, só leitura | APPROVED — C08.3 |
+| D-93 | Meta de recuperação: RPO até 24 h e RTO até 4 h (backup diário do Lovable); PITR como melhoria futura | APPROVED — resolve GI-SAFRA-012 |
+| D-94 | Capacidade dimensionada para o pior caso: 400 pessoas e 1.000 protocolos | APPROVED — C09 |
+| D-95 | Registro técnico (erros, lentidão, login recusado, falhas): 90 dias, só admins, só o código do usuário, nunca segredos | APPROVED — C09 |
 
 ## 3. ADRs
 
@@ -1319,3 +1322,10 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 
 - **D-91:** paleta da Editora do Brasil: azul-marinho `#19286E` (textos, botões, menu), verde-água `#00C3B3` e verde-limão `#93D50A` (destaques, estados, símbolo). Verde-água e limão nunca como cor de texto (contraste WCAG AA). Na tela, o card não mostra o código `SAFRA-NN` e o título perde o que está entre parênteses (ex.: "Pedido pago não integrado"); o banco continua com o nome literal da Matriz v3 (D-74) e o número do protocolo continua `NN-SSSS` (D-82).
 - **D-92:** "Modo Camaleão" para quem tem o papel `safra_platform_admin` (hoje Kaue, Amanda, João e Vinicius): um seletor "ver como" mostra as telas de usuário, dono de card (escolhendo o dono), Jair/Bruno e administração. É **só leitura**: abrir, concluir e cancelar ficam desligados, e o banco recusa qualquer ação em nome de outra pessoa. A leitura dos protocolos de um dono usa `safra_admin_get_owner_treatments`, liberada só para platform admin.
+
+### D-93 a D-95 — Fundação operacional (C09)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-93:** a meta da D-23 passa a ser **RPO de até 24 h** (perda máxima de dados) e **RTO de até 4 h** (tempo para voltar), compatível com o backup diário do Lovable Cloud. A restauração ponto a ponto (PITR) fica como melhoria futura, a pedir orçamento ao Lovable. Resolve a GI-SAFRA-012. O SLO de 99,95% e a classe CRITICO seguem.
+- **D-94:** a capacidade é dimensionada para o **pior caso: 400 pessoas e 1.000 protocolos**, com teste contínuo e de pico no CI.
+- **D-95:** observabilidade mínima no próprio Painel: erros de tela, respostas lentas (≥ 2 s), logins recusados e falhas técnicas de ação vão para `public.ops_events`, guardados por **90 dias**, lidos só por platform admins em Administração → Saúde do sistema. Guarda só o código do usuário (nunca nome ou e-mail) e nunca tokens, chaves ou senhas (o banco descarta o que parecer segredo). Até existirem alertas por e-mail (M05/TI), um admin confere a Saúde do sistema uma vez por dia na Safra.
