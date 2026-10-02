@@ -457,11 +457,7 @@ const PROPOSALS_KEY = ["safra-proposals"] as const;
 
 // Funções ainda ausentes dos tipos gerados; o banco continua conferindo tudo.
 const untypedRpc = (fn: string) =>
-  (
-    supabase.rpc as unknown as (
-      name: string,
-    ) => PromiseLike<{ data: unknown; error: unknown }>
-  )(fn);
+  (supabase.rpc as unknown as (name: string) => PromiseLike<{ data: unknown; error: unknown }>)(fn);
 
 /** Propostas de card novo (M10): o banco decide o que cada pessoa vê e pode fazer. */
 export function useProposals() {
