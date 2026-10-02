@@ -18,7 +18,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { SituationBadge, TreatmentActions } from "@/components/TreatmentActions";
 import { analyticsLocalInputToIso, formatDateTime, toLocalInput } from "@/lib/metrics";
 import { useSafraStartCatalog, useSafraStartTreatment } from "@/lib/queries";
-import { safraErrorMessage } from "@/lib/safra";
+import { useViewer } from "@/lib/chameleon";
+import { cardDisplayName, safraErrorMessage } from "@/lib/safra";
 import type { SafraStartCatalogItem } from "@/lib/safra";
 import { cn } from "@/lib/utils";
 
@@ -43,7 +44,22 @@ function normalize(value: string) {
 
 /** Catálogo com card que se expande (D-81): tocou, os outros somem; o X traz todos de volta. */
 export function ScenarioCatalog() {
-  const { data: cards = [], isLoading, isError, refetch } = useSafraStartCatalog();
+  const { data: rawCards = [], isLoading, isError, refetch } = useSafraStartCatalog();
+  const viewer = useViewer();
+  // Modo Camaleão (D-92): a tela mostra o catálogo como a audiência escolhida o veria.
+  const cards = useMemo(
+    () =>
+      viewer.readOnly
+        ? rawCards.map((card) => ({
+            ...card,
+            is_my_card:
+              viewer.previewOwnerPrincipalId !== null &&
+              card.owner.principal_id === viewer.previewOwnerPrincipalId,
+            my_open_treatment: null,
+          }))
+        : rawCards,
+    [rawCards, viewer.readOnly, viewer.previewOwnerPrincipalId],
+  );
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const cardButtons = useRef(new Map<string, HTMLButtonElement>());
@@ -132,7 +148,7 @@ export function ScenarioCatalog() {
           Nenhum card encontrado para “{query}”. Tente outra palavra.
         </p>
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <ul aria-label="Cards disponíveis" className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {visible.map((card) => (
             <li key={card.scenario_id}>
               <button
@@ -148,12 +164,7 @@ export function ScenarioCatalog() {
                 className="flex h-full w-full flex-col gap-3 rounded-xl border border-border bg-card p-4 text-left transition-colors hover:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold text-primary">{card.code}</p>
-                    <p className="mt-1 whitespace-pre-line font-semibold leading-snug">
-                      {card.name}
-                    </p>
-                  </div>
+                  <p className="font-semibold leading-snug">{cardDisplayName(card.name)}</p>
                   {card.my_open_treatment ? (
                     <SituationBadge situation={card.my_open_treatment.situation} />
                   ) : null}
@@ -216,14 +227,13 @@ function ExpandedCard({ card, onClose }: { card: SafraStartCatalogItem; onClose:
       </Button>
 
       <header className="pr-12">
-        <p className="text-sm font-semibold text-primary">{card.code}</p>
         <h2
           id="card-title"
           ref={heading}
           tabIndex={-1}
-          className="mt-1 whitespace-pre-line text-2xl font-semibold leading-tight focus:outline-none"
+          className="text-2xl font-semibold leading-tight focus:outline-none"
         >
-          {card.name}
+          {cardDisplayName(card.name)}
         </h2>
         <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
           <span className="inline-flex items-center gap-2">
@@ -300,6 +310,7 @@ function ExpandedCard({ card, onClose }: { card: SafraStartCatalogItem; onClose:
 
 function StartForm({ card }: { card: SafraStartCatalogItem }) {
   const start = useSafraStartTreatment();
+  const { readOnly } = useViewer();
   const [summary, setSummary] = useState("");
   const [startedLocal, setStartedLocal] = useState(() => toLocalInput(new Date().toISOString()));
   const [areas, setAreas] = useState<string[]>([]);
@@ -312,7 +323,8 @@ function StartForm({ card }: { card: SafraStartCatalogItem }) {
   const startedIso = analyticsLocalInputToIso(startedLocal);
   const startedInFuture =
     startedIso !== null && new Date(startedIso).getTime() > Date.now() + 60_000;
-  const canStart = trimmed.length >= MIN_SUMMARY && !startedInFuture && !start.isPending;
+  const canStart =
+    !readOnly && trimmed.length >= MIN_SUMMARY && !startedInFuture && !start.isPending;
 
   const submit = async () => {
     const idempotencyKey = retryKey.current ?? globalThis.crypto.randomUUID();
@@ -441,6 +453,13 @@ function StartForm({ card }: { card: SafraStartCatalogItem }) {
         </fieldset>
       ) : null}
 
+      {readOnly ? (
+        <p role="note" className="rounded-lg border border-secondary bg-accent p-3 text-sm">
+          Modo Camaleão: só visualização. Volte para &quot;Minha visão&quot; para abrir um protocolo
+          de verdade.
+        </p>
+      ) : null}
+
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button size="lg" className="min-h-12 w-full text-base" disabled={!canStart}>
@@ -454,7 +473,7 @@ function StartForm({ card }: { card: SafraStartCatalogItem }) {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Abrir protocolo de {card.code}?</AlertDialogTitle>
+            <AlertDialogTitle>Abrir protocolo: {cardDisplayName(card.name)}?</AlertDialogTitle>
             <AlertDialogDescription>
               O dono do card ({ownerName(card)}) vai ser responsável por conduzir a resolução. O
               horário oficial é o do servidor.

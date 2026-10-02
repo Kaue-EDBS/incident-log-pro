@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AbrirProtocoloRouteImport } from './routes/abrir-protocolo'
+import { Route as AdministracaoRouteImport } from './routes/administracao'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MeusProtocolosRouteImport } from './routes/meus-protocolos'
 import { Route as ProtocolosDosMeusCardsRouteImport } from './routes/protocolos-dos-meus-cards'
@@ -23,6 +25,16 @@ const IndexRoute = IndexRouteImport.update({
 const AbrirProtocoloRoute = AbrirProtocoloRouteImport.update({
   id: '/abrir-protocolo',
   path: '/abrir-protocolo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdministracaoRoute = AdministracaoRouteImport.update({
+  id: '/administracao',
+  path: '/administracao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -44,6 +56,8 @@ const ProtocolosDosMeusCardsRoute = ProtocolosDosMeusCardsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/abrir-protocolo': typeof AbrirProtocoloRoute
+  '/administracao': typeof AdministracaoRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
@@ -51,6 +65,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/abrir-protocolo': typeof AbrirProtocoloRoute
+  '/administracao': typeof AdministracaoRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
@@ -59,6 +75,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/abrir-protocolo': typeof AbrirProtocoloRoute
+  '/administracao': typeof AdministracaoRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
@@ -68,6 +86,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/abrir-protocolo'
+    | '/administracao'
+    | '/analytics'
     | '/auth'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
@@ -75,6 +95,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/abrir-protocolo'
+    | '/administracao'
+    | '/analytics'
     | '/auth'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
@@ -82,6 +104,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/abrir-protocolo'
+    | '/administracao'
+    | '/analytics'
     | '/auth'
     | '/meus-protocolos'
     | '/protocolos-dos-meus-cards'
@@ -90,6 +114,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AbrirProtocoloRoute: typeof AbrirProtocoloRoute
+  AdministracaoRoute: typeof AdministracaoRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
   MeusProtocolosRoute: typeof MeusProtocolosRoute
   ProtocolosDosMeusCardsRoute: typeof ProtocolosDosMeusCardsRoute
@@ -109,6 +135,20 @@ declare module '@tanstack/react-router' {
       path: '/abrir-protocolo'
       fullPath: '/abrir-protocolo'
       preLoaderRoute: typeof AbrirProtocoloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/administracao': {
+      id: '/administracao'
+      path: '/administracao'
+      fullPath: '/administracao'
+      preLoaderRoute: typeof AdministracaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -138,6 +178,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AbrirProtocoloRoute: AbrirProtocoloRoute,
+  AdministracaoRoute: AdministracaoRoute,
+  AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
   MeusProtocolosRoute: MeusProtocolosRoute,
   ProtocolosDosMeusCardsRoute: ProtocolosDosMeusCardsRoute,

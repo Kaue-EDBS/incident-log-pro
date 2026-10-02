@@ -103,6 +103,8 @@
 | D-88 | Visões cumulativas por audiência: usuário → dono (+ analytics dos seus cards) → Jair/Bruno (+ todos os cards e consolidado) → admins (+ cadastros, uso, melhoria); 12º card depois das visões | APPROVED — M09/F04/M10 |
 | D-89 | Abertura pergunta "quando o problema começou?" (padrão: agora) para o MTTD | APPROVED — C08.1 |
 | D-90 | Dados de uso das telas (onde as pessoas param) serão anônimos | APPROVED — visão de administração |
+| D-91 | Identidade visual com a paleta da Editora (#19286E, #00C3B3, #93D50A); na tela, o card aparece sem o código SAFRA-NN e sem o texto entre parênteses (o banco segue literal, D-74) | APPROVED — C08.3 |
+| D-92 | Modo Camaleão: admins da plataforma podem ver as telas como usuário, dono de card, Jair/Bruno ou administração, só leitura | APPROVED — C08.3 |
 
 ## 3. ADRs
 
@@ -1311,3 +1313,9 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-88:** visões cumulativas: **usuário**; **dono do card** (+ "Protocolos dos meus cards" + analytics dos seus cards); **Jair e Bruno** (+ analytics de todos os cards e consolidado, com tempos tipo MTTR/MTTD); **admins** (+ painel de cadastrados e papéis, uso das telas, melhoria do app). O **12º card** vem depois das visões.
 - **D-89:** a abertura pergunta "Quando o problema começou?" (padrão: agora; não aceita futuro, com tolerância de 5 minutos para relógio adiantado). Base do MTTD: abertura − início do problema.
 - **D-90:** dados de uso das telas são **anônimos**.
+
+### D-91 e D-92 — Identidade visual e Modo Camaleão (C08.3)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-91:** paleta da Editora do Brasil: azul-marinho `#19286E` (textos, botões, menu), verde-água `#00C3B3` e verde-limão `#93D50A` (destaques, estados, símbolo). Verde-água e limão nunca como cor de texto (contraste WCAG AA). Na tela, o card não mostra o código `SAFRA-NN` e o título perde o que está entre parênteses (ex.: "Pedido pago não integrado"); o banco continua com o nome literal da Matriz v3 (D-74) e o número do protocolo continua `NN-SSSS` (D-82).
+- **D-92:** "Modo Camaleão" para quem tem o papel `safra_platform_admin` (hoje Kaue, Amanda, João e Vinicius): um seletor "ver como" mostra as telas de usuário, dono de card (escolhendo o dono), Jair/Bruno e administração. É **só leitura**: abrir, concluir e cancelar ficam desligados, e o banco recusa qualquer ação em nome de outra pessoa. A leitura dos protocolos de um dono usa `safra_admin_get_owner_treatments`, liberada só para platform admin.

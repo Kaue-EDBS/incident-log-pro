@@ -725,6 +725,10 @@ export type Database = {
           target_role: string
         }[]
       }
+      safra_admin_get_owner_treatments: {
+        Args: { p_owner_principal_id: string }
+        Returns: Json
+      }
       safra_cancel_treatment: {
         Args: { p_reason: string; p_treatment_id: string }
         Returns: Json

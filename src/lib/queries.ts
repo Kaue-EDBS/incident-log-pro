@@ -58,6 +58,21 @@ export function useOwnerTreatments(enabled: boolean) {
   });
 }
 
+/** Modo Camaleão (D-92): admin da plataforma vê os protocolos dos cards de um dono, só leitura. */
+export function useAdminOwnerTreatments(ownerPrincipalId: string | null) {
+  return useQuery({
+    queryKey: ["safra-admin-owner-treatments", ownerPrincipalId],
+    enabled: ownerPrincipalId !== null,
+    queryFn: async (): Promise<SafraTreatment[]> => {
+      const { data, error } = await supabase.rpc("safra_admin_get_owner_treatments", {
+        p_owner_principal_id: ownerPrincipalId ?? "",
+      });
+      if (error) throw error;
+      return SafraTreatmentListSchema.parse(data ?? []);
+    },
+  });
+}
+
 /** Papéis governados no banco; só decidem o que a tela mostra, nunca a permissão. */
 export function useMySafraRoles() {
   return useQuery({

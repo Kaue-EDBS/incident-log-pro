@@ -66,6 +66,7 @@ declare -a c02_rpcs=(
   "get_safra_rbac_audit_events|{\"p_limit\":5}"
   "safra_get_my_treatments|{}"
   "safra_get_owner_treatments|{}"
+  "safra_admin_get_owner_treatments|{\"p_owner_principal_id\":\"00000000-0000-4000-8000-000000000000\"}"
   "safra_close_my_part|{\"p_treatment_id\":\"00000000-0000-4000-8000-000000000000\"}"
   "safra_cancel_treatment|{\"p_treatment_id\":\"00000000-0000-4000-8000-000000000000\",\"p_reason\":\"anonymous smoke\"}"
 )

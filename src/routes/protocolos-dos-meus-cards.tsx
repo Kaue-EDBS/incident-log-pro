@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { TreatmentList } from "@/components/TreatmentList";
-import { useMySafraRoles, useOwnerTreatments } from "@/lib/queries";
+import { useViewer } from "@/lib/chameleon";
+import { useAdminOwnerTreatments, useOwnerTreatments } from "@/lib/queries";
 
 export const Route = createFileRoute("/protocolos-dos-meus-cards")({
   head: () => ({
@@ -13,9 +14,11 @@ export const Route = createFileRoute("/protocolos-dos-meus-cards")({
 });
 
 function OwnerProtocols() {
-  const roles = useMySafraRoles();
-  const isOwner = roles.data?.includes("scenario_owner") ?? false;
-  const owner = useOwnerTreatments(isOwner);
+  const viewer = useViewer();
+  const preview = viewer.previewOwnerPrincipalId;
+  const real = useOwnerTreatments(viewer.isOwner && preview === null);
+  const previewed = useAdminOwnerTreatments(preview);
+  const query = preview !== null ? previewed : real;
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -26,12 +29,12 @@ function OwnerProtocols() {
           quando o problema estiver resolvido.
         </p>
       </header>
-      {roles.isLoading ? null : isOwner ? (
+      {viewer.isOwner ? (
         <TreatmentList
-          items={owner.data ?? []}
-          isLoading={owner.isLoading}
-          isError={owner.isError}
-          onRetry={() => void owner.refetch()}
+          items={query.data ?? []}
+          isLoading={query.isLoading}
+          isError={query.isError}
+          onRetry={() => void query.refetch()}
           emptyText="Nenhum protocolo aberto nos seus cards."
           showRequester
         />

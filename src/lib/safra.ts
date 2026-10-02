@@ -178,3 +178,14 @@ export function cardNumber(code: string): string {
   const match = /^SAFRA-(\d+)$/.exec(code);
   return match?.[1] ?? code;
 }
+
+/**
+ * Nome do card para a tela (D-91): o banco guarda o texto literal da Matriz v3 (D-74);
+ * a tela tira o que está entre parênteses e junta as linhas.
+ */
+export function cardDisplayName(name: string): string {
+  return name
+    .replace(/\s*\([^)]*\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}

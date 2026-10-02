@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { LiveTimer } from "@/components/LiveTimer";
 import { SituationBadge, TreatmentActions } from "@/components/TreatmentActions";
 import { formatDateTime } from "@/lib/metrics";
+import { cardDisplayName } from "@/lib/safra";
 import type { SafraTreatment } from "@/lib/safra";
 
 /** Lista de protocolos; o contador só aparece aqui (D-86). */
@@ -65,8 +66,8 @@ export function TreatmentList({
                 <h3 id={`protocol-${item.treatment_id}`} className="text-base font-semibold">
                   Protocolo {item.protocol_number}
                 </h3>
-                <p className="whitespace-pre-line text-sm text-muted-foreground">
-                  {item.scenario.code} · {item.scenario.name}
+                <p className="text-sm text-muted-foreground">
+                  {cardDisplayName(item.scenario.name)}
                 </p>
               </div>
               <SituationBadge situation={item.situation} />

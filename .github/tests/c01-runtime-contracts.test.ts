@@ -3,6 +3,7 @@ import {
   SafraStartCatalogSchema,
   SafraStartResultSchema,
   SafraTreatmentSchema,
+  cardDisplayName,
   cardNumber,
   safraErrorMessage,
 } from "../../src/lib/safra";
@@ -140,6 +141,16 @@ describe("SAFRA protocol lifecycle contracts (C08)", () => {
       "10 caracteres",
     );
     expect(safraErrorMessage({ message: "something else" }, "padrão")).toBe("padrão");
+  });
+
+  test("D-91: display name drops parentheses and line breaks", () => {
+    expect(cardDisplayName('Pedido pago não integrado\n("limbo" de entrada)')).toBe(
+      "Pedido pago não integrado",
+    );
+    expect(cardDisplayName("Ruptura de estoque de título (curva A)")).toBe(
+      "Ruptura de estoque de título",
+    );
+    expect(cardDisplayName("Insucesso de entrega")).toBe("Insucesso de entrega");
   });
 
   test("derives the card number used in protocol numbers", () => {

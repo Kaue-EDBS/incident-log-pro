@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ScenarioCatalog } from "@/components/ScenarioCatalog";
 import { SituationBadge } from "@/components/TreatmentActions";
+import { useViewer } from "@/lib/chameleon";
 import { useMyTreatments } from "@/lib/queries";
 
 export const Route = createFileRoute("/")({
@@ -23,9 +24,10 @@ export const Route = createFileRoute("/")({
 
 function MyOpenProtocols() {
   const { data = [] } = useMyTreatments();
+  const { readOnly } = useViewer();
   const open = data.filter((item) => item.status === "ACTIVE");
 
-  if (open.length === 0) return null;
+  if (readOnly || open.length === 0) return null;
 
   return (
     <section

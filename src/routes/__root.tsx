@@ -17,6 +17,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider, useAuth } from "@/integrations/supabase/AuthProvider";
+import { ChameleonProvider } from "@/lib/chameleon";
 
 function NotFoundComponent() {
   return (
@@ -159,10 +160,12 @@ function AuthedShell() {
   }
 
   return (
-    <AppLayout>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-    </AppLayout>
+    <ChameleonProvider>
+      <AppLayout>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </AppLayout>
+    </ChameleonProvider>
   );
 }
 
