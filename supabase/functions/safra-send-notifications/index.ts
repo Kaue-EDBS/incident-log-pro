@@ -15,7 +15,7 @@ Deno.serve(async () => {
   const url = Deno.env.get("SUPABASE_URL");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!url || !serviceKey) {
-    return Response.json({ status: "disabled", missing: ["SUPABASE_URL"] }, { status: 503 });
+    return Response.json({ status: "disabled" }, { status: 503 });
   }
   const db = createClient(url, serviceKey, { auth: { persistSession: false } });
 
@@ -35,9 +35,11 @@ Deno.serve(async () => {
         });
         if (error) throw new Error(error.message);
       },
-      fetch,
+      fetch: (input, init) => fetch(input, init),
     },
   );
 
-  return Response.json(result, { status: result.status === "disabled" ? 503 : 200 });
+  // Pública: devolve só contagens (o que falta de configuração não sai daqui).
+  if (result.status === "disabled") return Response.json({ status: "disabled" }, { status: 503 });
+  return Response.json(result);
 });

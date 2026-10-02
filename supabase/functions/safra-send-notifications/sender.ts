@@ -36,7 +36,26 @@ export type SenderDeps = {
   claim: (limit: number) => Promise<ClaimedNotice[]>;
   report: (id: string, ok: boolean, error: string | null) => Promise<void>;
   fetch: typeof fetch;
+  /** Relógio (ms); os testes trocam para simular uma rodada demorada. */
+  now?: () => number;
 };
+
+/** Cada chamada à Microsoft espera no máximo isto. */
+export const REQUEST_TIMEOUT_MS = 15_000;
+/** A rodada para de enviar depois disto; a trava de cada aviso dura 5 minutos. */
+export const ROUND_BUDGET_MS = 100_000;
+
+/** Motivo curto e sem dados pessoais: status HTTP e, se houver, o código de erro do provedor. */
+async function failureReason(response: Response): Promise<string> {
+  let code = "";
+  try {
+    const data = (await response.json()) as { error?: { code?: unknown } };
+    if (typeof data?.error?.code === "string") code = ` ${data.error.code.slice(0, 60)}`;
+  } catch {
+    // corpo vazio ou não JSON
+  }
+  return `HTTP ${response.status}${code}`;
+}
 
 export type SenderResult =
   | { status: "disabled"; missing: string[] }
@@ -103,6 +122,7 @@ async function getToken(
     `https://login.microsoftonline.com/${encodeURIComponent(config.tenantId)}/oauth2/v2.0/token`,
     {
       method: "POST",
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
         grant_type: "client_credentials",
@@ -139,12 +159,34 @@ export async function runOnce(
     return { status: "ok", claimed: notices.length, sent: 0, failed: notices.length };
   }
 
+  const now = deps.now ?? Date.now;
+  const started = now();
+  // O resultado nunca derruba a rodada: tenta de novo uma vez e segue.
+  const report = async (id: string, ok: boolean, reason: string | null) => {
+    try {
+      await deps.report(id, ok, reason);
+    } catch {
+      try {
+        await deps.report(id, ok, reason);
+      } catch {
+        // sem resultado: a trava vence e o banco trata (no máximo 5 tentativas)
+      }
+    }
+  };
+
   let sent = 0;
   let failed = 0;
   for (const notice of notices) {
+    if (now() - started > ROUND_BUDGET_MS) {
+      await report(notice.id, false, "ROUND_TIME_BUDGET");
+      failed += 1;
+      continue;
+    }
+    let response: Response;
     try {
-      const response = await deps.fetch(transport.url, {
+      response = await deps.fetch(transport.url, {
         method: "POST",
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
         headers: transport.headers,
         body: JSON.stringify({
           message: {
@@ -156,15 +198,19 @@ export async function runOnce(
           saveToSentItems: false,
         }),
       });
-      if (response.status === 202 || response.ok) {
-        await deps.report(notice.id, true, null);
-        sent += 1;
-      } else {
-        await deps.report(notice.id, false, `HTTP ${response.status}`);
-        failed += 1;
-      }
     } catch (error) {
-      await deps.report(notice.id, false, error instanceof Error ? error.message : "NETWORK_ERROR");
+      const timedOut = error instanceof Error && error.name === "TimeoutError";
+      await report(notice.id, false, timedOut ? "TIMEOUT" : "NETWORK_ERROR");
+      failed += 1;
+      continue;
+    }
+    if (response.status === 202 || response.ok) {
+      // Aceito pela Microsoft: nunca volta para a fila como falha (evita e-mail repetido).
+      await response.body?.cancel();
+      await report(notice.id, true, null);
+      sent += 1;
+    } else {
+      await report(notice.id, false, await failureReason(response));
       failed += 1;
     }
   }

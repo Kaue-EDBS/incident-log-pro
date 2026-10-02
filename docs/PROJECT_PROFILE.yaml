@@ -1,5 +1,5 @@
 schema_version: 3
-updated_at: "2026-09-30"
+updated_at: "2026-10-02"
 status: C01_AUD2_RECONCILED
 
 project:
@@ -396,18 +396,34 @@ analytics_exclusions:
   excluded: ["03-0001 (owner demo, 02/10/2026)"]
 
 m05_notifications:
-  status: "BUILT_SENDING_PENDING_TI"
+  status: "DONE_AUTOMATIC_SENDING"
   date: "2026-10-02"
-  migration: "20261002220000_m05_notifications.sql"
-  decisions: ["D-111", "D-112", "D-113", "D-114"]
-  channel: "EMAIL (Microsoft Graph sendMail from painel.safra@); Teams open (GI-SAFRA-011)"
-  recipients: "owner + requester (open/resolved/cancelled); other party (undo); pending party (reminders 48/60/71 h); Jair none"
-  queue: "public.notifications_log (template v1, idempotency key, 5 attempts with backoff, 24 h expiry)"
-  sender: "supabase/functions/safra-send-notifications (disabled without MS_TENANT_ID, MS_CLIENT_ID, MS_CLIENT_SECRET, MAIL_SENDER)"
-  sender_rpcs: ["safra_notifications_claim", "safra_notifications_report"]
+  migrations:
+    - "20261002220000_m05_notifications.sql"
+    - "20261002300000_m05_session_delivery.sql"
+    - "20261002310000_m05_scheduled_delivery.sql"
+    - "20261002320000_m05_notifications_queue_viewer.sql"
+    - "20261002330000_m05_m10_audit_fixes.sql"
+  decisions: ["D-111", "D-112", "D-113", "D-114", "D-131", "D-132", "D-133", "D-134"]
+  channel: "EMAIL from painel.safra@ via the Lovable Microsoft Outlook connection until the TI app (GI-SAFRA-017); Teams open (GI-SAFRA-011)"
+  recipients: "owner + requester (open/resolved/cancelled); other party (undo); pending party (reminders 24/12/1 h before 72 h); Jair none; M10 proposal steps"
+  queue: "public.notifications_log (template v1, idempotency key, 5 attempts with backoff, 24 h expiry, NO_REPORT after 5 claims without result)"
+  sender: "pg_cron safra-send-notifications every 2 min (PRIMARY only) -> Edge Function safra-send-notifications (service role; TI app MS_* wins, else LOVABLE_API_KEY + MICROSOFT_OUTLOOK_API_KEY); 15 s per call, 100 s per round"
+  browser_delivery: "governance/executive/platform admins only, button Forçar envio agora (D-134)"
+  sender_rpcs: ["safra_notifications_claim", "safra_notifications_report", "safra_notifications_claim_for_session", "safra_notifications_report_for_session"]
+  queue_viewer: "safra_admin_get_notifications_queue (Kaue only, no notice text)"
   auto_resolve: "72 h with one part closed -> RESOLVED, auto_resolved (D-113)"
-  tests: ["m05_notifications.test.sql (30)", ".github/tests/m05-sender.test.ts (4)"]
-  audit_document: "docs/AUDITORIA_M05_2026-10-02.md"
+  tests: ["m05_notifications.test.sql (30)", "m05_session_delivery.test.sql (11)", "m05_scheduled_delivery.test.sql (3)", "m05_notifications_queue_viewer.test.sql (5)", "m05_m10_audit_fixes.test.sql (8)", ".github/tests/m05-sender.test.ts (9)"]
+  audit_documents: ["docs/AUDITORIA_M05_2026-10-02.md", "docs/AUDITORIA_EMAILS_M10_2026-10-02.md"]
+
+m10_new_card_governance:
+  status: "DONE"
+  date: "2026-10-02"
+  migrations: ["20261002290000_m10_new_card_governance.sql", "20261002330000_m05_m10_audit_fixes.sql"]
+  decisions: ["D-60", "D-68", "D-125", "D-126", "D-127", "D-128", "D-129", "D-130", "D-134"]
+  screen: "/propostas (Novo card)"
+  tests: ["m10_new_card_governance.test.sql (36)", "m05_m10_audit_fixes.test.sql (8)"]
+  audit_document: "docs/AUDITORIA_M10_2026-10-02.md"
 
 m02_m03_history:
   status: "APPROVED"

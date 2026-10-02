@@ -34,7 +34,11 @@ const STORAGE_KEY = "safra-chameleon";
 function readStored(): ViewAs {
   try {
     const raw = typeof window !== "undefined" ? window.sessionStorage.getItem(STORAGE_KEY) : null;
-    return raw ? (JSON.parse(raw) as ViewAs) : { mode: "real" };
+    const parsed = raw ? (JSON.parse(raw) as Partial<ViewAs> | null) : null;
+    const modes = ["real", "usuario", "dono", "gestao", "admin"];
+    return parsed && typeof parsed.mode === "string" && modes.includes(parsed.mode)
+      ? (parsed as ViewAs)
+      : { mode: "real" };
   } catch {
     return { mode: "real" };
   }

@@ -1,1 +1,5 @@
 project_id = "trqkwqkjjjeppuddwenu"
+
+# D-133: o agendador do banco chama sem login; a função só devolve contagens.
+[functions.safra-send-notifications]
+verify_jwt = false

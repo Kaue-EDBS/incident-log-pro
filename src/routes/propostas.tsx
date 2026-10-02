@@ -268,6 +268,7 @@ function GovernanceActions({
   const areas = useOperationalAreas(item.can_approve);
   const [owner, setOwner] = useState("");
   const [note, setNote] = useState("");
+  const [decision, setDecision] = useState("");
   const [area, setArea] = useState("");
 
   return (
@@ -355,21 +356,21 @@ function GovernanceActions({
               <span className="font-medium">Como foi decidido (obrigatório)</span>
               <input
                 className={fieldClass}
-                value={note}
+                value={decision}
                 maxLength={1000}
-                onChange={(e) => setNote(e.target.value)}
+                onChange={(e) => setDecision(e.target.value)}
               />
             </label>
             <Button
               className="min-h-11"
-              disabled={busy || !owner || note.trim().length < 10}
+              disabled={busy || !owner || decision.trim().length < 10}
               onClick={() =>
                 void run(
                   "safra_define_proposal_owner",
                   {
                     p_proposal_id: item.proposal_id,
                     p_owner_principal_id: owner,
-                    p_note: note.trim(),
+                    p_note: decision.trim(),
                   },
                   "Dono registrado.",
                 )

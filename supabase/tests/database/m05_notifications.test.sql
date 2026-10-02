@@ -181,7 +181,9 @@ select public.safra_notifications_report((select id from two), false, 'HTTP 503'
 select ok((select delivery_status = 'QUEUED' and last_error = 'HTTP 503' and next_attempt_at > clock_timestamp()
            from public.notifications_log where id = (select id from two)),
   'M05: a failed send is retried later');
-update public.notifications_log set attempts = 5 where id = (select id from two);
+-- the 5th round claimed it again (a result only counts while that round holds the lock)
+update public.notifications_log set attempts = 5, locked_until = clock_timestamp() + interval '5 minutes'
+ where id = (select id from two);
 select public.safra_notifications_report((select id from two), false, 'HTTP 503');
 select is((select delivery_status || '/' || failure_reason from public.notifications_log where id = (select id from two)),
   'FAILED/SEND_FAILED: HTTP 503', 'M05: after 5 attempts the notice is FAILED with the reason');

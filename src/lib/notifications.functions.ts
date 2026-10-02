@@ -1,7 +1,7 @@
 // SAFRA-M05 — entrega imediata dos avisos que o banco colocou na fila.
-// PROVISÓRIO (D-132): usa a sessão do próprio usuário corporativo para pegar a fila
-// (funções *_for_session: gestão/admins entregam a fila inteira; os demais, só os avisos da
-// própria ação) e envia pela conexão Outlook
+// PROVISÓRIO (D-132/D-134): usa a sessão de quem está logado para pegar a fila (funções
+// *_for_session: só gestão/admins; é o botão "Forçar envio agora"; o envio de rotina é o
+// agendado no servidor, D-133) e envia pela conexão Outlook
 // vinculada ao projeto, assinando como a caixa compartilhada oficial.
 // Será trocado pelo App Registration da TI.
 import { createServerFn } from "@tanstack/react-start";
@@ -43,35 +43,51 @@ export const deliverQueuedNotifications = createServerFn({ method: "POST" })
 
     let sent = 0;
     let failed = 0;
+    const started = Date.now();
     for (const n of notices) {
       let ok = false;
       let reason: string | null = null;
-      try {
-        const res = await fetch(`${GATEWAY_URL}/me/sendMail`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${lovableKey}`,
-            "X-Connection-Api-Key": outlookKey,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: {
-              subject: n.subject,
-              body: { contentType: "Text", content: n.body },
-              from: { emailAddress: { address: MAIL_SENDER } },
-              toRecipients: [{ emailAddress: { address: n.to } }],
+      // A trava de cada aviso dura 5 minutos: para de enviar bem antes disso.
+      if (Date.now() - started > 100_000) {
+        reason = "ROUND_TIME_BUDGET";
+      } else
+        try {
+          const res = await fetch(`${GATEWAY_URL}/me/sendMail`, {
+            method: "POST",
+            signal: AbortSignal.timeout(15_000),
+            headers: {
+              Authorization: `Bearer ${lovableKey}`,
+              "X-Connection-Api-Key": outlookKey,
+              "Content-Type": "application/json",
             },
-            saveToSentItems: false,
-          }),
-        });
-        ok = res.ok;
-        if (!ok) {
-          reason = `HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`;
-          console.error("notification send failed:", reason);
+            body: JSON.stringify({
+              message: {
+                subject: n.subject,
+                body: { contentType: "Text", content: n.body },
+                from: { emailAddress: { address: MAIL_SENDER } },
+                toRecipients: [{ emailAddress: { address: n.to } }],
+              },
+              saveToSentItems: false,
+            }),
+          });
+          ok = res.ok;
+          if (!ok) {
+            // Só o status e o código do provedor: o texto do erro pode trazer dados pessoais.
+            let code = "";
+            try {
+              const body = (await res.json()) as { error?: { code?: unknown } };
+              if (typeof body?.error?.code === "string") code = ` ${body.error.code.slice(0, 60)}`;
+            } catch {
+              // corpo vazio ou não JSON
+            }
+            reason = `HTTP ${res.status}${code}`;
+            console.error("notification send failed:", reason);
+          } else {
+            await res.body?.cancel();
+          }
+        } catch (e) {
+          reason = e instanceof Error && e.name === "TimeoutError" ? "TIMEOUT" : "NETWORK_ERROR";
         }
-      } catch (e) {
-        reason = e instanceof Error ? e.message : "NETWORK_ERROR";
-      }
       const rep = await rpc("safra_notifications_report_for_session", {
         p_id: n.id,
         p_ok: ok,

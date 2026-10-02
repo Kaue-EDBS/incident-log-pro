@@ -18,7 +18,6 @@ import { useAuth } from "@/integrations/supabase/AuthProvider";
 import { useViewer, type ViewAs } from "@/lib/chameleon";
 import { logScreenView } from "@/lib/ops";
 import { useSafraStartCatalog } from "@/lib/queries";
-import { runNotificationDelivery } from "@/lib/notifications-client";
 
 type NavItem = { to: string; label: string; short: string; icon: typeof LayoutGrid };
 
@@ -115,15 +114,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     logScreenView(pathname);
   }, [pathname]);
-
-  // M05: enquanto o Painel estiver aberto, entrega os avisos da fila (inclui lembretes).
-  useEffect(() => {
-    if (!user) return;
-    const run = () => runNotificationDelivery();
-    run();
-    const id = window.setInterval(run, 2 * 60 * 1000);
-    return () => window.clearInterval(id);
-  }, [user]);
 
   // Só define o que aparece no menu; a permissão é sempre conferida no banco.
   const nav: NavItem[] = [

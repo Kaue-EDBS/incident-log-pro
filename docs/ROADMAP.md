@@ -439,7 +439,7 @@ NOT_APPLICABLE  # somente quando regra aprovada
 
 ## SAFRA-M05 — Notificações
 
-> **CONSTRUÍDO em 02/10/2026** (D-111 a D-114): abertura, encerramento e cancelamento avisam o dono e quem abriu; desfazer avisa a outra parte; lembretes 24/12/1 h antes das 72 h; Jair não recebe e-mail; encerramento automático em 72 h com uma parte concluída. Fila, modelo versionado, registro, novas tentativas e expiração prontos; o envio pelo Microsoft 365 liga depois do chamado do TI. O texto abaixo é a especificação original.
+> **CONSTRUÍDO em 02/10/2026** (D-111 a D-114): abertura, encerramento e cancelamento avisam o dono e quem abriu; desfazer avisa a outra parte; lembretes 24/12/1 h antes das 72 h; Jair não recebe e-mail; encerramento automático em 72 h com uma parte concluída. Fila, modelo versionado, registro, novas tentativas e expiração prontos; desde 02/10/2026 o servidor envia sozinho a cada 2 minutos pela conexão Outlook do Lovable (D-131 a D-134); a troca pelo aplicativo do TI é a GI-SAFRA-017. O texto abaixo é a especificação original.
 
 ### Eventos aprovados
 
@@ -581,7 +581,7 @@ Visão ampla dos cards conforme política aprovada.
 
 ## SAFRA-M10 — Governança do 12º card
 
-> **CONCLUÍDO em 02/10/2026** (D-125 a D-129): tela "Novo card". 0 ou 2+ aceites: reunião dos donos fora do Painel e o Jair registra; criticidade CRITICAL; sem SLA; publicação cria a versão 1.
+> **CONCLUÍDO em 02/10/2026** (D-125 a D-130, auditoria D-134): tela "Novo card". 0 ou 2+ aceites: reunião dos donos fora do Painel e o Jair registra; criticidade CRITICAL; sem SLA; publicação cria a versão 1.
 
 ### Formulário inicial
 

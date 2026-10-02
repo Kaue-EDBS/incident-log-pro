@@ -167,14 +167,18 @@ function Administration() {
         title="Administração"
         intro="Ferramentas para cuidar do Painel e melhorar o app (D-88)."
         allowed={viewer.canSeeAdmin}
-        items={["Envio dos avisos por e-mail (depois do chamado do TI)"]}
+        items={["Alertas automáticos de saúde do sistema"]}
       />
-      <SeasonPanel />
-      <NotificationsPanel />
-      <SystemHealth />
-      <PeoplePanel />
-      <RbacTrailPanel />
-      <ScreenUsagePanel />
+      {viewer.canSeeAdmin ? (
+        <>
+          <SeasonPanel />
+          <NotificationsPanel />
+          <SystemHealth />
+          <PeoplePanel />
+          <RbacTrailPanel />
+          <ScreenUsagePanel />
+        </>
+      ) : null}
     </div>
   );
 }

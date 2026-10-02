@@ -309,7 +309,7 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   const history = anyProtocol.getByRole("list", { name: "Histórico do protocolo" });
   await expect(history).toBeVisible();
   await expect(history.getByText("Desfez a conclusão")).toBeVisible();
-  // M05: a gestão vê os avisos por e-mail de cada protocolo (ainda na fila: envio aguarda o TI).
+  // M05: a gestão vê os avisos por e-mail de cada protocolo (enviados pelo servidor a cada 2 minutos, D-133).
   const notices = anyProtocol.getByRole("list", { name: "Avisos do protocolo" });
   await expect(notices.getByText(/Aviso de abertura para/).first()).toBeVisible();
   await expect(notices.getByText(/Aviso de encerramento para/).first()).toBeVisible();
@@ -359,11 +359,13 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await expect(page.getByRole("heading", { name: /Uso das telas/ })).toBeVisible();
   // D-59: só o Kaue vê a marcação da Safra (o teste não encerra a Safra).
   await expect(page.getByRole("heading", { name: "Safra", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Encerrar Safra" })).toBeVisible();
+  // No Modo Camaleão nada se faz: o botão só aparece na visão real.
+  await expect(page.getByRole("button", { name: "Encerrar Safra" })).toHaveCount(0);
   // M05: Saúde do sistema mostra a fila de avisos.
   await expect(page.getByText("Avisos na fila")).toBeVisible();
   await expect(page.getByText("Avisos com falha")).toBeVisible();
 
   await select.selectOption("real");
   await expect(page.getByText(/Você está vendo como/)).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Encerrar Safra" })).toBeVisible();
 });

@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { measured } from "./ops";
-import { runNotificationDelivery } from "./notifications-client";
 import {
   SafraStartCatalogSchema,
   SafraStartResultSchema,
@@ -28,8 +27,6 @@ function useInvalidateProtocols() {
     void qc.invalidateQueries({ queryKey: KEYS.owner });
     void qc.invalidateQueries({ queryKey: ["safra-treatment-timeline"] });
     void qc.invalidateQueries({ queryKey: ["safra-all-treatments"] });
-    // Dispara na hora os e-mails que o banco acabou de colocar na fila (M05).
-    runNotificationDelivery();
   };
 }
 

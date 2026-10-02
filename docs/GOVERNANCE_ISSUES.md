@@ -32,7 +32,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 004 | Tratativas simultâneas do mesmo cenário | RESOLVED (D-57) |
 | 005 | Canal de notificações e platform admins | DECIDED (D-58) — implementação na M05 |
 | 006 | Janela oficial da "Safra corrente" | DECIDED (D-59) — implementação na F04/M05 |
-| 007 | Publicação formal do 12º card | DECIDED (D-60) — implementação na M10 |
+| 007 | Publicação formal do 12º card | RESOLVED (D-60, M10: D-125 a D-130) |
 | 008 | Janela da governança semanal | RESOLVED (D-61) — fora do escopo |
 | 009 | Eventos dos SLAs textuais | RESOLVED (D-62) — sem cronômetro de SLA |
 | 010 | Liberação de START por card | RESOLVED (D-63) |
@@ -42,6 +42,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 014 | Região dos dados (Londres) atende a LGPD? | RESOLVED (D-116) — fica em Londres |
 | 015 | Cabeçalhos de segurança e domínio próprio | RESOLVED (D-116) — fica em painelsafra.lovable.app |
 | 016 | Avisar antes do cancelamento automático de 72 h? | RESOLVED (D-112) — 24 h, 12 h e 1 h antes |
+| 017 | Trocar o envio provisório pelo aplicativo do TI | OPEN — aguarda o TI (envio automático já funciona, D-133) |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -372,8 +373,11 @@ Pela D-101, protocolo sem nenhuma parte concluída é cancelado sozinho 72 horas
 
 
 ## GI-SAFRA-017 — Trocar o envio provisório pelo registro de aplicativo da TI
-- **Status:** aberto
-- **Contexto:** D-132. Hoje os avisos saem pela conexão Outlook do Kaue e os do sistema só enquanto alguém da gestão/admin estiver com o Painel aberto.
+**Status:** OPEN — aguarda o TI  
+**Fase:** M05 (troca do remetente)  
+**Bloqueia:** nada; os e-mails já saem sozinhos (D-133)
+
+- **Contexto:** D-132 a D-134. Hoje os avisos saem pela conexão Outlook do Kaue, enviados pelo servidor a cada 2 minutos.
 - **Passo intermediário (sem depender do TI):** D-133, envio agendado no servidor a cada 2 minutos pela mesma conexão Outlook.
 - **Pendente da TI:** MS_CLIENT_ID, MS_CLIENT_SECRET (com validade e responsável pela renovação) e Application Access Policy restrita a painel.safra@.
-- **Ao fechar:** ativar o carteiro oficial agendado e retirar as funções `*_for_session`.
+- **Ao fechar:** configurar MS_* no Lovable (a função passa a usar o aplicativo sozinha) e retirar as funções `*_for_session` e a conexão Outlook pessoal.

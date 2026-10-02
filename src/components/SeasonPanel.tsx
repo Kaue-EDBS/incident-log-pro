@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
 import { useEndSeason, useSeason, useStartSeason, useUndoEndSeason } from "@/lib/queries";
 import { safraErrorMessage } from "@/lib/safra";
@@ -21,6 +22,7 @@ const CONFIRM = "ENCERRAR SAFRA";
 
 /** Marcação da Safra (D-59, D-70, D-118, D-119): só o Kaue vê; o banco confere de novo. */
 export function SeasonPanel() {
+  const { readOnly } = useViewer();
   const season = useSeason();
   const endSeason = useEndSeason();
   const undoEnd = useUndoEndSeason();
@@ -65,7 +67,11 @@ export function SeasonPanel() {
         )}
       </p>
 
-      {data.open ? (
+      {readOnly ? (
+        <p className="text-sm text-muted-foreground">
+          Modo Camaleão: só visualização. Volte para a sua visão para encerrar ou iniciar a Safra.
+        </p>
+      ) : data.open ? (
         <AlertDialog
           open={open}
           onOpenChange={(next) => {

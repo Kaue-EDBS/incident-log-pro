@@ -252,7 +252,10 @@ export function safraErrorMessage(error: unknown, fallback: string): string {
     ["SAFRA_PROPOSAL_AREAS_REQUIRED", "Escolha pelo menos uma área que pode ser impactada."],
     ["SAFRA_PROPOSAL_AREA_REQUIRED", "Escolha a área responsável."],
     ["SAFRA_PROPOSAL_INVALID_OWNER", "O dono precisa ser um dos donos de card consultados."],
-    ["SAFRA_PROPOSAL_NOTE_REQUIRED", "Registre como foi decidido (pelo menos 10 caracteres)."],
+    [
+      "SAFRA_PROPOSAL_NOTE_REQUIRED",
+      "Escreva o motivo ou como foi decidido (pelo menos 10 caracteres).",
+    ],
     [
       "SAFRA_PROPOSAL_SEPARATION_OF_DUTIES",
       "Quem propôs ou aprovou não pode publicar. Peça a outro administrador.",

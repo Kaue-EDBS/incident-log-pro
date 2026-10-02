@@ -12,9 +12,9 @@ const OWNER_EMAIL = "kaue.pastrello@editoradobrasil.com.br";
 /** Fila de avisos por e-mail — só o Kauê vê. Nenhum segredo é mostrado. */
 export function NotificationsPanel() {
   const { user } = useAuth();
-  const { isPlatformAdmin } = useViewer();
+  const { isPlatformAdmin, readOnly } = useViewer();
   const allowed = isPlatformAdmin && user?.email?.toLowerCase() === OWNER_EMAIL;
-  const { data, isLoading, refetch } = useOpsSummary(allowed);
+  const { data, isLoading, isError, isFetching, refetch } = useOpsSummary(allowed);
   const queue = useNotificationsQueue(allowed);
   const refresh = () => {
     void refetch();
@@ -56,23 +56,29 @@ export function NotificationsPanel() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="notif-title" className="flex items-center gap-2 text-lg font-semibold">
           <Mail className="size-5 text-primary" aria-hidden="true" />
-          Fila de e-mails (últimas 24 h)
+          Fila de e-mails
         </h2>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={refresh}>
-            Atualizar
+          <Button variant="outline" onClick={refresh} disabled={isFetching || queue.isFetching}>
+            {isFetching || queue.isFetching ? "Atualizando..." : "Atualizar"}
           </Button>
-          <Button onClick={() => void forceSend()} disabled={busy}>
-            {busy ? (
-              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-            ) : (
-              <Send className="size-4" aria-hidden="true" />
-            )}
-            Forçar envio agora
-          </Button>
+          {readOnly ? null : (
+            <Button onClick={() => void forceSend()} disabled={busy}>
+              {busy ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <Send className="size-4" aria-hidden="true" />
+              )}
+              Forçar envio agora
+            </Button>
+          )}
         </div>
       </div>
-      {isLoading || !n ? (
+      {isError ? (
+        <p role="alert" className="text-sm text-destructive">
+          Não foi possível carregar os totais. Tente "Atualizar".
+        </p>
+      ) : isLoading || !n ? (
         <p role="status" className="text-sm text-muted-foreground">
           Carregando...
         </p>
@@ -98,7 +104,8 @@ export function NotificationsPanel() {
       )}
       <QueueList queue={queue.data} loading={queue.isLoading} failed={queue.isError} />
       <p className="text-xs text-muted-foreground">
-        Remetente: painel.safra@editoradobrasil.com.br. O envio automático roda a cada 2 minutos.
+        Remetente: painel.safra@editoradobrasil.com.br. O servidor envia sozinho a cada 2 minutos;
+        os totais são das últimas 24 h e a lista mostra os 50 e-mails mais recentes.
       </p>
     </section>
   );
@@ -168,7 +175,9 @@ function QueueList({
               <td className="py-2 pr-3">{n.recipient_name ?? n.recipient_email}</td>
               <td className="py-2 pr-3">{n.subject ?? n.notification_type}</td>
               <td className="py-2 pr-3">
-                {STATUS_LABEL[n.delivery_status] ?? n.delivery_status}
+                {n.delivery_status === "FAILED" && n.error?.startsWith("EXPIRED")
+                  ? "Expirado"
+                  : (STATUS_LABEL[n.delivery_status] ?? n.delivery_status)}
                 {n.attempts > 1 ? ` (${n.attempts} tentativas)` : ""}
               </td>
               <td className="py-2 text-muted-foreground">{n.error ?? "—"}</td>

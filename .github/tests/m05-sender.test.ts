@@ -26,7 +26,7 @@ function notice(id: string): ClaimedNotice {
 
 function fakeDeps(notices: ClaimedNotice[], sendStatus: (to: string) => number, tokenStatus = 200) {
   const reports: Array<{ id: string; ok: boolean; error: string | null }> = [];
-  const calls: Array<{ url: string; body: string }> = [];
+  const calls: Array<{ url: string; body: string; headers: Record<string, string> }> = [];
   let claimed = 0;
   const deps: SenderDeps = {
     claim: async () => {
@@ -39,7 +39,7 @@ function fakeDeps(notices: ClaimedNotice[], sendStatus: (to: string) => number, 
     fetch: (async (input: string | URL | Request, init?: RequestInit) => {
       const url = String(input);
       const body = typeof init?.body === "string" ? init.body : String(init?.body ?? "");
-      calls.push({ url, body });
+      calls.push({ url, body, headers: (init?.headers ?? {}) as Record<string, string> });
       if (url.includes("/oauth2/v2.0/token")) {
         return new Response(JSON.stringify({ access_token: "tok" }), { status: tokenStatus });
       }
@@ -98,6 +98,10 @@ describe("M05 sender", () => {
     expect(fake.calls.some((c) => c.url.includes("/oauth2/v2.0/token"))).toBe(false);
     const mail = fake.calls[0]!;
     expect(mail.url).toBe("https://connector-gateway.lovable.dev/microsoft_outlook/me/sendMail");
+    expect(mail.headers).toMatchObject({
+      Authorization: "Bearer lk",
+      "X-Connection-Api-Key": "ok",
+    });
     expect(JSON.parse(mail.body)).toMatchObject({
       message: { from: { emailAddress: { address: CONFIG.mailbox } } },
       saveToSentItems: false,
@@ -126,7 +130,49 @@ describe("M05 sender", () => {
     const fake = fakeDeps([notice("a"), notice("b")], () => 202, 401);
     const result = await runOnce(CONFIG, fake.deps);
     expect(result).toEqual({ status: "ok", claimed: 2, sent: 0, failed: 2 });
+    expect(fake.reports).toHaveLength(2);
     expect(fake.reports.every((r) => !r.ok && r.error === "TOKEN_HTTP_401")).toBe(true);
     expect(fake.calls.some((c) => c.url.includes("/sendMail"))).toBe(false);
+  });
+
+  test("an accepted e-mail is never put back as failed, even if the report fails once", async () => {
+    const fake = fakeDeps([notice("a")], () => 202);
+    let calls = 0;
+    const reports: Array<{ ok: boolean }> = [];
+    fake.deps.report = async (_id, ok) => {
+      calls += 1;
+      if (calls === 1) throw new Error("db glitch");
+      reports.push({ ok });
+    };
+    const result = await runOnce(CONFIG, fake.deps);
+    expect(result).toEqual({ status: "ok", claimed: 1, sent: 1, failed: 0 });
+    expect(reports).toEqual([{ ok: true }]);
+  });
+
+  test("a network error is retried later and the round goes on", async () => {
+    const fake = fakeDeps([notice("a"), notice("b")], () => 202);
+    const realFetch = fake.deps.fetch;
+    fake.deps.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+      if (String(init?.body ?? "").includes("a@editoradobrasil"))
+        throw new TypeError("network down");
+      return realFetch(input, init);
+    }) as typeof fetch;
+    const result = await runOnce(CONFIG, fake.deps);
+    expect(result).toEqual({ status: "ok", claimed: 2, sent: 1, failed: 1 });
+    expect(fake.reports).toContainEqual({ id: "a", ok: false, error: "NETWORK_ERROR" });
+  });
+
+  test("a slow round stops sending before the 5-minute lock runs out", async () => {
+    const fake = fakeDeps([notice("a"), notice("b")], () => 202);
+    let clock = 0;
+    fake.deps.now = () => clock;
+    const realReport = fake.deps.report;
+    fake.deps.report = async (id, ok, error) => {
+      clock += 200_000;
+      await realReport(id, ok, error);
+    };
+    const result = await runOnce(CONFIG, fake.deps);
+    expect(result).toEqual({ status: "ok", claimed: 2, sent: 1, failed: 1 });
+    expect(fake.reports).toContainEqual({ id: "b", ok: false, error: "ROUND_TIME_BUDGET" });
   });
 });

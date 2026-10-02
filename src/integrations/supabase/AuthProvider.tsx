@@ -59,10 +59,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Confere o acesso corporativo quando a pessoa logada muda. Voltar para a aba ou renovar o
+  // token gera um objeto de sessão novo para a mesma pessoa: isso não pode desmontar o Painel
+  // (o texto que a pessoa digitava sumia). O banco confere de novo em toda chamada.
+  const sessionUserId = session?.user?.id ?? null;
   useEffect(() => {
     let cancelled = false;
 
-    if (!session) {
+    if (!sessionUserId) {
       setCorporateAuthorized(null);
       setAuthorizationError(null);
       setAuthorizationLoading(false);
@@ -109,7 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [session]);
+  }, [sessionUserId]);
 
   const signInWithMicrosoft = useCallback(async () => {
     const result = await lovable.auth.signInWithOAuth("microsoft", {

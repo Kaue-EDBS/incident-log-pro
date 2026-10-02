@@ -1429,7 +1429,7 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-126:** o Jair encaminha aos donos de card (Daniel, Renato, Jiane). Respondidos todos, se **exatamente 1 aceitou**, ele é o dono. Com **2 ou mais aceites, ou nenhum**, os donos conversam numa **reunião fora do Painel** e o Jair registra o dono escolhido, com o motivo. Sem escalonamento (D-73).
 - **D-127:** antes de aprovar, quem propôs escreve **nome do card, gatilho, como se detecta, protocolo, impacto esperado e áreas que podem ser impactadas**; o **Jair** define a **área responsável** (na aprovação) e o dono vem da D-126. Nada é completado por inferência.
 - **D-128:** fluxo: proposta → consulta aos donos → dono definido → conteúdo → aprovação (Jair; proposta do Jair: Kaue) → publicação por um admin que não propôs nem aprovou, como **SAFRA-NN, CRITICAL, versão 1** (sem SLA). Publicar nunca reescreve versão publicada; **mudar card já publicado fica para depois**.
-- **D-129:** cada etapa gera **aviso por e-mail** pela fila da M05 (saem quando o TI liberar): Jair (proposta nova), donos consultados (pedido de aceite), quem propôs e o dono (dono definido), quem aprova (conteúdo pronto), quem propôs e os admins que podem publicar (aprovada), quem propôs, o dono e o Jair (publicada).
+- **D-129:** cada etapa gera **aviso por e-mail** pela fila da M05 (enviados pelo servidor, D-133): Jair (proposta nova), donos consultados (pedido de aceite), quem propôs e o dono (dono definido), quem aprova (conteúdo pronto), quem propôs e os admins que podem publicar (aprovada), quem propôs, o dono e o Jair (publicada).
 ### D-130 — Recusar proposta de card novo
 **APPROVED — 02/10/2026** — owner: Kaue.
 
@@ -1464,4 +1464,14 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - Condição: a conexão Outlook precisa estar disponível para a função do servidor (`LOVABLE_API_KEY` e `MICROSOFT_OUTLOOK_API_KEY`). Enquanto não estiver, a função responde "disabled" e a fila segue pelo D-132.
 - **Comprovado no PRIMARY em 02/10/2026:** migrations `20261002300000` e `20261002310000` aplicadas (60 = repositório); função publicada pelo Lovable a pedido (segredos da conexão Outlook disponíveis no servidor); e-mail de teste para o Kaue colocado na fila às 16:30 e **enviado sozinho pelo agendamento às 16:32** (resposta da função: 1 pego, 1 enviado, 0 falhas).
 - **Conferência completa em 02/10/2026 (17:10):** 61 migrations = repositório; agendamento com 17 rodadas, todas com sucesso; 13 e-mails, todos enviados, nenhum com falha (inclui 6 avisos de cancelamento reais enviados sozinhos 2 minutos depois); lista de e-mails do Kauê (`20261002320000`) funcionando, sem mostrar o texto dos avisos. Defeito achado e corrigido: o envio pelo Painel aberto (D-132) e o botão "Forçar envio agora" falhavam sempre (`reading 'rest'`, cliente sem `bind`); corrigido em `c982f19`, vale depois de publicar.
+
+### D-134 — Correções da auditoria dos e-mails e da M10
+**APPROVED — 02/10/2026** — owner: Kaue (pediu a auditoria completa). Migration `20261002330000_m05_m10_audit_fixes.sql`; relatório `AUDITORIA_EMAILS_M10_2026-10-02.md`.
+
+- **Envio pelo navegador só para gestão e admins** (botão "Forçar envio agora"). Com o envio agendado no servidor (D-133) cobrindo todo mundo, o navegador de cada pessoa deixa de pegar a fila: isso tirava ~200 chamadas por minuto com 400 pessoas e impedia que alguém marcasse como enviado um aviso que não enviou. Atualiza a D-132.
+- A fila não trava mais com um aviso pego 5 vezes sem resultado; resultado atrasado não vale; e-mail aceito pela Microsoft nunca volta como falha; cada chamada espera no máximo 15 s e cada rodada para em 100 s.
+- Aviso de proposta cabe nos 6.000 caracteres (antes, proposta com textos longos não era salva).
+- Donos de card só veem a proposta depois que o Jair encaminhou.
+- O agendamento só existe no banco de produção: o banco do CI e o local não chamam mais a função de produção.
+- Tela: o Painel não se desmonta ao voltar para a aba (o texto digitado sumia); no Modo Camaleão a Administração respeita a visão escolhida e não mostra botões de ação; o painel de e-mails mostra erro e "Atualizando...".
 
