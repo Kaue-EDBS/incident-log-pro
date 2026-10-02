@@ -370,3 +370,9 @@ Origem: auditoria do Lovable L-02 e resposta de 02/10/2026. No endereço painels
 
 Pela D-101, protocolo sem nenhuma parte concluída é cancelado sozinho 72 horas depois da abertura. Hoje o único aviso é a frase na tela "Meus protocolos"; não há e-mail nem lembrete, porque os avisos dependem da M05 (e do chamado do TI para envio de e-mail). Decidir na M05: avisar antes (por exemplo, com 48 h), quem recebe (quem abriu, o dono do card, os dois) e por qual canal. Nenhum valor é assumido.
 
+
+## GI-SAFRA-017 — Trocar o envio provisório pelo registro de aplicativo da TI
+- **Status:** aberto
+- **Contexto:** D-130. Hoje os avisos saem pela conexão Outlook pessoal do Kaue e só enquanto houver um Painel aberto.
+- **Pendente da TI:** MS_CLIENT_ID, MS_CLIENT_SECRET (com validade e responsável pela renovação) e Application Access Policy restrita a painel.safra@.
+- **Ao fechar:** ativar o carteiro oficial agendado e retirar as funções `*_for_session`.
