@@ -781,6 +781,7 @@ export type Database = {
         Args: { p_owner_principal_id: string }
         Returns: Json
       }
+      safra_can_use_chameleon: { Args: never; Returns: boolean }
       safra_cancel_treatment: {
         Args: { p_reason: string; p_treatment_id: string }
         Returns: Json
