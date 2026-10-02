@@ -328,6 +328,41 @@ export type Database = {
           },
         ]
       }
+      scenario_proposal_events: {
+        Row: {
+          actor_user_id: string | null
+          event_type: string
+          id: string
+          note: string | null
+          occurred_at: string
+          proposal_id: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          event_type: string
+          id?: string
+          note?: string | null
+          occurred_at?: string
+          proposal_id: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          event_type?: string
+          id?: string
+          note?: string | null
+          occurred_at?: string
+          proposal_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scenario_proposal_events_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "scenario_proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scenario_proposal_owner_responses: {
         Row: {
           candidate_owner_id: string
@@ -368,39 +403,126 @@ export type Database = {
       }
       scenario_proposals: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
+          content_submitted_at: string | null
           created_at: string
+          detection_description: string | null
+          expected_impact_summary: string | null
+          forwarded_at: string | null
+          forwarded_by: string | null
           id: string
+          impacted_area_ids: string[]
+          owner_decision: string | null
+          owner_defined_at: string | null
+          owner_defined_by: string | null
+          owner_note: string | null
+          owner_principal_id: string | null
           problem_description: string
           proposed_by: string
           proposer_email: string
           proposer_name: string
+          protocol_text: string | null
+          published_at: string | null
+          published_by: string | null
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_reason: string | null
+          responsible_area_id: string | null
           safra_impact_description: string
+          scenario_id: string | null
+          scenario_name: string | null
+          status: string
           submitted_at: string
           title: string
+          trigger_description: string | null
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          content_submitted_at?: string | null
           created_at?: string
+          detection_description?: string | null
+          expected_impact_summary?: string | null
+          forwarded_at?: string | null
+          forwarded_by?: string | null
           id?: string
+          impacted_area_ids?: string[]
+          owner_decision?: string | null
+          owner_defined_at?: string | null
+          owner_defined_by?: string | null
+          owner_note?: string | null
+          owner_principal_id?: string | null
           problem_description: string
           proposed_by: string
           proposer_email: string
           proposer_name: string
+          protocol_text?: string | null
+          published_at?: string | null
+          published_by?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          responsible_area_id?: string | null
           safra_impact_description: string
+          scenario_id?: string | null
+          scenario_name?: string | null
+          status?: string
           submitted_at?: string
           title: string
+          trigger_description?: string | null
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          content_submitted_at?: string | null
           created_at?: string
+          detection_description?: string | null
+          expected_impact_summary?: string | null
+          forwarded_at?: string | null
+          forwarded_by?: string | null
           id?: string
+          impacted_area_ids?: string[]
+          owner_decision?: string | null
+          owner_defined_at?: string | null
+          owner_defined_by?: string | null
+          owner_note?: string | null
+          owner_principal_id?: string | null
           problem_description?: string
           proposed_by?: string
           proposer_email?: string
           proposer_name?: string
+          protocol_text?: string | null
+          published_at?: string | null
+          published_by?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_reason?: string | null
+          responsible_area_id?: string | null
           safra_impact_description?: string
+          scenario_id?: string | null
+          scenario_name?: string | null
+          status?: string
           submitted_at?: string
           title?: string
+          trigger_description?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "scenario_proposals_responsible_area_id_fkey"
+            columns: ["responsible_area_id"]
+            isOneToOne: false
+            referencedRelation: "operational_areas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scenario_proposals_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scenario_version_impacted_areas: {
         Row: {
