@@ -655,3 +655,38 @@ export function useOpsSummary(enabled: boolean, hours = 24) {
     },
   });
 }
+
+const NotificationsQueueSchema = z.object({
+  items: z.array(
+    z.object({
+      id: z.string().uuid(),
+      notification_type: z.string(),
+      recipient_name: z.string().nullable(),
+      recipient_email: z.string(),
+      subject: z.string().nullable(),
+      delivery_status: z.string(),
+      queued_at: z.string(),
+      sent_at: z.string().nullable(),
+      failed_at: z.string().nullable(),
+      attempts: z.number(),
+      next_attempt_at: z.string().nullable(),
+      error: z.string().nullable(),
+    }),
+  ),
+});
+export type NotificationsQueue = z.infer<typeof NotificationsQueueSchema>;
+
+/** M05: cada e-mail da fila com a situação e o motivo do erro (só o Kauê). */
+export function useNotificationsQueue(enabled: boolean) {
+  return useQuery({
+    queryKey: ["safra-notifications-queue"],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_admin_get_notifications_queue", () =>
+        untypedRpc("safra_admin_get_notifications_queue"),
+      );
+      if (error) throw error;
+      return NotificationsQueueSchema.parse(data);
+    },
+  });
+}

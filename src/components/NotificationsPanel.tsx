@@ -3,7 +3,8 @@ import { Loader2, Mail, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/integrations/supabase/AuthProvider";
 import { useViewer } from "@/lib/chameleon";
-import { useOpsSummary } from "@/lib/queries";
+import { formatDateTime } from "@/lib/metrics";
+import { useNotificationsQueue, useOpsSummary, type NotificationsQueue } from "@/lib/queries";
 import { deliverQueuedNotifications } from "@/lib/notifications.functions";
 
 const OWNER_EMAIL = "kaue.pastrello@editoradobrasil.com.br";
@@ -14,6 +15,11 @@ export function NotificationsPanel() {
   const { isPlatformAdmin } = useViewer();
   const allowed = isPlatformAdmin && user?.email?.toLowerCase() === OWNER_EMAIL;
   const { data, isLoading, refetch } = useOpsSummary(allowed);
+  const queue = useNotificationsQueue(allowed);
+  const refresh = () => {
+    void refetch();
+    void queue.refetch();
+  };
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -38,7 +44,7 @@ export function NotificationsPanel() {
       setResult("O envio falhou. Tente de novo em instantes.");
     } finally {
       setBusy(false);
-      void refetch();
+      refresh();
     }
   }
 
@@ -53,7 +59,7 @@ export function NotificationsPanel() {
           Fila de e-mails (últimas 24 h)
         </h2>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => void refetch()}>
+          <Button variant="outline" onClick={refresh}>
             Atualizar
           </Button>
           <Button onClick={() => void forceSend()} disabled={busy}>
@@ -90,10 +96,86 @@ export function NotificationsPanel() {
           {result}
         </p>
       )}
+      <QueueList queue={queue.data} loading={queue.isLoading} failed={queue.isError} />
       <p className="text-xs text-muted-foreground">
-        Remetente: painel.safra@editoradobrasil.com.br. A lista detalhada com o motivo de cada
-        erro depende de uma mudança no banco ainda pendente.
+        Remetente: painel.safra@editoradobrasil.com.br. O envio automático roda a cada 2 minutos.
       </p>
     </section>
+  );
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  QUEUED: "Na fila",
+  SENT: "Enviado",
+  FAILED: "Com falha",
+};
+
+function QueueList({
+  queue,
+  loading,
+  failed,
+}: {
+  queue: NotificationsQueue | undefined;
+  loading: boolean;
+  failed: boolean;
+}) {
+  if (loading) {
+    return (
+      <p role="status" className="text-sm text-muted-foreground">
+        Carregando a lista...
+      </p>
+    );
+  }
+  if (failed || !queue) {
+    return (
+      <p role="alert" className="text-sm text-destructive">
+        Não foi possível carregar a lista de e-mails.
+      </p>
+    );
+  }
+  if (queue.items.length === 0) {
+    return <p className="text-sm text-muted-foreground">Nenhum e-mail na fila ainda.</p>;
+  }
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[640px] text-left text-sm">
+        <caption className="sr-only">
+          E-mails mais recentes, com a situação e o motivo do erro
+        </caption>
+        <thead className="text-xs text-muted-foreground">
+          <tr>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Quando
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Para
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Assunto
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Situação
+            </th>
+            <th scope="col" className="py-2 font-medium">
+              Erro
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {queue.items.map((n) => (
+            <tr key={n.id} className="border-t border-border align-top">
+              <td className="py-2 pr-3 tabular-nums">{formatDateTime(n.queued_at)}</td>
+              <td className="py-2 pr-3">{n.recipient_name ?? n.recipient_email}</td>
+              <td className="py-2 pr-3">{n.subject ?? n.notification_type}</td>
+              <td className="py-2 pr-3">
+                {STATUS_LABEL[n.delivery_status] ?? n.delivery_status}
+                {n.attempts > 1 ? ` (${n.attempts} tentativas)` : ""}
+              </td>
+              <td className="py-2 text-muted-foreground">{n.error ?? "—"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
