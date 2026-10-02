@@ -81,3 +81,5 @@
 ## 6. Próximo passo
 
 Próximo: ativar o envio dos avisos quando o TI liberar (AUDITORIA_M05 §4); seguir com M08 em diante. M04 cancelada pela D-110. Publicar e homologar com login real fica para o final (decisão do owner, 02/10/2026).
+
+- 2026-10-02 — M05 provisório (D-130): código de envio pela sessão do usuário pronto; migration `20261002300000_m05_session_delivery.sql` aguarda commit em `supabase/migrations/` (rascunho em `docs/migrations-pendentes/`) e aplicação no PRIMARY.

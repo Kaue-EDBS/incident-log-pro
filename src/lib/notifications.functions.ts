@@ -1,5 +1,5 @@
 // SAFRA-M05 — entrega imediata dos avisos que o banco colocou na fila.
-// PROVISÓRIO (D-121): usa a sessão do próprio usuário corporativo para pegar a fila
+// PROVISÓRIO (D-130): usa a sessão do próprio usuário corporativo para pegar a fila
 // (funções *_for_session, que exigem conta corporativa) e envia pela conexão Outlook
 // vinculada ao projeto, assinando como a caixa compartilhada oficial.
 // Será trocado pelo App Registration da TI.

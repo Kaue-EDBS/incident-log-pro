@@ -1,4 +1,4 @@
--- SAFRA-M05 (provisório, D-121): o Painel aberto por um usuário corporativo pode esvaziar a fila
+-- SAFRA-M05 (provisório, D-130): o Painel aberto por um usuário corporativo pode esvaziar a fila
 -- de avisos usando a própria sessão, enquanto a TI não entrega o registro de aplicativo.
 -- As funções originais (só service_role) ficam intactas.
 -- DESTINO: supabase/migrations/20261002300000_m05_session_delivery.sql (commit no GitHub, D-52).
