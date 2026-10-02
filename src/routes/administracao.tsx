@@ -3,6 +3,7 @@ import { Activity, Loader2 } from "lucide-react";
 import { ComingSoon } from "@/components/ComingSoon";
 import { SeasonPanel } from "@/components/SeasonPanel";
 import { PeoplePanel, RbacTrailPanel, ScreenUsagePanel } from "@/components/AdminPanels";
+import { NotificationsPanel } from "@/components/NotificationsPanel";
 import { Button } from "@/components/ui/button";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
@@ -169,6 +170,7 @@ function Administration() {
         items={["Envio dos avisos por e-mail (depois do chamado do TI)"]}
       />
       <SeasonPanel />
+      <NotificationsPanel />
       <SystemHealth />
       <PeoplePanel />
       <RbacTrailPanel />
