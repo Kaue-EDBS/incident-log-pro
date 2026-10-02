@@ -312,7 +312,7 @@ Até a decisão, a M05 deve considerar apenas e-mail.
 **Status:** OPEN — DEFERRED_TO_C09
 **Fase:** SAFRA-C09 (fundação operacional).
 **Bloqueia START/C08:** não.
-**Origem:** auditoria somente leitura do lado do Lovable (L-01), 01/10/2026.
+**Origem:** auditoria somente leitura do lado do Lovable (L-01), 01/10/2026. Espelhada no banco (migration `20261001235000`, CI verde #255/#293, aplicada no PRIMARY: 41 = 41).
 
 O Lovable Cloud informou **backup diário**, sem restauração ponto a ponto (PITR) no plano atual. A D-23 promete **RPO de 5 minutos** (perda máxima de dados) e **RTO de 30 minutos** (tempo para voltar). Com backup diário, a perda pode chegar a 24 horas.
 
