@@ -22,11 +22,12 @@ const KIND_LABEL: Record<string, string> = {
   ACTION_FAILED: "Falhas técnicas de ação",
 };
 
-function Stat({ label, value }: { label: string; value: string | number }) {
+function Stat({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
     <div className="rounded-lg border border-border bg-background p-4">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
+      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
     </div>
   );
 }
@@ -64,12 +65,14 @@ function SystemHealth() {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Stat label="Protocolos abertos" value={data.protocols.opened} />
             <Stat
-              label="Encerrados (automáticos em 72 h)"
-              value={`${data.protocols.resolved} (${data.protocols.auto_resolved})`}
+              label="Encerrados"
+              value={data.protocols.resolved}
+              hint={`${data.protocols.auto_resolved} automáticos em 72 h`}
             />
             <Stat
-              label="Cancelados (automáticos em 72 h)"
-              value={`${data.protocols.cancelled} (${data.protocols.auto_cancelled})`}
+              label="Cancelados"
+              value={data.protocols.cancelled}
+              hint={`${data.protocols.auto_cancelled} automáticos em 72 h`}
             />
             <Stat label="Em andamento agora" value={data.protocols.active_now} />
           </div>
@@ -161,12 +164,6 @@ function Administration() {
   const viewer = useViewer();
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <ComingSoon
-        title="Administração"
-        intro="Ferramentas para cuidar do Painel e melhorar o app (D-88)."
-        allowed={viewer.canSeeAdmin}
-        items={["Alertas automáticos de saúde do sistema"]}
-      />
       {viewer.canSeeAdmin ? (
         <>
           <SeasonPanel />
@@ -177,6 +174,12 @@ function Administration() {
           <ScreenUsagePanel />
         </>
       ) : null}
+      <ComingSoon
+        title="Administração"
+        intro="Ferramentas para cuidar do Painel e melhorar o app."
+        allowed={viewer.canSeeAdmin}
+        items={["Alertas automáticos de saúde do sistema"]}
+      />
     </div>
   );
 }

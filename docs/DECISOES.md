@@ -1489,3 +1489,10 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - O título é um botão que o leitor de tela anuncia como aberto ou fechado; o conteúdo só carrega aberto.
 - O menu lateral e os cards do Início ficam como estão.
 
+### D-137 — Correções da auditoria de frontend, backend e UX
+**APPROVED — 02/10/2026** — owner: Kaue (pediu a auditoria). Migration `20261002350000_audit2_backend_fixes.sql`; relatório `AUDITORIA_FRONT_BACK_UX_2026-10-02.md`.
+
+- Banco: uma proposta em andamento por pessoa garantida por índice; envio confirmado sempre vale; rodada sem tempo devolve o aviso sem gastar tentativa; lembrete não vai para quem já concluiu; aprovar/publicar conferem o dono; índices da fila.
+- Envio: rodada de 40 s (o agendador espera 60 s).
+- Tela: "Tentar de novo" no login quando a conexão falha; resumo nos títulos das seções fechadas; confirmação em publicar/aprovar/recusar/"Não aceito"; aviso de proposta já em andamento; botões de 44 px; textos sem códigos internos.
+

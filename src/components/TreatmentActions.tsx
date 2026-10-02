@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Ban,
   CheckCircle2,
@@ -72,9 +72,9 @@ function useUndoStillOpen(undoUntil: string | null, serverTime: string) {
     const id = window.setInterval(() => setNow(Date.now()), 15000);
     return () => window.clearInterval(id);
   }, [undoUntil]);
+  // Corrige a diferença entre o relógio do computador e o do servidor (medida uma vez por resposta).
+  const skew = useMemo(() => new Date(serverTime).getTime() - Date.now(), [serverTime]);
   if (!undoUntil) return false;
-  // Corrige a diferença entre o relógio do computador e o do servidor.
-  const skew = new Date(serverTime).getTime() - Date.now();
   return now + skew < new Date(undoUntil).getTime();
 }
 

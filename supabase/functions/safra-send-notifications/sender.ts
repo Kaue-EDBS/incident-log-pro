@@ -42,8 +42,11 @@ export type SenderDeps = {
 
 /** Cada chamada à Microsoft espera no máximo isto. */
 export const REQUEST_TIMEOUT_MS = 15_000;
-/** A rodada para de enviar depois disto; a trava de cada aviso dura 5 minutos. */
-export const ROUND_BUDGET_MS = 100_000;
+/**
+ * A rodada para de enviar depois disto (contado desde o início, inclusive o pedido de acesso):
+ * o agendador do banco espera 60 s e a trava de cada aviso dura 5 minutos.
+ */
+export const ROUND_BUDGET_MS = 40_000;
 
 /** Motivo curto e sem dados pessoais: status HTTP e, se houver, o código de erro do provedor. */
 async function failureReason(response: Response): Promise<string> {
@@ -149,16 +152,6 @@ export async function runOnce(
   const notices = await deps.claim(limit);
   if (notices.length === 0) return { status: "ok", claimed: 0, sent: 0, failed: 0 };
 
-  let transport: Transport;
-  try {
-    transport = await getTransport(config, deps.fetch);
-  } catch (error) {
-    // Sem token, nada sai: cada aviso volta para a fila com o motivo (nova tentativa depois).
-    const reason = error instanceof Error ? error.message : "TOKEN_ERROR";
-    for (const notice of notices) await deps.report(notice.id, false, reason);
-    return { status: "ok", claimed: notices.length, sent: 0, failed: notices.length };
-  }
-
   const now = deps.now ?? Date.now;
   const started = now();
   // O resultado nunca derruba a rodada: tenta de novo uma vez e segue.
@@ -173,6 +166,16 @@ export async function runOnce(
       }
     }
   };
+
+  let transport: Transport;
+  try {
+    transport = await getTransport(config, deps.fetch);
+  } catch (error) {
+    // Sem token, nada sai: cada aviso volta para a fila com o motivo (nova tentativa depois).
+    const reason = error instanceof Error ? error.message : "TOKEN_ERROR";
+    for (const notice of notices) await report(notice.id, false, reason);
+    return { status: "ok", claimed: notices.length, sent: 0, failed: notices.length };
+  }
 
   let sent = 0;
   let failed = 0;

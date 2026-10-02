@@ -48,7 +48,11 @@ export function SeasonPanel() {
   return (
     <CollapsibleSection
       id="season-title"
-      title="Safra"
+      title={
+        data.open
+          ? `Safra: aberta desde ${formatDateTime(data.started_at)}`
+          : `Safra: encerrada em ${formatDateTime(data.ended_at)}`
+      }
       icon={<CalendarCheck2 className="size-5 text-primary" aria-hidden="true" />}
       className="space-y-4"
       titleClassName="text-lg"

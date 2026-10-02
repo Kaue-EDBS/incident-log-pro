@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(8);
+select plan(11);
 
 -- P = proposer (regular), J = Jair (governance), D = Daniel (card owner consulted).
 insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
@@ -53,8 +53,21 @@ select ok((pg_temp.row_of('stuck')).delivery_status = 'FAILED'
 
 -- A2. A late result (the round lost its lock) is ignored ------------------------------------
 update public.notifications_log set locked_until = clock_timestamp() - interval '1 minute' where idempotency_key = 'audit:next';
+select public.safra_notifications_report((pg_temp.row_of('next')).id, false, 'HTTP 503');
+select ok((pg_temp.row_of('next')).delivery_status = 'QUEUED' and (pg_temp.row_of('next')).last_error is null,
+  'A2: a failure reported after the lock expired does not count');
 select public.safra_notifications_report((pg_temp.row_of('next')).id, true, null);
-select is((pg_temp.row_of('next')).delivery_status, 'QUEUED', 'A2: a result after the lock expired does not count');
+select is((pg_temp.row_of('next')).delivery_status, 'SENT', 'D-137: a confirmed send always counts (no repeated e-mail)');
+
+-- D-137: a round without time gives the notice back without using an attempt
+select pg_temp.notice('budget');
+select public.safra_notifications_claim(20);
+select public.safra_notifications_report((pg_temp.row_of('budget')).id, false, 'ROUND_TIME_BUDGET');
+select ok((pg_temp.row_of('budget')).delivery_status = 'QUEUED' and (pg_temp.row_of('budget')).attempts = 0
+          and (pg_temp.row_of('budget')).locked_until is null,
+  'D-137: a notice not tried for lack of time keeps its attempts');
+select ok(exists (select 1 from pg_indexes where indexname = 'uq_scenario_proposals_one_open_per_person'),
+  'D-137: one proposal in progress per person is also guaranteed by a unique index');
 
 select pg_temp.act_as('0a');
 -- A5. Card owners only see a proposal after Jair forwards it --------------------------------

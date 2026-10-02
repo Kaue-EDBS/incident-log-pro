@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { measured } from "./ops";
@@ -159,6 +159,7 @@ export function useAllTreatments(
   return useQuery({
     queryKey: ["safra-all-treatments", filters.status, filters.scenarioId],
     enabled,
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       const { data, error } = await measured("safra_get_all_treatments", () =>
         supabase.rpc("safra_get_all_treatments", {

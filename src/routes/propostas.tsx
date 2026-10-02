@@ -15,6 +15,7 @@ import {
 } from "@/lib/queries";
 import { safraErrorMessage } from "@/lib/safra";
 import { CollapsibleSection } from "@/components/CollapsibleSection";
+import { ConfirmButton } from "@/components/ConfirmButton";
 
 export const Route = createFileRoute("/propostas")({
   head: () => ({
@@ -86,6 +87,7 @@ function NewProposalForm({ me }: { me: ProposalsData["me"] }) {
       </p>
       <label className="block space-y-1 text-sm">
         <span className="font-medium">Título</span>
+        <span className="block text-xs text-muted-foreground">Pelo menos 5 caracteres.</span>
         <input
           className={fieldClass}
           value={title}
@@ -95,6 +97,7 @@ function NewProposalForm({ me }: { me: ProposalsData["me"] }) {
       </label>
       <label className="block space-y-1 text-sm">
         <span className="font-medium">Qual é o problema?</span>
+        <span className="block text-xs text-muted-foreground">Pelo menos 10 caracteres.</span>
         <Textarea
           rows={3}
           maxLength={3000}
@@ -104,6 +107,7 @@ function NewProposalForm({ me }: { me: ProposalsData["me"] }) {
       </label>
       <label className="block space-y-1 text-sm">
         <span className="font-medium">Como ele afeta a Safra?</span>
+        <span className="block text-xs text-muted-foreground">Pelo menos 10 caracteres.</span>
         <Textarea
           rows={3}
           maxLength={3000}
@@ -239,20 +243,21 @@ function RejectBox({ proposalId }: { proposalId: string }) {
           onChange={(e) => setReason(e.target.value)}
         />
       </label>
-      <Button
+      <ConfirmButton
         variant="outline"
-        className="min-h-11"
+        label="Recusar proposta"
+        title="Recusar esta proposta?"
+        description="Quem propôs recebe o motivo por e-mail. A proposta não volta a andar."
+        confirmLabel="Sim, recusar"
         disabled={busy || reason.trim().length < 10}
-        onClick={() =>
+        onConfirm={() =>
           void run(
             "safra_reject_proposal",
             { p_proposal_id: proposalId, p_reason: reason.trim() },
             "Proposta recusada.",
           )
         }
-      >
-        Recusar proposta
-      </Button>
+      />
     </div>
   );
 }
@@ -313,28 +318,29 @@ function GovernanceActions({
           >
             Aceito ser dono
           </Button>
-          <Button
+          <ConfirmButton
             variant="outline"
-            className="min-h-11"
+            label="Não aceito"
+            title="Não aceitar ser dono deste card?"
+            description="O Jair e a gestão veem a sua resposta. Você pode mudar enquanto o dono não for definido."
+            confirmLabel="Sim, não aceito"
             disabled={busy}
-            onClick={() =>
+            onConfirm={() =>
               void run(
                 "safra_respond_proposal",
                 { p_proposal_id: item.proposal_id, p_accept: false, p_note: note.trim() || null },
                 "Resposta registrada.",
               )
             }
-          >
-            Não aceito
-          </Button>
+          />
         </>
       ) : null}
 
       {item.can_define_owner ? (
         <div className="w-full space-y-2 rounded-lg border border-border p-3">
           <p className="text-sm">
-            Mais de um dono aceitou: eles decidem em reunião fora do Painel e você registra quem
-            ficou. Só aparece aqui quem aceitou (D-135).
+            Registre o dono entre quem aceitou. Se mais de um aceitou, eles decidem em reunião fora
+            do Painel e você registra quem ficou.
           </p>
           <div className="flex flex-wrap items-end gap-3">
             <label className="block space-y-1 text-sm">
@@ -397,38 +403,40 @@ function GovernanceActions({
               ))}
             </select>
           </label>
-          <Button
-            className="min-h-11"
+          <ConfirmButton
+            label="Aprovar"
+            title="Aprovar esta proposta?"
+            description="O conteúdo aprovado vai para um administrador publicar como card novo."
+            confirmLabel="Sim, aprovar"
             disabled={busy || !area}
-            onClick={() =>
+            onConfirm={() =>
               void run(
                 "safra_approve_proposal",
                 { p_proposal_id: item.proposal_id, p_responsible_area_id: area },
                 "Proposta aprovada.",
               )
             }
-          >
-            Aprovar
-          </Button>
+          />
         </>
       ) : null}
 
       {item.can_reject ? <RejectBox proposalId={item.proposal_id} /> : null}
 
       {item.can_publish ? (
-        <Button
-          className="min-h-11"
+        <ConfirmButton
+          label="Publicar card"
+          title={`Publicar o card "${item.scenario_name ?? item.title}"?`}
+          description="Ele passa a aparecer para todos no Início e já pode receber protocolos. A versão publicada não muda depois."
+          confirmLabel="Sim, publicar"
           disabled={busy}
-          onClick={() =>
+          onConfirm={() =>
             void run(
               "safra_publish_proposal",
               { p_proposal_id: item.proposal_id },
               "Card publicado.",
             )
           }
-        >
-          Publicar card
-        </Button>
+        />
       ) : null}
     </div>
   );
@@ -456,7 +464,9 @@ function ProposalItem({
           <p className="text-sm text-muted-foreground">
             {item.status === "PUBLISHED" && item.published_code
               ? `Publicada como ${item.published_code}`
-              : STATUS_LABEL[item.status]}{" "}
+              : item.mine && item.can_submit_content
+                ? "Sua vez: escreva o conteúdo do card"
+                : STATUS_LABEL[item.status]}{" "}
             · proposta por {item.proposer_name} em {formatDateTime(item.submitted_at)}
           </p>
         </div>
@@ -466,6 +476,12 @@ function ProposalItem({
           <p className="text-sm text-destructive">Recusada: {item.rejection_reason}</p>
         ) : null}
         {item.owner_name ? <p className="text-sm">Dono: {item.owner_name}</p> : null}
+        {item.my_response ? (
+          <p className="text-sm font-medium">
+            Sua resposta: {item.my_response === "ACCEPTED" ? "aceitou ser dono" : "não aceitou"}
+            {item.can_respond ? " (dá para mudar enquanto o dono não for definido)" : ""}
+          </p>
+        ) : null}
         {item.responses.length ? (
           <ul aria-label="Respostas dos donos de card" className="text-sm text-muted-foreground">
             {item.responses.map((r) => (
@@ -478,18 +494,20 @@ function ProposalItem({
         ) : null}
         {!readOnly && item.can_submit_content ? <ContentForm item={item} /> : null}
         {!readOnly ? <GovernanceActions item={item} candidates={candidates} /> : null}
-        <ol
-          aria-label="Andamento da proposta"
-          className="space-y-1 border-t border-border pt-2 text-xs text-muted-foreground"
-        >
-          {item.events.map((e, i) => (
-            <li key={`${e.occurred_at}-${i}`}>
-              {formatDateTime(e.occurred_at)} · {e.actor_name}:{" "}
-              {EVENT_LABEL[e.event_type] ?? e.event_type}
-              {e.note ? ` (${e.note})` : ""}
-            </li>
-          ))}
-        </ol>
+        {item.events.length ? (
+          <ol
+            aria-label="Andamento da proposta"
+            className="space-y-1 border-t border-border pt-2 text-xs text-muted-foreground"
+          >
+            {item.events.map((e, i) => (
+              <li key={`${e.occurred_at}-${i}`}>
+                {formatDateTime(e.occurred_at)} · {e.actor_name}:{" "}
+                {EVENT_LABEL[e.event_type] ?? e.event_type}
+                {e.note ? ` (${e.note})` : ""}
+              </li>
+            ))}
+          </ol>
+        ) : null}
       </article>
     </li>
   );
@@ -499,14 +517,19 @@ function ProposalItem({
 function Proposals() {
   const { readOnly } = useViewer();
   const query = useProposals();
+  // D-135: uma proposta em andamento por pessoa.
+  const openOwn = query.data?.items.find(
+    (item) => item.mine && item.status !== "PUBLISHED" && item.status !== "REJECTED",
+  );
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <header className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Novo card</h1>
         <p className="text-sm text-muted-foreground">
-          Viu um problema da Safra que ainda não tem card? Proponha. Quem propõe escreve o conteúdo,
-          o Jair aprova e um administrador publica.
+          Viu um problema da Safra que ainda não tem card? Proponha. O Jair encaminha aos donos de
+          card, um deles aceita ser o dono, você escreve o conteúdo, o Jair aprova e um
+          administrador publica.
         </p>
       </header>
       {query.isLoading ? (
@@ -515,12 +538,22 @@ function Proposals() {
           Carregando...
         </p>
       ) : query.isError || !query.data ? (
-        <p role="alert" className="text-sm text-destructive">
+        <div role="alert" className="flex flex-wrap items-center gap-3 text-sm text-destructive">
           Não foi possível carregar as propostas.
-        </p>
+          <Button variant="outline" className="min-h-11" onClick={() => void query.refetch()}>
+            Tentar de novo
+          </Button>
+        </div>
       ) : (
         <>
-          {!readOnly ? <NewProposalForm me={query.data.me} /> : null}
+          {readOnly ? null : openOwn ? (
+            <p className="rounded-xl border border-border bg-card p-5 text-sm">
+              Você já tem uma proposta em andamento ("{openOwn.title}"). Você poderá enviar outra
+              quando ela for publicada ou recusada.
+            </p>
+          ) : (
+            <NewProposalForm me={query.data.me} />
+          )}
           <section aria-labelledby="list-title" className="space-y-3">
             <h2 id="list-title" className="text-lg font-semibold">
               Propostas

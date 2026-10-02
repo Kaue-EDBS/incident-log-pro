@@ -367,9 +367,9 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await expect(page.getByRole("heading", { name: "Trilha de papéis" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Uso das telas/ })).toBeVisible();
   // D-59: só o Kaue vê a marcação da Safra (o teste não encerra a Safra).
-  await expect(page.getByRole("heading", { name: "Safra", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^Safra: / })).toBeVisible();
   // No Modo Camaleão nada se faz: o botão só aparece na visão real.
-  await expand(page, "Safra");
+  await expand(page, /^Safra: /);
   await expect(page.getByText(/Modo Camaleão: só visualização/)).toBeVisible();
   await expect(page.getByRole("button", { name: "Encerrar Safra" })).toHaveCount(0);
   // M05: Saúde do sistema mostra a fila de avisos.
@@ -379,6 +379,6 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
 
   await select.selectOption("real");
   await expect(page.getByText(/Você está vendo como/)).toHaveCount(0);
-  await expand(page, "Safra");
+  await expand(page, /^Safra: /);
   await expect(page.getByRole("button", { name: "Encerrar Safra" })).toBeVisible();
 });

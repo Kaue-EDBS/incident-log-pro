@@ -89,7 +89,8 @@ function CardsAndOwners() {
                     {card.owner_name ?? "—"}
                     {!card.owner_available ? (
                       <span className="block text-xs text-destructive">
-                        indisponível: o card fica bloqueado (D-78)
+                        indisponível: ninguém abre protocolo neste card até um novo dono ser
+                        definido
                       </span>
                     ) : !card.owner_has_logged_in ? (
                       <span className="block text-xs text-muted-foreground">

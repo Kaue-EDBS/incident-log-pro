@@ -45,12 +45,14 @@ function MyOpenProtocols() {
       </div>
       <ul className="mt-3 flex flex-wrap gap-2">
         {open.slice(0, 6).map((item) => (
-          <li
-            key={item.treatment_id}
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm"
-          >
-            <span className="font-semibold">{item.protocol_number}</span>
-            <SituationBadge situation={item.situation} />
+          <li key={item.treatment_id}>
+            <Link
+              to="/meus-protocolos"
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <span className="font-semibold">{item.protocol_number}</span>
+              <SituationBadge situation={item.situation} />
+            </Link>
           </li>
         ))}
       </ul>

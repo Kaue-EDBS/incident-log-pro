@@ -83,7 +83,11 @@ function Ranking({
   return (
     <CollapsibleSection
       id="ranking-title"
-      title="Cards que mais falham na Safra"
+      title={
+        top[0]
+          ? `Cards que mais falham na Safra: 1º ${top[0].code} · ${top[0].name} (${top[0].failures})`
+          : "Cards que mais falham na Safra"
+      }
       className="p-4"
       titleClassName="text-sm"
     >

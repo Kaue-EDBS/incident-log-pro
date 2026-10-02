@@ -157,7 +157,6 @@ export function ScenarioCatalog() {
                   if (element) cardButtons.current.set(card.scenario_id, element);
                 }}
                 type="button"
-                aria-expanded={false}
                 onClick={() => {
                   lastOpened.current = card.scenario_id;
                   setOpenId(card.scenario_id);

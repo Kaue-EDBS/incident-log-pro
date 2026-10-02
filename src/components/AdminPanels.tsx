@@ -11,6 +11,12 @@ const ROLE_LABEL: Record<string, string> = {
   scenario_owner: "Dono de card",
 };
 
+const ACTION_LABEL: Record<string, string> = {
+  ROLE_GRANTED: "Papel dado",
+  ROLE_REVOKED: "Papel retirado",
+  ROLE_CHANGED: "Papel alterado",
+};
+
 const SCREEN_LABEL: Record<string, string> = {
   "/": "Início",
   "/meus-protocolos": "Meus protocolos",
@@ -139,7 +145,7 @@ export function RbacTrailPanel() {
               <span className="tabular-nums text-muted-foreground">
                 {formatDateTime(item.occurred_at)}
               </span>{" "}
-              · {item.action}
+              · {ACTION_LABEL[item.action] ?? item.action}
               {item.target_principal_email ? ` · ${item.target_principal_email}` : ""}
               {item.target_role ? ` · ${ROLE_LABEL[item.target_role] ?? item.target_role}` : ""}
               {item.actor_email ? ` · por ${item.actor_email}` : ""}
@@ -188,7 +194,7 @@ export function ScreenUsagePanel() {
         </ul>
       )}
       <p className="text-xs text-muted-foreground">
-        Conta só quantas vezes cada tela foi aberta por dia; não guarda quem abriu (D-90).
+        Conta só quantas vezes cada tela foi aberta por dia; não guarda quem abriu.
       </p>
     </CollapsibleSection>
   );

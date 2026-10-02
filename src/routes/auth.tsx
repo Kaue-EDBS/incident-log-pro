@@ -34,6 +34,8 @@ function AuthPage() {
     loading,
     corporateAuthorized,
     authorizationError,
+    authorizationRetryable,
+    recheckAuthorization,
     signInWithMicrosoft,
     signOut,
   } = useAuth();
@@ -83,6 +85,18 @@ function AuthPage() {
           >
             {erro ?? authorizationError}
           </div>
+        ) : null}
+
+        {session && corporateAuthorized === false && authorizationRetryable ? (
+          <button
+            type="button"
+            disabled={loading}
+            onClick={recheckAuthorization}
+            className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-60"
+          >
+            {loading ? <Loader2 className="size-4 animate-spin" /> : null}
+            Tentar de novo
+          </button>
         ) : null}
 
         {session && corporateAuthorized === false ? (

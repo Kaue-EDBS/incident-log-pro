@@ -39,7 +39,7 @@ function NowStrip({ summary }: { summary: NowSummary }) {
   return (
     <CollapsibleSection
       id="now-title"
-      title="Agora, em todos os cards"
+      title={`Agora, em todos os cards: ${summary.active} em andamento · ${summary.closing_within_24h} fecham sozinhos em 24 h`}
       className="space-y-3 p-4"
       titleClassName="text-sm"
     >

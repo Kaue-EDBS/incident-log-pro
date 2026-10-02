@@ -19,6 +19,9 @@ type AuthContextValue = {
   loading: boolean;
   corporateAuthorized: boolean | null;
   authorizationError: string | null;
+  /** A conferência falhou por conexão/servidor (não por conta não corporativa): dá para tentar de novo. */
+  authorizationRetryable: boolean;
+  recheckAuthorization: () => void;
   signInWithMicrosoft: () => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -35,6 +38,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authorizationLoading, setAuthorizationLoading] = useState(false);
   const [corporateAuthorized, setCorporateAuthorized] = useState<boolean | null>(null);
   const [authorizationError, setAuthorizationError] = useState<string | null>(null);
+  const [authorizationRetryable, setAuthorizationRetryable] = useState(false);
+  const [recheckNonce, setRecheckNonce] = useState(0);
+  const recheckAuthorization = useCallback(() => setRecheckNonce((n) => n + 1), []);
 
   useEffect(() => {
     let mounted = true;
@@ -78,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthorizationLoading(true);
     setCorporateAuthorized(null);
     setAuthorizationError(null);
+    setAuthorizationRetryable(false);
 
     void (async () => {
       try {
@@ -89,6 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             detail: { error: String(error.code ?? "UNKNOWN") },
           });
           setCorporateAuthorized(false);
+          setAuthorizationRetryable(true);
           setAuthorizationError(
             "Não foi possível confirmar seu acesso agora. Verifique a conexão e tente novamente.",
           );
@@ -113,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [sessionUserId]);
+  }, [sessionUserId, recheckNonce]);
 
   const signInWithMicrosoft = useCallback(async () => {
     const result = await lovable.auth.signInWithOAuth("microsoft", {
@@ -137,11 +145,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading: loading || authorizationLoading,
       corporateAuthorized,
       authorizationError,
+      authorizationRetryable,
+      recheckAuthorization,
       signInWithMicrosoft,
       signOut,
     }),
     [
       authorizationError,
+      authorizationRetryable,
+      recheckAuthorization,
       authorizationLoading,
       corporateAuthorized,
       loading,

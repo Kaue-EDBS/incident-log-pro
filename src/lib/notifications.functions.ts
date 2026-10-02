@@ -48,7 +48,7 @@ export const deliverQueuedNotifications = createServerFn({ method: "POST" })
       let ok = false;
       let reason: string | null = null;
       // A trava de cada aviso dura 5 minutos: para de enviar bem antes disso.
-      if (Date.now() - started > 100_000) {
+      if (Date.now() - started > 40_000) {
         reason = "ROUND_TIME_BUDGET";
       } else
         try {

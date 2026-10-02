@@ -36,7 +36,7 @@ export function CollapsibleSection({
         <button
           type="button"
           aria-expanded={open}
-          aria-controls={contentId}
+          aria-controls={open ? contentId : undefined}
           onClick={() => setOpen((value) => !value)}
           className="flex min-h-11 w-full items-center gap-2 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
