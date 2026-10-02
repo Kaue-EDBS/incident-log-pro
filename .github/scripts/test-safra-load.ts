@@ -21,6 +21,25 @@ const PEOPLE = Number(process.env["LOAD_PEOPLE"] ?? 400);
 const TOTAL_STARTS = Number(process.env["LOAD_STARTS"] ?? 1000);
 const LOAD_SECONDS = Number(process.env["LOAD_SECONDS"] ?? 120);
 const P95_LIMIT_MS = Number(process.env["LOAD_P95_LIMIT_MS"] ?? 2000);
+// The local gateway (Kong in one CI container) drops sockets above ~100 simultaneous
+// connections from a single machine; in production 400 browsers reach the platform gateway
+// from many places. The test keeps 400 active people but at most MAX_IN_FLIGHT requests on
+// the wire; queue time is included in every latency, so the numbers are conservative.
+const MAX_IN_FLIGHT = Number(process.env["LOAD_MAX_IN_FLIGHT"] ?? 64);
+let inFlight = 0;
+const waiting: Array<() => void> = [];
+async function acquire() {
+  if (inFlight < MAX_IN_FLIGHT) {
+    inFlight += 1;
+    return;
+  }
+  await new Promise<void>((resolve) => waiting.push(resolve));
+  inFlight += 1;
+}
+function release() {
+  inFlight -= 1;
+  waiting.shift()?.();
+}
 const TENANT = "45ba725f-d260-45c3-ac85-11f433471277";
 
 const sql = postgres(DB_URL, { max: 4 });
@@ -53,6 +72,7 @@ async function rpc(p: Person, name: string, args: Record<string, unknown> = {}) 
   const started = performance.now();
   let status = 0;
   let text = "";
+  await acquire();
   try {
     const res = await fetch(`${API}/rest/v1/rpc/${name}`, {
       method: "POST",
@@ -68,6 +88,8 @@ async function rpc(p: Person, name: string, args: Record<string, unknown> = {}) 
   } catch (error) {
     status = 0;
     text = String((error as Error)?.message ?? error);
+  } finally {
+    release();
   }
   const ms = performance.now() - started;
   const business = /SAFRA_[A-Z_]+/.exec(text)?.[0];
@@ -300,7 +322,9 @@ async function main() {
   }
   await sql.end();
   if (failed) process.exit(1);
-  console.log("PASS C09 capacity test (400 people, 1,000 protocols, spike)");
+  console.log(
+    `PASS C09 capacity test (${PEOPLE} people, ${TOTAL_STARTS} protocols, spike; at most ${MAX_IN_FLIGHT} requests in flight)`,
+  );
 }
 
 main().catch(async (error) => {
