@@ -283,6 +283,7 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   // D-107: quem abriu aparece pelo nome, nunca pelo e-mail.
   await expect(anyProtocol.getByText("e2e.requester@editoradobrasil.com.br")).toHaveCount(0);
   await expectAccessible(page, "todos os protocolos");
+  await page.getByRole("link", { name: "Início" }).first().click();
 
   const select = page.getByLabel("Modo Camaleão");
   await expect(select).toBeVisible();

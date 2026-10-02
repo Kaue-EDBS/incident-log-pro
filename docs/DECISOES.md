@@ -1366,3 +1366,9 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-108:** o **histórico** do protocolo é **só da gestão (Jair e Bruno) e dos platform admins**. Quem abriu e o dono do card não veem mais o botão "Ver histórico", e o banco recusa. Revisa a D-104.
 - **D-109:** no **Modo Camaleão**, nas visões de usuário e de dono, botões que a pessoa não pode usar **somem** em vez de aparecer desligados (cinza).
 
+### D-110 — SAFRA-M04 cancelada
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- A M04 ("SLA em tempo real") é **cancelada**: sem SLA nos cards (D-62) e motor de SLA aposentado (D-75), não há prazo para comparar.
+- O que era útil já existe: tempo desde a abertura ao vivo (C08) e data do cancelamento automático (D-101). Os tempos de cada parte (D-77) ficam para o analytics (F01/F04, D-88); a hora do próximo lembrete (D-76) só faz sentido com os avisos (M05).
+

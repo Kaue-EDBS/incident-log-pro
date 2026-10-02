@@ -74,4 +74,4 @@
 
 ## 6. Próximo passo
 
-Próximo: M04 (revisar: o SLA foi aposentado pela D-75). Publicar e homologar com login real fica para o final (decisão do owner, 02/10/2026).
+Próximo: M05 (avisos). M04 cancelada pela D-110. Publicar e homologar com login real fica para o final (decisão do owner, 02/10/2026).
