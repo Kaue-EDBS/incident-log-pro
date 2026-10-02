@@ -379,6 +379,12 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+analytics_exclusions:
+  decision: "D-115"
+  migration: "20261002230000_analytics_exclusions.sql"
+  table: "public.treatment_analytics_exclusions (reason + author; protocol never changed)"
+  excluded: ["03-0001 (owner demo, 02/10/2026)"]
+
 m05_notifications:
   status: "BUILT_SENDING_PENDING_TI"
   date: "2026-10-02"

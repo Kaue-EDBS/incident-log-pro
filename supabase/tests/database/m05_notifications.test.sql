@@ -51,9 +51,9 @@ begin
   execute 'alter table public.treatments enable trigger user';
 end;
 $$;
--- Avisos de um protocolo: "TIPO>papel" em ordem.
+-- Avisos de um protocolo: "TIPO>papel", em ordem alfabética (estável entre execuções).
 create function pg_temp.sent(p_k text) returns text language sql as $$
-  select string_agg(notification_type || '>' || recipient_role, ',' order by queued_at, recipient_role)
+  select string_agg(notification_type || '>' || recipient_role, ',' order by notification_type, recipient_role)
   from public.notifications_log where treatment_id = pg_temp.t(p_k);
 $$;
 create function pg_temp.owner_email() returns text language sql as $$
@@ -163,8 +163,7 @@ select ok(not has_function_privilege('authenticated', 'public.safra_notification
           and not has_function_privilege('authenticated', 'public.safra_notifications_report(uuid, boolean, text)', 'EXECUTE'),
   'M05: only the sending service can take and report notices');
 
-grant select on ctx to service_role;
-set local role service_role;
+-- The sender functions run as their owner (SECURITY DEFINER); the grants are checked above.
 -- Reminders of protocols that are no longer active expire instead of being sent late.
 select ok(jsonb_array_length(public.safra_notifications_claim(100)) >= 1, 'the sender takes queued notices');
 select is((select count(*)::int from public.notifications_log
@@ -186,7 +185,6 @@ update public.notifications_log set attempts = 5 where id = (select id from two)
 select public.safra_notifications_report((select id from two), false, 'HTTP 503');
 select is((select delivery_status || '/' || failure_reason from public.notifications_log where id = (select id from two)),
   'FAILED/SEND_FAILED: HTTP 503', 'M05: after 5 attempts the notice is FAILED with the reason');
-reset role;
 
 select ok(not has_table_privilege('authenticated', 'public.notifications_log', 'SELECT'),
   'nobody reads the notification queue directly');

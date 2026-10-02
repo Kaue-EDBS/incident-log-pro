@@ -46,8 +46,8 @@
 - Motor: PostgreSQL na stack Supabase, gerenciado pelo Lovable Cloud.
 - Tabelas em `public`: 16 (inclui o registro técnico `ops_events`, D-95), todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido pela D-73; SLA pela D-75).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
-- Tratativas registradas: 0.
-- Migrations: **51 no PRIMARY e 51 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Protocolos registrados: 1 (03-0001, demonstração do owner em 02/10/2026, fora do analytics pela D-115).
+- Migrations: **52 no PRIMARY e 52 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---

@@ -1380,3 +1380,9 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **D-113:** 72 h depois da abertura, com **uma parte concluída** e a outra não, o protocolo é **encerrado automaticamente**, valendo a parte concluída (sem autor, marcado como automático). Completa a D-101.
 - **D-114:** o e-mail leva número do protocolo, card, situação, quem abriu, dono, horários, **o resumo do problema** e o link para o Painel.
 
+### D-115 — Protocolos fora do analytics
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- Protocolo de demonstração ou teste pode ficar **fora do analytics**, sem alterar o protocolo (ele é imutável depois de fechado): registro em `public.treatment_analytics_exclusions`, com motivo e autor. O analytics (F01/F04) ignora o que estiver nessa lista.
+- Primeiro caso: **03-0001**, aberto e cancelado pelo Kaue em 02/10/2026 para mostrar o Painel à liderança. Novos casos: o owner pede e entram por migration.
+
