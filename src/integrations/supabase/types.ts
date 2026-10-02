@@ -947,8 +947,6 @@ export type Database = {
         Returns: Json
       }
       safra_get_cards_overview: { Args: never; Returns: Json }
-      safra_get_proposals: { Args: never; Returns: Json }
-      safra_get_operational_areas: { Args: never; Returns: Json }
       safra_get_my_treatments: { Args: never; Returns: Json }
       safra_get_owner_treatments: { Args: never; Returns: Json }
       safra_get_reliability_metrics: {
