@@ -1,5 +1,6 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouter, useRouterState } from "@tanstack/react-router";
 import {
+  ArrowLeft,
   BarChart3,
   ClipboardList,
   Eye,
@@ -95,8 +96,14 @@ function ChameleonBar() {
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const router = useRouter();
   const { user, signOut } = useAuth();
   const viewer = useViewer();
+
+  const goBack = () => {
+    if (router.history.canGoBack()) router.history.back();
+    else void router.navigate({ to: "/" });
+  };
 
   // D-124: conta cada tela aberta, sem identificar a pessoa.
   useEffect(() => {
@@ -203,6 +210,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <ChameleonBar />
 
       <main id="conteudo" className="px-4 pb-28 pt-6 lg:ml-64 lg:px-10 lg:pb-16 lg:pt-10">
+        {pathname !== "/" ? (
+          <button
+            type="button"
+            onClick={goBack}
+            className="mb-4 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            Voltar
+          </button>
+        ) : null}
         {children}
       </main>
 

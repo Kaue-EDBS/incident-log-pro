@@ -455,13 +455,21 @@ export type ProposalsData = z.infer<typeof ProposalsSchema>;
 
 const PROPOSALS_KEY = ["safra-proposals"] as const;
 
+// Funções ainda ausentes dos tipos gerados; o banco continua conferindo tudo.
+const untypedRpc = (fn: string) =>
+  (
+    supabase.rpc as unknown as (
+      name: string,
+    ) => PromiseLike<{ data: unknown; error: unknown }>
+  )(fn);
+
 /** Propostas de card novo (M10): o banco decide o que cada pessoa vê e pode fazer. */
 export function useProposals() {
   return useQuery({
     queryKey: PROPOSALS_KEY,
     queryFn: async () => {
       const { data, error } = await measured("safra_get_proposals", () =>
-        supabase.rpc("safra_get_proposals"),
+        untypedRpc("safra_get_proposals"),
       );
       if (error) throw error;
       return ProposalsSchema.parse(data);
@@ -480,7 +488,7 @@ export function useOperationalAreas(enabled: boolean) {
     staleTime: 60 * 60 * 1000,
     queryFn: async () => {
       const { data, error } = await measured("safra_get_operational_areas", () =>
-        supabase.rpc("safra_get_operational_areas"),
+        untypedRpc("safra_get_operational_areas"),
       );
       if (error) throw error;
       return AreasSchema.parse(data);
