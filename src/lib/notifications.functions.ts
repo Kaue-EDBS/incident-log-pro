@@ -1,6 +1,8 @@
 // SAFRA-M05 — entrega imediata dos avisos que o banco colocou na fila.
-// PROVISÓRIO (decisão do dono do projeto): envia pela conexão Outlook vinculada ao projeto,
-// assinando como a caixa compartilhada oficial. Será trocado pelo App Registration da TI.
+// PROVISÓRIO (D-121): usa a sessão do próprio usuário corporativo para pegar a fila
+// (funções *_for_session, que exigem conta corporativa) e envia pela conexão Outlook
+// vinculada ao projeto, assinando como a caixa compartilhada oficial.
+// Será trocado pelo App Registration da TI.
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -9,24 +11,31 @@ const MAIL_SENDER = "painel.safra@editoradobrasil.com.br";
 
 type Claimed = { id: string; to: string; subject: string; body: string; attempt: number };
 
+export type DeliveryResult = {
+  status: "ok" | "disabled" | "error";
+  sent: number;
+  failed: number;
+  code?: string;
+};
+
 export const deliverQueuedNotifications = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async () => {
+  .handler(async ({ context }): Promise<DeliveryResult> => {
     const lovableKey = process.env["LOVABLE_API_KEY"];
     const outlookKey = process.env["MICROSOFT_OUTLOOK_API_KEY"];
-    if (!lovableKey || !outlookKey) return { status: "disabled" as const, sent: 0, failed: 0 };
+    if (!lovableKey || !outlookKey) {
+      return { status: "disabled", sent: 0, failed: 0, code: "MISSING_CONNECTOR_KEYS" };
+    }
 
-    // A fila é do sistema (só service_role lê); o chamador já foi autenticado acima.
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const rpc = supabaseAdmin.rpc as unknown as (
+    const rpc = context.supabase.rpc as unknown as (
       fn: string,
       args: Record<string, unknown>,
-    ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+    ) => PromiseLike<{ data: unknown; error: { code?: string; message: string } | null }>;
 
-    const { data, error } = await rpc("safra_notifications_claim", { p_limit: 20 });
+    const { data, error } = await rpc("safra_notifications_claim_for_session", { p_limit: 20 });
     if (error) {
-      console.error("notifications claim failed:", error.message);
-      return { status: "error" as const, sent: 0, failed: 0 };
+      console.error("notifications claim failed:", error.code, error.message);
+      return { status: "error", sent: 0, failed: 0, code: `CLAIM_${error.code ?? "UNKNOWN"}` };
     }
     const notices = (data ?? []) as Claimed[];
 
@@ -61,9 +70,14 @@ export const deliverQueuedNotifications = createServerFn({ method: "POST" })
       } catch (e) {
         reason = e instanceof Error ? e.message : "NETWORK_ERROR";
       }
-      await rpc("safra_notifications_report", { p_id: n.id, p_ok: ok, p_error: reason });
+      const rep = await rpc("safra_notifications_report_for_session", {
+        p_id: n.id,
+        p_ok: ok,
+        p_error: reason,
+      });
+      if (rep.error) console.error("notification report failed:", rep.error.code, rep.error.message);
       if (ok) sent += 1;
       else failed += 1;
     }
-    return { status: "ok" as const, sent, failed };
+    return { status: "ok", sent, failed };
   });
