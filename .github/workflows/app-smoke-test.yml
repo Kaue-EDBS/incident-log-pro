@@ -56,6 +56,9 @@ jobs:
       - name: C01 runtime contracts
         run: bun test ./.github/tests/c01-runtime-contracts.test.ts
 
+      - name: M05 notification sender
+        run: bun test ./.github/tests/m05-sender.test.ts
+
       - name: C02 threat-model coherence
         run: python3 .github/scripts/check-c02-threat-model-coherence.py
 

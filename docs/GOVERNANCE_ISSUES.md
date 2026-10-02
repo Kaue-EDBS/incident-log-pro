@@ -41,7 +41,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 013 | Tamanho da instância do banco antes de liberar o acesso | OPEN — DEFERRED_TO_ACCESS_RELEASE |
 | 014 | Região dos dados (Londres) atende a LGPD? | OPEN — DEFERRED_TO_ACCESS_RELEASE |
 | 015 | Cabeçalhos de segurança e domínio próprio | OPEN — DEFERRED_TO_ACCESS_RELEASE |
-| 016 | Avisar antes do cancelamento automático de 72 h? | OPEN — DEFERRED_TO_M05 |
+| 016 | Avisar antes do cancelamento automático de 72 h? | RESOLVED (D-112) — 24 h, 12 h e 1 h antes |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -200,7 +200,7 @@ Decidir se um cenário pode possuir mais de uma tratativa `ACTIVE` simultaneamen
 
 ## GI-SAFRA-005 — Canal/provider de notificações e comportamento dos platform admins
 
-**Status:** DECIDED (D-58) — implementação na M05  
+**Status:** DECIDED (D-58, revista pela D-111 em 02/10/2026: Jair não recebe e-mail; só e-mail) — fila e regras prontas na M05; envio aguarda o TI  
 **Fase:** SAFRA-M05.  
 **Decisão do owner (30/09/2026):** avisos por e-mail (Microsoft 365) e Teams. Dono do card recebe pelos dois; Jair recebe só por e-mail, de todos os protocolos; platform admins não recebem, salvo se forem donos do card.
 
@@ -363,7 +363,7 @@ Origem: auditoria do Lovable L-02 e resposta de 02/10/2026. No endereço painels
 
 ## GI-SAFRA-016 — Aviso antes do cancelamento automático de 72 h
 
-**Status:** OPEN — DEFERRED_TO_M05
+**Status:** RESOLVED (D-112, 02/10/2026) — lembretes 24 h, 12 h e 1 h antes, a quem ainda não concluiu
 **Fase:** SAFRA-M05 (avisos).
 **Bloqueia START/C08:** não.
 **Origem:** auditoria do M01, 02/10/2026. Espelhada no banco junto com o próximo pacote de migration.

@@ -69,6 +69,8 @@ declare -a c02_rpcs=(
   "safra_log_ops_event|{\"p_kind\":\"CLIENT_ERROR\"}"
   "safra_admin_get_ops_summary|{}"
   "safra_can_use_chameleon|{}"
+  "safra_notifications_claim|{}"
+  "safra_notifications_report|{\"p_id\":\"00000000-0000-4000-8000-000000000000\",\"p_ok\":true}"
   "safra_get_all_treatments|{}"
   "safra_get_treatment_timeline|{\"p_treatment_id\":\"00000000-0000-4000-8000-000000000000\"}"
   "safra_undo_my_part|{\"p_treatment_id\":\"00000000-0000-4000-8000-000000000000\"}"

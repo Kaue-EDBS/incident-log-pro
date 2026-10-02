@@ -55,6 +55,9 @@ export const SafraTreatmentSchema = z.object({
   // M01 (D-99, D-101); com padrão para funcionar antes da migration chegar ao banco.
   auto_cancelled: z.boolean().default(false),
   auto_cancel_at: z.string().nullable().default(null),
+  // M05 (D-113).
+  auto_resolved: z.boolean().default(false),
+  auto_resolve_at: z.string().nullable().default(null),
   undo_until: z.string().nullable().default(null),
   can_undo_my_part: z.boolean().default(false),
   server_time: z.string(),
@@ -84,11 +87,25 @@ export const SafraTimelineEventSchema = z.object({
 
 export type SafraTimelineEvent = z.infer<typeof SafraTimelineEventSchema>;
 
+export const SafraTimelineNotificationSchema = z.object({
+  notification_id: z.string().uuid(),
+  notification_type: z.string(),
+  recipient_name: z.string().nullable(),
+  delivery_status: z.enum(["QUEUED", "SENT", "FAILED"]),
+  queued_at: z.string(),
+  sent_at: z.string().nullable(),
+  failed_at: z.string().nullable(),
+});
+
+export type SafraTimelineNotification = z.infer<typeof SafraTimelineNotificationSchema>;
+
 export const SafraTimelineSchema = z.object({
   treatment: SafraTreatmentSchema,
   scenario_version_no: z.number().nullable(),
   opened_by_name: z.string(),
   events: z.array(SafraTimelineEventSchema),
+  // M05: avisos do protocolo (só gestão e admins chegam ao histórico, D-108).
+  notifications: z.array(SafraTimelineNotificationSchema).default([]),
 });
 
 export type SafraTimeline = z.infer<typeof SafraTimelineSchema>;

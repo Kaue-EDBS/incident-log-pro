@@ -171,8 +171,9 @@ select is((select count(*)::int from public.treatment_events
              and actor_user_id is null and payload->>'source' = 'SAFRA_M01_AUTO_CANCEL_72H'), 1,
   'D-101: the automatic cancel is recorded as an event without actor');
 
-select is((select status from public.treatments where id = pg_temp.t('t1')), 'ACTIVE',
-  'D-101: a protocol with one part closed is never cancelled automatically');
+select is((select status || '/' || auto_resolved::text || '/' || auto_cancelled::text from public.treatments where id = pg_temp.t('t1')),
+  'RESOLVED/true/false',
+  'D-113: with one part closed, 72 h later the protocol is resolved automatically (never cancelled)');
 
 select is((select status from public.treatments where id = pg_temp.t('t6')), 'ACTIVE',
   'D-101: a protocol under 72 h is not cancelled');

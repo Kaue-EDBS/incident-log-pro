@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
 import { useTreatmentTimeline } from "@/lib/queries";
-import type { SafraTimelineEvent } from "@/lib/safra";
+import type { SafraTimelineEvent, SafraTimelineNotification } from "@/lib/safra";
 
 const ROLE_LABEL: Record<SafraTimelineEvent["actor_role"], string> = {
   REQUESTER: "quem abriu",
@@ -24,12 +24,30 @@ function eventLabel(event: SafraTimelineEvent): string {
     case "OWNER_PART_UNDONE":
       return "Desfez a conclusão";
     case "TREATMENT_RESOLVED":
-      return "Protocolo encerrado (as duas partes concluíram)";
+      return event.actor_role === "SYSTEM"
+        ? "Encerrado automaticamente (72 h, valeu a parte já concluída)"
+        : "Protocolo encerrado (as duas partes concluíram)";
     case "TREATMENT_CANCELLED":
       return event.actor_role === "SYSTEM"
         ? "Cancelado automaticamente (72 h sem nenhuma conclusão)"
         : "Cancelou o protocolo";
   }
+}
+
+const NOTICE_LABEL: Record<string, string> = {
+  TREATMENT_OPENED: "Aviso de abertura",
+  TREATMENT_RESOLVED: "Aviso de encerramento",
+  TREATMENT_CANCELLED: "Aviso de cancelamento",
+  PART_UNDONE: "Aviso de conclusão desfeita",
+  REMINDER_24H: "Lembrete: faltam 24 h",
+  REMINDER_12H: "Lembrete: faltam 12 h",
+  REMINDER_1H: "Lembrete: falta 1 h",
+};
+
+function noticeStatus(notice: SafraTimelineNotification): string {
+  if (notice.delivery_status === "SENT") return `enviado em ${formatDateTime(notice.sent_at)}`;
+  if (notice.delivery_status === "FAILED") return "não enviado";
+  return "na fila de envio";
 }
 
 /** Histórico do protocolo (M02/M03): o que aconteceu, quando e quem fez. Só gestão e admins (D-108). */
@@ -102,6 +120,22 @@ export function TreatmentTimeline({ treatmentId }: { treatmentId: string }) {
                   </li>
                 ))}
               </ol>
+              {data.notifications.length ? (
+                <>
+                  <p className="mt-4 text-xs font-medium text-muted-foreground">
+                    Avisos por e-mail
+                  </p>
+                  <ul aria-label="Avisos do protocolo" className="mt-2 space-y-1">
+                    {data.notifications.map((notice) => (
+                      <li key={notice.notification_id} className="text-sm">
+                        {NOTICE_LABEL[notice.notification_type] ?? notice.notification_type} para{" "}
+                        <span className="font-medium">{notice.recipient_name ?? "—"}</span>:{" "}
+                        <span className="text-muted-foreground">{noticeStatus(notice)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
             </>
           )}
         </div>

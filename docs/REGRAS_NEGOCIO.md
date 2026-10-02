@@ -42,7 +42,7 @@ O Painel Safra não executa nem controla passo a passo o trabalho operacional do
 O solicitante fecha a parte dele quando a necessidade estiver atendida; o dono do card fecha a parte do dono (RB-SAFRA-004).
 
 ### RB-SAFRA-006 — Cancelamento auditável
-Tratativa incorreta vira `CANCELLED`, por decisão do **solicitante ou do dono do card**, sempre com motivo (D-66); exclusão física é proibida no fluxo normal. Não há correção pelo admin: cancela e abre de novo (D-100). As áreas impactadas não mudam depois da abertura (D-102) e não há notas (D-103). O histórico do protocolo é visto só pela gestão e pelos platform admins, com o nome de quem fez cada coisa (D-105/D-108). Nas listas, quem abriu aparece pelo nome (D-107). Protocolo sem nenhuma parte concluída é cancelado automaticamente 72 horas depois da abertura (D-101).
+Tratativa incorreta vira `CANCELLED`, por decisão do **solicitante ou do dono do card**, sempre com motivo (D-66); exclusão física é proibida no fluxo normal. Não há correção pelo admin: cancela e abre de novo (D-100). As áreas impactadas não mudam depois da abertura (D-102) e não há notas (D-103). O histórico do protocolo é visto só pela gestão e pelos platform admins, com o nome de quem fez cada coisa (D-105/D-108). Nas listas, quem abriu aparece pelo nome (D-107). Protocolo sem nenhuma parte concluída é cancelado automaticamente 72 horas depois da abertura (D-101); com uma parte concluída, é encerrado automaticamente, valendo a parte concluída (D-113). Avisos por e-mail: D-111 a D-114.
 
 ### RB-SAFRA-007 — Versão congelada
 Ao abrir, persistir `scenario_version_id`. Histórico não é recalculado contra versão futura.

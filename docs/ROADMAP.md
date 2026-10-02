@@ -157,7 +157,7 @@ As seções 3 a 10 da v2.2 (estado técnico, PROJECT_PROFILE, pessoas e papéis,
 
 ## EIXO 2 — MEIO
 
-M01: CONCLUÍDO em 02/10/2026 (D-98 a D-101, `AUDITORIA_M01_2026-10-02.md`). M02 e M03: CONCLUÍDOS em 02/10/2026 (D-102 a D-105, `AUDITORIA_M02_M03_2026-10-02.md`). M04 **CANCELADO** pela D-110 (sem SLA). M05 a M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
+M01: CONCLUÍDO em 02/10/2026 (D-98 a D-101, `AUDITORIA_M01_2026-10-02.md`). M02 e M03: CONCLUÍDOS em 02/10/2026 (D-102 a D-105, `AUDITORIA_M02_M03_2026-10-02.md`). M04 **CANCELADO** pela D-110 (sem SLA). M05: CONSTRUÍDO em 02/10/2026 (D-111 a D-114, `AUDITORIA_M05_2026-10-02.md`); envio de verdade aguarda o TI. M08 a M11: NÃO INICIADOS. M06 (escalonamento) **CANCELADO** pela D-73; M07 (ponte com incidents de TI) **CANCELADO** pela D-50.
 
 ## EIXO 3 — FIM
 
@@ -438,6 +438,8 @@ NOT_APPLICABLE  # somente quando regra aprovada
 ---
 
 ## SAFRA-M05 — Notificações
+
+> **CONSTRUÍDO em 02/10/2026** (D-111 a D-114): abertura, encerramento e cancelamento avisam o dono e quem abriu; desfazer avisa a outra parte; lembretes 24/12/1 h antes das 72 h; Jair não recebe e-mail; encerramento automático em 72 h com uma parte concluída. Fila, modelo versionado, registro, novas tentativas e expiração prontos; o envio pelo Microsoft 365 liga depois do chamado do TI. O texto abaixo é a especificação original.
 
 ### Eventos aprovados
 

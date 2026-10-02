@@ -132,6 +132,13 @@ export function TreatmentList({
               </p>
             ) : null}
 
+            {item.auto_resolve_at ? (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Se a outra parte não concluir, será encerrado automaticamente em{" "}
+                {formatDateTime(item.auto_resolve_at)}, valendo a parte já concluída.
+              </p>
+            ) : null}
+
             {item.status === "ACTIVE" ? (
               <div className="mt-4">
                 <TreatmentActions treatment={item} />

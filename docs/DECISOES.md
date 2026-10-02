@@ -70,7 +70,7 @@
 | D-55 | Os 11 cenários são CRITICAL; a comunicação de CRITICAL na abertura vai ao dono do card; diretoria fora do fluxo por ora (resolve GI-SAFRA-001) | APPROVED — aplicada em 01/10/2026 |
 | D-56 | Detecção/aviso automático de gatilho fica para versão futura do produto (V2/V3); thresholds do GI-SAFRA-002 e mínimo da curva A do GI-SAFRA-003 não são necessários no MVP | APPROVED |
 | D-57 | Cada pessoa pode ter no máximo uma tratativa ACTIVE por cenário; pessoas diferentes podem abrir o mesmo cenário (resolve GI-SAFRA-004) | APPROVED — aplicada em 01/10/2026 |
-| D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — implementação na M05 |
+| D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — **revista pela D-111** (Jair não recebe; só e-mail) |
 | D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
 | D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
 | D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
@@ -88,7 +88,7 @@
 | D-73 | Escalonamento fica fora do Painel: é feito pelos donos de card, em conjunto, por avaliação própria; SAFRA-M06 cancelado | APPROVED |
 | D-74 | Nome do card é o texto literal da Matriz v3; sem nome curto; a forma de exibir fica para a C08 | APPROVED |
 | D-75 | Engine de SLA aposentada: funções, `scenario_slas` e `SLA_BREACHED` removidos | APPROVED — aplicada em 01/10/2026 |
-| D-76 | Escada de avisos: 2h, 4h e depois de hora em hora até o solicitante fechar a parte dele; o dono deixa de receber quando fecha a parte dele | APPROVED — regra de tempo pronta; envio na M05/F01 |
+| D-76 | Escada de avisos: 2h, 4h e depois de hora em hora até o solicitante fechar a parte dele; o dono deixa de receber quando fecha a parte dele | **SUBSTITUÍDA pela D-112** (24 h, 12 h e 1 h antes das 72 h) |
 | D-77 | Tempos do analytics: solicitante, dono e consolidado (até a última parte); cancelado não conta; parte aberta fica em aberto | APPROVED — regra de tempo pronta; uso na F01/F04 |
 | D-78 | Dono desativado ou sem papel bloqueia o card temporariamente até nova definição; nesta Safra não haverá troca de dono | APPROVED — aplicada em 01/10/2026 |
 | D-79 | START segue publicado enquanto ninguém tem acesso; END/CANCEL e aviso ao dono precisam existir antes de liberar o acesso | APPROVED — risco aceito com condição |
@@ -1371,4 +1371,12 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 
 - A M04 ("SLA em tempo real") é **cancelada**: sem SLA nos cards (D-62) e motor de SLA aposentado (D-75), não há prazo para comparar.
 - O que era útil já existe: tempo desde a abertura ao vivo (C08) e data do cancelamento automático (D-101). Os tempos de cada parte (D-77) ficam para o analytics (F01/F04, D-88); a hora do próximo lembrete (D-76) só faz sentido com os avisos (M05).
+
+### D-111 a D-114 — Avisos por e-mail (M05)
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-111:** abertura, encerramento e cancelamento avisam **o dono do card e quem abriu**; "desfez a conclusão" avisa **a outra parte**; concluir a própria parte não avisa. **Jair não recebe e-mail** (acompanha pelo Painel e entra no card 12); Bruno e platform admins também não, salvo se forem donos do card. Só e-mail (Teams: GI-SAFRA-011). Revisa a D-58.
+- **D-112:** lembretes **24 h, 12 h e 1 h antes** do fechamento automático de 72 h (com 48 h, 60 h e 71 h de aberto), para **quem ainda não concluiu** a sua parte. Substitui a escada da D-67/D-76. Resolve a GI-SAFRA-016.
+- **D-113:** 72 h depois da abertura, com **uma parte concluída** e a outra não, o protocolo é **encerrado automaticamente**, valendo a parte concluída (sem autor, marcado como automático). Completa a D-101.
+- **D-114:** o e-mail leva número do protocolo, card, situação, quem abriu, dono, horários, **o resumo do problema** e o link para o Painel.
 

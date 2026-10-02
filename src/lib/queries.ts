@@ -248,9 +248,13 @@ export const OpsSummarySchema = z.object({
     resolved: z.number(),
     cancelled: z.number(),
     auto_cancelled: z.number().default(0),
+    auto_resolved: z.number().default(0),
     active_now: z.number(),
     oldest_active_opened_at: z.string().nullable(),
   }),
+  notifications: z
+    .object({ queued: z.number(), sent: z.number(), failed: z.number(), expired: z.number() })
+    .default({ queued: 0, sent: 0, failed: 0, expired: 0 }),
   recent: z.array(
     z.object({
       occurred_at: z.string(),

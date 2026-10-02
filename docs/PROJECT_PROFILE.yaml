@@ -379,6 +379,20 @@ c04_reaudit_2:
   email_provider_disabled: "DONE_BY_OWNER_2026-10-01_MICROSOFT_ONLY"
   audit_document: "docs/AUDITORIA_C04_REABERTURA_2026-10-01.md"
 
+m05_notifications:
+  status: "BUILT_SENDING_PENDING_TI"
+  date: "2026-10-02"
+  migration: "20261002220000_m05_notifications.sql"
+  decisions: ["D-111", "D-112", "D-113", "D-114"]
+  channel: "EMAIL (Microsoft Graph sendMail from painel.safra@); Teams open (GI-SAFRA-011)"
+  recipients: "owner + requester (open/resolved/cancelled); other party (undo); pending party (reminders 48/60/71 h); Jair none"
+  queue: "public.notifications_log (template v1, idempotency key, 5 attempts with backoff, 24 h expiry)"
+  sender: "supabase/functions/safra-send-notifications (disabled without MS_TENANT_ID, MS_CLIENT_ID, MS_CLIENT_SECRET, MAIL_SENDER)"
+  sender_rpcs: ["safra_notifications_claim", "safra_notifications_report"]
+  auto_resolve: "72 h with one part closed -> RESOLVED, auto_resolved (D-113)"
+  tests: ["m05_notifications.test.sql (30)", ".github/tests/m05-sender.test.ts (4)"]
+  audit_document: "docs/AUDITORIA_M05_2026-10-02.md"
+
 m02_m03_history:
   status: "APPROVED"
   date: "2026-10-02"
