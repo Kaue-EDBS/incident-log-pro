@@ -30,3 +30,8 @@
 | D117-07 | Troca de dono do card | o dono vê os cards de que é dono **hoje**, com todo o histórico deles na Safra |
 | D117-08 | Modo Camaleão | "Dono do card" mostra os cards do dono escolhido; "Governança" e "Administração" mostram tudo |
 | D117-09 | Protocolos de demonstração | o total fora da conta aparece embaixo da tabela |
+
+## 3. Evidências
+
+- **CI:** App Smoke Test #291 e Database Disposable Test #329 verdes (commit `98ca4e5`).
+- **PRIMARY (02/10/2026):** migration aplicada, **54 = 54**. Teste com o login do owner (desfeito no final): visão "todos os cards", 11 cards, 0 falhas na Safra (o único protocolo, 03-0001, foi cancelado e está fora do analytics), 1 protocolo excluído, Safra desde 01/10/2026 00:00 (São Paulo).
