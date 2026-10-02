@@ -25,7 +25,7 @@ const TENANT = "45ba725f-d260-45c3-ac85-11f433471277";
 
 const sql = postgres(DB_URL, { max: 4 });
 type Person = { id: string; email: string; token: string };
-type Sample = { rpc: string; ms: number; status: number; business?: string };
+type Sample = { rpc: string; ms: number; status: number; business?: string; error?: string };
 const samples: Sample[] = [];
 
 function token(id: string, email: string, sessionId: string) {
@@ -65,12 +65,20 @@ async function rpc(p: Person, name: string, args: Record<string, unknown> = {}) 
     });
     status = res.status;
     text = await res.text();
-  } catch {
+  } catch (error) {
     status = 0;
+    text = String((error as Error)?.message ?? error);
   }
   const ms = performance.now() - started;
   const business = /SAFRA_[A-Z_]+/.exec(text)?.[0];
-  samples.push({ rpc: name, ms, status, ...(business ? { business } : {}) });
+  const technical = status === 0 || status >= 500;
+  samples.push({
+    rpc: name,
+    ms,
+    status,
+    ...(business ? { business } : {}),
+    ...(technical ? { error: text.slice(0, 160).replace(/\s+/g, " ") } : {}),
+  });
   return {
     status,
     body: status >= 200 && status < 300 && text ? (JSON.parse(text) as unknown) : null,
@@ -100,6 +108,14 @@ function report(label: string, from: number, to: number) {
     console.log(
       `Phase ${label}:   ${name}: ${values.length} calls, p95 ${percentile(values, 95)} ms`,
     );
+  }
+  const errors = new Map<string, number>();
+  for (const s of slice.filter((x) => x.error)) {
+    const key = `${s.rpc} HTTP ${s.status} ${s.error}`;
+    errors.set(key, (errors.get(key) ?? 0) + 1);
+  }
+  for (const [key, count] of [...errors.entries()].sort((x, y) => y[1] - x[1]).slice(0, 8)) {
+    console.log(`FAIL detail phase ${label}: ${count}x ${key}`);
   }
   return { technical, p95: percentile(all, 95), business };
 }
