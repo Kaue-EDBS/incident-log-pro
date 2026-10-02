@@ -227,6 +227,16 @@ export function safraErrorMessage(error: unknown, fallback: string): string {
       "SAFRA_ANALYTICS_FORBIDDEN",
       "Os indicadores são para donos de card, gestão e administradores.",
     ],
+    [
+      "SAFRA_SEASON_CLOSED",
+      "A Safra está encerrada. A abertura de protocolos volta na próxima Safra.",
+    ],
+    ["SAFRA_SEASON_FORBIDDEN", "Só o responsável pela Safra pode marcar o início e o fim."],
+    ["SAFRA_SEASON_CONFIRM_REQUIRED", "Digite ENCERRAR SAFRA, em maiúsculas, para confirmar."],
+    ["SAFRA_SEASON_NOT_OPEN", "Não há Safra aberta para encerrar."],
+    ["SAFRA_SEASON_NOT_ENDED", "A Safra não está encerrada."],
+    ["SAFRA_SEASON_UNDO_EXPIRED", "Passaram os 7 dias para desfazer o encerramento."],
+    ["SAFRA_SEASON_ALREADY_OPEN", "Já existe uma Safra aberta."],
     ["SAFRA_UNDO_NOTHING_TO_UNDO", "Não há conclusão sua para desfazer neste protocolo."],
     ["SAFRA_UNDO_WINDOW_EXPIRED", "Passaram os 5 minutos para desfazer."],
     [

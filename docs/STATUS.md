@@ -27,6 +27,7 @@
 | M02 + M03 — histórico e linha do tempo do protocolo; tela "Todos os protocolos" | CONCLUÍDA em 02/10 | `AUDITORIA_M02_M03_2026-10-02.md`, `AUDITORIA_M03_2026-10-02.md` |
 | M05 — avisos por e-mail (fila, regras, lembretes, encerramento automático em 72 h) | CONSTRUÍDA em 02/10; envio aguarda o TI | `AUDITORIA_M05_2026-10-02.md` |
 | D-117 — MTTD, MTTR, MTBF e MTTF na tela Analytics | CONCLUÍDA em 02/10 | `AUDITORIA_D117_INDICADORES_2026-10-02.md` |
+| D-118/D-119 — marcação da Safra (iniciar, encerrar com "ENCERRAR SAFRA", desfazer em 7 dias; só o Kaue) | CONCLUÍDA em 02/10 | `DECISOES.md` D-118/D-119 |
 | C02-AUD e C02-AUD2 — threat model | CONCLUÍDAS em 01/10; G3.5, THREAT-001 e AUTHZ-001 recertificados | `AUDITORIA_C02_REABERTURA_2026-10-01.md` |
 
 ---
@@ -48,7 +49,7 @@
 - Tabelas em `public`: 16 (inclui o registro técnico `ops_events`, D-95), todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido pela D-73; SLA pela D-75).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Protocolos registrados: 1 (03-0001, demonstração do owner em 02/10/2026, fora do analytics pela D-115).
-- Migrations: **54 no PRIMARY e 54 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Migrations: **55 no PRIMARY e 55 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---

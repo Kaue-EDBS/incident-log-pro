@@ -324,6 +324,9 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await page.getByRole("link", { name: "Administração" }).first().click();
   await expect(page.getByText("Painel de cadastrados", { exact: false })).toBeVisible();
   await expectAccessible(page, "administração");
+  // D-59: só o Kaue vê a marcação da Safra (o teste não encerra a Safra).
+  await expect(page.getByRole("heading", { name: "Safra", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Encerrar Safra" })).toBeVisible();
   // M05: Saúde do sistema mostra a fila de avisos.
   await expect(page.getByText("Avisos na fila")).toBeVisible();
   await expect(page.getByText("Avisos com falha")).toBeVisible();

@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { SituationBadge, TreatmentActions } from "@/components/TreatmentActions";
 import { TreatmentTimeline } from "@/components/TreatmentTimeline";
 import { analyticsLocalInputToIso, formatDateTime, toLocalInput } from "@/lib/metrics";
-import { useSafraStartCatalog, useSafraStartTreatment } from "@/lib/queries";
+import { useSafraStartCatalog, useSafraStartTreatment, useSeason } from "@/lib/queries";
 import { useViewer } from "@/lib/chameleon";
 import { cardDisplayName, safraErrorMessage } from "@/lib/safra";
 import type { SafraStartCatalogItem } from "@/lib/safra";
@@ -313,6 +313,7 @@ function ExpandedCard({ card, onClose }: { card: SafraStartCatalogItem; onClose:
 function StartForm({ card }: { card: SafraStartCatalogItem }) {
   const start = useSafraStartTreatment();
   const { readOnly } = useViewer();
+  const seasonClosed = useSeason().data?.open === false;
   const [summary, setSummary] = useState("");
   const [startedLocal, setStartedLocal] = useState(() => toLocalInput(new Date().toISOString()));
   const [areas, setAreas] = useState<string[]>([]);
@@ -462,7 +463,13 @@ function StartForm({ card }: { card: SafraStartCatalogItem }) {
         </p>
       ) : null}
 
-      {readOnly ? null : (
+      {seasonClosed ? (
+        <p role="note" className="rounded-lg border border-warning/50 bg-warning/15 p-3 text-sm">
+          A Safra está encerrada. A abertura de protocolos volta quando a próxima Safra começar.
+        </p>
+      ) : null}
+
+      {readOnly || seasonClosed ? null : (
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button size="lg" className="min-h-12 w-full text-base" disabled={!canStart}>

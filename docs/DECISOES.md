@@ -71,7 +71,7 @@
 | D-56 | Detecção/aviso automático de gatilho fica para versão futura do produto (V2/V3); thresholds do GI-SAFRA-002 e mínimo da curva A do GI-SAFRA-003 não são necessários no MVP | APPROVED |
 | D-57 | Cada pessoa pode ter no máximo uma tratativa ACTIVE por cenário; pessoas diferentes podem abrir o mesmo cenário (resolve GI-SAFRA-004) | APPROVED — aplicada em 01/10/2026 |
 | D-58 | Avisos por e-mail e Teams: dono do card recebe pelos dois; Jair só por e-mail; platform admins não recebem (resolve GI-SAFRA-005) | APPROVED — **revista pela D-111** (Jair não recebe; só e-mail) |
-| D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — implementação na F04/M05 |
+| D-59 | A Safra corrente é aberta e encerrada por marcação manual no sistema, feita pelo Kaue (resolve GI-SAFRA-006) | APPROVED — **implementada em 02/10/2026** (D-118/D-119) |
 | D-60 | 12º card: conteúdo escrito pelo proponente; Jair aprova; platform admin publica; nasce CRITICAL (resolve GI-SAFRA-007) | APPROVED — implementação na M10 |
 | D-61 | Dia, horário e ritual da governança semanal ficam fora do Painel; a F05 mantém tela de resumo e registro de ações (resolve GI-SAFRA-008) | APPROVED |
 | D-62 | Sem cronômetro de SLA nos cards; escada de avisos 2h/3h/4h, 24h por dia, com pergunta "foi resolvido?" a quem abriu (resolve GI-SAFRA-009) | APPROVED — **escada substituída pela D-67**; "sem SLA" mantido |
@@ -1399,4 +1399,10 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **Falha** = protocolo encerrado; cancelados e os fora do analytics (D-115) não contam. Protocolos do **mesmo card que se sobrepõem no tempo** contam como **uma** falha.
 - **MTTF** = abertura da falha − fim da falha anterior do mesmo card; **MTBF** = abertura da falha − abertura da anterior (= MTTF + MTTR).
 - **Média e mediana** da Safra corrente. Dono vê os seus cards; Jair, Bruno e admins veem todos e o consolidado (D-88). Voltam como indicadores dos protocolos da Safra, não de incidente de TI (ressalva à D-50).
+### D-118 e D-119 — Marcação da Safra (aplica D-59 e D-70)
+**APPROVED — 02/10/2026** — owner: Kaue.
 
+- **D-118:** com a Safra **encerrada**, ninguém abre protocolo novo até a próxima começar; os protocolos já abertos continuam (concluir, desfazer, cancelar, fechamento automático em 72 h e avisos).
+- **D-119:** a próxima Safra começa quando o Kaue aperta **"Iniciar nova Safra"**.
+- Os botões ficam em Administração e **só o Kaue vê e usa** (o banco confere papel e e-mail). Encerrar exige digitar "ENCERRAR SAFRA" e pode ser desfeito em 7 dias, sem apagar dados (D-70). Cada marca fica num histórico só de acréscimo.
+- Primeiro registro: início em 01/10/2026 00:00 (São Paulo), pela D-69. Os indicadores (D-117) usam o período da Safra corrente (a aberta; sem Safra aberta, a última encerrada).

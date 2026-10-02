@@ -202,6 +202,65 @@ export function useReliabilityMetrics(enabled: boolean, previewOwnerPrincipalId:
   });
 }
 
+const SeasonSchema = z.object({
+  open: z.boolean(),
+  started_at: z.string().nullable(),
+  ended_at: z.string().nullable(),
+  can_manage: z.boolean(),
+  undo_until: z.string().nullable(),
+  server_time: z.string(),
+});
+
+const SEASON_KEY = ["safra-season"] as const;
+
+/** Situação da Safra (D-59/D-118): aberta ou encerrada; só o Kaue pode marcar. */
+export function useSeason() {
+  return useQuery({
+    queryKey: SEASON_KEY,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_get_season", () =>
+        supabase.rpc("safra_get_season"),
+      );
+      if (error) throw error;
+      return SeasonSchema.parse(data);
+    },
+  });
+}
+
+function useSeasonMutation<TInput>(
+  name: string,
+  call: (input: TInput) => PromiseLike<{ data: unknown; error: unknown }>,
+) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: TInput) => {
+      const { data, error } = await measured(name, () => call(input));
+      if (error) throw error;
+      return SeasonSchema.parse(data);
+    },
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: SEASON_KEY });
+      void qc.invalidateQueries({ queryKey: ["safra-reliability-metrics"] });
+    },
+  });
+}
+
+export function useEndSeason() {
+  return useSeasonMutation<string>("safra_end_season", (confirm) =>
+    supabase.rpc("safra_end_season", { p_confirm: confirm }),
+  );
+}
+
+export function useUndoEndSeason() {
+  return useSeasonMutation<void>("safra_undo_end_season", () =>
+    supabase.rpc("safra_undo_end_season"),
+  );
+}
+
+export function useStartSeason() {
+  return useSeasonMutation<void>("safra_start_season", () => supabase.rpc("safra_start_season"));
+}
+
 export function useSafraStartTreatment() {
   const invalidate = useInvalidateProtocols();
 

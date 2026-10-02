@@ -210,7 +210,7 @@ Definir:
 
 ## GI-SAFRA-006 — Janela temporal oficial da “Safra corrente”
 
-**Status:** DECIDED (D-59) — implementação na F04/M05  
+**Status:** RESOLVED (D-59, implementada em 02/10/2026 com D-118/D-119) — botão só do Kaue em Administração  
 **Fase:** M05/F04.  
 **Decisão do owner (30/09/2026):** a Safra é aberta e encerrada manualmente no sistema, por marcação do Kaue.
 

@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ScenarioCatalog } from "@/components/ScenarioCatalog";
+import { SeasonClosedNotice } from "@/components/SeasonPanel";
 import { SituationBadge } from "@/components/TreatmentActions";
 import { useViewer } from "@/lib/chameleon";
 import { useMyTreatments } from "@/lib/queries";
@@ -66,6 +67,7 @@ function Home() {
           Algo deu errado na operação? Escolha o card, explique o problema e inicie o protocolo.
         </p>
       </header>
+      <SeasonClosedNotice />
       <MyOpenProtocols />
       <ScenarioCatalog />
     </div>

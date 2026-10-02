@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, Loader2 } from "lucide-react";
 import { ComingSoon } from "@/components/ComingSoon";
+import { SeasonPanel } from "@/components/SeasonPanel";
 import { Button } from "@/components/ui/button";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
@@ -171,6 +172,7 @@ function Administration() {
           "Avisos enviados e backups (depois da M05)",
         ]}
       />
+      <SeasonPanel />
       <SystemHealth />
     </div>
   );
