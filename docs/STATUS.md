@@ -66,7 +66,7 @@
 
 ## 5. Pendências abertas
 
-- Pendências de governança: ver `docs/GOVERNANCE_ISSUES.md`. Resolvidas: 001, 004, 008, 009, 010. Decididas, aguardando construção: 005 (avisos, M05), 006 (marcar a Safra, F04/M05), 007 (12º card, M10). Adiadas para a V2 do produto: 002, 003.
+- Pendências de governança: ver `docs/GOVERNANCE_ISSUES.md`. Resolvidas: 001, 004, 008, 009, 010. 005, 006 e 007 construídas (M05, D-118, M10). Adiadas para a V2 do produto: 002, 003.
 - Encerrar (duas partes) e cancelar já existem (C08.1, D-87). **Antes de liberar o acesso às pessoas, falta o aviso ao dono (M05), publicar e homologar com login real (D-79).**
 - Telas "Meus protocolos" e "Protocolos dos meus cards": feitas no C08.2.
 - **Publicar no Lovable** a versão atual antes de liberar o acesso: a publicada é de antes do C07 e não carrega o catálogo (D-79).
