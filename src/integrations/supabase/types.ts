@@ -58,60 +58,97 @@ export type Database = {
       }
       notifications_log: {
         Row: {
+          attempts: number
+          body: string | null
           channel: string | null
           correlation_id: string
           created_at: string
           delivery_status: string
+          event_id: string | null
           failed_at: string | null
           failure_reason: string | null
           id: string
           idempotency_key: string
+          last_error: string | null
+          locked_until: string | null
+          next_attempt_at: string
           notification_type: string
           proposal_id: string | null
           provider: string | null
           queued_at: string
           recipient_email: string
+          recipient_name: string | null
           recipient_principal_id: string | null
+          recipient_role: string | null
           sent_at: string | null
+          subject: string | null
+          template_version: number | null
           treatment_id: string | null
         }
         Insert: {
+          attempts?: number
+          body?: string | null
           channel?: string | null
           correlation_id: string
           created_at?: string
           delivery_status: string
+          event_id?: string | null
           failed_at?: string | null
           failure_reason?: string | null
           id?: string
           idempotency_key: string
+          last_error?: string | null
+          locked_until?: string | null
+          next_attempt_at?: string
           notification_type: string
           proposal_id?: string | null
           provider?: string | null
           queued_at?: string
           recipient_email: string
+          recipient_name?: string | null
           recipient_principal_id?: string | null
+          recipient_role?: string | null
           sent_at?: string | null
+          subject?: string | null
+          template_version?: number | null
           treatment_id?: string | null
         }
         Update: {
+          attempts?: number
+          body?: string | null
           channel?: string | null
           correlation_id?: string
           created_at?: string
           delivery_status?: string
+          event_id?: string | null
           failed_at?: string | null
           failure_reason?: string | null
           id?: string
           idempotency_key?: string
+          last_error?: string | null
+          locked_until?: string | null
+          next_attempt_at?: string
           notification_type?: string
           proposal_id?: string | null
           provider?: string | null
           queued_at?: string
           recipient_email?: string
+          recipient_name?: string | null
           recipient_principal_id?: string | null
+          recipient_role?: string | null
           sent_at?: string | null
+          subject?: string | null
+          template_version?: number | null
           treatment_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_log_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "treatment_events"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notifications_log_proposal_id_fkey"
             columns: ["proposal_id"]
@@ -185,6 +222,68 @@ export type Database = {
           kind?: string
           occurred_at?: string
           route?: string | null
+        }
+        Relationships: []
+      }
+      safra_season_events: {
+        Row: {
+          actor_user_id: string | null
+          event_type: string
+          id: string
+          note: string | null
+          occurred_at: string
+          season_id: string
+        }
+        Insert: {
+          actor_user_id?: string | null
+          event_type: string
+          id?: string
+          note?: string | null
+          occurred_at?: string
+          season_id: string
+        }
+        Update: {
+          actor_user_id?: string | null
+          event_type?: string
+          id?: string
+          note?: string | null
+          occurred_at?: string
+          season_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safra_season_events_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "safra_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      safra_seasons: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          ended_by: string | null
+          id: string
+          started_at: string
+          started_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          ended_by?: string | null
+          id?: string
+          started_at: string
+          started_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          ended_by?: string | null
+          id?: string
+          started_at?: string
+          started_by?: string | null
         }
         Relationships: []
       }
@@ -482,6 +581,24 @@ export type Database = {
           },
         ]
       }
+      screen_views_daily: {
+        Row: {
+          day: string
+          route: string
+          views: number
+        }
+        Insert: {
+          day: string
+          route: string
+          views?: number
+        }
+        Update: {
+          day?: string
+          route?: string
+          views?: number
+        }
+        Relationships: []
+      }
       systems: {
         Row: {
           code: string
@@ -511,6 +628,35 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      treatment_analytics_exclusions: {
+        Row: {
+          excluded_at: string
+          excluded_by: string | null
+          reason: string
+          treatment_id: string
+        }
+        Insert: {
+          excluded_at?: string
+          excluded_by?: string | null
+          reason: string
+          treatment_id: string
+        }
+        Update: {
+          excluded_at?: string
+          excluded_by?: string | null
+          reason?: string
+          treatment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_analytics_exclusions_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: true
+            referencedRelation: "treatments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       treatment_events: {
         Row: {
@@ -656,6 +802,8 @@ export type Database = {
       }
       treatments: {
         Row: {
+          auto_cancelled: boolean
+          auto_resolved: boolean
           cancellation_reason: string | null
           cancelled_at: string | null
           cancelled_by: string | null
@@ -682,6 +830,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          auto_cancelled?: boolean
+          auto_resolved?: boolean
           cancellation_reason?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
@@ -708,6 +858,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          auto_cancelled?: boolean
+          auto_resolved?: boolean
           cancellation_reason?: string | null
           cancelled_at?: string | null
           cancelled_by?: string | null
@@ -781,32 +933,32 @@ export type Database = {
         Args: { p_owner_principal_id: string }
         Returns: Json
       }
-      safra_can_use_chameleon: { Args: never; Returns: boolean }
-      safra_undo_my_part: { Args: { p_treatment_id: string }; Returns: Json }
-      safra_get_treatment_timeline: { Args: { p_treatment_id: string }; Returns: Json }
-      safra_get_reliability_metrics: { Args: { p_owner_principal_id?: string }; Returns: Json }
-      safra_get_season: { Args: never; Returns: Json }
-      safra_get_cards_overview: { Args: never; Returns: Json }
-      safra_get_proposals: { Args: never; Returns: Json }
-      safra_get_operational_areas: { Args: never; Returns: Json }
       safra_admin_get_people: { Args: never; Returns: Json }
-      safra_log_screen_view: { Args: { p_route: string }; Returns: undefined }
       safra_admin_get_screen_usage: { Args: { p_days?: number }; Returns: Json }
-      safra_end_season: { Args: { p_confirm: string }; Returns: Json }
-      safra_undo_end_season: { Args: never; Returns: Json }
-      safra_start_season: { Args: never; Returns: Json }
-      safra_get_all_treatments: {
-        Args: { p_limit?: number; p_scenario_id?: string; p_status?: string }
-        Returns: Json
-      }
+      safra_can_use_chameleon: { Args: never; Returns: boolean }
       safra_cancel_treatment: {
         Args: { p_reason: string; p_treatment_id: string }
         Returns: Json
       }
       safra_close_my_part: { Args: { p_treatment_id: string }; Returns: Json }
+      safra_end_season: { Args: { p_confirm: string }; Returns: Json }
+      safra_get_all_treatments: {
+        Args: { p_limit?: number; p_scenario_id?: string; p_status?: string }
+        Returns: Json
+      }
+      safra_get_cards_overview: { Args: never; Returns: Json }
       safra_get_my_treatments: { Args: never; Returns: Json }
       safra_get_owner_treatments: { Args: never; Returns: Json }
+      safra_get_reliability_metrics: {
+        Args: { p_owner_principal_id?: string }
+        Returns: Json
+      }
+      safra_get_season: { Args: never; Returns: Json }
       safra_get_start_catalog: { Args: never; Returns: Json }
+      safra_get_treatment_timeline: {
+        Args: { p_treatment_id: string }
+        Returns: Json
+      }
       safra_has_role: { Args: { requested_role: string }; Returns: boolean }
       safra_is_corporate_user: { Args: never; Returns: boolean }
       safra_log_ops_event: {
@@ -819,7 +971,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      safra_log_screen_view: { Args: { p_route: string }; Returns: undefined }
+      safra_notifications_claim: { Args: { p_limit?: number }; Returns: Json }
+      safra_notifications_report: {
+        Args: { p_error?: string; p_id: string; p_ok: boolean }
+        Returns: undefined
+      }
       safra_session_is_live: { Args: never; Returns: boolean }
+      safra_start_season: { Args: never; Returns: Json }
       safra_start_treatment: {
         Args: {
           p_idempotency_key: string
@@ -830,6 +989,8 @@ export type Database = {
         }
         Returns: Json
       }
+      safra_undo_end_season: { Args: never; Returns: Json }
+      safra_undo_my_part: { Args: { p_treatment_id: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
