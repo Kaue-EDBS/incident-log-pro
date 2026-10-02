@@ -280,6 +280,10 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   const history = anyProtocol.getByRole("list", { name: "Histórico do protocolo" });
   await expect(history).toBeVisible();
   await expect(history.getByText("Desfez a conclusão")).toBeVisible();
+  // M05: a gestão vê os avisos por e-mail de cada protocolo (ainda na fila: envio aguarda o TI).
+  const notices = anyProtocol.getByRole("list", { name: "Avisos do protocolo" });
+  await expect(notices.getByText(/Aviso de abertura para/).first()).toBeVisible();
+  await expect(notices.getByText(/Aviso de encerramento para/).first()).toBeVisible();
   // D-107: quem abriu aparece pelo nome, nunca pelo e-mail.
   await expect(anyProtocol.getByText("e2e.requester@editoradobrasil.com.br")).toHaveCount(0);
   await expectAccessible(page, "todos os protocolos");
@@ -316,6 +320,9 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await page.getByRole("link", { name: "Administração" }).first().click();
   await expect(page.getByText("Painel de cadastrados", { exact: false })).toBeVisible();
   await expectAccessible(page, "administração");
+  // M05: Saúde do sistema mostra a fila de avisos.
+  await expect(page.getByText("Avisos na fila")).toBeVisible();
+  await expect(page.getByText("Avisos com falha")).toBeVisible();
 
   await select.selectOption("real");
   await expect(page.getByText(/Você está vendo como/)).toHaveCount(0);

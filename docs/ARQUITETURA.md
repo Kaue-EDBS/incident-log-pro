@@ -175,7 +175,7 @@ O START grava snapshot de owner e área responsável na tratativa para impedir r
 A engine de SLA e a tabela `scenario_slas` foram removidas (D-75). Os prazos da Matriz v3 ficam como texto em `source_reference`.
 
 As regras de tempo são cálculos puros, sem gravar duração, e não são chamáveis pelo navegador:
-- `private.safra_reminder_steps` — escada de avisos (D-76);
+- ~~`private.safra_reminder_steps`~~ — escada D-76 **removida** em 02/10/2026; lembretes da D-112 em `private.safra_auto_cancel_stale` (M05);
 - `private.safra_close_times` — tempos do solicitante, do dono e consolidado (D-77);
 - `private.safra_local_day` — dia do relatório em `America/Sao_Paulo`.
 

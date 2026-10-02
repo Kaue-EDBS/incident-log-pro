@@ -1251,7 +1251,7 @@ Persistência (F01): o protocolo guarda separadamente quem fechou e quando, para
 - Se o **dono** fecha a parte dele primeiro, ele **deixa de receber**; só o solicitante continua recebendo.
 - Tempo corrido em horas absolutas, 24h por dia (horário de verão não altera).
 - Bordas: o aviso vale no instante exato (2h00); quem fecha ou cancela exatamente nesse instante não recebe aquele aviso.
-- Regra de tempo: `private.safra_reminder_steps`. Envio: M05/F01.
+- Regra de tempo: `private.safra_reminder_steps` (removida em 02/10/2026; substituída pela D-112). Envio: M05.
 
 ### D-77 — Tempos de encerramento do analytics
 **APPROVED — 01/10/2026** — owner: Kaue. Detalha a D-66.
@@ -1385,4 +1385,10 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 
 - Protocolo de demonstração ou teste pode ficar **fora do analytics**, sem alterar o protocolo (ele é imutável depois de fechado): registro em `public.treatment_analytics_exclusions`, com motivo e autor. O analytics (F01/F04) ignora o que estiver nessa lista.
 - Primeiro caso: **03-0001**, aberto e cancelado pelo Kaue em 02/10/2026 para mostrar o Painel à liderança. Novos casos: o owner pede e entram por migration.
+
+### D-116 — Decisão final sobre as respostas do Lovable
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **Nada muda.** GI-SAFRA-013: a instância do banco fica no tamanho atual (Tiny), e o risco do pico de 400 pessoas abrindo protocolo no mesmo minuto é aceito. GI-SAFRA-014: os dados ficam na AWS eu-west-2 (Londres). GI-SAFRA-015: o Painel fica em `painelsafra.lovable.app`, sem domínio próprio nem cabeçalhos customizados.
+- O runbook §4.6 continua valendo se houver lentidão (aumentar a instância pelo painel em 2 a 5 minutos).
 

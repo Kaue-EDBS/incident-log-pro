@@ -231,7 +231,7 @@ Histórico da regra (até 30/09/2026): os quatro cenários `CRITICAL` não podia
 - tempos sempre derivados de horários do servidor (`timestamptz`); nenhuma duração gravada como fonte;
 - relógio negativo (horário antes da abertura) é recusado;
 - horário ausente nunca vira "OK" nem zero;
-- escada de avisos (D-76): `private.safra_reminder_steps`;
+- lembretes (D-112, substitui a D-76): 24 h, 12 h e 1 h antes das 72 h, em `private.safra_auto_cancel_stale`;
 - tempos de encerramento (D-77): `private.safra_close_times`;
 - dia/hora dos relatórios em `America/Sao_Paulo`: `private.safra_local_day`;
 - nenhuma regra de tempo é chamável pelo navegador.

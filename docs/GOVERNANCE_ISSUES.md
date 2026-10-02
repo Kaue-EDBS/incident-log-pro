@@ -38,9 +38,9 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 010 | Liberação de START por card | RESOLVED (D-63) |
 | 011 | Avisos também pelo Teams? Para pessoa ou canal? | OPEN — DEFERRED_TO_M05 |
 | 012 | Backup diário atende a meta de RPO 5 min / RTO 30 min (D-23)? | RESOLVED (D-93) — meta revista: RPO até 24 h, RTO até 4 h |
-| 013 | Tamanho da instância do banco antes de liberar o acesso | OPEN — DEFERRED_TO_ACCESS_RELEASE |
-| 014 | Região dos dados (Londres) atende a LGPD? | OPEN — DEFERRED_TO_ACCESS_RELEASE |
-| 015 | Cabeçalhos de segurança e domínio próprio | OPEN — DEFERRED_TO_ACCESS_RELEASE |
+| 013 | Tamanho da instância do banco antes de liberar o acesso | RESOLVED (D-116) — fica como está, risco aceito |
+| 014 | Região dos dados (Londres) atende a LGPD? | RESOLVED (D-116) — fica em Londres |
+| 015 | Cabeçalhos de segurança e domínio próprio | RESOLVED (D-116) — fica em painelsafra.lovable.app |
 | 016 | Avisar antes do cancelamento automático de 72 h? | RESOLVED (D-112) — 24 h, 12 h e 1 h antes |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
@@ -330,7 +330,7 @@ Nenhum valor é assumido até a decisão.
 
 ## GI-SAFRA-013 — Tamanho da instância do banco antes de liberar o acesso
 
-**Status:** OPEN — DEFERRED_TO_ACCESS_RELEASE
+**Status:** RESOLVED (D-116, 02/10/2026) — decisão final do owner: nada muda
 **Fase:** liberação do acesso às pessoas (depois do C09).
 **Bloqueia START/C08:** não.
 **Origem:** respostas do Lovable ao C09, 02/10/2026. Espelhada no banco (migration `20261002150000`).
@@ -341,7 +341,7 @@ O Lovable informou (02/10/2026) que a instância atual é a menor (Tiny: cerca d
 
 ## GI-SAFRA-014 — Região dos dados: Londres (AWS eu-west-2)
 
-**Status:** OPEN — DEFERRED_TO_ACCESS_RELEASE
+**Status:** RESOLVED (D-116, 02/10/2026) — decisão final do owner: nada muda
 **Fase:** liberação do acesso às pessoas (depois do C09).
 **Bloqueia START/C08:** não.
 **Origem:** respostas do Lovable ao C09, 02/10/2026. Espelhada no banco (migration `20261002150000`).
@@ -352,7 +352,7 @@ O Lovable informou (02/10/2026) que o banco e os backups ficam na AWS eu-west-2 
 
 ## GI-SAFRA-015 — Cabeçalhos de segurança e domínio próprio
 
-**Status:** OPEN — DEFERRED_TO_ACCESS_RELEASE
+**Status:** RESOLVED (D-116, 02/10/2026) — decisão final do owner: nada muda
 **Fase:** liberação do acesso às pessoas (depois do C09).
 **Bloqueia START/C08:** não.
 **Origem:** respostas do Lovable ao C09, 02/10/2026. Espelhada no banco (migration `20261002150000`).

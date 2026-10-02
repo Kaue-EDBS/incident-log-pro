@@ -8,7 +8,7 @@ Cálculos que respondem perguntas sobre tempo **a partir dos horários gravados 
 
 | Pergunta | Função | Decisão |
 |---|---|---|
-| Quais avisos da escada já venceram e para quem? | `private.safra_reminder_steps(abertura, parte_solicitante, parte_dono, cancelamento, agora)` | D-76 |
+| Quais avisos da escada já venceram e para quem? | ~~`private.safra_reminder_steps`~~ removida em 02/10/2026; lembretes 24/12/1 h antes das 72 h em `private.safra_auto_cancel_stale` | D-112 (substitui a D-76) |
 | Quanto tempo levou cada parte e o protocolo todo? | `private.safra_close_times(abertura, parte_solicitante, parte_dono, cancelamento)` | D-77 |
 | Em que dia do relatório cai este horário? | `private.safra_local_day(horário)` | Regra 2 (fuso `America/Sao_Paulo`) |
 

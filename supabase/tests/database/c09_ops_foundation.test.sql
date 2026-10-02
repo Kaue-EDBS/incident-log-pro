@@ -85,8 +85,9 @@ select ok((select relrowsecurity from pg_class where oid = 'public.ops_events'::
 select is(
   (select count(*)::int from public.governance_issues
    where issue_key in ('GI-SAFRA-013','GI-SAFRA-014','GI-SAFRA-015')
-     and status = 'OPEN' and description like 'OPEN — DEFERRED_TO_ACCESS_RELEASE%'),
-  3, 'GI-SAFRA-013..015 (Lovable answers) are OPEN until the owner decides');
+     and description like 'OPEN — DEFERRED_TO_ACCESS_RELEASE%'
+     and (status = 'OPEN' or resolution_text like 'D-116 %')),
+  3, 'GI-SAFRA-013..015 (Lovable answers) are OPEN, or RESOLVED only by the owner decision D-116');
 
 select * from finish();
 rollback;

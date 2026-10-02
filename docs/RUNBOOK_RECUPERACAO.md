@@ -41,6 +41,7 @@
 | Erro ao abrir/concluir depois de uma mudança recente | migration nova | desfazer com nova migration (forward fix) | 4.4 |
 | Dados sumiram ou foram corrompidos | perda de dados | restauração do backup | 4.5 |
 | Muito lento | carga ou plano pequeno | ver Saúde do sistema; aumentar a instância pelo painel | 4.6 |
+| Avisos por e-mail não chegam | envio desligado, segredo vencido ou Microsoft fora | Saúde do sistema → avisos; TI | 4.7 |
 
 ---
 
@@ -84,6 +85,15 @@ A restauração é feita **por nós, no painel do Lovable**, sem chamado. O supo
 1. Saúde do sistema: quantas respostas lentas e em quais telas.
 2. Se for geral: Cloud → Advanced settings → **Upgrade instance** (2 a 5 min). A instância atual é a menor (Tiny: ~1 GB de memória, 2 vCPUs compartilhadas). Reduzir de novo depois do pico.
 3. Se muita gente não consegue **entrar** ao mesmo tempo: o login tem limite de tentativas por IP, e a Editora sai para a internet por um IP só. Pedir que as pessoas entrem aos poucos; quem já entrou continua logado.
+
+
+### 4.7 Avisos por e-mail não chegam (M05)
+1. **Saúde do sistema** (Administração): "Avisos na fila", "enviados", "com falha" e "expirados" nas últimas 24 h.
+2. **Fila crescendo e nada enviado:** o envio está desligado ou parado. Conferir se os 4 segredos (`MS_TENANT_ID`, `MS_CLIENT_ID`, `MS_CLIENT_SECRET`, `MAIL_SENDER`) estão no projeto do Lovable e se o agendamento do envio existe (`select jobname from cron.job`).
+3. **Muitos "com falha":** abrir o histórico de um protocolo afetado (gestão/admin) e ver o motivo. `TOKEN_HTTP_401`: o **segredo do aplicativo venceu** ou foi trocado; pedir um novo ao TI e atualizar no Lovable. `HTTP 403`: a permissão Mail.Send ou a restrição da caixa mudou; chamado ao TI. `HTTP 429/503`: Microsoft lenta; o Painel tenta de novo sozinho (até 5 vezes).
+4. **Status da Microsoft:** https://status.cloud.microsoft (ou o Centro de administração do Microsoft 365, pelo TI).
+5. **Avisos perdidos não são reenviados** (expiram em 24 h, para ninguém receber aviso velho). Se a falha durou mais que isso, avisar os donos de card para olharem "Protocolos dos meus cards".
+6. Registrar o incidente (seção 7).
 
 ---
 
