@@ -73,4 +73,4 @@
 
 ## 6. Próximo passo
 
-Próximo: publicar e homologar C08 + C09 com login real; depois, M05 (avisos por e-mail, depende do chamado do TI).
+Próximo: M02 (registro e acompanhamento do protocolo). Publicar e homologar com login real fica para o final (decisão do owner, 02/10/2026).

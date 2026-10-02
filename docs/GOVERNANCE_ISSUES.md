@@ -41,6 +41,7 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 013 | Tamanho da instância do banco antes de liberar o acesso | OPEN — DEFERRED_TO_ACCESS_RELEASE |
 | 014 | Região dos dados (Londres) atende a LGPD? | OPEN — DEFERRED_TO_ACCESS_RELEASE |
 | 015 | Cabeçalhos de segurança e domínio próprio | OPEN — DEFERRED_TO_ACCESS_RELEASE |
+| 016 | Avisar antes do cancelamento automático de 72 h? | OPEN — DEFERRED_TO_M05 |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -357,3 +358,15 @@ O Lovable informou (02/10/2026) que o banco e os backups ficam na AWS eu-west-2 
 **Origem:** respostas do Lovable ao C09, 02/10/2026. Espelhada no banco (migration `20261002150000`).
 
 Origem: auditoria do Lovable L-02 e resposta de 02/10/2026. No endereço painelsafra.lovable.app o Lovable já envia HSTS e nosniff, mas não deixa configurar Content-Security-Policy nem a proteção contra o app ser embutido em outro site (frame-ancestors/X-Frame-Options). Uma CSP pela tag meta no HTML não cobre frame-ancestors, porque o navegador ignora essa regra fora do cabeçalho. Caminho recomendado: subdomínio da Editora (ex.: safra.editoradobrasil.com.br) passando pela Cloudflare da TI, onde a TI configura os cabeçalhos e pode liberar o limite de login para o IP corporativo. Impacto: o novo endereço precisa entrar nas URLs de retorno do login. Decidir: fazer antes ou depois de liberar o acesso.
+
+---
+
+## GI-SAFRA-016 — Aviso antes do cancelamento automático de 72 h
+
+**Status:** OPEN — DEFERRED_TO_M05
+**Fase:** SAFRA-M05 (avisos).
+**Bloqueia START/C08:** não.
+**Origem:** auditoria do M01, 02/10/2026. Espelhada no banco junto com o próximo pacote de migration.
+
+Pela D-101, protocolo sem nenhuma parte concluída é cancelado sozinho 72 horas depois da abertura. Hoje o único aviso é a frase na tela "Meus protocolos"; não há e-mail nem lembrete, porque os avisos dependem da M05 (e do chamado do TI para envio de e-mail). Decidir na M05: avisar antes (por exemplo, com 48 h), quem recebe (quem abriu, o dono do card, os dois) e por qual canal. Nenhum valor é assumido.
+

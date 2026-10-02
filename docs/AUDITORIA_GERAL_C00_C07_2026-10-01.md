@@ -54,7 +54,7 @@
 
 | ID | Resultado |
 |---|---|
-| A-01 | **CORRIGIDO** — acesso e vínculo exigem o tenant `45ba725f…`, lido de `auth.identities`; vínculo também quando a identidade chega. Não depende do TI |
+| A-01 | **CORRIGIDO** — acesso e vínculo exigem o tenant `45ba725f…`, lido de `auth.identities`; vínculo também quando a identidade chega. Não depende do TI. **TI confirmou em 02/10/2026 que o tenant da Editora é `45ba725f-d260-45c3-ac85-11f433471277`**, o mesmo exigido pelo banco |
 | A-02 | **RISCO ACEITO (D-79)** — ninguém tem acesso; F01/F02 e M05 antes de liberar |
 | A-03 | **RISCO ACEITO (D-80)** |
 | A-04 | **CORRIGIDO (D-78)** — dono indisponível tira o card do catálogo e bloqueia o START (`SAFRA_SCENARIO_OWNER_UNAVAILABLE`) |
