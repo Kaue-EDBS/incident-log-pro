@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, History, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
 import { useTreatmentTimeline } from "@/lib/queries";
 import type { SafraTimelineEvent } from "@/lib/safra";
@@ -31,11 +32,17 @@ function eventLabel(event: SafraTimelineEvent): string {
   }
 }
 
-/** Histórico do protocolo (M02/M03): o que aconteceu, quando e quem fez (D-104/D-105). */
+/** Histórico do protocolo (M02/M03): o que aconteceu, quando e quem fez. Só gestão e admins (D-108). */
 export function TreatmentTimeline({ treatmentId }: { treatmentId: string }) {
+  const { canSeeAllProtocols } = useViewer();
   const [open, setOpen] = useState(false);
-  const { data, isLoading, isError, refetch } = useTreatmentTimeline(treatmentId, open);
+  const { data, isLoading, isError, refetch } = useTreatmentTimeline(
+    treatmentId,
+    open && canSeeAllProtocols,
+  );
   const panelId = `timeline-${treatmentId}`;
+
+  if (!canSeeAllProtocols) return null;
 
   return (
     <div className="mt-3">

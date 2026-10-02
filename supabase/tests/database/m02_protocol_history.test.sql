@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(20);
+select plan(21);
 
 -- R = requester (name from Microsoft), O = owner of SAFRA-09 (Renato), T = third party,
 -- G = Jair (governance), M = Amanda (platform admin).
@@ -67,7 +67,8 @@ select public.safra_close_my_part(pg_temp.t('t1'));
 select pg_temp.act_as('0d');
 select public.safra_close_my_part(pg_temp.t('t1'));
 
-select pg_temp.act_as('0a');
+-- D-108: the history is read by governance (Jair) from here on.
+select pg_temp.act_as('0e');
 select is(pg_temp.types('t1'),
   array['TREATMENT_OPENED','REQUESTER_PART_CLOSED','REQUESTER_PART_UNDONE','REQUESTER_PART_CLOSED','OWNER_PART_CLOSED','TREATMENT_RESOLVED'],
   'M02: every relevant step is in the history, in order');
@@ -93,9 +94,13 @@ select is(public.safra_get_treatment_timeline(pg_temp.t('t1'))->'events',
           public.safra_get_treatment_timeline(pg_temp.t('t1'))->'events',
   'M02: the history is the same on every read (refresh or another device)');
 
--- 2. Who can see (D-104) ----------------------------------------------------------
+-- 2. Who can see (D-108, revises D-104) --------------------------------------------
+select pg_temp.act_as('0a');
+select throws_ok($$ select public.safra_get_treatment_timeline(pg_temp.t('t1')) $$,
+  '42501', 'SAFRA_TIMELINE_FORBIDDEN', 'D-108: the requester no longer sees the history');
 select pg_temp.act_as('0d');
-select ok(jsonb_array_length(public.safra_get_treatment_timeline(pg_temp.t('t1'))->'events') = 6, 'D-104: the card owner sees the history');
+select throws_ok($$ select public.safra_get_treatment_timeline(pg_temp.t('t1')) $$,
+  '42501', 'SAFRA_TIMELINE_FORBIDDEN', 'D-108: the card owner no longer sees the history');
 select pg_temp.act_as('0e');
 select ok(jsonb_array_length(public.safra_get_treatment_timeline(pg_temp.t('t1'))->'events') = 6, 'D-104: governance (Jair) sees the history');
 select pg_temp.act_as('0f');
@@ -118,6 +123,7 @@ select throws_ok(
   'P0001', 'impacted areas are fixed after opening (D-102)', 'D-102: impacted areas do not change after opening');
 
 select private.safra_auto_cancel_stale();
+select pg_temp.act_as('0e');
 select is(
   (select e->>'actor_name' || '/' || (e->>'actor_role')
    from jsonb_array_elements(public.safra_get_treatment_timeline(pg_temp.t('t2'))->'events') e

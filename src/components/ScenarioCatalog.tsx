@@ -462,31 +462,33 @@ function StartForm({ card }: { card: SafraStartCatalogItem }) {
         </p>
       ) : null}
 
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button size="lg" className="min-h-12 w-full text-base" disabled={!canStart}>
-            {start.isPending ? (
-              <Loader2 className="animate-spin" aria-hidden="true" />
-            ) : (
-              <PlayCircle aria-hidden="true" />
-            )}
-            Iniciar protocolo
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Abrir protocolo: {cardDisplayName(card.name)}?</AlertDialogTitle>
-            <AlertDialogDescription>
-              O dono do card ({ownerName(card)}) vai ser responsável por conduzir a resolução. O
-              horário oficial é o do servidor.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Voltar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => void submit()}>Sim, abrir</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {readOnly ? null : (
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button size="lg" className="min-h-12 w-full text-base" disabled={!canStart}>
+              {start.isPending ? (
+                <Loader2 className="animate-spin" aria-hidden="true" />
+              ) : (
+                <PlayCircle aria-hidden="true" />
+              )}
+              Iniciar protocolo
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Abrir protocolo: {cardDisplayName(card.name)}?</AlertDialogTitle>
+              <AlertDialogDescription>
+                O dono do card ({ownerName(card)}) vai ser responsável por conduzir a resolução. O
+                horário oficial é o do servidor.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Voltar</AlertDialogCancel>
+              <AlertDialogAction onClick={() => void submit()}>Sim, abrir</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </form>
   );
 }

@@ -49,7 +49,7 @@ function mintToken(p: Person) {
   return `${header}.${payload}.${signature}`;
 }
 
-async function createPerson(key: string, email: string) {
+async function createPerson(key: string, email: string, fullName?: string) {
   // Playwright restarts the worker after a failure and runs beforeAll again. A principal
   // only binds to one login, so reuse the login a previous run already created.
   const existing = await sql`select u.id from auth.users u
@@ -58,8 +58,9 @@ async function createPerson(key: string, email: string) {
   const id = (existing[0]?.id as string | undefined) ?? randomUUID();
   const p: Person = { id, email, sessionId: randomUUID() };
   if (!existing[0]) {
-    await sql`insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
-              values (${p.id}, ${email}, ${sql.json({ provider: "azure", providers: ["azure"] })}, true, false, now(), now())`;
+    await sql`insert into auth.users(id,email,raw_app_meta_data,raw_user_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
+              values (${p.id}, ${email}, ${sql.json({ provider: "azure", providers: ["azure"] })},
+                      ${sql.json(fullName ? { full_name: fullName } : {})}, true, false, now(), now())`;
     await sql`insert into auth.identities(provider_id,user_id,identity_data,provider,created_at,updated_at)
               values (${p.id}, ${p.id}, ${sql.json({ custom_claims: { tid: TENANT } })}, 'azure', now(), now())`;
   }
@@ -114,7 +115,8 @@ test.beforeAll(async () => {
     (
       await sql`select corporate_email from private.safra_principals where display_name = ${name}`
     )[0]!.corporate_email as string;
-  await createPerson("requester", "e2e.requester@editoradobrasil.com.br");
+  // Nome que viria da Microsoft (D-107: listas mostram o nome, não o e-mail).
+  await createPerson("requester", "e2e.requester@editoradobrasil.com.br", "Pessoa Solicitante E2E");
   await createPerson("owner", await principal("Jiane Rodrigues"));
   await createPerson("admin", await principal("Kaue Pastrello"));
 });
@@ -218,12 +220,8 @@ test("requester: catalog, expanding card, open, close own part", async ({ browse
   await expect(mine08.getByText("Aguardando o dono do card")).toBeVisible();
   await expect(mine08.getByText(/será cancelado automaticamente/)).toHaveCount(0);
 
-  // M02/M03: histórico com cada passo, por nome.
-  await mine08.getByRole("button", { name: "Ver histórico" }).click();
-  const history = mine08.getByRole("list", { name: "Histórico do protocolo" });
-  await expect(history.getByRole("listitem")).toHaveCount(4);
-  await expect(history.getByText("Desfez a conclusão")).toBeVisible();
-  await expectAccessible(page, "histórico do protocolo");
+  // D-108: quem abriu não vê o histórico.
+  await expect(mine08.getByRole("button", { name: "Ver histórico" })).toHaveCount(0);
 
   // Um usuário comum não vê o Modo Camaleão nem a área de donos.
   await expect(page.getByLabel("Modo Camaleão")).toHaveCount(0);
@@ -262,7 +260,8 @@ test("owner: sees own card protocols and closes the last part", async ({ browser
   await page.getByRole("link", { name: "Protocolos dos meus cards" }).first().click();
   const mine = page.getByRole("article", { name: `Protocolo ${protocol08}` });
   await expect(mine).toBeVisible();
-  await expect(mine.getByText("e2e.requester@editoradobrasil.com.br")).toBeVisible();
+  await expect(mine.getByText("Pessoa Solicitante E2E")).toBeVisible();
+  await expect(mine.getByText("e2e.requester@editoradobrasil.com.br")).toHaveCount(0);
   await expectAccessible(page, "protocolos dos meus cards");
   await mine.getByRole("button", { name: "Concluído" }).click();
   await page.getByRole("button", { name: "Sim, concluir" }).click();
@@ -278,7 +277,11 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await expect(anyProtocol).toBeVisible();
   await expect(anyProtocol.getByRole("button", { name: "Concluído" })).toHaveCount(0);
   await anyProtocol.getByRole("button", { name: "Ver histórico" }).click();
-  await expect(anyProtocol.getByRole("list", { name: "Histórico do protocolo" })).toBeVisible();
+  const history = anyProtocol.getByRole("list", { name: "Histórico do protocolo" });
+  await expect(history).toBeVisible();
+  await expect(history.getByText("Desfez a conclusão")).toBeVisible();
+  // D-107: quem abriu aparece pelo nome, nunca pelo e-mail.
+  await expect(anyProtocol.getByText("e2e.requester@editoradobrasil.com.br")).toHaveCount(0);
   await expectAccessible(page, "todos os protocolos");
 
   const select = page.getByLabel("Modo Camaleão");
@@ -295,7 +298,8 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await page.getByLabel("Buscar card").fill("48h");
   await page.getByRole("list", { name: "Cards disponíveis" }).getByRole("button").first().click();
   await expect(page.getByText(/Modo Camaleão: só visualização/)).toBeVisible();
-  await expect(page.getByRole("button", { name: "Iniciar protocolo" })).toBeDisabled();
+  // D-109: no Camaleão o botão some em vez de ficar cinza.
+  await expect(page.getByRole("button", { name: "Iniciar protocolo" })).toHaveCount(0);
   await page.getByRole("button", { name: "Fechar e voltar a todos os cards" }).click();
 
   // Protocolos dos cards da Jiane, sem botões de ação.

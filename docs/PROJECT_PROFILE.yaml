@@ -385,13 +385,15 @@ m02_m03_history:
   migration: "20261002180000_m02_m03_protocol_history.sql"
   decisions: ["D-102", "D-103", "D-104", "D-105"]
   event_types: ["TREATMENT_OPENED", "REQUESTER_PART_CLOSED", "OWNER_PART_CLOSED", "REQUESTER_PART_UNDONE", "OWNER_PART_UNDONE", "TREATMENT_RESOLVED", "TREATMENT_CANCELLED"]
-  read: "safra_get_treatment_timeline (requester, current owner, owner who closed, governance, platform admin)"
+  read: "safra_get_treatment_timeline (governance + platform admin only, D-108)"
   tests: ["m02_protocol_history.test.sql (20)", "test-safra-stress.sh history rebuild check"]
   audit_document: "docs/AUDITORIA_M02_M03_2026-10-02.md"
   m03_all_protocols_migration: "20261002200000_m03_all_protocols.sql"
   m03_all_protocols_read: "safra_get_all_treatments (governance + platform admin, read-only, max 500)"
   m03_route: "/todos-os-protocolos"
   m03_audit_document: "docs/AUDITORIA_M03_2026-10-02.md"
+  m03b_migration: "20261002210000_m03b_names_and_history_scope.sql"
+  m03b_decisions: ["D-106 no impacted areas in lists", "D-107 names in every list", "D-108 history only governance + platform admin", "D-109 Chameleon hides unusable buttons"]
 
 m01_state_machine:
   status: "APPROVED"

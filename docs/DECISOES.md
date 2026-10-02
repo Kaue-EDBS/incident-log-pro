@@ -1355,6 +1355,14 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 
 - **D-102:** as **áreas impactadas** são escolhidas na abertura e **não mudam** depois.
 - **D-103:** **sem notas** no protocolo nesta Safra. O resumo da abertura basta; a conversa do dia a dia segue por Teams/e-mail. Pode ser revisto depois sem mexer no que existe.
-- **D-104:** o **histórico** de um protocolo é visto por **quem abriu, o dono do card, a gestão (Jair e Bruno) e os platform admins**.
+- **D-104** (revista pela D-108): o **histórico** de um protocolo é visto por **quem abriu, o dono do card, a gestão (Jair e Bruno) e os platform admins**.
 - **D-105:** no histórico, quem fez cada coisa aparece **pelo nome** (cadastro do Painel; senão o nome da Microsoft); o cancelamento automático aparece como "Sistema".
+
+### D-106 a D-109 — Ajustes do owner depois da auditoria da M03
+**APPROVED — 02/10/2026** — owner: Kaue.
+
+- **D-106:** as listas de protocolos **não mostram as áreas impactadas** (elas continuam escolhidas na abertura e guardadas no banco).
+- **D-107:** quem abriu aparece **pelo nome em todas as listas** (nome do cadastro; senão o da Microsoft; e-mail só se não houver nome).
+- **D-108:** o **histórico** do protocolo é **só da gestão (Jair e Bruno) e dos platform admins**. Quem abriu e o dono do card não veem mais o botão "Ver histórico", e o banco recusa. Revisa a D-104.
+- **D-109:** no **Modo Camaleão**, nas visões de usuário e de dono, botões que a pessoa não pode usar **somem** em vez de aparecer desligados (cinza).
 

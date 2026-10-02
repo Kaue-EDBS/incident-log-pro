@@ -90,14 +90,6 @@ export function TreatmentList({
                   </dd>
                 </div>
               )}
-              {item.impacted_areas.length ? (
-                <div className="sm:col-span-2 lg:col-span-4">
-                  <dt className="inline">Áreas impactadas: </dt>
-                  <dd className="inline">
-                    {item.impacted_areas.map((area) => area.name).join(", ")}
-                  </dd>
-                </div>
-              ) : null}
               <div>
                 <dt className="inline">Problema começou: </dt>
                 <dd className="inline">{formatDateTime(item.problem_started_at)}</dd>
