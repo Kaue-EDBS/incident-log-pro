@@ -1,3 +1,4 @@
+import type React from "react";
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { useCanUseChameleon, useMySafraRoles } from "@/lib/queries";
 
@@ -39,7 +40,9 @@ function readStored(): ViewAs {
   }
 }
 
-const ViewerContext = createContext<Viewer | null>(null);
+// Mantém um único contexto mesmo quando o arquivo é recarregado durante a edição.
+const ctxStore = globalThis as unknown as { __safraViewerCtx?: React.Context<Viewer | null> };
+const ViewerContext = (ctxStore.__safraViewerCtx ??= createContext<Viewer | null>(null));
 
 export function ChameleonProvider({ children }: { children: ReactNode }) {
   const rolesQuery = useMySafraRoles();
