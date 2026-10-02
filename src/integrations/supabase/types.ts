@@ -1057,20 +1057,38 @@ export type Database = {
       }
       safra_admin_get_people: { Args: never; Returns: Json }
       safra_admin_get_screen_usage: { Args: { p_days?: number }; Returns: Json }
+      safra_approve_proposal: {
+        Args: { p_proposal_id: string; p_responsible_area_id: string }
+        Returns: undefined
+      }
       safra_can_use_chameleon: { Args: never; Returns: boolean }
       safra_cancel_treatment: {
         Args: { p_reason: string; p_treatment_id: string }
         Returns: Json
       }
       safra_close_my_part: { Args: { p_treatment_id: string }; Returns: Json }
+      safra_define_proposal_owner: {
+        Args: {
+          p_note: string
+          p_owner_principal_id: string
+          p_proposal_id: string
+        }
+        Returns: undefined
+      }
       safra_end_season: { Args: { p_confirm: string }; Returns: Json }
+      safra_forward_proposal: {
+        Args: { p_proposal_id: string }
+        Returns: undefined
+      }
       safra_get_all_treatments: {
         Args: { p_limit?: number; p_scenario_id?: string; p_status?: string }
         Returns: Json
       }
       safra_get_cards_overview: { Args: never; Returns: Json }
       safra_get_my_treatments: { Args: never; Returns: Json }
+      safra_get_operational_areas: { Args: never; Returns: Json }
       safra_get_owner_treatments: { Args: never; Returns: Json }
+      safra_get_proposals: { Args: never; Returns: Json }
       safra_get_reliability_metrics: {
         Args: { p_owner_principal_id?: string }
         Returns: Json
@@ -1099,6 +1117,15 @@ export type Database = {
         Args: { p_error?: string; p_id: string; p_ok: boolean }
         Returns: undefined
       }
+      safra_publish_proposal: { Args: { p_proposal_id: string }; Returns: Json }
+      safra_reject_proposal: {
+        Args: { p_proposal_id: string; p_reason: string }
+        Returns: undefined
+      }
+      safra_respond_proposal: {
+        Args: { p_accept: boolean; p_note?: string; p_proposal_id: string }
+        Returns: undefined
+      }
       safra_session_is_live: { Args: never; Returns: boolean }
       safra_start_season: { Args: never; Returns: Json }
       safra_start_treatment: {
@@ -1110,6 +1137,22 @@ export type Database = {
           p_scenario_id: string
         }
         Returns: Json
+      }
+      safra_submit_proposal: {
+        Args: { p_impact: string; p_problem: string; p_title: string }
+        Returns: string
+      }
+      safra_submit_proposal_content: {
+        Args: {
+          p_detection: string
+          p_expected_impact: string
+          p_impacted_area_ids: string[]
+          p_proposal_id: string
+          p_protocol: string
+          p_scenario_name: string
+          p_trigger: string
+        }
+        Returns: undefined
       }
       safra_undo_end_season: { Args: never; Returns: Json }
       safra_undo_my_part: { Args: { p_treatment_id: string }; Returns: Json }
