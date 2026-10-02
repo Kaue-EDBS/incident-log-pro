@@ -46,7 +46,7 @@ jobs:
           set -euo pipefail
 
           start_stack() {
-            timeout 360s supabase start
+            timeout 360s supabase start > /tmp/start.log 2>&1 && cat /tmp/start.log
           }
 
           # Defensive cleanup: GitHub-hosted runners occasionally retain a
@@ -58,12 +58,18 @@ jobs:
           fi
 
           echo "::warning::First Supabase start attempt failed or timed out. Collecting diagnostics and retrying once."
+          cat /tmp/start.log || true
+          python3 .github/scripts/annotate-log.py /tmp/start.log "Supabase start (first attempt)" || true
           docker ps -a || true
           docker network ls || true
           timeout 45s supabase stop --no-backup || true
           sleep 5
 
-          start_stack
+          start_stack || {
+            cat /tmp/start.log
+            python3 .github/scripts/annotate-log.py /tmp/start.log "Supabase start"
+            exit 1
+          }
 
       - name: Rebuild database from canonical migrations
         run: supabase db reset --local
