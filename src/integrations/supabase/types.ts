@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      governance_actions: {
+        Row: {
+          action_type: string
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          scenario_id: string | null
+          week_start: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          created_by: string
+          description: string
+          id?: string
+          scenario_id?: string | null
+          week_start: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          id?: string
+          scenario_id?: string | null
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "governance_actions_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       governance_issues: {
         Row: {
           created_at: string
@@ -1109,6 +1147,10 @@ export type Database = {
         Args: { p_treatment_id: string }
         Returns: Json
       }
+      safra_get_weekly_governance: {
+        Args: { p_week_start?: string }
+        Returns: Json
+      }
       safra_has_role: { Args: { requested_role: string }; Returns: boolean }
       safra_is_corporate_user: { Args: never; Returns: boolean }
       safra_log_ops_event: {
@@ -1136,6 +1178,15 @@ export type Database = {
         Returns: undefined
       }
       safra_publish_proposal: { Args: { p_proposal_id: string }; Returns: Json }
+      safra_register_governance_action: {
+        Args: {
+          p_action_type: string
+          p_description: string
+          p_scenario_id: string
+          p_week_start: string
+        }
+        Returns: string
+      }
       safra_reject_proposal: {
         Args: { p_proposal_id: string; p_reason: string }
         Returns: undefined
@@ -1144,6 +1195,7 @@ export type Database = {
         Args: { p_accept: boolean; p_note?: string; p_proposal_id: string }
         Returns: undefined
       }
+      safra_sender_token_valid: { Args: { p_token: string }; Returns: boolean }
       safra_session_is_live: { Args: never; Returns: boolean }
       safra_start_season: { Args: never; Returns: Json }
       safra_start_treatment: {
