@@ -186,7 +186,7 @@ function Administration() {
             <section
               role="alert"
               aria-labelledby="alerts-title"
-              className="rounded-xl border border-destructive/40 bg-destructive/10 p-5"
+              className="rounded-xl border-2 border-destructive bg-card p-5"
             >
               <h2 id="alerts-title" className="font-semibold text-destructive">
                 Atenção: algo parou

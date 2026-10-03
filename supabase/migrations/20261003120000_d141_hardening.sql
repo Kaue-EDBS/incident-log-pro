@@ -280,7 +280,8 @@ begin
     v_alerts := v_alerts || jsonb_build_object('code', 'JOB_MISSING_72H',
       'text', 'O agendamento do encerramento/cancelamento automático de 72 h não existe.');
   end if;
-  if exists (select 1 from auth.users where lower(email) = 'kaue.pastrello@editoradobrasil.com.br')
+  -- Só onde o envio existe de verdade (produção: senha interna cadastrada).
+  if exists (select 1 from vault.secrets where name = 'safra_sender_token')
      and not ('safra-send-notifications' = any (v_jobs)) then
     v_alerts := v_alerts || jsonb_build_object('code', 'JOB_MISSING_EMAIL',
       'text', 'O agendamento do envio de e-mails não existe.');
