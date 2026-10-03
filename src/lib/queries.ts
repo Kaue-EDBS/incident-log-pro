@@ -182,6 +182,29 @@ const ReliabilityRowSchema = z.object({
   mtbf: MetricPairSchema,
   mttf: MetricPairSchema,
 });
+const VolumeCountsSchema = z.object({
+  opened: z.number(),
+  resolved: z.number(),
+  cancelled: z.number(),
+  active: z.number(),
+  median_secs: z.number().nullable(),
+  p90_secs: z.number().nullable(),
+});
+
+/** F04 (D-140): contagens e tempos da Safra corrente. */
+const VolumeSchema = z.object({
+  consolidated: VolumeCountsSchema.extend({ peak_simultaneous: z.number() }),
+  cards: z.array(
+    VolumeCountsSchema.extend({
+      scenario_id: z.string().uuid(),
+      code: z.string(),
+      name: z.string(),
+    }),
+  ),
+  areas: z.array(z.object({ name: z.string(), protocols: z.number() })),
+});
+export type Volume = z.infer<typeof VolumeSchema>;
+
 const ReliabilitySchema = z.object({
   scope: z.enum(["ALL", "OWNER"]),
   season_start: z.string(),
@@ -195,6 +218,7 @@ const ReliabilitySchema = z.object({
       name: z.string(),
     }),
   ),
+  volume: VolumeSchema.nullable().default(null),
 });
 
 export type MetricPair = z.infer<typeof MetricPairSchema>;
@@ -686,6 +710,123 @@ export function useNotificationsQueue(enabled: boolean) {
       );
       if (error) throw error;
       return NotificationsQueueSchema.parse(data);
+    },
+  });
+}
+
+// F05 (D-140): governança semanal ------------------------------------------------------------
+const rpcWithArgs = (fn: string, args: Record<string, unknown>) =>
+  (
+    supabase.rpc as unknown as (
+      name: string,
+      params: Record<string, unknown>,
+    ) => PromiseLike<{ data: unknown; error: unknown }>
+  )(fn, args);
+
+export const GOVERNANCE_ACTION_TYPES = [
+  "PROCESS_CHANGE",
+  "MASTER_DATA_FIX",
+  "CAPACITY_CHANGE",
+  "PARTNER_ACTION",
+  "SYSTEM_CHANGE",
+  "TRAINING",
+  "NO_ACTION_JUSTIFIED",
+] as const;
+export type GovernanceActionType = (typeof GOVERNANCE_ACTION_TYPES)[number];
+
+const WeeklyGovernanceSchema = z.object({
+  week_start: z.string(),
+  week_end: z.string(),
+  totals: z.object({
+    opened: z.number(),
+    resolved: z.number(),
+    cancelled: z.number(),
+    opened_previous_week: z.number(),
+    active_now: z.number(),
+  }),
+  cards: z.array(
+    z.object({
+      scenario_id: z.string().uuid(),
+      code: z.string(),
+      name: z.string(),
+      opened: z.number(),
+      opened_previous_week: z.number(),
+      resolved: z.number(),
+      cancelled: z.number(),
+      median_secs: z.number().nullable(),
+    }),
+  ),
+  longest: z.array(
+    z.object({
+      protocol_number: z.string(),
+      code: z.string(),
+      name: z.string(),
+      duration_secs: z.number(),
+    }),
+  ),
+  active: z.array(
+    z.object({
+      protocol_number: z.string(),
+      code: z.string(),
+      name: z.string(),
+      opened_at: z.string(),
+      situation: z.enum(["EM_ANDAMENTO", "AGUARDANDO_DONO", "AGUARDANDO_SOLICITANTE"]),
+    }),
+  ),
+  actions: z.array(
+    z.object({
+      id: z.string().uuid(),
+      action_type: z.enum(GOVERNANCE_ACTION_TYPES),
+      description: z.string(),
+      code: z.string().nullable(),
+      name: z.string().nullable(),
+      created_by_name: z.string().nullable(),
+      created_at: z.string(),
+    }),
+  ),
+  card_options: z.array(
+    z.object({ scenario_id: z.string().uuid(), code: z.string(), name: z.string() }),
+  ),
+});
+export type WeeklyGovernance = z.infer<typeof WeeklyGovernanceSchema>;
+
+/** Resumo da semana (segunda a domingo) e ações registradas; sem data, a semana atual. */
+export function useWeeklyGovernance(enabled: boolean, weekStart: string | null) {
+  return useQuery({
+    queryKey: ["safra-weekly-governance", weekStart],
+    enabled,
+    placeholderData: keepPreviousData,
+    queryFn: async () => {
+      const { data, error } = await measured("safra_get_weekly_governance", () =>
+        rpcWithArgs("safra_get_weekly_governance", { p_week_start: weekStart }),
+      );
+      if (error) throw error;
+      return WeeklyGovernanceSchema.parse(data);
+    },
+  });
+}
+
+export function useRegisterGovernanceAction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: {
+      weekStart: string;
+      scenarioId: string | null;
+      actionType: GovernanceActionType;
+      description: string;
+    }) => {
+      const { error } = await measured("safra_register_governance_action", () =>
+        rpcWithArgs("safra_register_governance_action", {
+          p_week_start: input.weekStart,
+          p_scenario_id: input.scenarioId,
+          p_action_type: input.actionType,
+          p_description: input.description,
+        }),
+      );
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["safra-weekly-governance"] });
     },
   });
 }

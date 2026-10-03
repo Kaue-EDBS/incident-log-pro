@@ -2,6 +2,7 @@ import { Link, useRouter, useRouterState } from "@tanstack/react-router";
 import {
   ArrowLeft,
   BarChart3,
+  CalendarRange,
   ClipboardList,
   Eye,
   Inbox,
@@ -157,6 +158,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
       : []),
     ...(viewer.canSeeAllProtocols
       ? [{ to: "/cards-e-donos", label: "Cards e donos", short: "Cards", icon: Table2 }]
+      : []),
+    ...(viewer.canSeeAllProtocols
+      ? [
+          {
+            to: "/governanca-semanal",
+            label: "Governança semanal",
+            short: "Semana",
+            icon: CalendarRange,
+          },
+        ]
       : []),
     ...(viewer.canSeeAnalytics
       ? [{ to: "/analytics", label: "Indicadores", short: "Indicadores", icon: BarChart3 }]

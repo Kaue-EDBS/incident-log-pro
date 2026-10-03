@@ -15,6 +15,7 @@ import { Route as AdministracaoRouteImport } from './routes/administracao'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CardsEDonosRouteImport } from './routes/cards-e-donos'
+import { Route as GovernancaSemanalRouteImport } from './routes/governanca-semanal'
 import { Route as MeusProtocolosRouteImport } from './routes/meus-protocolos'
 import { Route as PropostasRouteImport } from './routes/propostas'
 import { Route as ProtocolosDosMeusCardsRouteImport } from './routes/protocolos-dos-meus-cards'
@@ -50,6 +51,11 @@ const CardsEDonosRoute = CardsEDonosRouteImport.update({
   path: '/cards-e-donos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GovernancaSemanalRoute = GovernancaSemanalRouteImport.update({
+  id: '/governanca-semanal',
+  path: '/governanca-semanal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MeusProtocolosRoute = MeusProtocolosRouteImport.update({
   id: '/meus-protocolos',
   path: '/meus-protocolos',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/cards-e-donos': typeof CardsEDonosRoute
+  '/governanca-semanal': typeof GovernancaSemanalRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/propostas': typeof PropostasRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/cards-e-donos': typeof CardsEDonosRoute
+  '/governanca-semanal': typeof GovernancaSemanalRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/propostas': typeof PropostasRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/cards-e-donos': typeof CardsEDonosRoute
+  '/governanca-semanal': typeof GovernancaSemanalRoute
   '/meus-protocolos': typeof MeusProtocolosRoute
   '/propostas': typeof PropostasRoute
   '/protocolos-dos-meus-cards': typeof ProtocolosDosMeusCardsRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/auth'
     | '/cards-e-donos'
+    | '/governanca-semanal'
     | '/meus-protocolos'
     | '/propostas'
     | '/protocolos-dos-meus-cards'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/auth'
     | '/cards-e-donos'
+    | '/governanca-semanal'
     | '/meus-protocolos'
     | '/propostas'
     | '/protocolos-dos-meus-cards'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/auth'
     | '/cards-e-donos'
+    | '/governanca-semanal'
     | '/meus-protocolos'
     | '/propostas'
     | '/protocolos-dos-meus-cards'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
   CardsEDonosRoute: typeof CardsEDonosRoute
+  GovernancaSemanalRoute: typeof GovernancaSemanalRoute
   MeusProtocolosRoute: typeof MeusProtocolosRoute
   PropostasRoute: typeof PropostasRoute
   ProtocolosDosMeusCardsRoute: typeof ProtocolosDosMeusCardsRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CardsEDonosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/governanca-semanal': {
+      id: '/governanca-semanal'
+      path: '/governanca-semanal'
+      fullPath: '/governanca-semanal'
+      preLoaderRoute: typeof GovernancaSemanalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/meus-protocolos': {
       id: '/meus-protocolos'
       path: '/meus-protocolos'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
   CardsEDonosRoute: CardsEDonosRoute,
+  GovernancaSemanalRoute: GovernancaSemanalRoute,
   MeusProtocolosRoute: MeusProtocolosRoute,
   PropostasRoute: PropostasRoute,
   ProtocolosDosMeusCardsRoute: ProtocolosDosMeusCardsRoute,

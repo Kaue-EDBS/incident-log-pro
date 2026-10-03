@@ -1514,3 +1514,12 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - GI-SAFRA-002 (limites dos cenários 2, 4, 10 e 11) e GI-SAFRA-003 (mínimo da curva A do cenário 9) **resolvidas**: só serviam à detecção automática. Migration `20261003100000_d139_cancel_m11.sql`.
 - As regras do roteiro sobre fontes reais (SOURCE_CONTRACT, DATA_RELEASE, "sem integração × sistema saudável") deixam de se aplicar.
 
+### D-140 — Fim do Bloco 4 do roteiro (F03 a F06)
+**APPROVED — 03/10/2026** — owner: Kaue ("foco no roadmap e encerrar isso para estar funcional na segunda"). Migration `20261003110000_d140_f04_f05.sql`; teste `d140_f04_f05.test.sql`.
+
+- **F01/F02** (encerrar e cancelar): já entregues no C08 (D-87).
+- **F03 (pós-mortem): cancelada.** O Painel não terá pós-mortem.
+- **F04 (Indicadores): contagens e tempos.** Além de MTTD/MTTR/MTBF/MTTF e do ranking, a seção "Volume e tempos na Safra" mostra, por card e no total: abertos, encerrados, cancelados, em andamento, tempo mediano, os 10% mais demorados (p90), pico de protocolos ao mesmo tempo e as 5 áreas mais impactadas. Mesma Safra, mesmas exclusões (D-115) e mesmas audiências (dono vê os seus cards; gestão e admins, todos).
+- **F05 (governança semanal): construída.** Tela "Governança semanal" para Jair, Bruno e admins: semana de segunda a domingo (São Paulo), navegação entre semanas, resumo por card (com a semana anterior), mais demorados, ainda em andamento e registro das ações decididas (Mudar processo, Corrigir cadastro, Mudar capacidade, Ação com parceiro, Mudar sistema, Treinamento, Sem ação justificada), por card ou geral. O registro só cresce: não se altera nem se apaga. A reunião continua fora do Painel (D-61).
+- **F06 (relatório executivo): cancelada.** A diretoria usa Indicadores, Todos os protocolos e a Governança semanal.
+

@@ -712,6 +712,8 @@ Este bloco fecha os testes originalmente listados no C04 que dependiam da exist�
 
 ## SAFRA-F03 — Pós-mortem
 
+> **CANCELADO em 03/10/2026 (D-140).**
+
 Suportar quando houver regra explícita por cenário/criticidade.
 
 Cenário 6 já possui referência de pós-mortem <=48h e deve ser tratado como SLA adicional quando formalizado no seed/regra.
@@ -719,6 +721,8 @@ Cenário 6 já possui referência de pós-mortem <=48h e deve ser tratado como S
 ---
 
 ## SAFRA-F04 — Analytics
+
+> **CONCLUÍDO em 03/10/2026 (D-117 + D-140):** tela Indicadores com MTTD/MTTR/MTBF/MTTF, ranking e "Volume e tempos" (abertos, encerrados, cancelados, em andamento, mediana, p90, pico simultâneo, áreas). SLA e escalonamento não existem (D-75, D-73).
 
 ### Métricas Safra
 
@@ -753,6 +757,8 @@ Definir janela exata de “Safra corrente” para e-mails e analytics acumulados
 
 ## SAFRA-F05 — Governança semanal
 
+> **CONCLUÍDO em 03/10/2026 (D-140):** tela "Governança semanal" (resumo da semana e registro das ações, só acréscimo).
+
 Mostrar:
 
 - cenários recorrentes;
@@ -781,6 +787,8 @@ O dia, o horário e o ritual da reunião ficam fora do Painel (D-61). O período
 ---
 
 ## SAFRA-F06 — Relatório executivo
+
+> **CANCELADO em 03/10/2026 (D-140).**
 
 Períodos:
 
@@ -1132,12 +1140,12 @@ Operações críticas não devem ser montadas apenas com `.insert()`/`.update()`
 21. ~~M11 — integrações futuras~~ — cancelado (D-139).
 
 ## Bloco 4 — FIM
-22. F01 — END;
-23. F02 — CANCEL;
-24. F03 — pós-mortem;
-25. F04 — analytics;
-26. F05 — governança semanal;
-27. F06 — relatório executivo.
+22. F01 — END — concluído no C08 (D-87);
+23. F02 — CANCEL — concluído no C08 (D-87);
+24. ~~F03 — pós-mortem~~ — cancelado (D-140);
+25. F04 — analytics — concluído (D-117, D-140);
+26. F05 — governança semanal — concluído (D-140);
+27. ~~F06 — relatório executivo~~ — cancelado (D-140).
 
 ## Bloco 5 — Homologação e release
 28. F07 — homologação;

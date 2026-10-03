@@ -416,6 +416,18 @@ m05_notifications:
   tests: ["m05_notifications.test.sql (30)", "m05_session_delivery.test.sql (11)", "m05_scheduled_delivery.test.sql (3)", "m05_notifications_queue_viewer.test.sql (5)", "m05_m10_audit_fixes.test.sql (8)", ".github/tests/m05-sender.test.ts (9)"]
   audit_documents: ["docs/AUDITORIA_M05_2026-10-02.md", "docs/AUDITORIA_EMAILS_M10_2026-10-02.md"]
 
+f04_f05_end_block:
+  status: "DONE"
+  date: "2026-10-03"
+  migration: "20261003110000_d140_f04_f05.sql"
+  decisions: ["D-139", "D-140"]
+  f03_postmortem: "CANCELLED (D-140)"
+  f04_indicators: "MTTD/MTTR/MTBF/MTTF, ranking, volume and times (opened, resolved, cancelled, active, median, p90, peak, areas)"
+  f05_weekly_governance: "screen /governanca-semanal; governance_actions append-only; Jair, Bruno, admins"
+  f06_executive_report: "CANCELLED (D-140)"
+  m11_real_sources: "CANCELLED (D-139)"
+  tests: ["d140_f04_f05.test.sql (12)"]
+
 m10_new_card_governance:
   status: "DONE"
   date: "2026-10-02"

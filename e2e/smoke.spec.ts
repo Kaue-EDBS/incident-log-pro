@@ -308,6 +308,18 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await page.getByRole("link", { name: "Cards e donos" }).first().click();
   await expect(page.getByRole("table", { name: /Cards, donos/ })).toBeVisible();
   await expectAccessible(page, "cards e donos");
+  // D-140 (F05): governança semanal — resumo da semana e registro de ação.
+  await page.getByRole("link", { name: "Governança semanal" }).first().click();
+  await expect(page.getByRole("heading", { name: "Governança semanal", level: 1 })).toBeVisible();
+  await expand(page, /^Ações da semana/);
+  await page.getByLabel("Tipo da ação").selectOption("TRAINING");
+  await page
+    .getByLabel("O que foi decidido")
+    .fill("Treinar a expedição no novo fluxo de etiquetas.");
+  await page.getByRole("button", { name: "Registrar ação" }).click();
+  await page.getByRole("button", { name: "Sim, registrar" }).click();
+  await expect(page.getByText("Treinar a expedição no novo fluxo de etiquetas.")).toBeVisible();
+  await expectAccessible(page, "governança semanal");
   await page.getByRole("link", { name: "Todos os protocolos" }).first().click();
   // D-120: faixa com os números do momento (no lugar da Torre de Controle).
   await expect(page.getByRole("heading", { name: "Agora, em todos os cards" })).toBeVisible();
@@ -357,6 +369,13 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   const metrics = page.getByRole("table", { name: /Indicadores por card/ });
   await expect(metrics.getByRole("rowheader", { name: "Consolidado" })).toBeVisible();
   await expect(metrics.getByRole("columnheader", { name: "MTTR" })).toBeVisible();
+  // D-140 (F04): contagens e tempos.
+  await expand(page, /^Volume e tempos na Safra/);
+  await expect(
+    page
+      .getByRole("table", { name: /Protocolos e tempos por card/ })
+      .getByRole("columnheader", { name: "Abertos" }),
+  ).toBeVisible();
   await expectAccessible(page, "analytics");
   await select.selectOption("admin");
   await page.getByRole("link", { name: "Administração" }).first().click();

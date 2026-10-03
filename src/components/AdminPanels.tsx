@@ -26,6 +26,7 @@ const SCREEN_LABEL: Record<string, string> = {
   "/analytics": "Indicadores",
   "/administracao": "Administração",
   "/propostas": "Sugerir card",
+  "/governanca-semanal": "Governança semanal",
 };
 
 function Loading() {

@@ -3,7 +3,12 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
-import { useReliabilityMetrics, type MetricPair, type ReliabilityRow } from "@/lib/queries";
+import {
+  useReliabilityMetrics,
+  type MetricPair,
+  type ReliabilityRow,
+  type Volume,
+} from "@/lib/queries";
 import { cardDisplayName, cardNumber } from "@/lib/safra";
 import { CollapsibleSection } from "@/components/CollapsibleSection";
 
@@ -59,6 +64,126 @@ function Row({ label, row, strong }: { label: string; row: ReliabilityRow; stron
       <td className="py-2">
         <Pair value={row.mttf} />
       </td>
+    </tr>
+  );
+}
+
+/** F04 (D-140): quantos protocolos e quanto tempo levaram, por card e no total. */
+function VolumeSection({ volume, showTotal }: { volume: Volume; showTotal: boolean }) {
+  const total = volume.consolidated;
+  return (
+    <CollapsibleSection
+      id="volume-title"
+      title={`Volume e tempos na Safra: ${total.opened} abertos · ${total.resolved} encerrados · ${total.cancelled} cancelados`}
+      className="p-4"
+      titleClassName="text-sm"
+    >
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <VolumeTile label="Em andamento agora" value={String(total.active)} />
+        <VolumeTile label="Tempo mediano para encerrar" value={formatDuration(total.median_secs)} />
+        <VolumeTile
+          label="Os 10% mais demorados passam de"
+          value={formatDuration(total.p90_secs)}
+        />
+        <VolumeTile
+          label="Pico de protocolos ao mesmo tempo"
+          value={String(total.peak_simultaneous)}
+        />
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] text-sm">
+          <caption className="sr-only">Protocolos e tempos por card na Safra corrente</caption>
+          <thead className="text-left text-xs text-muted-foreground">
+            <tr>
+              <th scope="col" className="py-2 pr-3 font-medium">
+                Card
+              </th>
+              <th scope="col" className="py-2 pr-3 font-medium">
+                Abertos
+              </th>
+              <th scope="col" className="py-2 pr-3 font-medium">
+                Encerrados
+              </th>
+              <th scope="col" className="py-2 pr-3 font-medium">
+                Cancelados
+              </th>
+              <th scope="col" className="py-2 pr-3 font-medium">
+                Em andamento
+              </th>
+              <th scope="col" className="py-2 pr-3 font-medium">
+                Tempo mediano
+              </th>
+              <th scope="col" className="py-2 font-medium">
+                10% mais demorados
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {showTotal ? <VolumeRow label="Consolidado" row={total} strong /> : null}
+            {volume.cards.map((card) => (
+              <VolumeRow
+                key={card.scenario_id}
+                label={`${cardNumber(card.code)} · ${cardDisplayName(card.name)}`}
+                row={card}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {volume.areas.length ? (
+        <div>
+          <h3 className="text-sm font-semibold">Áreas mais impactadas</h3>
+          <ol aria-label="Áreas mais impactadas" className="mt-1 space-y-1 text-sm">
+            {volume.areas.map((area, index) => (
+              <li key={area.name} className="flex justify-between gap-3">
+                <span>
+                  {index + 1}º {area.name}
+                </span>
+                <span className="tabular-nums text-muted-foreground">
+                  {area.protocols} {area.protocols === 1 ? "protocolo" : "protocolos"}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : null}
+      <p className="text-xs text-muted-foreground">
+        Tempo = da abertura até a última parte concluir; só protocolos encerrados. Cancelados não
+        contam no tempo.
+      </p>
+    </CollapsibleSection>
+  );
+}
+
+function VolumeTile({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-border bg-background p-3">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 text-xl font-semibold tabular-nums">{value}</p>
+    </div>
+  );
+}
+
+function VolumeRow({
+  label,
+  row,
+  strong,
+}: {
+  label: string;
+  row: Volume["consolidated"] | Volume["cards"][number];
+  strong?: boolean;
+}) {
+  return (
+    <tr className={strong ? "border-t-2 border-border bg-muted/40" : "border-t border-border"}>
+      <th scope="row" className={`py-2 pr-3 text-left ${strong ? "font-semibold" : "font-normal"}`}>
+        {label}
+      </th>
+      <td className="py-2 pr-3 tabular-nums">{row.opened}</td>
+      <td className="py-2 pr-3 tabular-nums">{row.resolved}</td>
+      <td className="py-2 pr-3 tabular-nums">{row.cancelled}</td>
+      <td className="py-2 pr-3 tabular-nums">{row.active}</td>
+      <td className="py-2 pr-3 tabular-nums">{formatDuration(row.median_secs)}</td>
+      <td className="py-2 tabular-nums">{formatDuration(row.p90_secs)}</td>
     </tr>
   );
 }
@@ -155,6 +280,9 @@ function Analytics() {
       ) : (
         <>
           <Ranking cards={data.cards} />
+          {data.volume ? (
+            <VolumeSection volume={data.volume} showTotal={data.scope === "ALL"} />
+          ) : null}
 
           <div className="overflow-x-auto rounded-xl border border-border bg-card p-4">
             <table className="w-full min-w-[720px] text-sm">
