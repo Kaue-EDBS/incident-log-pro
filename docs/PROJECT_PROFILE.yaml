@@ -274,11 +274,11 @@ governance:
 
 deferred_decisions:
   four_CRITICAL_scenarios: "GI-SAFRA-001; RESOLVED_D55; ALL_11_CRITICAL_IN_SCENARIO_VERSION_2"
-  scenario_2_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
-  scenario_4_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
-  scenario_10_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
-  scenario_11_threshold: "GI-SAFRA-002; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
-  scenario_9_curve_A_source: "GI-SAFRA-003; DEFERRED_TO_PRODUCT_V2_D56; AUTO_DETECTION_NOT_CONFIGURED"
+  scenario_2_threshold: "GI-SAFRA-002 RESOLVED (D-139): no automatic detection; manual opening only"
+  scenario_4_threshold: "GI-SAFRA-002 RESOLVED (D-139): no automatic detection; manual opening only"
+  scenario_10_threshold: "GI-SAFRA-002 RESOLVED (D-139): no automatic detection; manual opening only"
+  scenario_11_threshold: "GI-SAFRA-002 RESOLVED (D-139): no automatic detection; manual opening only"
+  scenario_9_curve_A_source: "GI-SAFRA-003 RESOLVED (D-139): no automatic detection; manual opening only"
   multiple_simultaneous_treatments: "GI-SAFRA-004; RESOLVED_D57; ONE_ACTIVE_PER_PERSON_PER_SCENARIO_ENFORCED"
   incomplete_or_not_applicable_close_policy: "DEFERRED_TO_SAFRA_F01"
   email_notification_provider_and_channel: "GI-SAFRA-005; DECIDED_D58_EMAIL_AND_TEAMS; IMPLEMENTATION_IN_M05"

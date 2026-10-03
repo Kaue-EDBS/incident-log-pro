@@ -27,8 +27,8 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | GI | Pergunta | Status |
 |---|---|---|
 | 001 | Quais são os 4 cenários CRITICAL? | RESOLVED (D-55) — os 11 são CRITICAL |
-| 002 | Thresholds dos cenários 2, 4, 10 e 11 | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
-| 003 | Fonte do mínimo da curva A (cenário 9) | OPEN — DEFERRED_TO_PRODUCT_V2 (D-56) |
+| 002 | Thresholds dos cenários 2, 4, 10 e 11 | RESOLVED (D-139) — sem detecção automática |
+| 003 | Fonte do mínimo da curva A (cenário 9) | RESOLVED (D-139) — sem detecção automática |
 | 004 | Tratativas simultâneas do mesmo cenário | RESOLVED (D-57) |
 | 005 | Canal de notificações e platform admins | DECIDED (D-58) — implementação na M05 |
 | 006 | Janela oficial da "Safra corrente" | DECIDED (D-59) — implementação na F04/M05 |
@@ -165,7 +165,8 @@ As decisões abaixo não devem ser completadas pela aplicação, por migration o
 
 ## GI-SAFRA-002 — Thresholds ainda abertos dos cenários 2, 4, 10 e 11
 
-**Status:** OPEN — DEFERRED_TO_PRODUCT_V2 (D-56)  
+**Status:** RESOLVED (D-139, 03/10/2026) — o Painel não terá detecção automática (M11 cancelada); todo protocolo é aberto manualmente e os limites não são necessários.
+**Histórico:** OPEN — DEFERRED_TO_PRODUCT_V2 (D-56)  
 **Decisão do owner (30/09/2026):** o aviso/detecção automática fica para uma versão futura do produto (V2 ou V3). Os números não são necessários agora; START segue manual (D-45).  
 **Bloqueia START/C08:** não.  
 **Bloqueia automação do gatilho:** sim.
@@ -182,7 +183,8 @@ Nenhum valor será inferido.
 
 ## GI-SAFRA-003 — Fonte oficial do mínimo da curva A — cenário 9
 
-**Status:** OPEN — DEFERRED_TO_PRODUCT_V2 (D-56)  
+**Status:** RESOLVED (D-139, 03/10/2026) — sem detecção automática; SAFRA-09 segue com abertura manual e a fonte do mínimo não é necessária.
+**Histórico:** OPEN — DEFERRED_TO_PRODUCT_V2 (D-56)  
 **Decisão do owner (30/09/2026):** como no GI-002, o mínimo só serve à detecção automática, que fica para a V2/V3 do produto. SAFRA-09 segue com START manual (D-46).  
 **Bloqueia START/C08:** não.  
 **Bloqueia automação objetiva da ruptura:** sim.

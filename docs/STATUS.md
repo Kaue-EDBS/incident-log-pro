@@ -52,7 +52,7 @@
 - Tabelas em `public`: 21 (inclui o registro técnico `ops_events`, D-95), todas do domínio Safra, todas com RLS e sem acesso `anon` (escalonamento removido pela D-73; SLA pela D-75).
 - Pessoas e papéis: `private.safra_principals` e `private.safra_role_grants` (2 usuários Auth, 2 principals vinculados, 9 grants ativos em 30/09).
 - Protocolos registrados: 4 em 02/10/2026 (03-0001, demonstração do owner, fora do analytics pela D-115; 01-0001, 04-0001 e 09-0001, cancelados pelo owner).
-- Migrations: **65 no PRIMARY e 65 no repositório**, mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
+- Migrations: **65 no PRIMARY e 66 no repositório** (D-139 aguarda o CI), mesmas versões. O drift de 28/09 foi reconstituído na C05-AUD2.
 - Regra (D-52): toda mudança no banco começa como arquivo em `supabase/migrations/`; cada sessão começa comparando PRIMARY e repositório.
 
 ---
@@ -66,7 +66,7 @@
 
 ## 5. Pendências abertas
 
-- Pendências de governança: ver `docs/GOVERNANCE_ISSUES.md`. Resolvidas: 001, 004, 008, 009, 010. 005, 006 e 007 construídas (M05, D-118, M10). Adiadas para a V2 do produto: 002, 003.
+- Pendências de governança: ver `docs/GOVERNANCE_ISSUES.md`. Resolvidas: 001, 002, 003, 004, 008, 009, 010. 005, 006 e 007 construídas (M05, D-118, M10). 002 e 003 resolvidas pela D-139 (sem detecção automática).
 - Encerrar (duas partes) e cancelar já existem (C08.1, D-87). **Antes de liberar o acesso às pessoas, falta o aviso ao dono (M05), publicar e homologar com login real (D-79).**
 - Telas "Meus protocolos" e "Protocolos dos meus cards": feitas no C08.2.
 - **Publicar no Lovable** a versão atual antes de liberar o acesso: a publicada é de antes do C07 e não carrega o catálogo (D-79).
@@ -80,7 +80,7 @@
 
 ## 6. Próximo passo
 
-**Continuar por `docs/HANDOFF_2026-10-03.md`:** conferir o CI do D-138, o owner publica o site, teste real de e-mail a partir da abertura de protocolo (card escolhido e dono avisado pelo owner). Depois: M11 (fontes reais futuras). E-mails automáticos desde 02/10 (D-133/D-134); troca pelo aplicativo do TI na GI-SAFRA-017. M04, M06, M07 e M08 canceladas.
+**Continuar por `docs/HANDOFF_2026-10-03.md`:** conferir o CI do D-138, o owner publica o site, teste real de e-mail a partir da abertura de protocolo (card escolhido e dono avisado pelo owner). M11 cancelada (D-139): o roteiro do MVP está completo; falta publicar e homologar com login real. E-mails automáticos desde 02/10 (D-133/D-134); troca pelo aplicativo do TI na GI-SAFRA-017. M04, M06, M07, M08 e M11 canceladas.
 
 - 2026-10-02 — M05 provisório (D-132): envio pela sessão de quem está no Painel (gestão/admins: fila inteira; demais: só os avisos da própria ação). Migration `20261002300000_m05_session_delivery.sql`. D-133: envio agendado no servidor a cada 2 minutos (migration `20261002310000_m05_scheduled_delivery.sql`).
 - 2026-10-02 — D-134 a D-138: auditorias (e-mails/M10 e frontend/backend/UX), regras da proposta, seções fechadas, nomes novos. PRIMARY com 64 migrations.

@@ -1506,3 +1506,11 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 4. Um nome só para a ação: **"Abrir protocolo"**.
 5. Celular: o menu de baixo mostra até 5 itens; quando há mais, os 4 primeiros e **"Mais"** com o resto.
 
+### D-139 — M11 cancelada: sem detecção automática
+**APPROVED — 03/10/2026** — owner: Kaue ("isso não terá, pode riscar fora").
+
+- A M11 (fontes reais futuras: sistemas avisando problemas ao Painel) **não será feita**. O Painel não terá detecção automática: **todo protocolo é aberto por uma pessoa**.
+- Substitui a D-56 (detecção adiada para a V2/V3): não há mais detecção prevista.
+- GI-SAFRA-002 (limites dos cenários 2, 4, 10 e 11) e GI-SAFRA-003 (mínimo da curva A do cenário 9) **resolvidas**: só serviam à detecção automática. Migration `20261003100000_d139_cancel_m11.sql`.
+- As regras do roteiro sobre fontes reais (SOURCE_CONTRACT, DATA_RELEASE, "sem integração × sistema saudável") deixam de se aplicar.
+
