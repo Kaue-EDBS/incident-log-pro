@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { ConfirmButton } from "@/components/ConfirmButton";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
 import { useEndSeason, useSeason, useStartSeason, useUndoEndSeason } from "@/lib/queries";
@@ -134,7 +135,7 @@ export function SeasonPanel() {
           {data.undo_until ? (
             <Button
               variant="outline"
-              className="min-h-11"
+              className="h-auto min-h-11 whitespace-normal text-left"
               disabled={busy}
               onClick={() => void run(() => undoEnd.mutateAsync(), "Encerramento desfeito.")}
             >
@@ -142,14 +143,14 @@ export function SeasonPanel() {
               Desfazer encerramento (até {formatDateTime(data.undo_until)})
             </Button>
           ) : null}
-          <Button
-            className="min-h-11"
+          <ConfirmButton
+            label="Iniciar nova Safra"
+            title="Iniciar uma nova Safra?"
+            description="A abertura de protocolos volta para todos e os indicadores passam a contar desta nova Safra."
+            confirmLabel="Sim, iniciar"
             disabled={busy}
-            onClick={() => void run(() => startSeason.mutateAsync(), "Nova Safra iniciada.")}
-          >
-            <CalendarCheck2 aria-hidden="true" />
-            Iniciar nova Safra
-          </Button>
+            onConfirm={() => void run(() => startSeason.mutateAsync(), "Nova Safra iniciada.")}
+          />
         </div>
       )}
     </CollapsibleSection>

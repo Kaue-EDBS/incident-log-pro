@@ -116,7 +116,7 @@ function AllProtocols() {
         <label className="flex flex-col gap-1 text-sm">
           <span className="font-medium">Situação</span>
           <select
-            className="min-h-10 rounded-md border border-input bg-background px-3"
+            className="min-h-11 rounded-md border border-input bg-background px-3"
             value={status}
             onChange={(event) => setStatus(event.target.value)}
           >
@@ -130,7 +130,7 @@ function AllProtocols() {
         <label className="flex flex-col gap-1 text-sm">
           <span className="font-medium">Card</span>
           <select
-            className="min-h-10 rounded-md border border-input bg-background px-3"
+            className="min-h-11 rounded-md border border-input bg-background px-3"
             value={scenarioId}
             onChange={(event) => setScenarioId(event.target.value)}
           >

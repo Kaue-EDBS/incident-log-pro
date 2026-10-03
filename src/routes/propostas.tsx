@@ -49,7 +49,7 @@ const EVENT_LABEL: Record<string, string> = {
   REJECTED: "Recusada",
 };
 
-const fieldClass = "min-h-10 w-full rounded-md border border-input bg-background px-3 text-sm";
+const fieldClass = "min-h-11 w-full rounded-md border border-input bg-background px-3 text-sm";
 
 function useRun() {
   const action = useProposalAction();
@@ -280,7 +280,7 @@ function GovernanceActions({
     <div className="flex flex-wrap items-end gap-3">
       {item.can_forward ? (
         <Button
-          className="min-h-11"
+          className="h-auto min-h-11 whitespace-normal text-left"
           disabled={busy}
           onClick={() =>
             void run(

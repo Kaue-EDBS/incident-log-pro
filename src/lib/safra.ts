@@ -253,6 +253,10 @@ export function safraErrorMessage(error: unknown, fallback: string): string {
     ["SAFRA_PROPOSAL_AREA_REQUIRED", "Escolha a área responsável."],
     ["SAFRA_PROPOSAL_INVALID_OWNER", "O dono precisa ser um dos donos de card consultados."],
     [
+      "SAFRA_PROPOSAL_OWNER_UNAVAILABLE",
+      "O dono escolhido não está mais disponível como dono de card. Fale com a governança.",
+    ],
+    [
       "SAFRA_GOVERNANCE_FORBIDDEN",
       "A governança semanal é para a gestão da Safra e os administradores.",
     ],

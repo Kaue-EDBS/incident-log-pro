@@ -14,6 +14,7 @@ export function CollapsibleSection({
   className,
   titleClassName = "text-lg",
   defaultOpen = false,
+  onToggle,
   children,
 }: {
   id: string;
@@ -22,6 +23,8 @@ export function CollapsibleSection({
   className?: string;
   titleClassName?: string;
   defaultOpen?: boolean;
+  /** Avisa quem usa quando a seção abre ou fecha (para buscar os dados só aberta). */
+  onToggle?: (open: boolean) => void;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -37,7 +40,11 @@ export function CollapsibleSection({
           type="button"
           aria-expanded={open}
           aria-controls={open ? contentId : undefined}
-          onClick={() => setOpen((value) => !value)}
+          onClick={() => {
+            const next = !open;
+            setOpen(next);
+            onToggle?.(next);
+          }}
           className="flex min-h-11 w-full items-center gap-2 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {icon}

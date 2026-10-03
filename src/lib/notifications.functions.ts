@@ -1,4 +1,5 @@
-// SAFRA-M05 — entrega imediata dos avisos que o banco colocou na fila.
+// SAFRA-M05 — botão "Forçar envio agora" (gestão e admins): entrega na hora os avisos da fila.
+// O envio de rotina é o agendado no servidor a cada 2 minutos (D-133).
 // PROVISÓRIO (D-132/D-134): usa a sessão de quem está logado para pegar a fila (funções
 // *_for_session: só gestão/admins; é o botão "Forçar envio agora"; o envio de rotina é o
 // agendado no servidor, D-133) e envia pela conexão Outlook

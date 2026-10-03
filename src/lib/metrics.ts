@@ -167,3 +167,15 @@ export function analyticsLocalInputToIso(value: string): string | null {
     Number(match[6] ?? "0"),
   ).toISOString();
 }
+
+/** Segundos em texto curto: "45 min", "2 h 15 min", "3 d 4 h"; "—" sem valor. */
+export function formatSeconds(seconds: number | null): string {
+  if (seconds === null) return "—";
+  const total = Math.max(0, Math.round(seconds / 60));
+  const days = Math.floor(total / 1440);
+  const hours = Math.floor((total % 1440) / 60);
+  const minutes = total % 60;
+  if (days > 0) return hours ? `${days} d ${hours} h` : `${days} d`;
+  if (hours > 0) return minutes ? `${hours} h ${minutes} min` : `${hours} h`;
+  return `${minutes} min`;
+}

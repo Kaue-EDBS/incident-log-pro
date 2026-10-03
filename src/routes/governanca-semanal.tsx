@@ -6,7 +6,7 @@ import { CollapsibleSection } from "@/components/CollapsibleSection";
 import { ConfirmButton } from "@/components/ConfirmButton";
 import { Button } from "@/components/ui/button";
 import { useViewer } from "@/lib/chameleon";
-import { formatDateTime } from "@/lib/metrics";
+import { formatDateTime, formatSeconds } from "@/lib/metrics";
 import {
   GOVERNANCE_ACTION_TYPES,
   useRegisterGovernanceAction,
@@ -49,17 +49,6 @@ function addDays(day: string, days: number) {
   const [y, m, d] = day.split("-").map(Number);
   const next = new Date(Date.UTC(y!, m! - 1, d! + days));
   return next.toISOString().slice(0, 10);
-}
-
-function formatDuration(seconds: number | null): string {
-  if (seconds === null) return "—";
-  const total = Math.max(0, Math.round(seconds / 60));
-  const days = Math.floor(total / 1440);
-  const hours = Math.floor((total % 1440) / 60);
-  const minutes = total % 60;
-  if (days > 0) return hours ? `${days} d ${hours} h` : `${days} d`;
-  if (hours > 0) return minutes ? `${hours} h ${minutes} min` : `${hours} h`;
-  return `${minutes} min`;
 }
 
 /** F05 (D-140): resumo da semana e ações decididas na reunião (que acontece fora do Painel). */
@@ -161,7 +150,12 @@ function WeekSummary({ data }: { data: WeeklyGovernance }) {
       {data.cards.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nenhum protocolo nesta semana.</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div
+          className="overflow-x-auto"
+          tabIndex={0}
+          role="region"
+          aria-label="Tabela (role para os lados no celular)"
+        >
           <table className="w-full min-w-[640px] text-left text-sm">
             <caption className="sr-only">Protocolos da semana por card</caption>
             <thead className="text-xs text-muted-foreground">
@@ -196,7 +190,7 @@ function WeekSummary({ data }: { data: WeeklyGovernance }) {
                   <td className="py-2 pr-3 tabular-nums">{card.opened_previous_week}</td>
                   <td className="py-2 pr-3 tabular-nums">{card.resolved}</td>
                   <td className="py-2 pr-3 tabular-nums">{card.cancelled}</td>
-                  <td className="py-2 tabular-nums">{formatDuration(card.median_secs)}</td>
+                  <td className="py-2 tabular-nums">{formatSeconds(card.median_secs)}</td>
                 </tr>
               ))}
             </tbody>
@@ -214,7 +208,7 @@ function Longest({ data }: { data: WeeklyGovernance }) {
       id="longest-title"
       title={
         first
-          ? `Mais demorados da semana: 1º ${first.protocol_number} (${formatDuration(first.duration_secs)})`
+          ? `Mais demorados da semana: 1º ${first.protocol_number} (${formatSeconds(first.duration_secs)})`
           : "Mais demorados da semana"
       }
     >
@@ -229,7 +223,7 @@ function Longest({ data }: { data: WeeklyGovernance }) {
                 {cardDisplayName(item.name)}
               </span>
               <span className="tabular-nums text-muted-foreground">
-                {formatDuration(item.duration_secs)}
+                {formatSeconds(item.duration_secs)}
               </span>
             </li>
           ))}
@@ -241,7 +235,7 @@ function Longest({ data }: { data: WeeklyGovernance }) {
 
 function StillActive({ data }: { data: WeeklyGovernance }) {
   return (
-    <CollapsibleSection id="active-title" title={`Ainda em andamento: ${data.totals.active_now}`}>
+    <CollapsibleSection id="active-title" title={`Abertos agora: ${data.totals.active_now}`}>
       {data.active.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nenhum protocolo em andamento agora.</p>
       ) : (

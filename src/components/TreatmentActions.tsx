@@ -10,6 +10,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useViewer } from "@/lib/chameleon";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -61,7 +62,11 @@ export function SituationBadge({ situation }: { situation: SafraSituation }) {
 const MIN_REASON = 10;
 
 function formatTime(iso: string) {
-  return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  return new Date(iso).toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Sao_Paulo",
+  });
 }
 
 /** Mostra o "Desfazer" só até o prazo (D-99); o banco confere de novo ao desfazer. */
@@ -97,9 +102,12 @@ export function TreatmentActions({
   const [cancelOpen, setCancelOpen] = useState(false);
   const busy = closePart.isPending || cancel.isPending || undoPart.isPending;
   const isOwner = treatment.my_role === "OWNER";
+  const { readOnly } = useViewer();
 
   const canUndo = treatment.can_undo_my_part && undoOpen;
 
+  // Modo Camaleão é só leitura: nenhuma ação sobre protocolo (D-92).
+  if (readOnly) return null;
   if (!treatment.can_close_my_part && !treatment.can_cancel && !canUndo) return null;
 
   const confirmUndo = async () => {
@@ -179,7 +187,7 @@ export function TreatmentActions({
         <Button
           size="lg"
           variant="outline"
-          className="min-h-11 px-6"
+          className="h-auto min-h-11 whitespace-normal px-6 text-left"
           disabled={busy}
           onClick={() => void confirmUndo()}
         >

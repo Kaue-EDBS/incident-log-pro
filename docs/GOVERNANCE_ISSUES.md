@@ -45,6 +45,11 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 017 | Trocar o envio provisório pelo aplicativo do TI | OPEN — aguarda o TI (envio automático já funciona, D-133) |
 | 018 | Na governança semanal, protocolo encerrado sozinho (72 h) conta na semana em que a última parte concluiu ou na do encerramento automático? | OPEN — hoje: última parte (como os Indicadores, D-117) |
 | 019 | Pode registrar ação de governança em semana futura ou muito antiga? | OPEN — hoje: qualquer semana |
+| 020 | Por quanto tempo guardar os e-mails enviados (texto e destinatário)? | OPEN — hoje: para sempre |
+| 021 | Quem opera os e-mails e a Safra quando o Kaue não está? | OPEN — hoje: só o Kaue |
+| 022 | Limitar quantos protocolos uma pessoa abre/cancela por hora? | OPEN — hoje: sem limite (um por card ao mesmo tempo) |
+| 023 | Até quanto tempo atrás pode ser o "problema começou"? | OPEN — hoje: qualquer data passada |
+| 024 | Apagar do banco tabelas e funções sem uso (medições de impacto, sistemas, funções antigas)? | OPEN — hoje: mantidas |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -401,4 +406,29 @@ Quando só uma parte conclui e o protocolo encerra sozinho 72 h depois (D-113), 
 **Bloqueia:** nada
 
 Hoje dá para navegar e registrar ação em qualquer semana, inclusive futura. Decidir se o registro deve ficar limitado (por exemplo, só a semana atual e as anteriores).
+
+## GI-SAFRA-020 — Retenção dos e-mails na fila
+
+**Status:** OPEN — aguarda o owner · **Fase:** D-141 · **Bloqueia:** nada
+A tabela de avisos guarda para sempre o texto do e-mail (até 6.000 caracteres), o e-mail e o nome de quem recebeu. Decidir por quantos dias guardar (depois disso, apagar o texto ou a linha).
+
+## GI-SAFRA-021 — Operação quando o owner não está
+
+**Status:** OPEN — aguarda o owner · **Fase:** D-141 · **Bloqueia:** nada
+A conexão Outlook usada no envio é a do Kaue; a fila de e-mails, "Forçar envio agora" e a marcação da Safra são só dele. Se ele estiver fora, ninguém reconecta o envio nem encerra/inicia a Safra. Decidir quem substitui e o que pode fazer (ligado à GI-SAFRA-017).
+
+## GI-SAFRA-022 — Limite de abertura e cancelamento por pessoa
+
+**Status:** OPEN — aguarda o owner · **Fase:** D-141 · **Bloqueia:** nada
+Hoje uma pessoa pode abrir e cancelar em sequência no mesmo card, gerando muitos e-mails ao dono. Decidir se há limite (por exemplo, N por hora) e qual.
+
+## GI-SAFRA-023 — Data mínima do "problema começou"
+
+**Status:** OPEN — aguarda o owner · **Fase:** D-141 · **Bloqueia:** nada
+O campo só recusa data no futuro; um ano digitado errado distorce o MTTD da Safra. Decidir o limite (por exemplo, até 7 dias antes da abertura).
+
+## GI-SAFRA-024 — Objetos sem uso no banco
+
+**Status:** OPEN — aguarda o owner · **Fase:** D-141 · **Bloqueia:** nada
+Sem uso em nenhuma tela ou função: tabela de medições de impacto (C05), tabelas de sistemas da Matriz v3 (só rastreabilidade), funções antigas de tempo e de resolução de GIs, `safra_session_is_live` pública. Apagar exige migration e ajuste de testes; decidir se apaga ou mantém como histórico.
 

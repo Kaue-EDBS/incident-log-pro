@@ -12,7 +12,7 @@ insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,creat
 values ('a0500000-0000-4000-8000-00000000000b','d140.regular@editoradobrasil.com.br','{"provider":"azure"}',true,false,clock_timestamp(),clock_timestamp());
 
 insert into auth.identities(provider_id,user_id,identity_data,provider,created_at,updated_at)
-select u.id::text, u.id, '{"custom_claims":{"tid":"45ba725f-d260-45c3-ac85-11f433471277"}}', 'azure', clock_timestamp(), clock_timestamp()
+select u.id::text, u.id, jsonb_build_object('custom_claims', jsonb_build_object('tid', '45ba725f-d260-45c3-ac85-11f433471277'), 'full_name', u.raw_user_meta_data->>'full_name'), 'azure', clock_timestamp(), clock_timestamp()
 from auth.users u where u.id::text like 'a0500000-%';
 insert into auth.sessions(id,user_id,created_at,updated_at)
 select ('a0500000-0000-4000-8000-0000000001' || right(u.id::text, 2))::uuid, u.id, clock_timestamp(), clock_timestamp()

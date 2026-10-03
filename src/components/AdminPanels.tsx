@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Loader2, ScrollText, Users, Eye } from "lucide-react";
 import { useViewer } from "@/lib/chameleon";
 import { formatDateTime } from "@/lib/metrics";
@@ -49,7 +50,8 @@ function Failed({ what }: { what: string }) {
 /** Painel de cadastrados (D-123): só platform admins. */
 export function PeoplePanel() {
   const { isPlatformAdmin } = useViewer();
-  const query = useAdminPeople(isPlatformAdmin);
+  const [opened, setOpened] = useState(false);
+  const query = useAdminPeople(isPlatformAdmin && opened);
   if (!isPlatformAdmin) return null;
 
   return (
@@ -58,6 +60,7 @@ export function PeoplePanel() {
       title="Painel de cadastrados"
       icon={<Users className="size-5 text-primary" aria-hidden="true" />}
       className="space-y-3"
+      onToggle={(open) => open && setOpened(true)}
       titleClassName="text-lg"
     >
       {query.isLoading ? (
@@ -66,7 +69,12 @@ export function PeoplePanel() {
         <Failed what="o painel de cadastrados" />
       ) : (
         <>
-          <div className="overflow-x-auto">
+          <div
+            className="overflow-x-auto"
+            tabIndex={0}
+            role="region"
+            aria-label="Tabela (role para os lados no celular)"
+          >
             <table className="w-full min-w-[720px] text-left text-sm">
               <caption className="sr-only">Pessoas cadastradas, papéis e acesso</caption>
               <thead className="text-xs text-muted-foreground">
@@ -122,7 +130,8 @@ export function PeoplePanel() {
 /** Trilha de papéis (D-123): quem mudou qual papel e quando. */
 export function RbacTrailPanel() {
   const { isPlatformAdmin } = useViewer();
-  const query = useRbacTrail(isPlatformAdmin);
+  const [opened, setOpened] = useState(false);
+  const query = useRbacTrail(isPlatformAdmin && opened);
   if (!isPlatformAdmin) return null;
 
   return (
@@ -131,6 +140,7 @@ export function RbacTrailPanel() {
       title="Trilha de papéis"
       icon={<ScrollText className="size-5 text-primary" aria-hidden="true" />}
       className="space-y-3"
+      onToggle={(open) => open && setOpened(true)}
       titleClassName="text-lg"
     >
       {query.isLoading ? (
@@ -161,7 +171,8 @@ export function RbacTrailPanel() {
 /** Uso das telas, anônimo (D-124, D-90). */
 export function ScreenUsagePanel() {
   const { isPlatformAdmin } = useViewer();
-  const query = useScreenUsage(isPlatformAdmin);
+  const [opened, setOpened] = useState(false);
+  const query = useScreenUsage(isPlatformAdmin && opened);
   if (!isPlatformAdmin) return null;
 
   return (
@@ -170,6 +181,7 @@ export function ScreenUsagePanel() {
       title="Uso das telas (últimos 30 dias, anônimo)"
       icon={<Eye className="size-5 text-primary" aria-hidden="true" />}
       className="space-y-3"
+      onToggle={(open) => open && setOpened(true)}
       titleClassName="text-lg"
     >
       {query.isLoading ? (

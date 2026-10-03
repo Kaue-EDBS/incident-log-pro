@@ -67,7 +67,7 @@ export function TreatmentTimeline({ treatmentId }: { treatmentId: string }) {
       <Button
         variant="ghost"
         size="sm"
-        className="-ml-2 min-h-9"
+        className="-ml-2 min-h-11"
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((value) => !value)}

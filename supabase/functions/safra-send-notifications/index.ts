@@ -11,13 +11,21 @@ declare const Deno: {
   serve(handler: (request: Request) => Response | Promise<Response>): void;
 };
 
-Deno.serve(async () => {
+Deno.serve(async (request) => {
   const url = Deno.env.get("SUPABASE_URL");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!url || !serviceKey) {
     return Response.json({ status: "disabled" }, { status: 503 });
   }
   const db = createClient(url, serviceKey, { auth: { persistSession: false } });
+
+  // D-141: só o agendador do banco chama (senha interna gerada no Vault do próprio banco).
+  const { data: allowed, error: tokenError } = await db.rpc("safra_sender_token_valid", {
+    p_token: request.headers.get("x-safra-sender-token") ?? "",
+  });
+  if (tokenError || allowed !== true) {
+    return Response.json({ status: "unauthorized" }, { status: 401 });
+  }
 
   const result = await runOnce(
     readConfig((name) => Deno.env.get(name)),
@@ -37,6 +45,7 @@ Deno.serve(async () => {
       },
       fetch: (input, init) => fetch(input, init),
     },
+    50,
   );
 
   // Pública: devolve só contagens (o que falta de configuração não sai daqui).

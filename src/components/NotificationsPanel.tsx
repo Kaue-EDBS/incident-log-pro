@@ -16,7 +16,8 @@ export function NotificationsPanel() {
   const { isPlatformAdmin, readOnly } = useViewer();
   const allowed = isPlatformAdmin && user?.email?.toLowerCase() === OWNER_EMAIL;
   const { data, isLoading, isError, isFetching, refetch } = useOpsSummary(allowed);
-  const queue = useNotificationsQueue(allowed);
+  const [opened, setOpened] = useState(false);
+  const queue = useNotificationsQueue(allowed && opened);
   const refresh = () => {
     void refetch();
     void queue.refetch();
@@ -52,7 +53,12 @@ export function NotificationsPanel() {
   return (
     <CollapsibleSection
       id="notif-title"
-      title="Fila de e-mails"
+      title={
+        n
+          ? `Fila de e-mails: ${n.queued} na fila · ${n.failed} com falha (24 h)`
+          : "Fila de e-mails"
+      }
+      onToggle={(open) => open && setOpened(true)}
       icon={<Mail className="size-5 text-primary" aria-hidden="true" />}
     >
       <div className="flex flex-wrap items-center justify-end gap-3">
@@ -142,7 +148,12 @@ function QueueList({
     return <p className="text-sm text-muted-foreground">Nenhum e-mail na fila ainda.</p>;
   }
   return (
-    <div className="overflow-x-auto">
+    <div
+      className="overflow-x-auto"
+      tabIndex={0}
+      role="region"
+      aria-label="Tabela (role para os lados no celular)"
+    >
       <table className="w-full min-w-[640px] text-left text-sm">
         <caption className="sr-only">
           E-mails mais recentes, com a situação e o motivo do erro

@@ -160,7 +160,7 @@ function AuthedShell() {
   if (loading || !session || corporateAuthorized !== true) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-4">
-        <div className="text-center">
+        <div className="text-center" role="status">
           <div className="mx-auto size-8 animate-spin rounded-full border-2 border-muted border-t-primary" />
           <p className="mt-4 text-sm text-muted-foreground">Carregando painel...</p>
         </div>

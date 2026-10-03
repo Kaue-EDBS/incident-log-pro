@@ -30,7 +30,7 @@ function isActive(pathname: string, to: string) {
 /** Seletor do Modo Camaleão (D-92), visível só para admins da plataforma. */
 function ChameleonBar() {
   const viewer = useViewer();
-  const catalog = useSafraStartCatalog();
+  const catalog = useSafraStartCatalog(viewer.canUseChameleon);
   const owners = useMemo(() => {
     const seen = new Map<string, string>();
     for (const card of catalog.data ?? []) {
@@ -265,7 +265,29 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <ChameleonBar />
 
       <main id="conteudo" className="px-4 pb-28 pt-6 lg:ml-64 lg:px-10 lg:pb-16 lg:pt-10">
-        {children}
+        {viewer.rolesLoading ? (
+          <p role="status" className="mx-auto max-w-5xl text-sm text-muted-foreground">
+            Conferindo o seu acesso...
+          </p>
+        ) : viewer.rolesError ? (
+          <div
+            role="alert"
+            className="mx-auto max-w-5xl rounded-xl border border-destructive/30 bg-destructive/10 p-5"
+          >
+            <p className="font-medium text-destructive">
+              Não foi possível conferir o seu acesso. Verifique a conexão.
+            </p>
+            <button
+              type="button"
+              onClick={viewer.retryRoles}
+              className="mt-3 min-h-11 rounded-lg border border-border bg-card px-4 text-sm font-medium"
+            >
+              Tentar de novo
+            </button>
+          </div>
+        ) : (
+          children
+        )}
       </main>
 
       {moreOpen ? (

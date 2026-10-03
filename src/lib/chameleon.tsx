@@ -27,6 +27,10 @@ type Viewer = {
   canSeeAdmin: boolean;
   canSeeAllProtocols: boolean;
   label: string;
+  /** Papéis ainda carregando: as telas mostram "Conferindo o seu acesso..." em vez de "sem acesso". */
+  rolesLoading: boolean;
+  rolesError: boolean;
+  retryRoles: () => void;
 };
 
 const STORAGE_KEY = "safra-chameleon";
@@ -53,102 +57,128 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
   const [stored, setStored] = useState<ViewAs>(readStored);
   const roles = useMemo(() => rolesQuery.data ?? [], [rolesQuery.data]);
   const isPlatformAdmin = roles.includes("safra_platform_admin");
-  const canUseChameleon = useCanUseChameleon(isPlatformAdmin).data === true;
+  const chameleonQuery = useCanUseChameleon(isPlatformAdmin);
+  const canUseChameleon = chameleonQuery.data === true;
+  // Com um modo de visão guardado, fica só leitura até a permissão do Camaleão ser confirmada.
+  const pendingPreview =
+    stored.mode !== "real" &&
+    (rolesQuery.isLoading || (isPlatformAdmin && chameleonQuery.isLoading));
+  const rolesLoading = rolesQuery.isLoading;
+  const rolesError = rolesQuery.isError;
+  const retryRoles = rolesQuery.refetch;
   const viewAs = useMemo<ViewAs>(
     () => (canUseChameleon ? stored : { mode: "real" }),
     [canUseChameleon, stored],
   );
 
   const value = useMemo<Viewer>(() => {
-    const setViewAs = (next: ViewAs) => {
-      setStored(next);
-      try {
-        window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch {
-        // sem armazenamento: o modo vale só até recarregar a página
-      }
-    };
-    const governance =
-      roles.includes("safra_governance_admin") || roles.includes("safra_executive_admin");
+    const base = ((): Omit<Viewer, "rolesLoading" | "rolesError" | "retryRoles"> => {
+      const setViewAs = (next: ViewAs) => {
+        setStored(next);
+        try {
+          window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        } catch {
+          // sem armazenamento: o modo vale só até recarregar a página
+        }
+      };
+      const governance =
+        roles.includes("safra_governance_admin") || roles.includes("safra_executive_admin");
 
-    switch (viewAs.mode) {
-      case "usuario":
-        return {
-          roles,
-          isPlatformAdmin,
-          canUseChameleon,
-          viewAs,
-          setViewAs,
-          readOnly: true,
-          isOwner: false,
-          previewOwnerPrincipalId: null,
-          canSeeAnalytics: false,
-          canSeeAdmin: false,
-          canSeeAllProtocols: false,
-          label: "Usuário",
-        };
-      case "dono":
-        return {
-          roles,
-          isPlatformAdmin,
-          canUseChameleon,
-          viewAs,
-          setViewAs,
-          readOnly: true,
-          isOwner: true,
-          previewOwnerPrincipalId: viewAs.ownerPrincipalId,
-          canSeeAnalytics: true,
-          canSeeAdmin: false,
-          canSeeAllProtocols: false,
-          label: `Dono do card: ${viewAs.ownerName}`,
-        };
-      case "gestao":
-        return {
-          roles,
-          isPlatformAdmin,
-          canUseChameleon,
-          viewAs,
-          setViewAs,
-          readOnly: true,
-          isOwner: false,
-          previewOwnerPrincipalId: null,
-          canSeeAnalytics: true,
-          canSeeAdmin: false,
-          canSeeAllProtocols: true,
-          label: "Governança e diretoria (Jair e Bruno)",
-        };
-      case "admin":
-        return {
-          roles,
-          isPlatformAdmin,
-          canUseChameleon,
-          viewAs,
-          setViewAs,
-          readOnly: true,
-          isOwner: false,
-          previewOwnerPrincipalId: null,
-          canSeeAnalytics: true,
-          canSeeAdmin: true,
-          canSeeAllProtocols: true,
-          label: "Administração",
-        };
-      default:
-        return {
-          roles,
-          isPlatformAdmin,
-          canUseChameleon,
-          viewAs,
-          setViewAs,
-          readOnly: false,
-          isOwner: roles.includes("scenario_owner"),
-          previewOwnerPrincipalId: null,
-          canSeeAnalytics: governance || isPlatformAdmin || roles.includes("scenario_owner"),
-          canSeeAdmin: isPlatformAdmin,
-          canSeeAllProtocols: governance || isPlatformAdmin,
-          label: "Minha visão",
-        };
-    }
-  }, [roles, isPlatformAdmin, canUseChameleon, viewAs]);
+      switch (viewAs.mode) {
+        case "usuario":
+          return {
+            roles,
+            isPlatformAdmin,
+            canUseChameleon,
+            viewAs,
+            setViewAs,
+            readOnly: true,
+            isOwner: false,
+            previewOwnerPrincipalId: null,
+            canSeeAnalytics: false,
+            canSeeAdmin: false,
+            canSeeAllProtocols: false,
+            label: "Usuário",
+          };
+        case "dono":
+          return {
+            roles,
+            isPlatformAdmin,
+            canUseChameleon,
+            viewAs,
+            setViewAs,
+            readOnly: true,
+            isOwner: true,
+            previewOwnerPrincipalId: viewAs.ownerPrincipalId,
+            canSeeAnalytics: true,
+            canSeeAdmin: false,
+            canSeeAllProtocols: false,
+            label: `Dono do card: ${viewAs.ownerName}`,
+          };
+        case "gestao":
+          return {
+            roles,
+            isPlatformAdmin,
+            canUseChameleon,
+            viewAs,
+            setViewAs,
+            readOnly: true,
+            isOwner: false,
+            previewOwnerPrincipalId: null,
+            canSeeAnalytics: true,
+            canSeeAdmin: false,
+            canSeeAllProtocols: true,
+            label: "Governança e diretoria (Jair e Bruno)",
+          };
+        case "admin":
+          return {
+            roles,
+            isPlatformAdmin,
+            canUseChameleon,
+            viewAs,
+            setViewAs,
+            readOnly: true,
+            isOwner: false,
+            previewOwnerPrincipalId: null,
+            canSeeAnalytics: true,
+            canSeeAdmin: true,
+            canSeeAllProtocols: true,
+            label: "Administração",
+          };
+        default:
+          return {
+            roles,
+            isPlatformAdmin,
+            canUseChameleon,
+            viewAs,
+            setViewAs,
+            readOnly: false,
+            isOwner: roles.includes("scenario_owner"),
+            previewOwnerPrincipalId: null,
+            canSeeAnalytics: governance || isPlatformAdmin || roles.includes("scenario_owner"),
+            canSeeAdmin: isPlatformAdmin,
+            canSeeAllProtocols: governance || isPlatformAdmin,
+            label: "Minha visão",
+          };
+      }
+    })();
+    return {
+      ...base,
+      readOnly: base.readOnly || pendingPreview,
+      rolesLoading,
+      rolesError,
+      retryRoles: () => void retryRoles(),
+    };
+  }, [
+    roles,
+    isPlatformAdmin,
+    canUseChameleon,
+    viewAs,
+    pendingPreview,
+    rolesLoading,
+    rolesError,
+    retryRoles,
+  ]);
 
   return <ViewerContext.Provider value={value}>{children}</ViewerContext.Provider>;
 }

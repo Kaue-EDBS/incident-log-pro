@@ -1523,3 +1523,13 @@ Teste: `aud_geral_tenant_owner_audit.test.sql` (20). Os testes antigos passaram 
 - **F05 (governança semanal): construída.** Tela "Governança semanal" para Jair, Bruno e admins: semana de segunda a domingo (São Paulo), navegação entre semanas, resumo por card (com a semana anterior), mais demorados, ainda em andamento e registro das ações decididas (Mudar processo, Corrigir cadastro, Mudar capacidade, Ação com parceiro, Mudar sistema, Treinamento, Sem ação justificada), por card ou geral. O registro só cresce: não se altera nem se apaga. A reunião continua fora do Painel (D-61).
 - **F06 (relatório executivo): cancelada.** A diretoria usa Indicadores, Todos os protocolos e a Governança semanal.
 
+### D-141 — Prova completa: segurança, dados, operação, telas e limpeza
+**APPROVED — 03/10/2026** — owner: Kaue ("auditoria pesada... colocar a aplicação à prova"). Migration `20261003120000_d141_hardening.sql`; relatório `AUDITORIA_PROVA_COMPLETA_2026-10-03.md`.
+
+- **Segurança:** o nome nas telas e e-mails vem só do cadastro ou da Microsoft (antes a pessoa podia trocar o próprio nome e se passar por outra); conta de fora só registra a recusa de acesso; TRUNCATE retirado das tabelas novas; a função de envio exige uma senha interna gerada no próprio banco (Vault), enviada só pelo agendador.
+- **Dados:** ação de governança enviada duas vezes vira uma só.
+- **Operação:** alarmes no topo da Administração (e-mail parado, agendamento ausente, função de envio com erro, protocolo passando de 72 h); `private.safra_ensure_cron_jobs()` recria os 3 agendamentos após restauração; rodada de envio com até 50 avisos.
+- **Telas:** Modo Camaleão realmente só leitura também nos protocolos (antes Concluído/Desfazer/Cancelar funcionavam); "Conferindo o seu acesso..." em vez de "sem acesso" enquanto carrega; erro de regra aparece na hora (sem 3 novas tentativas); "Iniciar nova Safra" pede confirmação; Administração com o título no topo e dados carregados só ao abrir cada seção; tabelas roláveis acessíveis pelo teclado; botões longos quebram linha no celular; "Abertos agora" para todos os protocolos ativos.
+- **Limpeza:** formato de tempo único, componente sem uso removido, chamadas sem tipo trocadas pelas tipadas, comentários desatualizados corrigidos.
+- **Testes:** mapa fixo de quem pode chamar cada função (qualquer permissão mudada quebra o CI) e testes das correções.
+

@@ -76,7 +76,8 @@ A restauração é feita **por nós, no painel do Lovable**, sem chamado. O supo
 4. Depois da restauração, conferir:
    - `select count(*) from supabase_migrations.schema_migrations` igual ao número de arquivos em `supabase/migrations`;
    - se faltar alguma migration (backup antigo), aplicar as que faltam pela ordem (D-52);
-   - `select jobname from cron.job` mostra os 2 agendamentos (`safra-auto-cancel-72h` e `safra-cron-log-cleanup`, D-101); se faltar, reaplicar a migration `20261002160000`;
+   - `select private.safra_ensure_cron_jobs();` recria os 3 agendamentos (`safra-auto-cancel-72h`, `safra-cron-log-cleanup` e `safra-send-notifications`, D-141) e devolve a lista: precisam aparecer os 3. Rodar **depois** de restaurar os logins (o de e-mail só é criado onde o login do Kaue existe);
+   - antes de religar, conferir a fila: avisos `QUEUED` de antes da restauração podem já ter sido enviados; se for o caso, expirar com motivo (migration própria, D-52) antes de religar o envio;
    - entrar no Painel, abrir um protocolo de teste e cancelá-lo com o motivo "teste pós-restauração".
 5. Recuperar o que se perdeu desde o backup (até 24 h): comparar com o export do passo 2 e com a lista dos donos de card, e registrar de novo os protocolos do período, com o início real do problema.
 6. Registrar o tempo total (seção 7).
@@ -88,6 +89,20 @@ A restauração é feita **por nós, no painel do Lovable**, sem chamado. O supo
 
 
 ### 4.7 Avisos por e-mail não chegam (M05)
+
+**Alarme (D-141):** a Administração mostra no topo "Atenção: algo parou" quando há e-mail na fila há mais de 10 minutos, quando falta um agendamento, quando a função de envio respondeu diferente de 200 ou quando um protocolo passou de 72 h sem encerrar.
+
+Respostas da função de envio (`select status_code, content from net._http_response order by created desc limit 5`; o banco guarda só ~6 h):
+
+| Código | Significado | O que fazer |
+|---|---|---|
+| 200 | rodada feita (contagens no corpo) | nada |
+| 401 | senha interna do agendador errada ou ausente, ou login exigido na função | `select private.safra_ensure_cron_jobs();`; se continuar, pedir ao Lovable o deploy da função com `verify_jwt = false` |
+| 404 | função não publicada | pedir ao Lovable o deploy de `safra-send-notifications` |
+| 503 `disabled` | faltam as chaves (conexão Outlook ou MS_*) | reconectar o Outlook no Lovable ou configurar as chaves do TI |
+| tempo esgotado (60 s) | rodada ainda em andamento | normal se for raro; se repetir, Microsoft lenta |
+
+Um aviso pode, em caso raro (a Microsoft aceita mas a resposta se perde), chegar duas vezes.
 1. **Saúde do sistema** (Administração): "Avisos na fila", "enviados", "com falha" e "expirados" nas últimas 24 h.
 2. **Envio provisório (D-133):** a cada 2 minutos o banco chama a função `safra-send-notifications`, que envia pela conexão Outlook do Lovable. Conferir o agendamento (`select * from cron.job_run_details where command like '%safra-send-notifications%' order by start_time desc limit 5`) e a resposta da função (`select status_code, content from net._http_response order by created desc limit 5`). `disabled`: a conexão Outlook não chegou à função. Aviso `FAILED` com `SEND_FAILED: NO_REPORT`: foi pego 5 vezes sem resultado (rodada interrompida); conferir se o destinatário recebeu antes de reenviar. Falhas `HTTP 401`: reconectar o Microsoft Outlook em Connectors no Lovable.
 3. **Fila crescendo e nada enviado (depois da troca pelo App do TI):** o envio está desligado ou parado. Conferir se os 3 segredos (`MS_TENANT_ID`, `MS_CLIENT_ID`, `MS_CLIENT_SECRET`; `MAIL_SENDER` é opcional) estão no projeto do Lovable e se o agendamento do envio existe (`select jobname from cron.job`).

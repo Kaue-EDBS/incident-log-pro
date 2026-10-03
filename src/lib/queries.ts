@@ -30,9 +30,10 @@ function useInvalidateProtocols() {
   };
 }
 
-export function useSafraStartCatalog() {
+export function useSafraStartCatalog(enabled = true) {
   return useQuery({
     queryKey: KEYS.catalog,
+    enabled,
     queryFn: async (): Promise<SafraStartCatalogItem[]> => {
       const { data, error } = await measured("safra_get_start_catalog", () =>
         supabase.rpc("safra_get_start_catalog"),
@@ -481,17 +482,13 @@ export type ProposalsData = z.infer<typeof ProposalsSchema>;
 
 const PROPOSALS_KEY = ["safra-proposals"] as const;
 
-// Funções ainda ausentes dos tipos gerados; o banco continua conferindo tudo.
-const untypedRpc = (fn: string) =>
-  (supabase.rpc as unknown as (name: string) => PromiseLike<{ data: unknown; error: unknown }>)(fn);
-
 /** Propostas de card novo (M10): o banco decide o que cada pessoa vê e pode fazer. */
 export function useProposals() {
   return useQuery({
     queryKey: PROPOSALS_KEY,
     queryFn: async () => {
       const { data, error } = await measured("safra_get_proposals", () =>
-        untypedRpc("safra_get_proposals"),
+        supabase.rpc("safra_get_proposals"),
       );
       if (error) throw error;
       return ProposalsSchema.parse(data);
@@ -510,7 +507,7 @@ export function useOperationalAreas(enabled: boolean) {
     staleTime: 60 * 60 * 1000,
     queryFn: async () => {
       const { data, error } = await measured("safra_get_operational_areas", () =>
-        untypedRpc("safra_get_operational_areas"),
+        supabase.rpc("safra_get_operational_areas"),
       );
       if (error) throw error;
       return AreasSchema.parse(data);
@@ -648,8 +645,26 @@ export const OpsSummarySchema = z.object({
     oldest_active_opened_at: z.string().nullable(),
   }),
   notifications: z
-    .object({ queued: z.number(), sent: z.number(), failed: z.number(), expired: z.number() })
-    .default({ queued: 0, sent: 0, failed: 0, expired: 0 }),
+    .object({
+      queued: z.number(),
+      sent: z.number(),
+      failed: z.number(),
+      expired: z.number(),
+      oldest_queued_at: z.string().nullable().default(null),
+      last_sent_at: z.string().nullable().default(null),
+      last_function_status: z.number().nullable().default(null),
+    })
+    .default({
+      queued: 0,
+      sent: 0,
+      failed: 0,
+      expired: 0,
+      oldest_queued_at: null,
+      last_sent_at: null,
+      last_function_status: null,
+    }),
+  alerts: z.array(z.object({ code: z.string(), text: z.string() })).default([]),
+  jobs: z.array(z.string()).default([]),
   recent: z.array(
     z.object({
       occurred_at: z.string(),
@@ -706,7 +721,7 @@ export function useNotificationsQueue(enabled: boolean) {
     enabled,
     queryFn: async () => {
       const { data, error } = await measured("safra_admin_get_notifications_queue", () =>
-        untypedRpc("safra_admin_get_notifications_queue"),
+        supabase.rpc("safra_admin_get_notifications_queue"),
       );
       if (error) throw error;
       return NotificationsQueueSchema.parse(data);

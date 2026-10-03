@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useViewer } from "@/lib/chameleon";
-import { formatDateTime } from "@/lib/metrics";
+import { formatDateTime, formatSeconds } from "@/lib/metrics";
 import {
   useReliabilityMetrics,
   type MetricPair,
@@ -17,24 +17,12 @@ export const Route = createFileRoute("/analytics")({
   component: Analytics,
 });
 
-/** Segundos em texto curto: "45 min", "2 h 15 min", "3 d 4 h". */
-function formatDuration(seconds: number | null): string {
-  if (seconds === null) return "—";
-  const total = Math.max(0, Math.round(seconds / 60));
-  const days = Math.floor(total / 1440);
-  const hours = Math.floor((total % 1440) / 60);
-  const minutes = total % 60;
-  if (days > 0) return hours ? `${days} d ${hours} h` : `${days} d`;
-  if (hours > 0) return minutes ? `${hours} h ${minutes} min` : `${hours} h`;
-  return `${minutes} min`;
-}
-
 function Pair({ value }: { value: MetricPair }) {
   return (
     <>
-      <span className="font-medium tabular-nums">{formatDuration(value.mean)}</span>
+      <span className="font-medium tabular-nums">{formatSeconds(value.mean)}</span>
       <span className="block text-xs text-muted-foreground tabular-nums">
-        mediana {formatDuration(value.median)}
+        mediana {formatSeconds(value.median)}
       </span>
     </>
   );
@@ -79,18 +67,20 @@ function VolumeSection({ volume, showTotal }: { volume: Volume; showTotal: boole
       titleClassName="text-sm"
     >
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <VolumeTile label="Em andamento agora" value={String(total.active)} />
-        <VolumeTile label="Tempo mediano para encerrar" value={formatDuration(total.median_secs)} />
-        <VolumeTile
-          label="Os 10% mais demorados passam de"
-          value={formatDuration(total.p90_secs)}
-        />
+        <VolumeTile label="Abertos agora" value={String(total.active)} />
+        <VolumeTile label="Tempo mediano para encerrar" value={formatSeconds(total.median_secs)} />
+        <VolumeTile label="Os 10% mais demorados passam de" value={formatSeconds(total.p90_secs)} />
         <VolumeTile
           label="Pico de protocolos ao mesmo tempo"
           value={String(total.peak_simultaneous)}
         />
       </div>
-      <div className="overflow-x-auto">
+      <div
+        className="overflow-x-auto"
+        tabIndex={0}
+        role="region"
+        aria-label="Tabela (role para os lados no celular)"
+      >
         <table className="w-full min-w-[640px] text-sm">
           <caption className="sr-only">Protocolos e tempos por card na Safra corrente</caption>
           <thead className="text-left text-xs text-muted-foreground">
@@ -182,8 +172,8 @@ function VolumeRow({
       <td className="py-2 pr-3 tabular-nums">{row.resolved}</td>
       <td className="py-2 pr-3 tabular-nums">{row.cancelled}</td>
       <td className="py-2 pr-3 tabular-nums">{row.active}</td>
-      <td className="py-2 pr-3 tabular-nums">{formatDuration(row.median_secs)}</td>
-      <td className="py-2 tabular-nums">{formatDuration(row.p90_secs)}</td>
+      <td className="py-2 pr-3 tabular-nums">{formatSeconds(row.median_secs)}</td>
+      <td className="py-2 tabular-nums">{formatSeconds(row.p90_secs)}</td>
     </tr>
   );
 }
@@ -210,7 +200,7 @@ function Ranking({
       id="ranking-title"
       title={
         top[0]
-          ? `Cards que mais falham na Safra: 1º ${top[0].code} · ${top[0].name} (${top[0].failures})`
+          ? `Cards que mais falham na Safra: 1º ${cardNumber(top[0].code)} · ${cardDisplayName(top[0].name)} (${top[0].failures})`
           : "Cards que mais falham na Safra"
       }
       className="p-4"
@@ -227,7 +217,7 @@ function Ranking({
               </span>
               <span className="tabular-nums text-muted-foreground">
                 {card.failures} {card.failures === 1 ? "falha" : "falhas"} · MTTR{" "}
-                {formatDuration(card.mttr.mean)}
+                {formatSeconds(card.mttr.mean)}
               </span>
             </li>
           ))}
@@ -284,7 +274,12 @@ function Analytics() {
             <VolumeSection volume={data.volume} showTotal={data.scope === "ALL"} />
           ) : null}
 
-          <div className="overflow-x-auto rounded-xl border border-border bg-card p-4">
+          <div
+            className="overflow-x-auto rounded-xl border border-border bg-card p-4"
+            tabIndex={0}
+            role="region"
+            aria-label="Tabela (role para os lados no celular)"
+          >
             <table className="w-full min-w-[720px] text-sm">
               <caption className="sr-only">Indicadores por card: média e mediana</caption>
               <thead className="text-left text-xs text-muted-foreground">

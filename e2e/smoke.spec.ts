@@ -62,7 +62,7 @@ async function createPerson(key: string, email: string, fullName?: string) {
               values (${p.id}, ${email}, ${sql.json({ provider: "azure", providers: ["azure"] })},
                       ${sql.json(fullName ? { full_name: fullName } : {})}, true, false, now(), now())`;
     await sql`insert into auth.identities(provider_id,user_id,identity_data,provider,created_at,updated_at)
-              values (${p.id}, ${p.id}, ${sql.json({ custom_claims: { tid: TENANT } })}, 'azure', now(), now())`;
+              values (${p.id}, ${p.id}, ${sql.json(fullName ? { custom_claims: { tid: TENANT }, full_name: fullName } : { custom_claims: { tid: TENANT } })}, 'azure', now(), now())`;
   }
   await sql`insert into auth.sessions(id,user_id,created_at,updated_at) values (${p.sessionId}, ${p.id}, now(), now())`;
   people[key] = p;

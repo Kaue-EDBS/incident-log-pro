@@ -52,7 +52,12 @@ function CardsAndOwners() {
           </Button>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-border bg-card p-4">
+        <div
+          className="overflow-x-auto rounded-xl border border-border bg-card p-4"
+          tabIndex={0}
+          role="region"
+          aria-label="Tabela (role para os lados no celular)"
+        >
           <table className="w-full min-w-[720px] text-left text-sm">
             <caption className="sr-only">Cards, donos e protocolos da Safra</caption>
             <thead className="text-xs text-muted-foreground">

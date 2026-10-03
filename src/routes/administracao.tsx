@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, Loader2 } from "lucide-react";
-import { ComingSoon } from "@/components/ComingSoon";
 import { SeasonPanel } from "@/components/SeasonPanel";
 import { PeoplePanel, RbacTrailPanel, ScreenUsagePanel } from "@/components/AdminPanels";
 import { NotificationsPanel } from "@/components/NotificationsPanel";
@@ -100,7 +99,12 @@ function SystemHealth() {
             </p>
           ) : null}
 
-          <div className="overflow-x-auto">
+          <div
+            className="overflow-x-auto"
+            tabIndex={0}
+            role="region"
+            aria-label="Tabela (role para os lados no celular)"
+          >
             <table className="w-full min-w-[640px] text-left text-sm">
               <caption className="sr-only">Últimos registros técnicos</caption>
               <thead className="text-xs text-muted-foreground">
@@ -162,10 +166,41 @@ function SystemHealth() {
 
 function Administration() {
   const viewer = useViewer();
+  const summary = useOpsSummary(viewer.canSeeAdmin);
+  const alerts = summary.data?.alerts ?? [];
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      {viewer.canSeeAdmin ? (
+      <header className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Administração</h1>
+        <p className="text-sm text-muted-foreground">
+          Ferramentas para cuidar do Painel e melhorar o app.
+        </p>
+      </header>
+      {!viewer.canSeeAdmin ? (
+        <p className="rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground">
+          Você não tem acesso a esta área.
+        </p>
+      ) : (
         <>
+          {alerts.length ? (
+            <section
+              role="alert"
+              aria-labelledby="alerts-title"
+              className="rounded-xl border border-destructive/40 bg-destructive/10 p-5"
+            >
+              <h2 id="alerts-title" className="font-semibold text-destructive">
+                Atenção: algo parou
+              </h2>
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+                {alerts.map((alert) => (
+                  <li key={alert.code}>{alert.text}</li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs text-muted-foreground">
+                O que fazer: docs/RUNBOOK_RECUPERACAO.md, seções 4.5 e 4.7.
+              </p>
+            </section>
+          ) : null}
           <SeasonPanel />
           <NotificationsPanel />
           <SystemHealth />
@@ -173,13 +208,7 @@ function Administration() {
           <RbacTrailPanel />
           <ScreenUsagePanel />
         </>
-      ) : null}
-      <ComingSoon
-        title="Administração"
-        intro="Ferramentas para cuidar do Painel e melhorar o app."
-        allowed={viewer.canSeeAdmin}
-        items={["Alertas automáticos de saúde do sistema"]}
-      />
+      )}
     </div>
   );
 }

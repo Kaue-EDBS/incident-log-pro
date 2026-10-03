@@ -37,7 +37,7 @@ function MyOpenProtocols() {
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="my-open-title" className="text-sm font-semibold">
-          Seus protocolos em andamento ({open.length})
+          Seus protocolos abertos ({open.length})
         </h2>
         <Link to="/meus-protocolos" className="text-sm font-medium text-primary underline">
           Ver todos
@@ -66,7 +66,7 @@ function Home() {
       <header className="space-y-1">
         <h1 className="text-2xl font-semibold tracking-tight">Painel Safra</h1>
         <p className="text-sm text-muted-foreground">
-          Algo deu errado na operação? Escolha o card, explique o problema e inicie o protocolo.
+          Algo deu errado na operação? Escolha o card, explique o problema e abra o protocolo.
         </p>
       </header>
       <SeasonClosedNotice />
