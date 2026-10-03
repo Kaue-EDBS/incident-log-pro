@@ -183,9 +183,34 @@ export function ChameleonProvider({ children }: { children: ReactNode }) {
   return <ViewerContext.Provider value={value}>{children}</ViewerContext.Provider>;
 }
 
+// Visão segura usada só se o contexto se perder (ex.: recarga parcial da pré-visualização):
+// sem permissões, só leitura e "conferindo acesso", em vez de deixar a tela em branco.
+const FALLBACK_VIEWER: Viewer = {
+  roles: [],
+  isPlatformAdmin: false,
+  canUseChameleon: false,
+  viewAs: { mode: "real" },
+  setViewAs: () => undefined,
+  readOnly: true,
+  isOwner: false,
+  previewOwnerPrincipalId: null,
+  canSeeAnalytics: false,
+  canSeeAdmin: false,
+  canSeeAllProtocols: false,
+  label: "Minha visão",
+  rolesLoading: true,
+  rolesError: false,
+  retryRoles: () => {
+    if (typeof window !== "undefined") window.location.reload();
+  },
+};
+
 // eslint-disable-next-line react-refresh/only-export-components
 export function useViewer() {
   const value = useContext(ViewerContext);
-  if (!value) throw new Error("useViewer must be used inside ChameleonProvider");
+  if (!value) {
+    if (import.meta.env.DEV) console.warn("useViewer usado fora do ChameleonProvider");
+    return FALLBACK_VIEWER;
+  }
   return value;
 }
