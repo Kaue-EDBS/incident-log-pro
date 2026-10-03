@@ -95,6 +95,7 @@ function WeeklyGovernancePage() {
           <Button
             variant="outline"
             className="min-h-11"
+            disabled={query.isPlaceholderData}
             onClick={() => setWeekStart(addDays(data.week_start, -7))}
           >
             <ChevronLeft className="size-4" aria-hidden="true" />
@@ -106,6 +107,7 @@ function WeeklyGovernancePage() {
           <Button
             variant="outline"
             className="min-h-11"
+            disabled={query.isPlaceholderData}
             onClick={() => setWeekStart(addDays(data.week_start, 7))}
           >
             Próxima semana
@@ -138,7 +140,11 @@ function WeeklyGovernancePage() {
           <WeekSummary data={data} />
           <Longest data={data} />
           <StillActive data={data} />
-          <Actions data={data} readOnly={viewer.readOnly} />
+          <Actions
+            key={data.week_start}
+            data={data}
+            readOnly={viewer.readOnly || query.isPlaceholderData}
+          />
         </>
       )}
     </div>
@@ -348,7 +354,7 @@ function Actions({ data, readOnly }: { data: WeeklyGovernance; readOnly: boolean
           </label>
           <ConfirmButton
             label="Registrar ação"
-            title="Registrar esta ação?"
+            title={`Registrar na semana de ${shortDate(data.week_start)} a ${shortDate(data.week_end)}?`}
             description="O registro fica guardado e não pode ser alterado nem apagado depois."
             confirmLabel="Sim, registrar"
             disabled={!ready || register.isPending}

@@ -129,7 +129,8 @@ select is(
         'scenario_version_impacted_areas','scenario_version_systems',
         'treatments','treatment_impacted_areas','treatment_impact_measurements',
         'treatment_events','scenario_proposals',
-        'scenario_proposal_owner_responses','notifications_log','governance_issues'
+        'scenario_proposal_owner_responses','notifications_log','governance_issues',
+        'governance_actions'
       )
   ),
   0::bigint,

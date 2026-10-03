@@ -82,7 +82,7 @@ as $$
       from public.scenarios sc
       left join per_card pc on pc.scenario_id = sc.id
       where sc.id = any (p_scenario_ids)), '[]'::jsonb),
-    'areas', coalesce((select jsonb_agg(jsonb_build_object('name', a.name, 'protocols', a.protocols)) from areas a), '[]'::jsonb)
+    'areas', coalesce((select jsonb_agg(jsonb_build_object('name', a.name, 'protocols', a.protocols) order by a.protocols desc, a.name) from areas a), '[]'::jsonb)
   );
 $$;
 
@@ -177,6 +177,7 @@ for each row execute function private.safra_governance_actions_append_only();
 
 alter table public.governance_actions enable row level security;
 revoke all on public.governance_actions from public, anon, authenticated;
+revoke truncate on public.governance_actions from service_role;
 
 -- Segunda-feira da semana (horário de São Paulo) de uma data; sem data, a semana atual.
 create or replace function private.safra_week_start(p_day date)
@@ -265,19 +266,21 @@ begin
         where (x.c->>'opened')::int > 0 or (x.c->>'resolved')::int > 0 or (x.c->>'cancelled')::int > 0
                or (x.c->>'opened_previous_week')::int > 0), '[]'::jsonb),
       'longest', coalesce((
-        select jsonb_agg(l)
+        select jsonb_agg(y.l order by y.secs desc)
         from (
           select jsonb_build_object('protocol_number', b.protocol_number, 'code', sc.code, 'name', sc.name,
-                                    'duration_secs', round(extract(epoch from b.resolved_at - b.opened_at))) as l
+                                    'duration_secs', round(extract(epoch from b.resolved_at - b.opened_at))) as l,
+                 extract(epoch from b.resolved_at - b.opened_at) as secs
           from base b join public.scenarios sc on sc.id = b.scenario_id
           where b.resolved_at >= v_from and b.resolved_at < v_to
           order by b.resolved_at - b.opened_at desc
           limit 5
         ) y), '[]'::jsonb),
       'active', coalesce((
-        select jsonb_agg(a)
+        select jsonb_agg(z.a order by z.opened_at)
         from (
-          select jsonb_build_object('protocol_number', b.protocol_number, 'code', sc.code, 'name', sc.name,
+          select b.opened_at,
+                 jsonb_build_object('protocol_number', b.protocol_number, 'code', sc.code, 'name', sc.name,
                                     'opened_at', b.opened_at,
                                     'situation', case when b.requester_closed_at is null and b.owner_closed_at is null then 'EM_ANDAMENTO'
                                                       when b.requester_closed_at is not null then 'AGUARDANDO_DONO'

@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(13);
 
 -- K = Kaue (platform admin), J = Jair (governance), X = a regular person.
 insert into auth.users(id,email,raw_app_meta_data,is_sso_user,is_anonymous,created_at,updated_at)
@@ -59,6 +59,8 @@ select ok((select jsonb_array_length(public.safra_get_weekly_governance('2026-10
 
 select throws_ok($$ update public.governance_actions set description = 'Texto trocado depois.' $$,
   'P0001', 'governance actions are append-only', 'F05: registered actions are never changed');
+select ok(not has_table_privilege('service_role', 'public.governance_actions', 'TRUNCATE'),
+  'F05: the action log cannot be wiped with TRUNCATE');
 
 -- F04: counts and times in the indicators -----------------------------------------------
 select ok((select v ? 'consolidated' and v ? 'cards' and v ? 'areas'

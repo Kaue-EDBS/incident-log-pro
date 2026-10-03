@@ -313,12 +313,12 @@ test("admin: Modo Camaleão previews other audiences, read-only", async ({ brows
   await expect(page.getByRole("heading", { name: "Governança semanal", level: 1 })).toBeVisible();
   await expand(page, /^Ações da semana/);
   await page.getByLabel("Tipo da ação").selectOption("TRAINING");
-  await page
-    .getByLabel("O que foi decidido")
-    .fill("Treinar a expedição no novo fluxo de etiquetas.");
+  // Texto único: o registro só cresce, e o teste pode rodar de novo no mesmo banco.
+  const decided = `Treinar a expedição no novo fluxo de etiquetas (${Date.now()}).`;
+  await page.getByLabel("O que foi decidido").fill(decided);
   await page.getByRole("button", { name: "Registrar ação" }).click();
   await page.getByRole("button", { name: "Sim, registrar" }).click();
-  await expect(page.getByText("Treinar a expedição no novo fluxo de etiquetas.")).toBeVisible();
+  await expect(page.getByText(decided)).toBeVisible();
   await expectAccessible(page, "governança semanal");
   await page.getByRole("link", { name: "Todos os protocolos" }).first().click();
   // D-120: faixa com os números do momento (no lugar da Torre de Controle).

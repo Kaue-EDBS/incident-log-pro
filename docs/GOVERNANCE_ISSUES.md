@@ -43,6 +43,8 @@ Nenhum GI aberto conta como `UNKNOWN`: todos têm regra segura ou fase responsá
 | 015 | Cabeçalhos de segurança e domínio próprio | RESOLVED (D-116) — fica em painelsafra.lovable.app |
 | 016 | Avisar antes do cancelamento automático de 72 h? | RESOLVED (D-112) — 24 h, 12 h e 1 h antes |
 | 017 | Trocar o envio provisório pelo aplicativo do TI | OPEN — aguarda o TI (envio automático já funciona, D-133) |
+| 018 | Na governança semanal, protocolo encerrado sozinho (72 h) conta na semana em que a última parte concluiu ou na do encerramento automático? | OPEN — hoje: última parte (como os Indicadores, D-117) |
+| 019 | Pode registrar ação de governança em semana futura ou muito antiga? | OPEN — hoje: qualquer semana |
 
 ## GI-SAFRA-001 — Definição nominal dos quatro cenários CRITICAL
 
@@ -383,3 +385,20 @@ Pela D-101, protocolo sem nenhuma parte concluída é cancelado sozinho 72 horas
 - **Passo intermediário (sem depender do TI):** D-133, envio agendado no servidor a cada 2 minutos pela mesma conexão Outlook.
 - **Pendente da TI:** MS_CLIENT_ID, MS_CLIENT_SECRET (com validade e responsável pela renovação) e Application Access Policy restrita a painel.safra@.
 - **Ao fechar:** configurar MS_* no Lovable (a função passa a usar o aplicativo sozinha) e retirar as funções `*_for_session` e a conexão Outlook pessoal.
+
+## GI-SAFRA-018 — Semana do protocolo encerrado sozinho na governança semanal
+
+**Status:** OPEN — aguarda o owner  
+**Fase:** F05 (D-140)  
+**Bloqueia:** nada
+
+Quando só uma parte conclui e o protocolo encerra sozinho 72 h depois (D-113), a governança semanal conta o encerramento na semana em que **a última parte concluiu** (mesma regra dos Indicadores, D-117). Assim, um protocolo pode aparecer "em andamento" na reunião de segunda e depois entrar no resumo da semana anterior. Alternativa: contar na semana do **encerramento automático**. Nenhum valor foi mudado sem decisão.
+
+## GI-SAFRA-019 — Semana permitida para registrar ação de governança
+
+**Status:** OPEN — aguarda o owner  
+**Fase:** F05 (D-140)  
+**Bloqueia:** nada
+
+Hoje dá para navegar e registrar ação em qualquer semana, inclusive futura. Decidir se o registro deve ficar limitado (por exemplo, só a semana atual e as anteriores).
+
